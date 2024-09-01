@@ -184,7 +184,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                                 (isActive && '!text-white')
                               }
                             >
-                              eCommerce
+                              RHCQS Dashboard
                             </NavLink>
                           </li>
                         </ul>
@@ -195,8 +195,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 }}
               </SidebarLinkGroup>
               {/* <!-- Menu Item Dashboard --> */}
-
-              
 
               {/* <!-- Menu Item PriceQuoteList --> */}
               <li>
@@ -310,8 +308,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
             </ul>
           </div>
-
-        
         </nav>
         {/* <!-- Sidebar Menu --> */}
       </div>
