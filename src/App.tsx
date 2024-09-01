@@ -20,6 +20,7 @@ import CreatePost from './pages/CreatePost';
 import QuoteDetail from './pages/QuoteDetail';
 import CreateQuote from './pages/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
+import ChatPage from './pages/ChatPage';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -125,6 +126,15 @@ function App() {
             <>
               <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
               <CreateQuote />
+            </>
+          }
+        />
+        <Route
+          path="/chatpage"
+          element={
+            <>
+              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <ChatPage />
             </>
           }
         />
