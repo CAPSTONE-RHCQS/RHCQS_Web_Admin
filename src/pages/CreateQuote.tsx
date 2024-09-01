@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import DeleteButton from '../components/Buttonicons/DeleteButton';
+import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
 
 const CreateContract = () => {
   const [customerName, setCustomerName] = useState('');
@@ -15,6 +16,26 @@ const CreateContract = () => {
     { value: '3350000', label: '3,350,000 đồng/m²' },
     { value: '3500000', label: '3,500,000 đồng/m²' },
     { value: '3700000', label: '3,700,000 đồng/m²' },
+  ];
+
+  const unitOptions = [
+    { value: 'm²', label: 'm²' },
+    { value: 'm³', label: 'm³' },
+    { value: 'kg', label: 'kg' },
+    { value: 'tấn', label: 'tấn' },
+  ];
+
+  const hangMucOptions = [
+    { value: '', label: 'Chọn hạng mục', disabled: true },
+    { value: 'Móng', label: 'Móng' },
+    { value: 'Hầm (DTSD >= 70m2: độ sâu 1,0m -> 1,3m)', label: 'Hầm' },
+    { value: 'Trệt', label: 'Trệt' },
+    { value: 'Sân', label: 'Sân' },
+    { value: 'Lầu 1', label: 'Lầu 1' },
+    { value: 'Thông Tầng Lầu 1 (Thông tầng > 8m2)', label: 'Thông Tầng Lầu 1' },
+    { value: 'Sân thượng có mái che', label: 'Sân thượng có mái che' },
+    { value: 'Sân thượng không mái che', label: 'Sân thượng không mái che' },
+    { value: 'Mái che (Mái BTCT)', label: 'Mái che (Mái BTCT)' },
   ];
 
   const handleAddItem = () => {
@@ -61,7 +82,7 @@ const CreateContract = () => {
               type="text"
               value={customerName}
               onChange={(e) => setCustomerName(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
               required
             />
           </div>
@@ -73,7 +94,7 @@ const CreateContract = () => {
               type="text"
               value={constructionAddress}
               onChange={(e) => setConstructionAddress(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
               required
             />
           </div>
@@ -81,19 +102,14 @@ const CreateContract = () => {
             <label className="block text-lg font-medium mb-2">
               Đơn giá thi công:
             </label>
-            <select
-              value={unitPrice}
-              onChange={(e) => setUnitPrice(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg"
-              required
-            >
-              <option value="">Chọn đơn giá</option>
-              {unitPriceOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            <SelectGroupTwo
+              options={[
+                { value: '', label: 'Chọn đơn giá', disabled: true },
+                ...unitPriceOptions,
+              ]}
+              selectedOption={unitPrice}
+              onChange={(value) => setUnitPrice(value)}
+            />
           </div>
         </div>
         <div>
@@ -120,35 +136,13 @@ const CreateContract = () => {
                   <DeleteButton onClick={() => handleRemoveItem(index)} />
                 </div>
                 <div className="grid grid-cols-4 gap-4">
-                  <select
-                    value={item.hangMuc}
-                    onChange={(e) =>
-                      handleChangeItem(index, 'hangMuc', e.target.value)
+                  <SelectGroupTwo
+                    options={hangMucOptions}
+                    selectedOption={item.hangMuc}
+                    onChange={(value) =>
+                      handleChangeItem(index, 'hangMuc', value)
                     }
-                    className="px-4 py-2 border rounded-lg"
-                    required
-                  >
-                    <option value="">Chọn hạng mục</option>
-                    <option value="Móng">Móng</option>
-                    <option value="Hầm (DTSD >= 70m2: độ sâu 1,0m -> 1,3m)">
-                      Hầm
-                    </option>
-                    <option value="Trệt">Trệt</option>
-                    <option value="Sân">Sân</option>
-                    <option value="Lầu 1">Lầu 1</option>
-                    <option value="Thông Tầng Lầu 1 (Thông tầng > 8m2)">
-                      Thông Tầng Lầu 1
-                    </option>
-                    <option value="Sân thượng có mái che">
-                      Sân thượng có mái che
-                    </option>
-                    <option value="Sân thượng không mái che">
-                      Sân thượng không mái che
-                    </option>
-                    <option value="Mái che (Mái BTCT)">
-                      Mái che (Mái BTCT)
-                    </option>
-                  </select>
+                  />
                   <input
                     type="number"
                     placeholder="Hệ số"
@@ -156,7 +150,7 @@ const CreateContract = () => {
                     onChange={(e) =>
                       handleChangeItem(index, 'heSo', e.target.value)
                     }
-                    className="px-4 py-2 border rounded-lg"
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                     required
                   />
                   <input
@@ -166,22 +160,16 @@ const CreateContract = () => {
                     onChange={(e) =>
                       handleChangeItem(index, 'dienTich', e.target.value)
                     }
-                    className="px-4 py-2 border rounded-lg"
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                     required
                   />
-                  <select
-                    value={item.donVi || 'm²'}
-                    onChange={(e) =>
-                      handleChangeItem(index, 'donVi', e.target.value)
+                  <SelectGroupTwo
+                    options={unitOptions}
+                    selectedOption={item.donVi || 'm²'}
+                    onChange={(value) =>
+                      handleChangeItem(index, 'donVi', value)
                     }
-                    className="px-4 py-2 border rounded-lg"
-                    required
-                  >
-                    <option value="m²">m²</option>
-                    <option value="m³">m³</option>
-                    <option value="kg">kg</option>
-                    <option value="tấn">tấn</option>
-                  </select>
+                  />
                 </div>
               </div>
             ))}
