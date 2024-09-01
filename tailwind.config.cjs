@@ -52,6 +52,9 @@ module.exports = withMT({
         success: '#219653',
         danger: '#D34053',
         warning: '#FFA70B',
+        secondaryGreen: '#1F7F81',
+        customRed: '#FF0000',
+        customGray: '#D1D5DB',
       },
       fontSize: {
         'title-xxl': ['44px', '55px'],

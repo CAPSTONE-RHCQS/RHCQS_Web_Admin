@@ -7,6 +7,7 @@ import House from '../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../images/process.jpg';
 import Fee from '../images/fee.jpg';
 import { formatCurrencyShort } from '../utils/format';
+import StatusTracker from '../components/StatusTracker';
 
 const ContractDetail = () => {
   const tableData = [
@@ -211,6 +212,8 @@ const ContractDetail = () => {
             avatarUrl={Fee}
           />
         </div>
+
+        <StatusTracker currentStatus="Đang Xử Lý" />
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
