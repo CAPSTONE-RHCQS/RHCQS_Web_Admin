@@ -102,7 +102,7 @@ function App() {
           }
         />
         <Route
-          path="/pdfviewer"
+          path="/createblog"
           element={
             <>
               <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />

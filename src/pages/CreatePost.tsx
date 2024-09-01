@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import WYSIWYGEditor from '../components/WYSIWYGEditor';
 
 const CreatePost: React.FC = () => {
   const [value, setValue] = useState('');
@@ -10,7 +9,19 @@ const CreatePost: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">
         Create a New Blog Post
       </h1>
-      <ReactQuill theme="snow" value={value} onChange={setValue} />
+      <div className="flex w-full h-full">
+        <div className="w-1/2 p-2 h-full">
+          <div className="bg-white p-4 h-full rounded-lg">
+            <WYSIWYGEditor value={value} onChange={setValue} />
+          </div>
+        </div>
+        <div className="w-1/2 p-2 h-full">
+          <div className="bg-white p-4 h-full rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">Preview</h2>
+            <div dangerouslySetInnerHTML={{ __html: value }} className="h-full overflow-auto" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
