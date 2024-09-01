@@ -159,7 +159,7 @@ const PriceQuote = () => {
         </h4>
         <input
           type="text"
-          className="h-14 w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
+          className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
           placeholder="Search anything..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}

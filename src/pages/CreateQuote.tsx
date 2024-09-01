@@ -72,7 +72,7 @@ const CreateContract = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Tạo Hợp Đồng</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <div className="mb-4">
             <label className="block text-lg font-medium mb-2">
@@ -135,7 +135,7 @@ const CreateContract = () => {
                   </label>
                   <DeleteButton onClick={() => handleRemoveItem(index)} />
                 </div>
-                <div className="grid grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <SelectGroupTwo
                     options={hangMucOptions}
                     selectedOption={item.hangMuc}
@@ -175,7 +175,7 @@ const CreateContract = () => {
             ))}
           </div>
         </div>
-        <div className="col-span-2">
+        <div className="col-span-1 md:col-span-2">
           <button
             type="submit"
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded w-full"
