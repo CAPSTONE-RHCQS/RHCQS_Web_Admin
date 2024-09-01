@@ -1,30 +1,30 @@
 /**
  * @license
  *
- * Font Family: Satoshi
+ * Font Family: Montserrat
  * Designed by: Deni Anggara
- * URL: https://www.fontshare.com/fonts/satoshi
+ * URL: https://www.fontshare.com/fonts/Montserrat
  * © 2023 Indian Type Foundry
  *
  * Font Styles:
- * Satoshi Light
- * Satoshi Light Italic
- * Satoshi Regular
- * Satoshi Italic
- * Satoshi Medium
- * Satoshi Medium Italic
- * Satoshi Bold
- * Satoshi Bold Italic
- * Satoshi Black
- * Satoshi Black Italic
+ * Montserrat Light
+ * Montserrat Light Italic
+ * Montserrat Regular
+ * Montserrat Italic
+ * Montserrat Medium
+ * Montserrat Medium Italic
+ * Montserrat Bold
+ * Montserrat Bold Italic
+ * Montserrat Black
+ * Montserrat Black Italic
  *
 */
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Light.woff2') format('woff2'),
-       url('../fonts/Satoshi-Light.woff') format('woff'),
-       url('../fonts/Satoshi-Light.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Light.woff2') format('woff2'),
+       url('../fonts/Montserrat-Light.woff') format('woff'),
+       url('../fonts/Montserrat-Light.ttf') format('truetype');
        font-weight: 300;
        font-display: swap;
        font-style: normal;
@@ -32,10 +32,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-LightItalic.woff2') format('woff2'),
-       url('../fonts/Satoshi-LightItalic.woff') format('woff'),
-       url('../fonts/Satoshi-LightItalic.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-LightItalic.woff2') format('woff2'),
+       url('../fonts/Montserrat-LightItalic.woff') format('woff'),
+       url('../fonts/Montserrat-LightItalic.ttf') format('truetype');
        font-weight: 300;
        font-display: swap;
        font-style: italic;
@@ -43,10 +43,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Regular.woff2') format('woff2'),
-       url('../fonts/Satoshi-Regular.woff') format('woff'),
-       url('../fonts/Satoshi-Regular.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Regular.woff2') format('woff2'),
+       url('../fonts/Montserrat-Regular.woff') format('woff'),
+       url('../fonts/Montserrat-Regular.ttf') format('truetype');
        font-weight: 400;
        font-display: swap;
        font-style: normal;
@@ -54,10 +54,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Italic.woff2') format('woff2'),
-       url('../fonts/Satoshi-Italic.woff') format('woff'),
-       url('../fonts/Satoshi-Italic.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Italic.woff2') format('woff2'),
+       url('../fonts/Montserrat-Italic.woff') format('woff'),
+       url('../fonts/Montserrat-Italic.ttf') format('truetype');
        font-weight: 400;
        font-display: swap;
        font-style: italic;
@@ -65,10 +65,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Medium.woff2') format('woff2'),
-       url('../fonts/Satoshi-Medium.woff') format('woff'),
-       url('../fonts/Satoshi-Medium.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Medium.woff2') format('woff2'),
+       url('../fonts/Montserrat-Medium.woff') format('woff'),
+       url('../fonts/Montserrat-Medium.ttf') format('truetype');
        font-weight: 500;
        font-display: swap;
        font-style: normal;
@@ -76,10 +76,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-MediumItalic.woff2') format('woff2'),
-       url('../fonts/Satoshi-MediumItalic.woff') format('woff'),
-       url('../fonts/Satoshi-MediumItalic.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-MediumItalic.woff2') format('woff2'),
+       url('../fonts/Montserrat-MediumItalic.woff') format('woff'),
+       url('../fonts/Montserrat-MediumItalic.ttf') format('truetype');
        font-weight: 500;
        font-display: swap;
        font-style: italic;
@@ -87,10 +87,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Bold.woff2') format('woff2'),
-       url('../fonts/Satoshi-Bold.woff') format('woff'),
-       url('../fonts/Satoshi-Bold.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Bold.woff2') format('woff2'),
+       url('../fonts/Montserrat-Bold.woff') format('woff'),
+       url('../fonts/Montserrat-Bold.ttf') format('truetype');
        font-weight: 700;
        font-display: swap;
        font-style: normal;
@@ -98,10 +98,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-BoldItalic.woff2') format('woff2'),
-       url('../fonts/Satoshi-BoldItalic.woff') format('woff'),
-       url('../fonts/Satoshi-BoldItalic.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-BoldItalic.woff2') format('woff2'),
+       url('../fonts/Montserrat-BoldItalic.woff') format('woff'),
+       url('../fonts/Montserrat-BoldItalic.ttf') format('truetype');
        font-weight: 700;
        font-display: swap;
        font-style: italic;
@@ -109,10 +109,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-Black.woff2') format('woff2'),
-       url('../fonts/Satoshi-Black.woff') format('woff'),
-       url('../fonts/Satoshi-Black.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-Black.woff2') format('woff2'),
+       url('../fonts/Montserrat-Black.woff') format('woff'),
+       url('../fonts/Montserrat-Black.ttf') format('truetype');
        font-weight: 900;
        font-display: swap;
        font-style: normal;
@@ -120,10 +120,10 @@
 
 
 @font-face {
-  font-family: 'Satoshi';
-  src: url('../fonts/Satoshi-BlackItalic.woff2') format('woff2'),
-       url('../fonts/Satoshi-BlackItalic.woff') format('woff'),
-       url('../fonts/Satoshi-BlackItalic.ttf') format('truetype');
+  font-family: 'Montserrat';
+  src: url('../fonts/Montserrat-BlackItalic.woff2') format('woff2'),
+       url('../fonts/Montserrat-BlackItalic.woff') format('woff'),
+       url('../fonts/Montserrat-BlackItalic.ttf') format('truetype');
        font-weight: 900;
        font-display: swap;
        font-style: italic;
