@@ -174,7 +174,7 @@ const ContractDetail = () => {
 
   const contactData4 = {
     title: 'Dự phí',
-    priceQuote: formatCurrencyShort(1134567000),
+    priceQuote: formatCurrencyShort(giaTriHopDong),
   };
 
   const contactFields4 = [
