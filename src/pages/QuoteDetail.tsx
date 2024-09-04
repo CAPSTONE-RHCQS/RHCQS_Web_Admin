@@ -10,7 +10,6 @@ import Fee from '../images/fee.jpg';
 import { formatCurrencyShort } from '../utils/format';
 import StatusTracker from '../components/StatusTracker';
 import ContractHistoryTimeline from '../components/ContractHistoryTimeline';
-import CustomerChat from '../components/CustomerChat';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../components/ChatBox';
 
