@@ -15,13 +15,14 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
-import PriceQuote from './pages/PriceQuote';
-import CreatePost from './pages/CreatePost';
-import QuoteDetail from './pages/QuoteDetail';
-import CreateQuote from './pages/CreateQuote';
+import QuoteList from './pages/Quote/QuoteList';
+import CreatePost from './pages/BlogPost/CreatePost';
+import QuoteDetail from './pages/Quote/QuoteDetail';
+import CreateQuote from './pages/Quote/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
 import ChatPage from './pages/ChatPage';
-import PostList from './pages/PostList';
+import PostList from './pages/BlogPost/PostList';
+import StaffList from './pages/StaffList';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,28 +96,37 @@ function App() {
           }
         />
         <Route
-          path="/pricequote"
+          path="/quotelist"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
-              <PriceQuote />
+              <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
+              <QuoteList />
             </>
           }
         />
         <Route
-          path="/createblog"
+          path="/stafflist"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
+              <StaffList />
+            </>
+          }
+        />
+        <Route
+          path="/createpost"
+          element={
+            <>
+              <PageTitle title="Create Post | RHCQS - Residential Housing Construction Quotation System" />
               <CreatePost />
             </>
           }
         />
         <Route
-          path="/PostList"
+          path="/postlist"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <PageTitle title="Post list | RHCQS - Residential Housing Construction Quotation System" />
               <PostList />
             </>
           }
@@ -125,7 +135,7 @@ function App() {
           path="/quotedetail"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
               <QuoteDetail />
             </>
           }
@@ -134,7 +144,7 @@ function App() {
           path="/createquote"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <PageTitle title="Create Quote | RHCQS - Residential Housing Construction Quotation System" />
               <CreateQuote />
             </>
           }
@@ -143,7 +153,7 @@ function App() {
           path="/chatpage"
           element={
             <>
-              <PageTitle title="PriceQuote | RHCQS - Residential Housing Construction Quotation System" />
+              <PageTitle title="Chat | RHCQS - Residential Housing Construction Quotation System" />
               <ChatPage />
             </>
           }

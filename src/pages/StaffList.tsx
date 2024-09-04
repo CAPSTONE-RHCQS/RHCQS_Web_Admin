@@ -5,68 +5,60 @@ import EditButton from '../components/Buttonicons/EditButton';
 import DownloadButton from '../components/Buttonicons/DownloadButton';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import SortIcon from '../components/Buttonicons/SortIcon';
-import PriceQuoteTable from '../components/PriceQuoteTable';
+import StaffTable from '../components/StaffTable';
 
-type Email = {
+type Staff = {
   id: string;
-  projectName: string;
-  customerName: string;
-  category: string;
-  serviceType: string;
-  date: string;
-  contractValue: number;
-  status: string;
+  avatar: string;
+  staffName: string;
+  role: string;
+  birthday: string;
+  address: string;
+  email: string;
+  phone: string;
   isChecked: boolean;
 };
 
 type SortKey = string;
 
-const PriceQuote = () => {
-  const [emails, setEmails] = useState<Email[]>([
+const StaffList = () => {
+  const [staffs, setStaffs] = useState<Staff[]>([
     {
       id: '1',
-      projectName: 'Khu Công Nghiệp Bình An',
-      customerName: 'Nguyễn Văn A',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '12.08.2019',
-      contractValue: 1000000,
-      status: 'Chờ xác nhận',
+      avatar:
+        'https://htmediagroup.vn/wp-content/uploads/2022/04/Anh-CV-2_avatar-min-1170x780.jpg',
+      staffName: 'Nguyễn Văn A',
+      role: 'Quản lý',
+      birthday: '12.08.1980',
+      address: '123 Đường A, Quận 1, TP.HCM',
+      email: 'nguyenvana@example.com',
+      phone: '0901234567',
       isChecked: false,
     },
     {
       id: '2',
-      projectName: 'Khu Công Nghiệp Sóng Thần',
-      customerName: 'Trần Văn B',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '01.12.2024',
-      contractValue: 2000000,
-      status: 'Hoàn thành',
+      avatar:
+        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvIuSnnn519WMlA0pP5tITLJLe678hfRFw4hKrk-_RSSsNLmZwoqXMUBXtVLa5fYqHqWo&usqp=CAU',
+      staffName: 'Trần Văn B',
+      role: 'Nhân viên',
+      birthday: '01.12.1990',
+      address: '456 Đường B, Quận 2, TP.HCM',
+      email: 'tranvanb@example.com',
+      phone: '0902345678',
       isChecked: false,
     },
     {
       id: '3',
-      projectName: 'Khu Công Nghệ Cao',
-      customerName: 'Lê Thị C',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '25.11.2024',
-      contractValue: 3000000,
-      status: 'Đang xử lý',
+      avatar: 'https://studiochupanhdep.com/Upload/Images/Album/anh-cv-dep.jpg',
+      staffName: 'Lê Văn C',
+      role: 'Nhân viên',
+      birthday: '01.12.1990',
+      address: '456 Đường B, Quận 3, TP.HCM',
+      email: 'levanc@example.com',
+      phone: '0902345678',
       isChecked: false,
     },
-    {
-      id: '4',
-      projectName: 'Khu Dân Cư',
-      customerName: 'Phạm Văn D',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '30.04.2024',
-      contractValue: 4000000,
-      status: 'Hủy',
-      isChecked: false,
-    },
+    // ... thêm dữ liệu nhân viên khác ...
   ]);
 
   const [isAllChecked, setIsAllChecked] = useState(false);
@@ -79,16 +71,16 @@ const PriceQuote = () => {
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
     setIsAllChecked(newIsAllChecked);
-    setEmails(
-      emails.map((email) => ({ ...email, isChecked: newIsAllChecked })),
+    setStaffs(
+      staffs.map((staff) => ({ ...staff, isChecked: newIsAllChecked })),
     );
   };
 
   const handleCheckboxChange = (index: number) => {
-    const newEmails = [...emails];
-    newEmails[index].isChecked = !newEmails[index].isChecked;
-    setEmails(newEmails);
-    setIsAllChecked(newEmails.every((email) => email.isChecked));
+    const newStaffs = [...staffs];
+    newStaffs[index].isChecked = !newStaffs[index].isChecked;
+    setStaffs(newStaffs);
+    setIsAllChecked(newStaffs.every((staff) => staff.isChecked));
   };
 
   const handleSort = (key: SortKey) => {
@@ -102,11 +94,15 @@ const PriceQuote = () => {
     }
     setSortConfig({ key, direction });
 
-    const sortedEmails = [...emails].sort((a, b) => {
-      const aValue = a[key as keyof Email];
-      const bValue = b[key as keyof Email];
+    const sortedStaffs = [...staffs].sort((a, b) => {
+      const aValue = a[key as keyof Staff];
+      const bValue = b[key as keyof Staff];
 
-      if (key === 'date' && typeof aValue === 'string' && typeof bValue === 'string') {
+      if (
+        key === 'birthday' &&
+        typeof aValue === 'string' &&
+        typeof bValue === 'string'
+      ) {
         const dateA = new Date(aValue.split('.').reverse().join('-'));
         const dateB = new Date(bValue.split('.').reverse().join('-'));
         return direction === 'ascending'
@@ -116,51 +112,47 @@ const PriceQuote = () => {
         return direction === 'ascending'
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
-      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return direction === 'ascending'
-          ? aValue - bValue
-          : bValue - aValue;
       }
       return 0;
     });
 
-    setEmails(sortedEmails);
+    setStaffs(sortedStaffs);
   };
 
   const handleDelete = (id: string) => {
-    setEmails(emails.filter((email) => email.id !== id));
+    setStaffs(staffs.filter((staff) => staff.id !== id));
   };
 
   const handleDeleteSelected = () => {
-    setEmails(emails.filter((email) => !email.isChecked));
+    setStaffs(staffs.filter((staff) => !staff.isChecked));
   };
 
-  const filteredEmails = emails.filter((email) =>
-    email.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredStaffs = staffs.filter((staff) =>
+    staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const columns = [
-    { key: 'projectName', label: 'Tên Dự Án' },
-    { key: 'customerName', label: 'Khách Hàng' },
-    { key: 'category', label: 'Thể loại' },
-    { key: 'serviceType', label: 'Dịch vụ' },
-    { key: 'date', label: 'Ngày' },
-    { key: 'contractValue', label: 'Hợp Đồng' },
-    { key: 'status', label: 'Trạng thái' },
+    { key: 'avatar', label: 'Avatar' },
+    { key: 'staffName', label: 'Tên Nhân Viên' },
+    { key: 'role', label: 'Vai Trò' },
+    { key: 'birthday', label: 'Ngày Sinh' },
+    { key: 'address', label: 'Địa Chỉ' },
+    { key: 'email', label: 'Email' },
+    { key: 'phone', label: 'Số Điện Thoại' },
   ];
 
   return (
     <>
-      <Breadcrumb pageName="Báo giá" />
+      <Breadcrumb pageName="Nhân viên" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Danh sách báo giá
+          Danh sách nhân viên
         </h4>
         <input
           type="text"
           className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
-          placeholder="Search anything..."
+          placeholder="Tìm kiếm..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -171,8 +163,8 @@ const PriceQuote = () => {
           Xóa đã chọn
         </button>
         <div className="max-w-full overflow-x-auto">
-          <PriceQuoteTable
-            data={emails}
+          <StaffTable
+            data={staffs}
             columns={columns}
             isAllChecked={isAllChecked}
             handleSelectAll={handleSelectAll}
@@ -186,4 +178,4 @@ const PriceQuote = () => {
   );
 };
 
-export default PriceQuote;
+export default StaffList;

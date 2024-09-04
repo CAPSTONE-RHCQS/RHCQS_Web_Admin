@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
-import DeleteButton from '../components/Buttonicons/DeleteButton';
-import SelectGroupTwo from '../components/Forms/SelectGroup/SelectGroupTwo';
+import DeleteButton from '../../components/Buttonicons/DeleteButton';
+import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';
 
 const CreateContract = () => {
   const [customerName, setCustomerName] = useState('');
@@ -72,7 +72,10 @@ const CreateContract = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Tạo Hợp Đồng</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         <div>
           <div className="mb-4">
             <label className="block text-lg font-medium mb-2">

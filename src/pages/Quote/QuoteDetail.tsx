@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import ContactCard from '../components/ContactCard';
-import Avatar from '../images/user/user-01.png';
-import House from '../images/house/phan-loai-cac-nha-dan-dung-2.png';
-import Process from '../images/process.jpg';
-import Fee from '../images/fee.jpg';
-import { formatCurrencyShort } from '../utils/format';
-import StatusTracker from '../components/StatusTracker';
-import ContractHistoryTimeline from '../components/ContractHistoryTimeline';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import ContactCard from '../../components/ContactCard';
+import Avatar from '../../images/user/user-01.png';
+import House from '../../images/house/phan-loai-cac-nha-dan-dung-2.png';
+import Process from '../../images/process.jpg';
+import Fee from '../../images/fee.jpg';
+import { formatCurrencyShort } from '../../utils/format';
+import StatusTracker from '../../components/StatusTracker';
+import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
-import ChatBox from '../components/ChatBox';
+import ChatBox from '../../components/ChatBox';
 
 const ContractDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);

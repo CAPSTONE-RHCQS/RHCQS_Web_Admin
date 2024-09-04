@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import WYSIWYGEditor from '../components/WYSIWYGEditor';
+import WYSIWYGEditor from '../../components/WYSIWYGEditor';
 
 const CreatePost: React.FC = () => {
   const [value, setValue] = useState('');
@@ -18,7 +18,10 @@ const CreatePost: React.FC = () => {
         <div className="w-full md:w-1/2 p-2 h-full">
           <div className="bg-white p-4 h-full rounded-lg">
             <h2 className="text-2xl font-bold mb-4">Preview</h2>
-            <div dangerouslySetInnerHTML={{ __html: value }} className="h-full overflow-auto" />
+            <div
+              dangerouslySetInnerHTML={{ __html: value }}
+              className="h-full overflow-auto"
+            />
           </div>
         </div>
       </div>
