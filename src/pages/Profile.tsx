@@ -1,5 +1,5 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import UserProfileCard from '../components/UserProfileCard';
+import EmployeeCard from '../components/EmployeeCard';
 import CoverOne from '../images/cover/cover-01.png';
 import userSix from '../images/user/user-06.png';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,13 @@ const Profile = () => {
     <>
       <Breadcrumb pageName="Profile" />
 
-      <UserProfileCard />
+      <EmployeeCard
+        avatar="https://via.placeholder.com/150"
+        name="Nguyễn Văn Linh"
+        location="Hà Nội, Việt Nam"
+        email="nguyenvanlinh@example.com"
+        phone="+84 123 456 789"
+      />
 
       {/* <div className="overflow-hidden rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="relative z-20 h-35 md:h-65">

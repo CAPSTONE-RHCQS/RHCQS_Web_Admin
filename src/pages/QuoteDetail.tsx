@@ -1,5 +1,6 @@
-import React from 'react';
-import { FaDownload, FaShareAlt } from 'react-icons/fa';
+import React, { useEffect, useRef, useState } from 'react';
+import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
+import { FiMoreVertical } from 'react-icons/fi';
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import ContactCard from '../components/ContactCard';
 import Avatar from '../images/user/user-01.png';
@@ -8,8 +9,38 @@ import Process from '../images/process.jpg';
 import Fee from '../images/fee.jpg';
 import { formatCurrencyShort } from '../utils/format';
 import StatusTracker from '../components/StatusTracker';
+import ContractHistoryTimeline from '../components/ContractHistoryTimeline';
+import CustomerChat from '../components/CustomerChat';
+import { Dialog } from '@material-tailwind/react';
+import ChatBox from '../components/ChatBox';
 
 const ContractDetail = () => {
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+
+  const showMenu = () => {
+    setMenuVisible(true);
+  };
+
+  const hideMenu = () => {
+    setMenuVisible(false);
+  };
+
+  const handleMenuItemClick = (item: string) => {
+    if (item === 'history') {
+      setShowHistory(true);
+    }
+  };
+
+  const handleCloseHistory = () => {
+    setShowHistory(false);
+  };
+
+  const toggleChat = () => {
+    setShowChat(!showChat);
+  };
+
   const tableData = [
     {
       stt: 1,
@@ -186,34 +217,86 @@ const ContractDetail = () => {
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
-        <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-          Chi tiết báo giá
-        </h2>
-
-        <div className="flex flex-row gap-3">
-          <ContactCard
-            data={contactData3}
-            fields={contactFields3}
-            avatarUrl={Process}
-          />
-          <ContactCard
-            data={contactData1}
-            fields={contactFields1}
-            avatarUrl={Avatar}
-          />
-          <ContactCard
-            data={contactData2}
-            fields={contactFields2}
-            avatarUrl={House}
-          />
-          <ContactCard
-            data={contactData4}
-            fields={contactFields4}
-            avatarUrl={Fee}
-          />
+        <div className="flex justify-between items-center">
+          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+            Chi tiết báo giá
+          </h2>
+          <div
+            onMouseEnter={showMenu}
+            onMouseLeave={hideMenu}
+            className="relative"
+          >
+            <FiMoreVertical className="text-xl text-black dark:text-white" />
+            {menuVisible && (
+              <div
+                className="absolute right-4 top-1 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
+                style={{ opacity: menuVisible ? 1 : 0 }}
+              >
+                <div className="py-2">
+                  <a
+                    href="#"
+                    onClick={() => handleMenuItemClick('history')}
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Lịch sử chỉnh sửa
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Thay đổi trạng thái
+                  </a>
+                  <a
+                    href="#"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Menu Item 3
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        <StatusTracker currentStatus="Đang Xử Lý" />
+        <Dialog open={showHistory} handler={handleCloseHistory}>
+          <ContractHistoryTimeline onClose={handleCloseHistory} />
+        </Dialog>
+        {showChat && <ChatBox onClose={toggleChat} />}
+        {!showChat && (
+          <button
+            onClick={toggleChat}
+            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+          >
+            <FaCommentDots className="text-2xl" />
+          </button>
+        )}
+
+        <>
+          <div className="flex flex-row gap-3">
+            <ContactCard
+              data={contactData3}
+              fields={contactFields3}
+              avatarUrl={Process}
+            />
+            <ContactCard
+              data={contactData1}
+              fields={contactFields1}
+              avatarUrl={Avatar}
+            />
+            <ContactCard
+              data={contactData2}
+              fields={contactFields2}
+              avatarUrl={House}
+            />
+            <ContactCard
+              data={contactData4}
+              fields={contactFields4}
+              avatarUrl={Fee}
+            />
+          </div>
+
+          <StatusTracker currentStatus="Đang Xử Lý" />
+        </>
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
