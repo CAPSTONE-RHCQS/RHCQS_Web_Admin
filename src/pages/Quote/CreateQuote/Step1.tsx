@@ -17,6 +17,20 @@ interface Step1Props {
   setConstructionArea: (value: number) => void;
   numberOfFloors: number;
   setNumberOfFloors: (value: number) => void;
+  hasBasement: boolean;
+  setHasBasement: (value: boolean) => void;
+  hasMezzanine: boolean;
+  setHasMezzanine: (value: boolean) => void;
+  hasTerrace: boolean;
+  setHasTerrace: (value: boolean) => void;
+  hasRoof: boolean;
+  setHasRoof: (value: boolean) => void;
+  hasSecondaryRoof: boolean;
+  setHasSecondaryRoof: (value: boolean) => void;
+  hasElevatorTechnicalRoom: boolean;
+  setHasElevatorTechnicalRoom: (value: boolean) => void;
+  hasPit: boolean;
+  setHasPit: (value: boolean) => void;
 }
 
 const Step1: React.FC<Step1Props> = ({
@@ -33,6 +47,20 @@ const Step1: React.FC<Step1Props> = ({
   setConstructionArea,
   numberOfFloors,
   setNumberOfFloors,
+  hasBasement,
+  setHasBasement,
+  hasMezzanine,
+  setHasMezzanine,
+  hasTerrace,
+  setHasTerrace,
+  hasRoof,
+  setHasRoof,
+  hasSecondaryRoof,
+  setHasSecondaryRoof,
+  hasElevatorTechnicalRoom,
+  setHasElevatorTechnicalRoom,
+  hasPit,
+  setHasPit,
 }) => {
   const floorOptions = [
     { value: '1', label: '1 Tầng Lầu' },
@@ -42,15 +70,6 @@ const Step1: React.FC<Step1Props> = ({
     { value: '5', label: '5 Tầng Lầu' },
     { value: '6', label: '6 Tầng Lầu' },
   ];
-
-  const [hasBasement, setHasBasement] = useState(false);
-  const [hasMezzanine, setHasMezzanine] = useState(false);
-  const [hasTerrace, setHasTerrace] = useState(false);
-  const [hasRoof, setHasRoof] = useState(false);
-  const [hasSecondaryRoof, setHasSecondaryRoof] = useState(false);
-  const [hasElevatorTechnicalRoom, setHasElevatorTechnicalRoom] =
-    useState(false);
-  const [hasPit, setHasPit] = useState(false);
 
   return (
     <div className="flex grid grid-cols-1 md:grid-cols-2 gap-4">

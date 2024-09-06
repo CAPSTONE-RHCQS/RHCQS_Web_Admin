@@ -9,11 +9,22 @@ const CreateContract = () => {
   const [unitPrice, setUnitPrice] = useState<string>('');
   const [designArea, setDesignArea] = useState<string>('');
   const [items, setItems] = useState([
-    { hangMuc: '', dTich: '', heSo: '', dienTich: '', donVi: '' },
+    { hangMuc: 'Móng', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
+    { hangMuc: 'Trệt', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
+    { hangMuc: 'Sân', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
   ]);
   const [landArea, setLandArea] = useState<number>(0); // Đổi thành number
   const [constructionArea, setConstructionArea] = useState<number>(0); // Đổi thành number
   const [numberOfFloors, setNumberOfFloors] = useState<number>(1); // Đổi thành number
+
+  const [hasBasement, setHasBasement] = useState(false);
+  const [hasMezzanine, setHasMezzanine] = useState(false);
+  const [hasTerrace, setHasTerrace] = useState(false);
+  const [hasRoof, setHasRoof] = useState(false);
+  const [hasSecondaryRoof, setHasSecondaryRoof] = useState(false);
+  const [hasElevatorTechnicalRoom, setHasElevatorTechnicalRoom] =
+    useState(false);
+  const [hasPit, setHasPit] = useState(false);
 
   const unitPriceOptions = [
     { value: '3350000', label: '3,350,000 đồng/m²' },
@@ -31,14 +42,20 @@ const CreateContract = () => {
   const hangMucOptions = [
     { value: '', label: 'Chọn hạng mục', disabled: true },
     { value: 'Móng', label: 'Móng' },
-    { value: 'Hầm (DTSD >= 70m2: độ sâu 1,0m -> 1,3m)', label: 'Hầm' },
+    { value: 'Hầm', label: 'Hầm (DTSD >= 70m2: độ sâu 1,0m -> 1,3m)' },
     { value: 'Trệt', label: 'Trệt' },
     { value: 'Sân', label: 'Sân' },
     { value: 'Lầu 1', label: 'Lầu 1' },
-    { value: 'Thông Tầng Lầu 1 (Thông tầng > 8m2)', label: 'Thông Tầng Lầu 1' },
+    { value: 'Thông Tầng Lầu 1', label: 'Thông Tầng Lầu 1 (Thông tầng > 8m2)' },
     { value: 'Sân thượng có mái che', label: 'Sân thượng có mái che' },
     { value: 'Sân thượng không mái che', label: 'Sân thượng không mái che' },
     { value: 'Mái che (Mái BTCT)', label: 'Mái che (Mái BTCT)' },
+    { value: 'Tầng lửng', label: 'Tầng lửng' },
+    { value: 'Tầng thượng', label: 'Tầng thượng' },
+    { value: 'Mái', label: 'Mái' },
+    { value: 'Mái phụ', label: 'Mái phụ' },
+    { value: 'Phòng kỹ thuật thang máy', label: 'Phòng kỹ thuật thang máy' },
+    { value: 'Hố PIT', label: 'Hố PIT' },
   ];
 
   const handleAddItem = () => {
@@ -73,6 +90,32 @@ const CreateContract = () => {
   };
 
   const nextStep = () => {
+    if (currentStep === 1) {
+      const predefinedItems = [
+        { condition: hasBasement, value: 'Hầm' },
+        { condition: hasMezzanine, value: 'Tầng lửng' },
+        { condition: hasTerrace, value: 'Tầng thượng' },
+        { condition: hasRoof, value: 'Mái' },
+        { condition: hasSecondaryRoof, value: 'Mái phụ' },
+        {
+          condition: hasElevatorTechnicalRoom,
+          value: 'Phòng kỹ thuật thang máy',
+        },
+        { condition: hasPit, value: 'Hố PIT' },
+      ];
+
+      const newItems = predefinedItems
+        .filter((item) => item.condition)
+        .map((item) => ({
+          hangMuc: item.value,
+          dTich: '',
+          heSo: '',
+          dienTich: '',
+          donVi: 'm²',
+        }));
+
+      setItems([...items, ...newItems]);
+    }
     setCurrentStep((prevStep) => prevStep + 1);
   };
 
@@ -99,6 +142,20 @@ const CreateContract = () => {
             setConstructionArea={setConstructionArea}
             numberOfFloors={numberOfFloors}
             setNumberOfFloors={setNumberOfFloors}
+            hasBasement={hasBasement}
+            setHasBasement={setHasBasement}
+            hasMezzanine={hasMezzanine}
+            setHasMezzanine={setHasMezzanine}
+            hasTerrace={hasTerrace}
+            setHasTerrace={setHasTerrace}
+            hasRoof={hasRoof}
+            setHasRoof={setHasRoof}
+            hasSecondaryRoof={hasSecondaryRoof}
+            setHasSecondaryRoof={setHasSecondaryRoof}
+            hasElevatorTechnicalRoom={hasElevatorTechnicalRoom}
+            setHasElevatorTechnicalRoom={setHasElevatorTechnicalRoom}
+            hasPit={hasPit}
+            setHasPit={setHasPit}
           />
         )}
         {currentStep === 2 && (
@@ -109,6 +166,14 @@ const CreateContract = () => {
             handleAddItem={handleAddItem}
             handleRemoveItem={handleRemoveItem}
             handleChangeItem={handleChangeItem}
+            setItems={setItems}
+            hasBasement={hasBasement}
+            hasMezzanine={hasMezzanine}
+            hasTerrace={hasTerrace}
+            hasRoof={hasRoof}
+            hasSecondaryRoof={hasSecondaryRoof}
+            hasElevatorTechnicalRoom={hasElevatorTechnicalRoom}
+            hasPit={hasPit}
           />
         )}
         <div className="col-span-1 md:col-span-2 flex justify-between">
