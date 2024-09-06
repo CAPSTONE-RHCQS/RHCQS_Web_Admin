@@ -47,6 +47,16 @@ const CreateContract = () => {
     { value: 'Sân', label: 'Sân' },
     { value: 'Lầu 1', label: 'Lầu 1' },
     { value: 'Thông Tầng Lầu 1', label: 'Thông Tầng Lầu 1 (Thông tầng > 8m2)' },
+    { value: 'Lầu 2', label: 'Lầu 2' },
+    { value: 'Thông Tầng Lầu 2', label: 'Thông Tầng Lầu 2 (Thông tầng > 8m2)' },
+    { value: 'Lầu 3', label: 'Lầu 3' },
+    { value: 'Thông Tầng Lầu 3', label: 'Thông Tầng Lầu 3 (Thông tầng > 8m2)' },
+    { value: 'Lầu 4', label: 'Lầu 4' },
+    { value: 'Thông Tầng Lầu 4', label: 'Thông Tầng Lầu 4 (Thông tầng > 8m2)' },
+    { value: 'Lầu 5', label: 'Lầu 5' },
+    { value: 'Thông Tầng Lầu 5', label: 'Thông Tầng Lầu 5 (Thông tầng > 8m2)' },
+    { value: 'Lầu 6', label: 'Lầu 6' },
+    { value: 'Thông Tầng Lầu 6', label: 'Thông Tầng Lầu 6 (Thông tầng > 8m2)' },
     { value: 'Sân thượng có mái che', label: 'Sân thượng có mái che' },
     { value: 'Sân thượng không mái che', label: 'Sân thượng không mái che' },
     { value: 'Mái che (Mái BTCT)', label: 'Mái che (Mái BTCT)' },
@@ -103,6 +113,14 @@ const CreateContract = () => {
         },
         { condition: hasPit, value: 'Hố PIT' },
       ];
+
+      for (let i = 1; i <= numberOfFloors; i++) {
+        predefinedItems.push({ condition: true, value: `Lầu ${i}` });
+        predefinedItems.push({
+          condition: true,
+          value: `Thông Tầng Lầu ${i}`,
+        });
+      }
 
       const newItems = predefinedItems
         .filter((item) => item.condition)
