@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Step1 from './Step1';
 import Step2 from './Step2';
+import Modal from '../../../components/Modal'; // Giả sử bạn có một component Modal
 
 const CreateContract = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -25,6 +26,8 @@ const CreateContract = () => {
   const [hasElevatorTechnicalRoom, setHasElevatorTechnicalRoom] =
     useState(false);
   const [hasPit, setHasPit] = useState(false);
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const unitPriceOptions = [
     { value: '3350000', label: '3,350,000 đồng/m²' },
@@ -138,7 +141,25 @@ const CreateContract = () => {
   };
 
   const prevStep = () => {
-    setCurrentStep((prevStep) => prevStep - 1);
+    if (currentStep === 2) {
+      setShowConfirmModal(true);
+    } else {
+      setCurrentStep((prevStep) => prevStep - 1);
+    }
+  };
+
+  const handleConfirmYes = () => {
+    setShowConfirmModal(false);
+    setItems([
+      { hangMuc: 'Móng', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
+      { hangMuc: 'Trệt', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
+      { hangMuc: 'Sân', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
+    ]);
+    setCurrentStep(1);
+  };
+
+  const handleConfirmNo = () => {
+    setShowConfirmModal(false);
   };
 
   return (
@@ -223,6 +244,14 @@ const CreateContract = () => {
           )}
         </div>
       </form>
+      {showConfirmModal && (
+        <Modal
+          title="Xác nhận"
+          message="Báo giá chưa được lưu, bạn có chắc chắn muốn quay lại?"
+          onConfirm={handleConfirmYes}
+          onCancel={handleConfirmNo}
+        />
+      )}
     </div>
   );
 };
