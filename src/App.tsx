@@ -18,7 +18,7 @@ import DefaultLayout from './layout/DefaultLayout';
 import QuoteList from './pages/Quote/QuoteList';
 import CreatePost from './pages/BlogPost/CreatePost';
 import QuoteDetail from './pages/Quote/QuoteDetail';
-import CreateQuote from './pages/Quote/CreateQuote';
+import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
 import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
