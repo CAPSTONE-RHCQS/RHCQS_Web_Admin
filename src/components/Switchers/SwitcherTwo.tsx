@@ -1,19 +1,24 @@
-import { useState } from 'react';
+import React from 'react';
 
-const SwitcherTwo = () => {
-  const [enabled, setEnabled] = useState(false);
+interface SwitcherTwoProps {
+  id: string;
+  enabled: boolean;
+  setEnabled: (enabled: boolean) => void;
+}
 
+const SwitcherTwo: React.FC<SwitcherTwoProps> = ({ id, enabled, setEnabled }) => {
   return (
     <div x-data="{ switcherToggle: false }">
       <label
-        htmlFor="toggle2"
+        htmlFor={id}
         className="flex cursor-pointer select-none items-center"
       >
         <div className="relative">
           <input
-            id="toggle2"
+            id={id}
             type="checkbox"
             className="sr-only"
+            checked={enabled}
             onChange={() => {
               setEnabled(!enabled);
             }}

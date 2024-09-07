@@ -53,7 +53,7 @@ const ContractDetail = () => {
 
     {
       stt: 2,
-      hangMuc: 'Hầm (DTSD >= 70m2: độ sâu 1,0m -> 1,3m)',
+      hangMuc: 'Hầm (DTSD >= 70m²: độ sâu 1,0m -> 1,3m)',
       dTich: '90',
       heSo: '1.5',
 
@@ -97,7 +97,7 @@ const ContractDetail = () => {
     },
     {
       stt: 6,
-      hangMuc: 'Thông Tầng Lầu 1 (Thông tầng > 8m2)',
+      hangMuc: 'Thông Tầng Lầu 1 (Thông tầng > 8m²)',
 
       dTich: '1',
 

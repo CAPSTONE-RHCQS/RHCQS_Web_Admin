@@ -37,6 +37,22 @@ const Step2: React.FC<Step2Props> = ({
   handleChangeItem,
 }) => {
   const [activeTab, setActiveTab] = useState('tab1');
+  const [tab2Items, setTab2Items] = useState([
+    { name: 'Chi phí thi công sàn nhỏ hơn 70m²', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
+    { name: 'Chi phí thi công công trình hẻm nhỏ', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
+    { name: 'Hỗ trợ bãi tập kết, điều kiện thi công khó khăn', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
+    { name: 'Chi phí thi công nhà 2 mặt tiền trở lên', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
+    { name: 'Chi phí thi công công trình tỉnh', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
+  ]);
+
+  const handleChangeTab2Item = (index: number, field: string, value: number | boolean) => {
+    const newItems = [...tab2Items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    if (field !== 'enabled') {
+      newItems[index].totalAmount = newItems[index].totalCost * newItems[index].quantity * newItems[index].coefficient;
+    }
+    setTab2Items(newItems);
+  };
 
   return (
     <div>
@@ -74,7 +90,12 @@ const Step2: React.FC<Step2Props> = ({
             handleChangeItem={handleChangeItem}
           />
         )}
-        {activeTab === 'tab2' && <Tab2 />}
+        {activeTab === 'tab2' && (
+          <Tab2
+            items={tab2Items}
+            handleChangeItem={handleChangeTab2Item}
+          />
+        )}
       </div>
     </div>
   );

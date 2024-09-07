@@ -1,7 +1,15 @@
 import React, { useState } from 'react';
 import SelectGroupTwo from '../../../components/Forms/SelectGroup/SelectGroupTwo';
 import CheckboxTwo from '../../../components/Checkboxes/CheckboxTwo';
-import { HomeModernIcon, BuildingOfficeIcon, BuildingLibraryIcon, HomeIcon, BuildingStorefrontIcon, Cog6ToothIcon, ArchiveBoxIcon } from '@heroicons/react/24/outline';
+import {
+  HomeModernIcon,
+  BuildingOfficeIcon,
+  BuildingLibraryIcon,
+  HomeIcon,
+  BuildingStorefrontIcon,
+  Cog6ToothIcon,
+  ArchiveBoxIcon,
+} from '@heroicons/react/24/outline';
 
 interface Step1Props {
   customerName: string;
@@ -113,7 +121,7 @@ const Step1: React.FC<Step1Props> = ({
         </div>
         <div className="mb-4">
           <label className="block text-lg font-medium mb-2">
-            Diện tích đất (m2):
+            Diện tích đất (m²):
           </label>
           <input
             type="number"
@@ -125,7 +133,7 @@ const Step1: React.FC<Step1Props> = ({
         </div>
         <div className="mb-4">
           <label className="block text-lg font-medium mb-2">
-            Diện tích xây dựng (m2):
+            Diện tích xây dựng (m²):
           </label>
           <input
             type="number"
