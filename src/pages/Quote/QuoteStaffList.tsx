@@ -5,7 +5,7 @@ import EditButton from '../../components/Buttonicons/EditButton';
 import DownloadButton from '../../components/Buttonicons/DownloadButton';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import SortIcon from '../../components/Buttonicons/SortIcon';
-import PriceQuoteTable from '../../components/PriceQuoteTable';
+import QuoteStaffTable from '../../components/QuoteStaffTable';
 
 type Email = {
   id: string;
@@ -21,7 +21,7 @@ type Email = {
 
 type SortKey = string;
 
-const QuoteList = () => {
+const QuoteStaffList = () => {
   const [emails, setEmails] = useState<Email[]>([
     {
       id: '1',
@@ -173,7 +173,7 @@ const QuoteList = () => {
           Xóa đã chọn
         </button>
         <div className="max-w-full overflow-x-auto">
-          <PriceQuoteTable
+          <QuoteStaffTable
             data={emails}
             columns={columns}
             isAllChecked={isAllChecked}
@@ -188,4 +188,4 @@ const QuoteList = () => {
   );
 };
 
-export default QuoteList;
+export default QuoteStaffList;

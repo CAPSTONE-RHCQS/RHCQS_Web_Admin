@@ -1,9 +1,9 @@
 import React from 'react';
-import CheckboxTwo from '../components/Checkboxes/CheckboxTwo';
-import EditButton from '../components/Buttonicons/EditButton';
-import DeleteButton from '../components/Buttonicons/DeleteButton';
-import DownloadButton from '../components/Buttonicons/DownloadButton';
-import SortIcon from '../components/Buttonicons/SortIcon';
+import CheckboxTwo from './Checkboxes/CheckboxTwo';
+import EditButton from './Buttonicons/EditButton';
+import DeleteButton from './Buttonicons/DeleteButton';
+import DownloadButton from './Buttonicons/DownloadButton';
+import SortIcon from './Buttonicons/SortIcon';
 
 type DataItem = {
   [key: string]: any;
@@ -11,7 +11,7 @@ type DataItem = {
 
 type SortKey = string;
 
-interface PriceQuoteTableProps {
+interface QuoteStaffTableProps {
   data: DataItem[];
   columns: { key: string; label: string }[];
   isAllChecked: boolean;
@@ -21,7 +21,7 @@ interface PriceQuoteTableProps {
   handleDelete: (id: string) => void;
 }
 
-const PriceQuoteTable: React.FC<PriceQuoteTableProps> = ({
+const QuoteStaffTable: React.FC<QuoteStaffTableProps> = ({
   data,
   columns,
   isAllChecked,
@@ -90,7 +90,9 @@ const PriceQuoteTable: React.FC<PriceQuoteTableProps> = ({
                     })}
                   </p>
                 ) : (
-                  <p className="text-black dark:text-white">{item[column.key]}</p>
+                  <p className="text-black dark:text-white">
+                    {item[column.key]}
+                  </p>
                 )}
               </td>
             ))}
@@ -108,4 +110,4 @@ const PriceQuoteTable: React.FC<PriceQuoteTableProps> = ({
   );
 };
 
-export default PriceQuoteTable;
+export default QuoteStaffTable;

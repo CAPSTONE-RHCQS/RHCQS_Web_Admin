@@ -15,7 +15,7 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
-import QuoteList from './pages/Quote/QuoteList';
+import QuoteStaffList from './pages/Quote/QuoteStaffList';
 import CreatePost from './pages/BlogPost/CreatePost';
 import QuoteDetail from './pages/Quote/QuoteDetail';
 import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
@@ -23,6 +23,7 @@ import RHCQS from './pages/Dashboard/RHCQS';
 import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
 import StaffList from './pages/StaffList';
+import QuoteManagerList from './pages/Manager/QuoteManagerList';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -96,11 +97,20 @@ function App() {
           }
         />
         <Route
-          path="/quotelist"
+          path="/quotestafflist"
           element={
             <>
               <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
-              <QuoteList />
+              <QuoteStaffList />
+            </>
+          }
+        />
+        <Route
+          path="/quotemanagerlist"
+          element={
+            <>
+              <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
+              <QuoteManagerList />
             </>
           }
         />
