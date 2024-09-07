@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Step1 from './Step1';
-import Step2 from './Step2';
+import Step2 from './Step2/Step2';
 import Modal from '../../../components/Modal'; // Giả sử bạn có một component Modal
 
 const CreateContract = () => {
