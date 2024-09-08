@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Step1 from './Step1';
 import Step2 from './Step2/Step2';
-import Modal from '../../../components/Modal'; // Giả sử bạn có một component Modal
+import Modal from '../../../components/Modals/Modal'; // Giả sử bạn có một component Modal
 
-const CreateContract = () => {
+const CreateQuote = () => {
   const [currentStep, setCurrentStep] = useState<number>(1);
   const [customerName, setCustomerName] = useState<string>('');
   const [constructionAddress, setConstructionAddress] = useState<string>('');
@@ -256,4 +256,4 @@ const CreateContract = () => {
   );
 };
 
-export default CreateContract;
+export default CreateQuote;

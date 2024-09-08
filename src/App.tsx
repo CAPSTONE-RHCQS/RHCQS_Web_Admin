@@ -24,6 +24,7 @@ import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
 import StaffList from './pages/StaffList';
 import QuoteManagerList from './pages/Manager/QuoteManagerList';
+import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -156,6 +157,15 @@ function App() {
             <>
               <PageTitle title="Create Quote | RHCQS - Residential Housing Construction Quotation System" />
               <CreateQuote />
+            </>
+          }
+        />
+        <Route
+          path="/createdesignhouse"
+          element={
+            <>
+              <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
+              <CreateDesignHouse />
             </>
           }
         />
