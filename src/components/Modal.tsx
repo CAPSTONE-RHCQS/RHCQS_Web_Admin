@@ -7,18 +7,22 @@ interface ModalProps {
   children?: React.ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({
-  title,
-  message,
-  onClose,
-  children,
-}) => {
+const Modal: React.FC<ModalProps> = ({ title, message, onClose, children }) => {
+  const handleOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      onClick={handleOverlayClick}
+    >
       <div className="relative bg-white p-4 rounded-lg shadow-lg w-auto max-w-full max-h-full overflow-auto">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 z-50"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
