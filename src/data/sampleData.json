@@ -1,0 +1,130 @@
+{
+    "customerName": "Nguyễn Văn A",
+    "constructionAddress": "123 Đường ABC, Quận 1, TP.HCM",
+    "unitPrice": "3500000",
+    "designArea": "200",
+    "landArea": 300,
+    "constructionArea": 250,
+    "numberOfFloors": 3,
+    "hasBasement": true,
+    "hasMezzanine": false,
+    "hasTerrace": true,
+    "hasRoof": true,
+    "hasSecondaryRoof": false,
+    "hasElevatorTechnicalRoom": false,
+    "hasPit": true,
+    "items": [
+        {
+            "hangMuc": "Móng",
+            "dTich": "50",
+            "heSo": "1.2",
+            "dienTich": "60",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Trệt",
+            "dTich": "100",
+            "heSo": "1.0",
+            "dienTich": "100",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Sân",
+            "dTich": "30",
+            "heSo": "0.8",
+            "dienTich": "24",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Hầm",
+            "dTich": "40",
+            "heSo": "1.1",
+            "dienTich": "44",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Tầng lửng",
+            "dTich": "20",
+            "heSo": "1.0",
+            "dienTich": "20",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Tầng thượng",
+            "dTich": "30",
+            "heSo": "0.9",
+            "dienTich": "27",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Mái",
+            "dTich": "25",
+            "heSo": "0.8",
+            "dienTich": "20",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Mái phụ",
+            "dTich": "15",
+            "heSo": "0.7",
+            "dienTich": "10.5",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Phòng kỹ thuật thang máy",
+            "dTich": "10",
+            "heSo": "1.0",
+            "dienTich": "10",
+            "donVi": "m²"
+        },
+        {
+            "hangMuc": "Hố PIT",
+            "dTich": "5",
+            "heSo": "1.0",
+            "dienTich": "5",
+            "donVi": "m²"
+        }
+    ],
+    "tab2Items": [
+        {
+            "name": "Chi phí thi công sàn nhỏ hơn 70m²",
+            "totalCost": 1000000,
+            "quantity": 1,
+            "coefficient": 1,
+            "totalAmount": 1000000,
+            "enabled": true
+        },
+        {
+            "name": "Chi phí thi công công trình hẻm nhỏ",
+            "totalCost": 2000000,
+            "quantity": 1,
+            "coefficient": 1,
+            "totalAmount": 2000000,
+            "enabled": false
+        },
+        {
+            "name": "Hỗ trợ bãi tập kết, điều kiện thi công khó khăn",
+            "totalCost": 1500000,
+            "quantity": 1,
+            "coefficient": 1,
+            "totalAmount": 1500000,
+            "enabled": false
+        },
+        {
+            "name": "Chi phí thi công nhà 2 mặt tiền trở lên",
+            "totalCost": 2500000,
+            "quantity": 1,
+            "coefficient": 1,
+            "totalAmount": 2500000,
+            "enabled": false
+        },
+        {
+            "name": "Chi phí thi công công trình tỉnh",
+            "totalCost": 3000000,
+            "quantity": 1,
+            "coefficient": 1,
+            "totalAmount": 3000000,
+            "enabled": false
+        }
+    ]
+}

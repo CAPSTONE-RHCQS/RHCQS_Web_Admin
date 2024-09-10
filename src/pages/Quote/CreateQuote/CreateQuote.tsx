@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Step1 from './Step1';
 import Step2 from './Step2/Step2';
-import Modal from '../../../components/Modals/Modal'; // Giả sử bạn có một component Modal
+import sampleData from '../../../data/sampleData.json'; // Import dữ liệu mẫu
 
 const CreateQuote = () => {
-  const [currentStep, setCurrentStep] = useState<number>(1);
   const [customerName, setCustomerName] = useState<string>('');
   const [constructionAddress, setConstructionAddress] = useState<string>('');
   const [unitPrice, setUnitPrice] = useState<string>('');
@@ -14,20 +13,51 @@ const CreateQuote = () => {
     { hangMuc: 'Trệt', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
     { hangMuc: 'Sân', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
   ]);
-  const [landArea, setLandArea] = useState<number>(0); // Đổi thành number
-  const [constructionArea, setConstructionArea] = useState<number>(0); // Đổi thành number
-  const [numberOfFloors, setNumberOfFloors] = useState<number>(1); // Đổi thành number
-
-  const [hasBasement, setHasBasement] = useState(false);
-  const [hasMezzanine, setHasMezzanine] = useState(false);
-  const [hasTerrace, setHasTerrace] = useState(false);
-  const [hasRoof, setHasRoof] = useState(false);
-  const [hasSecondaryRoof, setHasSecondaryRoof] = useState(false);
-  const [hasElevatorTechnicalRoom, setHasElevatorTechnicalRoom] =
-    useState(false);
-  const [hasPit, setHasPit] = useState(false);
-
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [tab2Items, setTab2Items] = useState([
+    {
+      name: 'Chi phí thi công sàn nhỏ hơn 70m²',
+      totalCost: 0,
+      quantity: 0,
+      coefficient: 0,
+      totalAmount: 0,
+      enabled: false,
+    },
+    {
+      name: 'Chi phí thi công công trình hẻm nhỏ',
+      totalCost: 0,
+      quantity: 0,
+      coefficient: 0,
+      totalAmount: 0,
+      enabled: false,
+    },
+    {
+      name: 'Hỗ trợ bãi tập kết, điều kiện thi công khó khăn',
+      totalCost: 0,
+      quantity: 0,
+      coefficient: 0,
+      totalAmount: 0,
+      enabled: false,
+    },
+    {
+      name: 'Chi phí thi công nhà 2 mặt tiền trở lên',
+      totalCost: 0,
+      quantity: 0,
+      coefficient: 0,
+      totalAmount: 0,
+      enabled: false,
+    },
+    {
+      name: 'Chi phí thi công công trình tỉnh',
+      totalCost: 0,
+      quantity: 0,
+      coefficient: 0,
+      totalAmount: 0,
+      enabled: false,
+    },
+  ]);
+  const [landArea, setLandArea] = useState<number>(0);
+  const [constructionArea, setConstructionArea] = useState<number>(0);
+  const [numberOfFloors, setNumberOfFloors] = useState<number>(1);
 
   const unitPriceOptions = [
     { value: '3350000', label: '3,350,000 đồng/m²' },
@@ -71,6 +101,19 @@ const CreateQuote = () => {
     { value: 'Hố PIT', label: 'Hố PIT' },
   ];
 
+  useEffect(() => {
+    // Tải dữ liệu mẫu khi trang được tải
+    setCustomerName(sampleData.customerName);
+    setConstructionAddress(sampleData.constructionAddress);
+    setUnitPrice(sampleData.unitPrice);
+    setDesignArea(sampleData.designArea);
+    setItems(sampleData.items);
+    setTab2Items(sampleData.tab2Items);
+    setLandArea(sampleData.landArea);
+    setConstructionArea(sampleData.constructionArea);
+    setNumberOfFloors(sampleData.numberOfFloors);
+  }, []);
+
   const handleAddItem = () => {
     setItems([
       ...items,
@@ -90,6 +133,22 @@ const CreateQuote = () => {
     setItems(newItems);
   };
 
+  const handleChangeTab2Item = (
+    index: number,
+    field: string,
+    value: number | boolean,
+  ) => {
+    const newItems = [...tab2Items];
+    newItems[index] = { ...newItems[index], [field]: value };
+    if (field !== 'enabled') {
+      newItems[index].totalAmount =
+        newItems[index].totalCost *
+        newItems[index].quantity *
+        newItems[index].coefficient;
+    }
+    setTab2Items(newItems);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Logic xử lý khi người dùng nhấn nút tạo hợp đồng
@@ -102,156 +161,45 @@ const CreateQuote = () => {
     });
   };
 
-  const nextStep = () => {
-    if (currentStep === 1) {
-      const predefinedItems = [
-        { condition: hasBasement, value: 'Hầm' },
-        { condition: hasMezzanine, value: 'Tầng lửng' },
-        { condition: hasTerrace, value: 'Tầng thượng' },
-        { condition: hasRoof, value: 'Mái' },
-        { condition: hasSecondaryRoof, value: 'Mái phụ' },
-        {
-          condition: hasElevatorTechnicalRoom,
-          value: 'Phòng kỹ thuật thang máy',
-        },
-        { condition: hasPit, value: 'Hố PIT' },
-      ];
-
-      for (let i = 1; i <= numberOfFloors; i++) {
-        predefinedItems.push({ condition: true, value: `Lầu ${i}` });
-        predefinedItems.push({
-          condition: true,
-          value: `Thông Tầng Lầu ${i}`,
-        });
-      }
-
-      const newItems = predefinedItems
-        .filter((item) => item.condition)
-        .map((item) => ({
-          hangMuc: item.value,
-          dTich: '',
-          heSo: '',
-          dienTich: '',
-          donVi: 'm²',
-        }));
-
-      setItems([...items, ...newItems]);
-    }
-    setCurrentStep((prevStep) => prevStep + 1);
-  };
-
-  const prevStep = () => {
-    if (currentStep === 2) {
-      setShowConfirmModal(true);
-    } else {
-      setCurrentStep((prevStep) => prevStep - 1);
-    }
-  };
-
-  const handleConfirmYes = () => {
-    setShowConfirmModal(false);
-    setItems([
-      { hangMuc: 'Móng', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
-      { hangMuc: 'Trệt', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
-      { hangMuc: 'Sân', dTich: '', heSo: '', dienTich: '', donVi: 'm²' },
-    ]);
-    setCurrentStep(1);
-  };
-
-  const handleConfirmNo = () => {
-    setShowConfirmModal(false);
-  };
-
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Tạo Hợp Đồng</h2>
       <form onSubmit={handleSubmit}>
-        {currentStep === 1 && (
-          <Step1
-            customerName={customerName}
-            setCustomerName={setCustomerName}
-            constructionAddress={constructionAddress}
-            setConstructionAddress={setConstructionAddress}
-            unitPrice={unitPrice}
-            setUnitPrice={setUnitPrice}
-            unitPriceOptions={unitPriceOptions}
-            landArea={landArea}
-            setLandArea={setLandArea}
-            constructionArea={constructionArea}
-            setConstructionArea={setConstructionArea}
-            numberOfFloors={numberOfFloors}
-            setNumberOfFloors={setNumberOfFloors}
-            hasBasement={hasBasement}
-            setHasBasement={setHasBasement}
-            hasMezzanine={hasMezzanine}
-            setHasMezzanine={setHasMezzanine}
-            hasTerrace={hasTerrace}
-            setHasTerrace={setHasTerrace}
-            hasRoof={hasRoof}
-            setHasRoof={setHasRoof}
-            hasSecondaryRoof={hasSecondaryRoof}
-            setHasSecondaryRoof={setHasSecondaryRoof}
-            hasElevatorTechnicalRoom={hasElevatorTechnicalRoom}
-            setHasElevatorTechnicalRoom={setHasElevatorTechnicalRoom}
-            hasPit={hasPit}
-            setHasPit={setHasPit}
-          />
-        )}
-        {currentStep === 2 && (
-          <Step2
-            items={items}
-            hangMucOptions={hangMucOptions}
-            unitOptions={unitOptions}
-            handleAddItem={handleAddItem}
-            handleRemoveItem={handleRemoveItem}
-            handleChangeItem={handleChangeItem}
-            setItems={setItems}
-            hasBasement={hasBasement}
-            hasMezzanine={hasMezzanine}
-            hasTerrace={hasTerrace}
-            hasRoof={hasRoof}
-            hasSecondaryRoof={hasSecondaryRoof}
-            hasElevatorTechnicalRoom={hasElevatorTechnicalRoom}
-            hasPit={hasPit}
-          />
-        )}
+        <Step1
+          customerName={customerName}
+          setCustomerName={setCustomerName}
+          constructionAddress={constructionAddress}
+          setConstructionAddress={setConstructionAddress}
+          unitPrice={unitPrice}
+          setUnitPrice={setUnitPrice}
+          unitPriceOptions={unitPriceOptions}
+          landArea={landArea}
+          setLandArea={setLandArea}
+          constructionArea={constructionArea}
+          setConstructionArea={setConstructionArea}
+          numberOfFloors={numberOfFloors}
+          setNumberOfFloors={setNumberOfFloors}
+        />
+        <Step2
+          items={items}
+          hangMucOptions={hangMucOptions}
+          unitOptions={unitOptions}
+          handleAddItem={handleAddItem}
+          handleRemoveItem={handleRemoveItem}
+          handleChangeItem={handleChangeItem}
+          tab2Items={tab2Items}
+          handleChangeTab2Item={handleChangeTab2Item}
+          setItems={setItems}
+        />
         <div className="col-span-1 md:col-span-2 flex justify-between">
-          {currentStep > 1 && (
-            <button
-              type="button"
-              onClick={prevStep}
-              className="bg-secondary hover:bg-opacity-90 text-white px-4 py-2 rounded"
-            >
-              Quay lại
-            </button>
-          )}
-          {currentStep < 2 && (
-            <button
-              type="button"
-              onClick={nextStep}
-              className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
-            >
-              Tiếp theo
-            </button>
-          )}
-          {currentStep === 2 && (
-            <button
-              type="submit"
-              className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
-            >
-              Tạo hợp đồng
-            </button>
-          )}
+          <button
+            type="submit"
+            className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+          >
+            Tạo hợp đồng
+          </button>
         </div>
       </form>
-      {showConfirmModal && (
-        <Modal
-          title="Xác nhận"
-          message="Báo giá chưa được lưu, bạn có chắc chắn muốn quay lại?"
-          onConfirm={handleConfirmYes}
-          onCancel={handleConfirmNo}
-        />
-      )}
     </div>
   );
 };

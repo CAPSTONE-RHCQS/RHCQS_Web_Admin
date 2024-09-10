@@ -19,13 +19,19 @@ interface Step2Props {
   handleRemoveItem: (index: number) => void;
   handleChangeItem: (index: number, field: string, value: string) => void;
   setItems: (items: any[]) => void;
-  hasBasement: boolean;
-  hasMezzanine: boolean;
-  hasTerrace: boolean;
-  hasRoof: boolean;
-  hasSecondaryRoof: boolean;
-  hasElevatorTechnicalRoom: boolean;
-  hasPit: boolean;
+  tab2Items: {
+    name: string;
+    totalCost: number;
+    quantity: number;
+    coefficient: number;
+    totalAmount: number;
+    enabled: boolean;
+  }[];
+  handleChangeTab2Item: (
+    index: number,
+    field: string,
+    value: number | boolean,
+  ) => void;
 }
 
 const Step2: React.FC<Step2Props> = ({
@@ -35,27 +41,15 @@ const Step2: React.FC<Step2Props> = ({
   handleAddItem,
   handleRemoveItem,
   handleChangeItem,
+  setItems,
+  tab2Items,
+  handleChangeTab2Item,
 }) => {
   const [activeTab, setActiveTab] = useState('tab1');
-  const [tab2Items, setTab2Items] = useState([
-    { name: 'Chi phí thi công sàn nhỏ hơn 70m²', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
-    { name: 'Chi phí thi công công trình hẻm nhỏ', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
-    { name: 'Hỗ trợ bãi tập kết, điều kiện thi công khó khăn', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
-    { name: 'Chi phí thi công nhà 2 mặt tiền trở lên', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
-    { name: 'Chi phí thi công công trình tỉnh', totalCost: 0, quantity: 0, coefficient: 0, totalAmount: 0, enabled: false },
-  ]);
-
-  const handleChangeTab2Item = (index: number, field: string, value: number | boolean) => {
-    const newItems = [...tab2Items];
-    newItems[index] = { ...newItems[index], [field]: value };
-    if (field !== 'enabled') {
-      newItems[index].totalAmount = newItems[index].totalCost * newItems[index].quantity * newItems[index].coefficient;
-    }
-    setTab2Items(newItems);
-  };
 
   return (
     <div>
+      <h2 className="text-2xl font-bold mb-4">Báo giá xây thô</h2>
       <div className="mb-4">
         <div className="flex mb-4">
           <button
@@ -91,10 +85,7 @@ const Step2: React.FC<Step2Props> = ({
           />
         )}
         {activeTab === 'tab2' && (
-          <Tab2
-            items={tab2Items}
-            handleChangeItem={handleChangeTab2Item}
-          />
+          <Tab2 items={tab2Items} handleChangeItem={handleChangeTab2Item} />
         )}
       </div>
     </div>

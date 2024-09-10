@@ -1,15 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import SelectGroupTwo from '../../../components/Forms/SelectGroup/SelectGroupTwo';
-import CheckboxTwo from '../../../components/Checkboxes/CheckboxTwo';
-import {
-  HomeModernIcon,
-  BuildingOfficeIcon,
-  BuildingLibraryIcon,
-  HomeIcon,
-  BuildingStorefrontIcon,
-  Cog6ToothIcon,
-  ArchiveBoxIcon,
-} from '@heroicons/react/24/outline';
 
 interface Step1Props {
   customerName: string;
@@ -25,20 +15,6 @@ interface Step1Props {
   setConstructionArea: (value: number) => void;
   numberOfFloors: number;
   setNumberOfFloors: (value: number) => void;
-  hasBasement: boolean;
-  setHasBasement: (value: boolean) => void;
-  hasMezzanine: boolean;
-  setHasMezzanine: (value: boolean) => void;
-  hasTerrace: boolean;
-  setHasTerrace: (value: boolean) => void;
-  hasRoof: boolean;
-  setHasRoof: (value: boolean) => void;
-  hasSecondaryRoof: boolean;
-  setHasSecondaryRoof: (value: boolean) => void;
-  hasElevatorTechnicalRoom: boolean;
-  setHasElevatorTechnicalRoom: (value: boolean) => void;
-  hasPit: boolean;
-  setHasPit: (value: boolean) => void;
 }
 
 const Step1: React.FC<Step1Props> = ({
@@ -55,20 +31,6 @@ const Step1: React.FC<Step1Props> = ({
   setConstructionArea,
   numberOfFloors,
   setNumberOfFloors,
-  hasBasement,
-  setHasBasement,
-  hasMezzanine,
-  setHasMezzanine,
-  hasTerrace,
-  setHasTerrace,
-  hasRoof,
-  setHasRoof,
-  hasSecondaryRoof,
-  setHasSecondaryRoof,
-  hasElevatorTechnicalRoom,
-  setHasElevatorTechnicalRoom,
-  hasPit,
-  setHasPit,
 }) => {
   const floorOptions = [
     { value: '1', label: '1 Tầng Lầu' },
@@ -106,6 +68,8 @@ const Step1: React.FC<Step1Props> = ({
             required
           />
         </div>
+      </div>
+      <div>
         <div className="mb-4">
           <label className="block text-lg font-medium mb-2">
             Đơn giá thi công:
@@ -150,103 +114,6 @@ const Step1: React.FC<Step1Props> = ({
             selectedOption={numberOfFloors.toString()}
             onChange={(value) => setNumberOfFloors(Number(value))}
           />
-        </div>
-      </div>
-      <div className="w-full md:w-1/2 pl-4">
-        <div className="mb-4 flex flex-col space-y-4">
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <HomeModernIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="basement" className="mr-2">
-                Hầm
-              </label>
-            </div>
-            <CheckboxTwo
-              id="basement"
-              isChecked={hasBasement}
-              onChange={() => setHasBasement(!hasBasement)}
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <BuildingOfficeIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="mezzanine" className="mr-2">
-                Tầng lửng
-              </label>
-            </div>
-            <CheckboxTwo
-              id="mezzanine"
-              isChecked={hasMezzanine}
-              onChange={() => setHasMezzanine(!hasMezzanine)}
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <BuildingLibraryIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="terrace" className="mr-2">
-                Tầng Thượng
-              </label>
-            </div>
-            <CheckboxTwo
-              id="terrace"
-              isChecked={hasTerrace}
-              onChange={() => setHasTerrace(!hasTerrace)}
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <HomeIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="roof" className="mr-2">
-                Mái
-              </label>
-            </div>
-            <CheckboxTwo
-              id="roof"
-              isChecked={hasRoof}
-              onChange={() => setHasRoof(!hasRoof)}
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <BuildingStorefrontIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="secondaryRoof" className="mr-2">
-                Mái phụ
-              </label>
-            </div>
-            <CheckboxTwo
-              id="secondaryRoof"
-              isChecked={hasSecondaryRoof}
-              onChange={() => setHasSecondaryRoof(!hasSecondaryRoof)}
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <Cog6ToothIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="elevatorTechnicalRoom" className="mr-2">
-                Phòng kỹ thuật thang máy
-              </label>
-            </div>
-            <CheckboxTwo
-              id="elevatorTechnicalRoom"
-              isChecked={hasElevatorTechnicalRoom}
-              onChange={() =>
-                setHasElevatorTechnicalRoom(!hasElevatorTechnicalRoom)
-              }
-            />
-          </div>
-          <div className="flex justify-between items-center border-b pb-2">
-            <div className="flex items-center">
-              <ArchiveBoxIcon className="h-5 w-5 text-gray-500 mr-2" />
-              <label htmlFor="pit" className="mr-2">
-                Hố PIT
-              </label>
-            </div>
-            <CheckboxTwo
-              id="pit"
-              isChecked={hasPit}
-              onChange={() => setHasPit(!hasPit)}
-            />
-          </div>
         </div>
       </div>
     </div>
