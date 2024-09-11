@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
-import DeleteButton from '../../components/Buttonicons/DeleteButton';
-import EditButton from '../../components/Buttonicons/EditButton';
-import DownloadButton from '../../components/Buttonicons/DownloadButton';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SortIcon from '../../components/Buttonicons/SortIcon';
-import QuoteManagerTable from './components/QuoteManagerTable';
+import CheckboxTwo from '../../../components/Checkboxes/CheckboxTwo';
+import DeleteButton from '../../../components/Buttonicons/DeleteButton';
+import EditButton from '../../../components/Buttonicons/EditButton';
+import DownloadButton from '../../../components/Buttonicons/DownloadButton';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import SortIcon from '../../../components/Buttonicons/SortIcon';
+import QuoteManagerTable from '../components/QuoteManagerTable';
 import {
   Dialog,
   DialogHeader,
@@ -27,7 +27,7 @@ type Email = {
 
 type SortKey = string;
 
-const QuoteManagerList = () => {
+const PreliminaryQuoteManager = () => {
   const [emails, setEmails] = useState<Email[]>([
     {
       id: '1',
@@ -168,13 +168,13 @@ const QuoteManagerList = () => {
         <input
           type="text"
           className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
-          placeholder="Search anything..."
+          placeholder="Tìm kiếm..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
         <button
           onClick={handleDeleteSelected}
-          className="mb-4 p-2 bg-red-500 text-white"
+          className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
         >
           Xóa đã chọn
         </button>
@@ -194,4 +194,4 @@ const QuoteManagerList = () => {
   );
 };
 
-export default QuoteManagerList;
+export default PreliminaryQuoteManager;

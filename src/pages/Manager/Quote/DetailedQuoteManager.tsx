@@ -1,11 +1,17 @@
 import { useState } from 'react';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
-import DeleteButton from '../../components/Buttonicons/DeleteButton';
-import EditButton from '../../components/Buttonicons/EditButton';
-import DownloadButton from '../../components/Buttonicons/DownloadButton';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SortIcon from '../../components/Buttonicons/SortIcon';
-import QuoteStaffTable from '../../components/QuoteStaffTable';
+import CheckboxTwo from '../../../components/Checkboxes/CheckboxTwo';
+import DeleteButton from '../../../components/Buttonicons/DeleteButton';
+import EditButton from '../../../components/Buttonicons/EditButton';
+import DownloadButton from '../../../components/Buttonicons/DownloadButton';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import SortIcon from '../../../components/Buttonicons/SortIcon';
+import QuoteManagerTable from '../components/QuoteManagerTable';
+import {
+  Dialog,
+  DialogHeader,
+  DialogBody,
+  DialogFooter,
+} from '@material-tailwind/react';
 
 type Email = {
   id: string;
@@ -21,7 +27,7 @@ type Email = {
 
 type SortKey = string;
 
-const QuoteStaffList = () => {
+const DetailedQuoteManager = () => {
   const [emails, setEmails] = useState<Email[]>([
     {
       id: '1',
@@ -39,7 +45,7 @@ const QuoteStaffList = () => {
       projectName: 'Khu Công Nghiệp Sóng Thần',
       customerName: 'Trần Văn B',
       category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
+      serviceType: 'Báo giá thô & Hoàn thiện',
       date: '01.12.2024',
       contractValue: 2000000,
       status: 'Hoàn thành',
@@ -50,10 +56,10 @@ const QuoteStaffList = () => {
       projectName: 'Khu Công Nghệ Cao',
       customerName: 'Lê Thị C',
       category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
+      serviceType: 'Báo giá thô & Hoàn thiện',
       date: '25.11.2024',
       contractValue: 3000000,
-      status: 'Đang xử lý',
+      status: 'Đang tạo hợp đồng',
       isChecked: false,
     },
     {
@@ -64,7 +70,7 @@ const QuoteStaffList = () => {
       serviceType: 'Báo giá thô',
       date: '30.04.2024',
       contractValue: 4000000,
-      status: 'Hủy',
+      status: 'Từ chối',
       isChecked: false,
     },
   ]);
@@ -153,11 +159,11 @@ const QuoteStaffList = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Báo giá" />
+      <Breadcrumb pageName="Báo giá sơ bộ" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Danh sách báo giá
+          Danh sách báo giá sơ bộ
         </h4>
         <input
           type="text"
@@ -173,7 +179,7 @@ const QuoteStaffList = () => {
           Xóa đã chọn
         </button>
         <div className="max-w-full overflow-x-auto">
-          <QuoteStaffTable
+          <QuoteManagerTable
             data={emails}
             columns={columns}
             isAllChecked={isAllChecked}
@@ -188,4 +194,4 @@ const QuoteStaffList = () => {
   );
 };
 
-export default QuoteStaffList;
+export default DetailedQuoteManager;
