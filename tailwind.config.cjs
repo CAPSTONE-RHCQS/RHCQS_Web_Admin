@@ -52,6 +52,8 @@ module.exports = withMT({
         success: '#219653',
         danger: '#D34053',
         warning: '#FFA70B',
+        primaryGreenButton: '#5badae',
+        secondaryGreenButton: '#53a0a2',
         secondaryGreen: '#1F7F81',
         customRed: '#FF0000',
         customGray: '#D1D5DB',
