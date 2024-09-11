@@ -151,7 +151,7 @@ const CreateQuote = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic xử lý khi người dùng nhấn nút tạo hợp đồng
+    // Logic xử lý khi người dùng nhấn nút tạo báo giá
     console.log({
       customerName,
       constructionAddress,
@@ -163,7 +163,7 @@ const CreateQuote = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Tạo Hợp Đồng</h2>
+      <h2 className="text-2xl font-bold mb-4">Tạo báo giá sơ bộ</h2>
       <form onSubmit={handleSubmit}>
         <Step1
           customerName={customerName}
@@ -196,7 +196,7 @@ const CreateQuote = () => {
             type="submit"
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
           >
-            Tạo hợp đồng
+            Tạo báo giá sơ bộ
           </button>
         </div>
       </form>

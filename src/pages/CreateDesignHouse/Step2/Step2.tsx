@@ -96,7 +96,7 @@ const Step2: React.FC<Step2Props> = ({
     <div className="space-y-6">
       <div>
         <label className="block text-lg font-medium mb-2">
-          Tải lên hình ảnh ngoại thất:
+          Tải lên hình ảnh Phối cảnh:
         </label>
         <input
           type="file"
@@ -114,7 +114,7 @@ const Step2: React.FC<Step2Props> = ({
 
       <div>
         <label className="block text-lg font-medium mb-2">
-          Tải lên bản vẽ mặt bằng:
+          Tải lên bản vẽ Kiến trúc:
         </label>
         <input
           type="file"
@@ -129,6 +129,43 @@ const Step2: React.FC<Step2Props> = ({
           {renderPreview(floorPlanImages, setFloorPlanImages)}
         </div>
       </div>
+
+      <div>
+        <label className="block text-lg font-medium mb-2">
+          Tải lên bản vẽ Kết cấu:
+        </label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) =>
+            handleFileChange(e, setFloorPlanImages, floorPlanImages)
+          }
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+        />
+        <div className="flex flex-wrap mt-4">
+          {renderPreview(floorPlanImages, setFloorPlanImages)}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-lg font-medium mb-2">
+          Tải lên bản vẽ Điện & Nước:
+        </label>
+        <input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) =>
+            handleFileChange(e, setFloorPlanImages, floorPlanImages)
+          }
+          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
+        />
+        <div className="flex flex-wrap mt-4">
+          {renderPreview(floorPlanImages, setFloorPlanImages)}
+        </div>
+      </div>
+
       <div className="mt-4">
         <span className="text-sm text-gray-500">Tổng số tệp: {totalFiles}</span>
       </div>

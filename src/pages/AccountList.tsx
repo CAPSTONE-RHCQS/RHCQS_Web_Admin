@@ -21,7 +21,7 @@ type Staff = {
 
 type SortKey = string;
 
-const StaffList = () => {
+const AccountList = () => {
   const [staffs, setStaffs] = useState<Staff[]>([
     {
       id: '1',
@@ -128,9 +128,10 @@ const StaffList = () => {
     setStaffs(staffs.filter((staff) => !staff.isChecked));
   };
 
-  const filteredStaffs = staffs.filter((staff) =>
-    staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedRole === '' || staff.role === selectedRole)
+  const filteredStaffs = staffs.filter(
+    (staff) =>
+      staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedRole === '' || staff.role === selectedRole),
   );
 
   const columns = [
@@ -193,4 +194,4 @@ const StaffList = () => {
   );
 };
 
-export default StaffList;
+export default AccountList;

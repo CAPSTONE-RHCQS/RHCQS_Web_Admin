@@ -22,12 +22,13 @@ import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
 import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
-import StaffList from './pages/StaffList';
+import StaffList from './pages/AccountList';
 import QuoteManagerList from './pages/Manager/Quote/PreliminaryQuoteManager';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
 import PreliminaryQuoteManager from './pages/Manager/Quote/PreliminaryQuoteManager';
 import DetailedQuoteManager from './pages/Manager/Quote/DetailedQuoteManager';
+import AccountList from './pages/AccountList';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -128,11 +129,11 @@ function App() {
           }
         />
         <Route
-          path="/stafflist"
+          path="/account-list-manager"
           element={
             <>
               <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
-              <StaffList />
+              <AccountList />
             </>
           }
         />

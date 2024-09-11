@@ -166,7 +166,7 @@ const EditQuote: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic xử lý khi người dùng nhấn nút tạo hợp đồng
+    // Logic xử lý khi người dùng nhấn nút sửa báo giá
     console.log({
       customerName,
       constructionAddress,
