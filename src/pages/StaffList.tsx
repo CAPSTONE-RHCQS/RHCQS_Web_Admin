@@ -51,7 +51,7 @@ const StaffList = () => {
       id: '3',
       avatar: 'https://studiochupanhdep.com/Upload/Images/Album/anh-cv-dep.jpg',
       staffName: 'Lê Văn C',
-      role: 'Nhân viên',
+      role: 'Khách hàng',
       birthday: '01.12.1990',
       address: '456 Đường B, Quận 3, TP.HCM',
       email: 'levanc@example.com',
@@ -67,6 +67,7 @@ const StaffList = () => {
     direction: 'ascending' | 'descending';
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
 
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
@@ -128,7 +129,8 @@ const StaffList = () => {
   };
 
   const filteredStaffs = staffs.filter((staff) =>
-    staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()),
+    staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+    (selectedRole === '' || staff.role === selectedRole)
   );
 
   const columns = [
@@ -143,28 +145,41 @@ const StaffList = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Nhân viên" />
+      <Breadcrumb pageName="Quản lý tài khoản hệ thống" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Danh sách nhân viên
+          Quản lý tài khoản
         </h4>
-        <input
-          type="text"
-          className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
-          placeholder="Tìm kiếm..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button
-          onClick={handleDeleteSelected}
-          className="mb-4 p-2 bg-red-500 text-white"
-        >
-          Xóa đã chọn
-        </button>
+        <div className="flex flex-col md:flex-row md:items-center mb-4">
+          <input
+            type="text"
+            className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
+            placeholder="Tìm kiếm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select
+            className="h-14 w-full md:w-48 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
+          >
+            <option value="">Tất cả vai trò</option>
+            <option value="Quản lý">Quản lý</option>
+            <option value="Nhân viên">Nhân viên</option>
+            <option value="Khách hàng">Khách hàng</option>
+            {/* Thêm các vai trò khác nếu cần */}
+          </select>
+          <button
+            onClick={handleDeleteSelected}
+            className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            Xóa đã chọn
+          </button>
+        </div>
         <div className="max-w-full overflow-x-auto">
           <StaffTable
-            data={staffs}
+            data={filteredStaffs}
             columns={columns}
             isAllChecked={isAllChecked}
             handleSelectAll={handleSelectAll}
