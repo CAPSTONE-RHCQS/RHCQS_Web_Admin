@@ -4,6 +4,7 @@ import EditButton from './Buttonicons/EditButton';
 import DeleteButton from './Buttonicons/DeleteButton';
 import DownloadButton from './Buttonicons/DownloadButton';
 import SortIcon from './Buttonicons/SortIcon';
+import { Link } from 'react-router-dom';
 
 type DataItem = {
   [key: string]: any;
@@ -98,9 +99,13 @@ const QuoteStaffTable: React.FC<QuoteStaffTableProps> = ({
             ))}
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
               <div className="flex items-center space-x-3.5">
-                <EditButton />
+                <Link to={`/quotedetail`}>
+                  <EditButton />
+                </Link>
                 <DeleteButton onClick={() => handleDelete(item.id)} />
-                <DownloadButton />
+                <Link to={`/quotedetail`}>
+                  <DownloadButton />
+                </Link>
               </div>
             </td>
           </tr>

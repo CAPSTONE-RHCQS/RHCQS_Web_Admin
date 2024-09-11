@@ -25,6 +25,7 @@ import PostList from './pages/BlogPost/PostList';
 import StaffList from './pages/StaffList';
 import QuoteManagerList from './pages/Manager/QuoteManagerList';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
+import EditQuote from './pages/Quote/EditQuote/EditQuote';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -157,6 +158,15 @@ function App() {
             <>
               <PageTitle title="Create Quote | RHCQS - Residential Housing Construction Quotation System" />
               <CreateQuote />
+            </>
+          }
+        />
+        <Route
+          path="/editquote"
+          element={
+            <>
+              <PageTitle title="Edit Quote | RHCQS - Residential Housing Construction Quotation System" />
+              <EditQuote />
             </>
           }
         />

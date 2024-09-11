@@ -12,6 +12,7 @@ import StatusTracker from '../../components/StatusTracker';
 import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../components/ChatBox';
+import { Link } from 'react-router-dom';
 
 const ContractDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -239,12 +240,12 @@ const ContractDetail = () => {
                   >
                     Lịch sử chỉnh sửa
                   </a>
-                  <a
-                    href="#"
+                  <Link
+                    to={`/editquote`}
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
-                    Thay đổi trạng thái
-                  </a>
+                    Chỉnh sửa hợp đồng
+                  </Link>
                   <a
                     href="#"
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
