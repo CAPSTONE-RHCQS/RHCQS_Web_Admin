@@ -4,21 +4,21 @@ import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
 import 'react-medium-image-zoom/dist/styles.css';
 
 interface Step2Props {
-  exteriorImages: File[];
-  setExteriorImages: (files: File[]) => void;
-  interiorImages: File[];
-  setInteriorImages: (files: File[]) => void;
-  floorPlanImages: File[];
-  setFloorPlanImages: (files: File[]) => void;
+  perspectiveImages: File[];
+  setPerspectiveImages: (files: File[]) => void;
+  architectureImages: File[];
+  setArchitectureImages: (files: File[]) => void;
+  structureImages: File[];
+  setStructureImages: (files: File[]) => void;
 }
 
 const Step2: React.FC<Step2Props> = ({
-  exteriorImages,
-  setExteriorImages,
-  interiorImages,
-  setInteriorImages,
-  floorPlanImages,
-  setFloorPlanImages,
+  perspectiveImages,
+  setPerspectiveImages,
+  architectureImages,
+  setArchitectureImages,
+  structureImages,
+  setStructureImages,
 }) => {
   const [selectedImage, setSelectedImage] = useState<{
     src: string;
@@ -28,9 +28,11 @@ const Step2: React.FC<Step2Props> = ({
 
   useEffect(() => {
     setTotalFiles(
-      exteriorImages.length + interiorImages.length + floorPlanImages.length,
+      perspectiveImages.length +
+        architectureImages.length +
+        structureImages.length,
     );
-  }, [exteriorImages, interiorImages, floorPlanImages]);
+  }, [perspectiveImages, architectureImages, structureImages]);
 
   const handleFileChange = (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -103,12 +105,12 @@ const Step2: React.FC<Step2Props> = ({
           multiple
           accept="image/*"
           onChange={(e) =>
-            handleFileChange(e, setExteriorImages, exteriorImages)
+            handleFileChange(e, setPerspectiveImages, perspectiveImages)
           }
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
         />
         <div className="flex flex-wrap mt-4">
-          {renderPreview(exteriorImages, setExteriorImages)}
+          {renderPreview(perspectiveImages, setPerspectiveImages)}
         </div>
       </div>
 
@@ -121,12 +123,12 @@ const Step2: React.FC<Step2Props> = ({
           multiple
           accept="image/*"
           onChange={(e) =>
-            handleFileChange(e, setFloorPlanImages, floorPlanImages)
+            handleFileChange(e, setArchitectureImages, architectureImages)
           }
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
         />
         <div className="flex flex-wrap mt-4">
-          {renderPreview(floorPlanImages, setFloorPlanImages)}
+          {renderPreview(architectureImages, setArchitectureImages)}
         </div>
       </div>
 
@@ -139,12 +141,12 @@ const Step2: React.FC<Step2Props> = ({
           multiple
           accept="image/*"
           onChange={(e) =>
-            handleFileChange(e, setFloorPlanImages, floorPlanImages)
+            handleFileChange(e, setStructureImages, structureImages)
           }
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
         />
         <div className="flex flex-wrap mt-4">
-          {renderPreview(floorPlanImages, setFloorPlanImages)}
+          {renderPreview(structureImages, setStructureImages)}
         </div>
       </div>
 
@@ -157,12 +159,12 @@ const Step2: React.FC<Step2Props> = ({
           multiple
           accept="image/*"
           onChange={(e) =>
-            handleFileChange(e, setFloorPlanImages, floorPlanImages)
+            handleFileChange(e, setArchitectureImages, architectureImages)
           }
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary-dark"
         />
         <div className="flex flex-wrap mt-4">
-          {renderPreview(floorPlanImages, setFloorPlanImages)}
+          {renderPreview(architectureImages, setArchitectureImages)}
         </div>
       </div>
 

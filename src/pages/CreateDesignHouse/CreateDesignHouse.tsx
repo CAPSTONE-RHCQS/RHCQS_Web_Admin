@@ -11,9 +11,9 @@ const CreateDesignHouse = () => {
   const [numberOfBedrooms, setNumberOfBedrooms] = useState<number>(1);
   const [numberOfFloors, setNumberOfFloors] = useState<number>(1);
 
-  const [exteriorImages, setExteriorImages] = useState<File[]>([]);
-  const [interiorImages, setInteriorImages] = useState<File[]>([]);
-  const [floorPlanImages, setFloorPlanImages] = useState<File[]>([]);
+  const [perspectiveImages, setPerspectiveImages] = useState<File[]>([]);
+  const [architectureImages, setArchitectureImages] = useState<File[]>([]);
+  const [structureImages, setStructureImages] = useState<File[]>([]);
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -26,9 +26,9 @@ const CreateDesignHouse = () => {
       price,
       numberOfBedrooms,
       numberOfFloors,
-      exteriorImages,
-      interiorImages,
-      floorPlanImages,
+      perspectiveImages,
+      architectureImages,
+      structureImages,
     });
   };
 
@@ -73,12 +73,12 @@ const CreateDesignHouse = () => {
         )}
         {currentStep === 2 && (
           <Step2
-            exteriorImages={exteriorImages}
-            setExteriorImages={setExteriorImages}
-            interiorImages={interiorImages}
-            setInteriorImages={setInteriorImages}
-            floorPlanImages={floorPlanImages}
-            setFloorPlanImages={setFloorPlanImages}
+            perspectiveImages={perspectiveImages}
+            setPerspectiveImages={setPerspectiveImages}
+            architectureImages={architectureImages}
+            setArchitectureImages={setArchitectureImages}
+            structureImages={structureImages}
+            setStructureImages={setStructureImages}
           />
         )}
         <div className="col-span-1 md:col-span-2 flex justify-between">
