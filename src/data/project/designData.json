@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "drawing": "Phối cảnh",
+        "createdTime": "11:05:20 12/09/2024",
+        "executor": "Trần V",
+        "status": "Đã hoàn thành"
+    },
+    {
+        "id": 2,
+        "drawing": "Kiến trúc",
+        "createdTime": "",
+        "executor": "Trần V",
+        "status": "Đang thiết kế"
+    },
+    {
+        "id": 3,
+        "drawing": "Kết cấu",
+        "createdTime": "",
+        "executor": "",
+        "status": ""
+    },
+    {
+        "id": 4,
+        "drawing": "Điện & nước",
+        "createdTime": "",
+        "executor": "",
+        "status": ""
+    }
+]

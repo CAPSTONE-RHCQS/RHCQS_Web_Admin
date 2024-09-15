@@ -22,13 +22,13 @@ import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
 import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
-import StaffList from './pages/AccountList';
-import QuoteManagerList from './pages/Manager/Quote/PreliminaryQuoteManager';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
-import PreliminaryQuoteManager from './pages/Manager/Quote/PreliminaryQuoteManager';
+import ProjectManager from './pages/Manager/Quote/ProjectManager';
 import DetailedQuoteManager from './pages/Manager/Quote/DetailedQuoteManager';
 import AccountList from './pages/AccountList';
+import ProjectDetail from './pages/Manager/Project/ProjectDetail';
+import CreateContractDesign from './pages/Staff/CreateContactDesign/CreateContractDesign';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -102,6 +102,15 @@ function App() {
           }
         />
         <Route
+          path="/projectdetail"
+          element={
+            <>
+              <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <ProjectDetail />
+            </>
+          }
+        />
+        <Route
           path="/quotestafflist"
           element={
             <>
@@ -111,11 +120,11 @@ function App() {
           }
         />
         <Route
-          path="/preliminary-quote-manager"
+          path="/project-manager"
           element={
             <>
-              <PageTitle title="PreliminaryQuoteManager | RHCQS - Residential Housing Construction Quotation System" />
-              <PreliminaryQuoteManager />
+              <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
+              <ProjectManager />
             </>
           }
         />
@@ -165,11 +174,20 @@ function App() {
           }
         />
         <Route
-          path="/createquote"
+          path="/Create-Quote"
           element={
             <>
               <PageTitle title="Create Quote | RHCQS - Residential Housing Construction Quotation System" />
               <CreateQuote />
+            </>
+          }
+        />
+        <Route
+          path="/Create-Contract-Design"
+          element={
+            <>
+              <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />
+              <CreateContractDesign />
             </>
           }
         />

@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "version": "SB 1.0",
+        "createdTime": "10:42 09/12/2024",
+        "creator": "Ngân",
+        "content": "Chỉnh sửa điện, móng tầng lửng 55m²."
+    },
+    {
+        "id": 2,
+        "version": "SB 1.1",
+        "createdTime": "10:43 09/13/2024",
+        "creator": "Ngân",
+        "content": "Sửa lại diện tích sân."
+    },
+    {
+        "id": 3,
+        "version": "SB 1.2",
+        "createdTime": "11:00 09/14/2024",
+        "creator": "Ngân",
+        "content": "Thêm tầng hầm."
+    }
+]
