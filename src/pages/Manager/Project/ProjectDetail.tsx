@@ -135,6 +135,21 @@ const ProjectDetail = () => {
     setActiveContractMenu(activeContractMenu === id ? null : id);
   };
 
+  const getStatusStyle = (status: string) => {
+    switch (status) {
+      case 'Đang chờ duyệt':
+        return 'text-yellow-500';
+      case 'Đã hoàn tất':
+        return 'text-green-500';
+      case 'Chờ khách hàng phản hồi':
+        return 'text-blue-500';
+      case 'Từ chối':
+        return 'text-red-500';
+      default:
+        return 'text-gray-500';
+    }
+  };
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -270,6 +285,9 @@ const ProjectDetail = () => {
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Nội dung
               </th>
+              <th className="py-4 px-4 font-medium text-black dark:text-white">
+                Trạng thái
+              </th>
               <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
             </tr>
           </thead>
@@ -291,6 +309,13 @@ const ProjectDetail = () => {
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   {item.content}
                 </td>
+                <td
+                  className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark ${getStatusStyle(
+                    item.status,
+                  )}`}
+                >
+                  {item.status}
+                </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
                   <FiMoreVertical
                     className="cursor-pointer"
@@ -311,12 +336,12 @@ const ProjectDetail = () => {
                         >
                           Xóa
                         </a>
-                        <a
-                          href="#"
+                        <Link
+                          to={`/quotedetail/`}
                           className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                         >
                           Xem chi tiết
-                        </a>
+                        </Link>
                       </div>
                     </div>
                   )}

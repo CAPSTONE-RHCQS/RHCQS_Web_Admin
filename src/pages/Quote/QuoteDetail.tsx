@@ -35,6 +35,8 @@ const QuoteDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+
   const [tableData, setTableData] = useState<TableRow[]>([
     {
       stt: 1,
@@ -276,6 +278,10 @@ const QuoteDetail = () => {
     setShowChat(!showChat);
   };
 
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };  
+
   const paymentSchedule = [
     { period: '1', content: 'Ký hợp đồng', percentage: 10 },
     { period: '2', content: 'Đổ xong Móng', percentage: 15 },
@@ -361,32 +367,30 @@ const QuoteDetail = () => {
           </button>
         )}
 
-        <>
-          <div className="flex flex-row gap-3">
-            <ContactCard
-              data={contactData3}
-              fields={contactFields3}
-              avatarUrl={Process}
-            />
-            <ContactCard
-              data={contactData1}
-              fields={contactFields1}
-              avatarUrl={Avatar}
-            />
-            <ContactCard
-              data={contactData2}
-              fields={contactFields2}
-              avatarUrl={House}
-            />
-            <ContactCard
-              data={contactData4}
-              fields={contactFields4}
-              avatarUrl={Fee}
-            />
-          </div>
+        <div className="flex flex-row gap-3">
+          <ContactCard
+            data={contactData3}
+            fields={contactFields3}
+            avatarUrl={Process}
+          />
+          <ContactCard
+            data={contactData1}
+            fields={contactFields1}
+            avatarUrl={Avatar}
+          />
+          <ContactCard
+            data={contactData2}
+            fields={contactFields2}
+            avatarUrl={House}
+          />
+          <ContactCard
+            data={contactData4}
+            fields={contactFields4}
+            avatarUrl={Fee}
+          />
+        </div>
 
-          <StatusTracker currentStatus="Đang Xử Lý" />
-        </>
+        <StatusTracker currentStatus="Đang Xử Lý" />
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -406,6 +410,13 @@ const QuoteDetail = () => {
               className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
             >
               <FaShareAlt className="text-lg" />
+            </button>
+
+            <button
+              onClick={handleEditToggle}
+              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+            >
+              {isEditing ? 'Lưu' : 'Chỉnh sửa'}
             </button>
           </div>
         </div>
@@ -441,6 +452,7 @@ const QuoteDetail = () => {
                       value={row.hangMuc}
                       onChange={(e) => handleInputChange(e, index, 'hangMuc')}
                       className="w-full text-left"
+                      disabled={!isEditing}
                     />
                   </td>
                   <td className="px-4 py-2 border text-center border-2 border-green-300">
@@ -449,6 +461,7 @@ const QuoteDetail = () => {
                       value={row.dTich}
                       onChange={(e) => handleInputChange(e, index, 'dTich')}
                       className="w-full text-center"
+                      disabled={!isEditing}
                     />
                   </td>
                   <td className="px-4 py-2 border text-center">{row.heSo}</td>
@@ -535,6 +548,7 @@ const QuoteDetail = () => {
                       value={row.hangMuc}
                       onChange={(e) => handleOptionChange(e, index, 'hangMuc')}
                       className="w-full text-left"
+                      disabled={!isEditing}
                     />
                   </td>
                   <td className="px-4 py-2 border text-center">

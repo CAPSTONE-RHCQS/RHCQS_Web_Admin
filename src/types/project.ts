@@ -4,6 +4,7 @@ export type Quote = {
   createdTime: string;
   creator: string;
   content: string;
+  status: string;
 };
 
 export type Design = {
