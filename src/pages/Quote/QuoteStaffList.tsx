@@ -159,19 +159,22 @@ const QuoteStaffList = () => {
         <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
           Danh sách báo giá
         </h4>
-        <input
-          type="text"
-          className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none"
-          placeholder="Tìm kiếm..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button
-          onClick={handleDeleteSelected}
-          className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-        >
-          Xóa đã chọn
-        </button>
+        <div className="flex flex-col md:flex-row md:items-center mb-4">
+          <input
+            type="text"
+            className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
+            placeholder="Tìm kiếm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button
+            onClick={handleDeleteSelected}
+            className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+          >
+            Xóa đã chọn
+          </button>
+        </div>
+
         <div className="max-w-full overflow-x-auto">
           <QuoteStaffTable
             data={emails}
