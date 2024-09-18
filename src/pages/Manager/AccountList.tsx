@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import CheckboxTwo from '../components/Checkboxes/CheckboxTwo';
-import DeleteButton from '../components/Buttonicons/DeleteButton';
-import EditButton from '../components/Buttonicons/EditButton';
-import DownloadButton from '../components/Buttonicons/DownloadButton';
-import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
-import SortIcon from '../components/Buttonicons/SortIcon';
-import StaffTable from '../components/StaffTable';
+import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
+import DeleteButton from '../../components/Buttonicons/DeleteButton';
+import EditButton from '../../components/Buttonicons/EditButton';
+import DownloadButton from '../../components/Buttonicons/DownloadButton';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import SortIcon from '../../components/Buttonicons/SortIcon';
+import StaffTable from '../../components/StaffTable';
 
 type Staff = {
   id: string;

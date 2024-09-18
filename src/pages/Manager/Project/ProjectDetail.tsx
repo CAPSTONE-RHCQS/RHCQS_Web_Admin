@@ -22,6 +22,10 @@ import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
 import { Link } from 'react-router-dom';
 import { Contract, Design, DetailedQuote, Quote } from '../../../types/project';
+import PreliminaryQuoteTable from './Table/PreliminaryQuoteTable';
+import DrawingDesignTable from './Table/DrawingDesignTable';
+import DetailedQuoteTable from './Table/DetailedQuoteTable';
+import ContractTable from './Table/ContractTable';
 
 const ProjectDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);
@@ -33,13 +37,6 @@ const ProjectDetail = () => {
     [],
   );
   const [contractData, setContractData] = useState<Contract[]>([]);
-  const [activeMenu, setActiveMenu] = useState<number | null>(null); // Trạng thái cho menu ẩn hiện
-  const [activeDetailedMenu, setActiveDetailedMenu] = useState<number | null>(
-    null,
-  );
-  const [activeContractMenu, setActiveContractMenu] = useState<number | null>(
-    null,
-  );
 
   useEffect(() => {
     fetch('/src/data/project/quoteData.json')
@@ -123,33 +120,6 @@ const ProjectDetail = () => {
     setShowChat(!showChat);
   };
 
-  const toggleRowMenu = (id: number) => {
-    setActiveMenu(activeMenu === id ? null : id);
-  };
-
-  const toggleDetailedRowMenu = (id: number) => {
-    setActiveDetailedMenu(activeDetailedMenu === id ? null : id);
-  };
-
-  const toggleContractRowMenu = (id: number) => {
-    setActiveContractMenu(activeContractMenu === id ? null : id);
-  };
-
-  const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'Đang chờ duyệt':
-        return 'text-yellow-500';
-      case 'Đã hoàn tất':
-        return 'text-green-500';
-      case 'Chờ khách hàng phản hồi':
-        return 'text-blue-500';
-      case 'Từ chối':
-        return 'text-red-500';
-      default:
-        return 'text-gray-500';
-    }
-  };
-
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -207,32 +177,30 @@ const ProjectDetail = () => {
           </button>
         )}
 
-        <>
-          <div className="flex flex-row gap-3">
-            <ContactCard
-              data={contactData3}
-              fields={contactFields3}
-              avatarUrl={Process}
-            />
-            <ContactCard
-              data={contactData1}
-              fields={contactFields1}
-              avatarUrl={Avatar}
-            />
-            <ContactCard
-              data={contactData2}
-              fields={contactFields2}
-              avatarUrl={House}
-            />
-            <ContactCard
-              data={contactData4}
-              fields={contactFields4}
-              avatarUrl={Fee}
-            />
-          </div>
+        <div className="flex flex-row gap-3">
+          <ContactCard
+            data={contactData3}
+            fields={contactFields3}
+            avatarUrl={Process}
+          />
+          <ContactCard
+            data={contactData1}
+            fields={contactFields1}
+            avatarUrl={Avatar}
+          />
+          <ContactCard
+            data={contactData2}
+            fields={contactFields2}
+            avatarUrl={House}
+          />
+          <ContactCard
+            data={contactData4}
+            fields={contactFields4}
+            avatarUrl={Fee}
+          />
+        </div>
 
-          <StatusTracker currentStatus="Đang Xử Lý" />
-        </>
+        <StatusTracker currentStatus="Đang Xử Lý" />
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -267,298 +235,16 @@ const ProjectDetail = () => {
         </div>
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Báo giá sơ bộ</h3>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                STT
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Phiên bản
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Thời gian tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Người tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Nội dung
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Trạng thái
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {quoteData.map((item, index) => (
-              <tr key={index}>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.id}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.version}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.createdTime}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.creator}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.content}
-                </td>
-                <td
-                  className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark ${getStatusStyle(
-                    item.status,
-                  )}`}
-                >
-                  {item.status}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-                  <FiMoreVertical
-                    className="cursor-pointer"
-                    onClick={() => toggleRowMenu(item.id)}
-                  />
-                  {activeMenu === item.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                      <div className="py-2">
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Chỉnh sửa
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xóa
-                        </a>
-                        <Link
-                          to={`/quotedetail/`}
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xem chi tiết
-                        </Link>
-                      </div>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+        <PreliminaryQuoteTable quoteData={quoteData} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Thiết kế bản vẽ</h3>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                STT
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Bản vẽ
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Thời gian tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Người thực hiện
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Trạng thái
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {designData.map((item, index) => (
-              <tr key={index}>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.id}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.drawing}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.createdTime}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.executor}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.status}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <button className="text-primaryGreenButton hover:text-secondaryGreenButton">
-                    <FaDownload />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+        <DrawingDesignTable designData={designData} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Báo giá chi tiết</h3>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                STT
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Phiên bản
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Thời gian tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Người tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Nội dung
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {detailedQuoteData.map((item, index) => (
-              <tr key={index}>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.id}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.version}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.createdTime}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.creator}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.content}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-                  <FiMoreVertical
-                    className="cursor-pointer"
-                    onClick={() => toggleDetailedRowMenu(item.id)}
-                  />
-                  {activeDetailedMenu === item.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                      <div className="py-2">
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Chỉnh sửa
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xóa
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xem chi tiết
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
+        <DetailedQuoteTable detailedQuoteData={detailedQuoteData} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
-        <table className="w-full table-auto">
-          <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                STT
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Phiên bản
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Loại hợp đồng
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Người tạo
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Trạng thái
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Nội dung
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {contractData.map((item, index) => (
-              <tr key={index}>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.id}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.version}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.contractType}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.creator}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.status}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.content}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-                  <FiMoreVertical
-                    className="cursor-pointer"
-                    onClick={() => toggleContractRowMenu(item.id)}
-                  />
-                  {activeContractMenu === item.id && (
-                    <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                      <div className="py-2">
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Chỉnh sửa
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xóa
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                        >
-                          Xem chi tiết
-                        </a>
-                      </div>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ContractTable contractData={contractData} />
         {/* <!-- Thêm nội dung khác ở đây --> */}
       </div>
     </>

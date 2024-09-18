@@ -15,7 +15,6 @@ import Tables from './pages/Tables';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import DefaultLayout from './layout/DefaultLayout';
-import QuoteStaffList from './pages/Quote/QuoteStaffList';
 import CreatePost from './pages/BlogPost/CreatePost';
 import QuoteDetail from './pages/Quote/QuoteDetail';
 import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
@@ -24,11 +23,11 @@ import ChatPage from './pages/ChatPage';
 import PostList from './pages/BlogPost/PostList';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
-import ProjectManager from './pages/Manager/Quote/ProjectManager';
-import DetailedQuoteManager from './pages/Manager/Quote/DetailedQuoteManager';
-import AccountList from './pages/AccountList';
+import AccountList from './pages/Manager/AccountList';
 import ProjectDetail from './pages/Manager/Project/ProjectDetail';
-import CreateContractDesign from './pages/Staff/CreateContactDesign/CreateContractDesign';
+import CreateContractDesign from './pages/DesignStaff/CreateContractDesign';
+import ProjectList from './pages/SaleStaff/Project/ProjectListSaleStaff';
+import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -56,48 +55,22 @@ function App() {
             </>
           }
         />
+        // Manager
         <Route
-          path="/calendar"
+          path="/project-list-manager"
           element={
             <>
-              <PageTitle title="Calendar | RHCQS - Residential Housing Construction Quotation System" />
-              <Calendar />
+              <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
+              <ProjectListManager />
             </>
           }
         />
         <Route
-          path="/profile"
+          path="/account-list-manager"
           element={
             <>
-              <PageTitle title="Profile | RHCQS - Residential Housing Construction Quotation System" />
-              <Profile />
-            </>
-          }
-        />
-        <Route
-          path="/forms/form-elements"
-          element={
-            <>
-              <PageTitle title="Form Elements | RHCQS - Residential Housing Construction Quotation System" />
-              <FormElements />
-            </>
-          }
-        />
-        <Route
-          path="/forms/form-layout"
-          element={
-            <>
-              <PageTitle title="Form Layout | RHCQS - Residential Housing Construction Quotation System" />
-              <FormLayout />
-            </>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <>
-              <PageTitle title="Tables | RHCQS - Residential Housing Construction Quotation System" />
-              <Tables />
+              <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
+              <AccountList />
             </>
           }
         />
@@ -110,39 +83,13 @@ function App() {
             </>
           }
         />
+        // Sale Staff
         <Route
-          path="/quotestafflist"
+          path="/project-list-staff"
           element={
             <>
               <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
-              <QuoteStaffList />
-            </>
-          }
-        />
-        <Route
-          path="/project-manager"
-          element={
-            <>
-              <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
-              <ProjectManager />
-            </>
-          }
-        />
-        <Route
-          path="/detailed-quote-manager"
-          element={
-            <>
-              <PageTitle title="DetailedQuoteManager | RHCQS - Residential Housing Construction Quotation System" />
-              <DetailedQuoteManager />
-            </>
-          }
-        />
-        <Route
-          path="/account-list-manager"
-          element={
-            <>
-              <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
-              <AccountList />
+              <ProjectList />
             </>
           }
         />

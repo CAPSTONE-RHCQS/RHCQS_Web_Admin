@@ -1,7 +1,6 @@
 import React from 'react';
 
 import {
-  FaUser,
   FaMapMarkerAlt,
   FaPhone,
   FaPaintBrush,

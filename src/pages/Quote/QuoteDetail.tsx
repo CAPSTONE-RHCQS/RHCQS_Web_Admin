@@ -423,7 +423,7 @@ const QuoteDetail = () => {
 
         <div className="mb-4">
           <p className="mt-4 mb-4 text-lg">
-            <strong>PHẦN THÔ TIẾT KIỆM </strong>(Đơn giá: 3,350,000 đồng/m²)
+            <strong>1. PHẦN THÔ TIẾT KIỆM </strong>(Đơn giá: 3,350,000 đồng/m²)
           </p>
 
           <p className="mb-4 text-lg">
@@ -522,7 +522,7 @@ const QuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>TÙY CHỌN & TIỆN ÍCH: </strong>
+          <strong>2. TÙY CHỌN & TIỆN ÍCH: </strong>
         </p>
 
         <div className="overflow-x-auto mb-4">
@@ -573,7 +573,11 @@ const QuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>CÁC CHI PHÍ KHÁC:</strong>
+          <strong>3. KHUYẾN MÃI: </strong>
+        </p>
+
+        <p className="text-lg mb-4">
+          <strong>4. CÁC CHI PHÍ KHÁC:</strong>
         </p>
 
         <p className="text-lg mb-4">
@@ -606,7 +610,7 @@ const QuoteDetail = () => {
           </table>
         </div>
         <p className="text-lg mb-4">
-          <strong>TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
+          <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
         </p>
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200">
@@ -664,7 +668,7 @@ const QuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>CÁC ĐỢT THANH TOÁN:</strong>
+          <strong>6. CÁC ĐỢT THANH TOÁN:</strong>
         </p>
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200">
@@ -719,7 +723,7 @@ const QuoteDetail = () => {
           </table>
         </div>
         <p className="text-lg mb-4">
-          <strong>THỜI GIAN THI CÔNG</strong>
+          <strong>7. THỜI GIAN THI CÔNG</strong>
         </p>
         <div className="mb-4">
           <table className="w-1/2 bg-white border border-gray-200">

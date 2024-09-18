@@ -203,9 +203,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item ProjectManager --> */}
               <li>
                 <NavLink
-                  to="/project-manager"
+                  to="/project-list-manager"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                    pathname.includes('project-manager') &&
+                    pathname.includes('/project-list-manager') &&
                     'bg-teal-300 dark:bg-meta-4'
                   }`}
                 >
@@ -276,9 +276,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item QuoteStaffList --> */}
               <li>
                 <NavLink
-                  to="/quotestafflist"
+                  to="/project-list-staff"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                    pathname.includes('quotestafflist') &&
+                    pathname.includes('project-list-staff') &&
                     'bg-teal-300 dark:bg-meta-4'
                   }`}
                 >
@@ -297,7 +297,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
 
               {/* <!-- Menu Item CreateQuote --> */}
-              <li>
+              {/* <li>
                 <NavLink
                   to="/Create-Quote"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
@@ -317,7 +317,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   </svg>
                   Tạo báo giá sơ bộ
                 </NavLink>
-              </li>
+              </li> */}
 
               {/* <!-- Menu Item QuoteStaffList --> */}
               {/* <li>
