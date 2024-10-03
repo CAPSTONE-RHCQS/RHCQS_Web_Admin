@@ -12,11 +12,8 @@ import {
 import RejectionModal from '../../../../components/Modals/RejectionModal';
 import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
 import SortIcon from '../../../../components/Buttonicons/SortIcon';
-import EmployeeCard from '../Employee/EmployeeCard';
-import { Dialog, DialogHeader, DialogBody } from '@material-tailwind/react';
-import { quoteEmployees, designEmployees } from '../../../../types/Employee';
 import { Link } from 'react-router-dom';
-import EmployeeAllocationDialog from '../Employee/EmployeeAllocationDialog';
+import { ClipLoader } from 'react-spinners';
 
 type DataItem = {
   [key: string]: any;
@@ -34,6 +31,7 @@ interface ProjectTableManagerProps {
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   handleDownload: (id: string) => void;
+  isLoading: boolean; // Thêm thuộc tính isLoading
 }
 
 const getStatusStyle = (status: string) => {
@@ -66,6 +64,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   handleSort,
   handleViewDetails,
   handleDownload,
+  isLoading,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -77,80 +76,86 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
 
   return (
     <>
-      <table className="w-full table-auto">
-        <thead>
-          <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
-              <CheckboxTwo
-                id="select-all"
-                isChecked={isAllChecked}
-                onChange={handleSelectAll}
-              />
-            </th>
-            {columns.map((column) => (
-              <th
-                key={column.key}
-                className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"
-              >
-                {column.label}
-                <SortIcon onClick={() => handleSort(column.key)} />
-              </th>
-            ))}
-            <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((item, index) => (
-            <tr
-              key={item.id}
-              className="border-b border-[#eee] dark:border-strokedark"
-            >
-              <td className="py-5 px-4">
+      {isLoading ? (
+        <div className="flex justify-center items-center h-64">
+          <ClipLoader size={50} color={"#123abc"} loading={isLoading} />
+        </div>
+      ) : (
+        <table className="w-full table-auto">
+          <thead>
+            <tr className="bg-gray-2 text-left dark:bg-meta-4">
+              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
                 <CheckboxTwo
-                  id={`select-${item.id}`}
-                  isChecked={item.isChecked}
-                  onChange={() => handleCheckboxChange(index)}
+                  id="select-all"
+                  isChecked={isAllChecked}
+                  onChange={handleSelectAll}
                 />
-              </td>
+              </th>
               {columns.map((column) => (
-                <td
+                <th
                   key={column.key}
-                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                  className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"
                 >
-                  {column.key === 'status' ? (
-                    <span
-                      className={`flex items-center ${
-                        getStatusStyle(item[column.key]).color
-                      }`}
-                    >
-                      {getStatusStyle(item[column.key]).icon}
-                      <span className="ml-2">{item[column.key]}</span>
-                    </span>
-                  ) : (
-                    item[column.key]
-                  )}
-                </td>
+                  {column.label}
+                  <SortIcon onClick={() => handleSort(column.key)} />
+                </th>
               ))}
-              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex space-x-2">
-                <Link to={`/projectdetail`}>
-                  <button
-                    onClick={() => handleViewDetails(item.id)}
-                    className="text-blue-500 hover:text-blue-700 transition mr-2"
-                  >
-                    <FaEye />
-                  </button>
-                </Link>
-                <button
-                  onClick={() => handleDownload(item.id)}
-                  className="text-green-500 hover:text-green-700 transition"
-                >
-                  <FaDownload />
-                </button>
-              </td>
+              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((item, index) => (
+              <tr
+                key={item.id}
+                className="border-b border-[#eee] dark:border-strokedark"
+              >
+                <td className="py-5 px-4">
+                  <CheckboxTwo
+                    id={`select-${item.id}`}
+                    isChecked={item.isChecked}
+                    onChange={() => handleCheckboxChange(index)}
+                  />
+                </td>
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                  >
+                    {column.key === 'status' ? (
+                      <span
+                        className={`flex items-center ${
+                          getStatusStyle(item[column.key]).color
+                        }`}
+                      >
+                        {getStatusStyle(item[column.key]).icon}
+                        <span className="ml-2">{item[column.key]}</span>
+                      </span>
+                    ) : (
+                      item[column.key]
+                    )}
+                  </td>
+                ))}
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex space-x-2">
+                  <Link to={`/projectdetail`}>
+                    <button
+                      onClick={() => handleViewDetails(item.id)}
+                      className="text-blue-500 hover:text-blue-700 transition mr-2"
+                    >
+                      <FaEye />
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => handleDownload(item.id)}
+                    className="text-green-500 hover:text-green-700 transition"
+                  >
+                    <FaDownload />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
 
       {showModal && (
         <RejectionModal

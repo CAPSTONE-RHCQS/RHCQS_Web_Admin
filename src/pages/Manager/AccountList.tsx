@@ -1,66 +1,60 @@
-import { useState } from 'react';
-import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
-import DeleteButton from '../../components/Buttonicons/DeleteButton';
-import EditButton from '../../components/Buttonicons/EditButton';
-import DownloadButton from '../../components/Buttonicons/DownloadButton';
+import { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import SortIcon from '../../components/Buttonicons/SortIcon';
 import StaffTable from '../../components/StaffTable';
+import { getAccounts, getTotalAccounts } from '../../api/Account/Account';
+import {
+  UserIcon,
+  BriefcaseIcon,
+  PencilIcon,
+  ShoppingCartIcon,
+} from '@heroicons/react/24/solid';
 
 type Staff = {
   id: string;
+  roleId: string;
+  email: string;
+  username: string;
+  imageUrl: string;
+  phoneNumber: string | null;
+  dateOfBirth: string | null;
+  insDate: string;
+  upsDate: string;
   avatar: string;
   staffName: string;
   role: string;
   birthday: string;
   address: string;
-  email: string;
-  phone: string;
   isChecked: boolean;
+  deflag: boolean;
 };
 
 type SortKey = string;
 
-const AccountList = () => {
-  const [staffs, setStaffs] = useState<Staff[]>([
-    {
-      id: '1',
-      avatar:
-        'https://htmediagroup.vn/wp-content/uploads/2022/04/Anh-CV-2_avatar-min-1170x780.jpg',
-      staffName: 'Nguyễn Văn A',
-      role: 'Quản lý',
-      birthday: '12.08.1980',
-      address: '123 Đường A, Quận 1, TP.HCM',
-      email: 'nguyenvana@example.com',
-      phone: '0901234567',
-      isChecked: false,
-    },
-    {
-      id: '2',
-      avatar:
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTvIuSnnn519WMlA0pP5tITLJLe678hfRFw4hKrk-_RSSsNLmZwoqXMUBXtVLa5fYqHqWo&usqp=CAU',
-      staffName: 'Trần Văn B',
-      role: 'Nhân viên',
-      birthday: '01.12.1990',
-      address: '456 Đường B, Quận 2, TP.HCM',
-      email: 'tranvanb@example.com',
-      phone: '0902345678',
-      isChecked: false,
-    },
-    {
-      id: '3',
-      avatar: 'https://studiochupanhdep.com/Upload/Images/Album/anh-cv-dep.jpg',
-      staffName: 'Lê Văn C',
-      role: 'Khách hàng',
-      birthday: '01.12.1990',
-      address: '456 Đường B, Quận 3, TP.HCM',
-      email: 'levanc@example.com',
-      phone: '0902345678',
-      isChecked: false,
-    },
-    // ... thêm dữ liệu nhân viên khác ...
-  ]);
+const roleMapping: { [key: string]: string } = {
+  '9959ce96-de26-40a7-b8a7-28a704062e89': 'Sales Staff',
+  '7af0d75e-1157-48b4-899d-3196deed5fad': 'Design Staff',
+  'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': 'Manager',
+  '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
+};
 
+
+const roleClassMapping: { [key: string]: string } = {
+  'Sales Staff': 'bg-blue-500 text-white',
+  'Design Staff': 'bg-pink-500 text-white',
+  Manager: 'bg-yellow-500 text-white',
+  Customer: 'bg-green-500 text-white',
+};
+
+const roleIconMapping: { [key: string]: JSX.Element } = {
+  'Sales Staff': <ShoppingCartIcon className="w-4 h-4" />,
+  'Design Staff': <PencilIcon className="w-4 h-4" />,
+  Manager: <BriefcaseIcon className="w-4 h-4" />,
+  Customer: <UserIcon className="w-4 h-4" />,
+};
+
+
+const AccountList = () => {
+  const [staffs, setStaffs] = useState<Staff[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
@@ -68,6 +62,65 @@ const AccountList = () => {
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái isLoading
+
+  useEffect(() => {
+    const fetchAccounts = async () => {
+      setIsLoading(true); // Bắt đầu loading
+      try {
+        const data = await getAccounts(currentPage, 10);
+        const formattedData = data.Items.map((item: any) => ({
+          id: item.Id,
+          roleId: item.RoleId,
+          email: item.Email,
+          username: item.Username,
+          imageUrl: item.ImageUrl || 'default-avatar-url', // Replace with a default avatar URL if needed
+          phoneNumber: item.PhoneNumber || '',
+          dateOfBirth: item.DateOfBirth
+            ? new Date(item.DateOfBirth).toLocaleDateString()
+            : '',
+          insDate: item.InsDate,
+          upsDate: item.UpsDate,
+          avatar: item.ImageUrl || 'default-avatar-url', // Replace with a default avatar URL if needed
+          staffName: item.Username,
+          role: roleMapping[item.RoleId] || 'Unknown', // Map RoleId to a role name
+          birthday: item.DateOfBirth
+            ? new Date(item.DateOfBirth).toLocaleDateString()
+            : '',
+          address: '', // Add address if available
+          isChecked: false,
+          deflag: item.Deflag, // Add deflag status
+        }));
+        setStaffs(formattedData);
+        setTotalPages(data.TotalPages);
+      } catch (error) {
+        console.error('Failed to fetch accounts:', error);
+      } finally {
+        setIsLoading(false); // Kết thúc loading
+      }
+    };
+
+    const fetchTotalAccounts = async () => {
+      try {
+        const total = await getTotalAccounts();
+        setTotalAccounts(total);
+      } catch (error) {
+        console.error('Failed to fetch total accounts:', error);
+      }
+    };
+
+    fetchAccounts();
+    fetchTotalAccounts();
+  }, [currentPage]);
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
 
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
@@ -138,10 +191,8 @@ const AccountList = () => {
     { key: 'avatar', label: 'Avatar' },
     { key: 'staffName', label: 'Tên Nhân Viên' },
     { key: 'role', label: 'Vai Trò' },
-    { key: 'birthday', label: 'Ngày Sinh' },
-    { key: 'address', label: 'Địa Chỉ' },
-    { key: 'email', label: 'Email' },
     { key: 'phone', label: 'Số Điện Thoại' },
+    // { key: 'deflag', label: 'Trạng Thái' }, // Bỏ cột Trạng thái
   ];
 
   return (
@@ -149,9 +200,9 @@ const AccountList = () => {
       <Breadcrumb pageName="Quản lý tài khoản hệ thống" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <h4 className="mb-6 text-xl font-semibold text-black dark:text-white">
-          Quản lý tài khoản
-        </h4>
+        <p className="mb-4 text-lg text-black dark:text-white">
+          Tổng số Tài khoản: {totalAccounts}
+        </p>
         <div className="flex flex-col md:flex-row md:items-center mb-4">
           <input
             type="text"
@@ -166,9 +217,10 @@ const AccountList = () => {
             onChange={(e) => setSelectedRole(e.target.value)}
           >
             <option value="">Tất cả vai trò</option>
-            <option value="Quản lý">Quản lý</option>
-            <option value="Nhân viên">Nhân viên</option>
-            <option value="Khách hàng">Khách hàng</option>
+            <option value="Manager">Quản lý</option>
+            <option value="Design Staff">Nhân viên thiết kế</option>
+            <option value="Sales Staff">Nhân viên bán hàng</option>
+            <option value="Customer">Khách hàng</option>
             {/* Thêm các vai trò khác nếu cần */}
           </select>
           <button
@@ -187,7 +239,29 @@ const AccountList = () => {
             handleCheckboxChange={handleCheckboxChange}
             handleSort={handleSort}
             handleDelete={handleDelete}
+            roleClassMapping={roleClassMapping} // Truyền roleClassMapping vào StaffTable
+            roleIconMapping={roleIconMapping} // Truyền roleIconMapping vào StaffTable
+            isLoading={isLoading} // Truyền isLoading vào StaffTable
           />
+        </div>
+        <div className="flex justify-between mt-4">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+          >
+            Trang trước
+          </button>
+          <span>
+            Trang {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+          >
+            Trang sau
+          </button>
         </div>
       </div>
     </>

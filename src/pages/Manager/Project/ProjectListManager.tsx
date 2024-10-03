@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   FaSpinner,
   FaClipboardCheck,
@@ -11,6 +11,7 @@ import {
 
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from '../components/Table/ProjectTableManager';
+import { getProjects } from '../../../api/Project/project';
 
 type Email = {
   id: string;
@@ -27,86 +28,7 @@ type Email = {
 type SortKey = string;
 
 const ProjectListManager = () => {
-  const [emails, setEmails] = useState<Email[]>([
-    {
-      id: '1',
-      projectId: 'P001',
-      projectName: 'Khu Công Nghiệp Bình An',
-      customerName: 'Nguyễn Văn A',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '12.08.2019',
-      status: 'Đang xử lý',
-      isChecked: false,
-    },
-    {
-      id: '2',
-      projectId: 'P002',
-      projectName: 'Khu Công Nghiệp Sóng Thần',
-      customerName: 'Trần Văn B',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô & Hoàn thiện',
-      date: '01.12.2024',
-      status: 'Đã thiết kế',
-      isChecked: false,
-    },
-    {
-      id: '3',
-      projectId: 'P003',
-      projectName: 'Khu Công Nghệ Cao',
-      customerName: 'Lê Thị C',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô & Hoàn thiện',
-      date: '25.11.2024',
-      status: 'Đã tạo hợp đồng thiết kế',
-      isChecked: false,
-    },
-    {
-      id: '4',
-      projectId: 'P004',
-      projectName: 'Khu Dân Cư',
-      customerName: 'Phạm Văn D',
-      category: 'Nhà cổ',
-      serviceType: 'Báo giá thô',
-      date: '30.04.2024',
-      status: 'Đang chờ kiểm tra',
-      isChecked: false,
-    },
-    {
-      id: '5',
-      projectId: 'P005',
-      projectName: 'Khu Đô Thị Mới',
-      customerName: 'Nguyễn Thị E',
-      category: 'Nhà hiện đại',
-      serviceType: 'Báo giá thô',
-      date: '15.05.2023',
-      status: 'Đã tạo hợp đồng',
-      isChecked: false,
-    },
-    {
-      id: '6',
-      projectId: 'P006',
-      projectName: 'Khu Chung Cư Cao Cấp',
-      customerName: 'Trần Văn F',
-      category: 'Nhà hiện đại',
-      serviceType: 'Báo giá thô & Hoàn thiện',
-      date: '20.06.2023',
-      status: 'Đã hoàn thành',
-      isChecked: false,
-    },
-    {
-      id: '7',
-      projectId: 'P007',
-      projectName: 'Khu Nghỉ Dưỡng',
-      customerName: 'Lê Thị G',
-      category: 'Nhà hiện đại',
-      serviceType: 'Báo giá thô & Hoàn thiện',
-      date: '10.07.2023',
-      status: 'Hợp đồng đã chấm dứt',
-      isChecked: false,
-    },
-  ]);
-
+  const [emails, setEmails] = useState<Email[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
@@ -114,6 +36,38 @@ const ProjectListManager = () => {
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState('Tất cả');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchProjects = async (page: number) => {
+    setLoading(true);
+    try {
+      const data = await getProjects(page, 10); // Mỗi trang có 10 mục
+      const formattedData = data.Items.map((item: any) => ({
+        id: item.Id,
+        projectId: item.ProjectCode,
+        projectName: item.Name,
+        customerName: item.AccountName,
+        category: item.Type,
+        serviceType: item.Type,
+        date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
+        status: item.Status,
+        isChecked: false,
+      }));
+      setEmails(formattedData);
+      setTotalPages(data.TotalPages);
+    } catch (err) {
+      setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects(currentPage);
+  }, [currentPage]);
 
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
@@ -214,61 +168,89 @@ const ProjectListManager = () => {
     { label: 'Hợp đồng đã chấm dứt', icon: <FaBan /> },
   ];
 
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Danh sách dự án" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <div className="mb-4">
-          <ul className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            {tabs.map((tab) => (
-              <li
-                key={tab.label}
-                className={`mr-1 ${
-                  activeTab === tab.label
-                    ? 'border-blue-500 text-blue-500'
-                    : 'border-transparent text-gray-500'
-                } transition-colors duration-300`}
-              >
-                <button
-                  className="inline-block py-2 px-4 font-semibold flex items-center transition-transform duration-300 transform hover:scale-105"
-                  onClick={() => setActiveTab(tab.label)}
+        <>
+          <div className="mb-4">
+            <ul className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              {tabs.map((tab) => (
+                <li
+                  key={tab.label}
+                  className={`mr-1 ${
+                    activeTab === tab.label
+                      ? 'border-blue-500 text-blue-500'
+                      : 'border-transparent text-gray-500'
+                  } transition-colors duration-300`}
                 >
-                  {tab.icon}
-                  <span className="ml-2">{tab.label}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="flex flex-col md:flex-row md:items-center mb-4">
-          <input
-            type="text"
-            className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
-            placeholder="Tìm kiếm..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-          />
-          <button
-            onClick={handleDeleteSelected}
-            className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            Xóa đã chọn
-          </button>
-        </div>
-        <div className="max-w-full overflow-x-auto">
-          <ProjectTableManager
-            data={filteredEmails}
-            columns={columns}
-            isAllChecked={isAllChecked}
-            handleSelectAll={handleSelectAll}
-            handleCheckboxChange={handleCheckboxChange}
-            handleSort={handleSort}
-            handleDelete={handleDelete}
-            handleViewDetails={handleViewDetails}
-            handleDownload={handleDownload}
-          />
-        </div>
+                  <button
+                    className="inline-block py-2 px-4 font-semibold flex items-center transition-transform duration-300 transform hover:scale-105"
+                    onClick={() => setActiveTab(tab.label)}
+                  >
+                    {tab.icon}
+                    <span className="ml-2">{tab.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-center mb-4">
+            <input
+              type="text"
+              className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
+              placeholder="Tìm kiếm..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <button
+              onClick={handleDeleteSelected}
+              className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+            >
+              Xóa đã chọn
+            </button>
+          </div>
+          <div className="max-w-full overflow-x-auto">
+            <ProjectTableManager
+              data={filteredEmails}
+              columns={columns}
+              isAllChecked={isAllChecked}
+              handleSelectAll={handleSelectAll}
+              handleCheckboxChange={handleCheckboxChange}
+              handleSort={handleSort}
+              handleDelete={handleDelete}
+              handleViewDetails={handleViewDetails}
+              handleDownload={handleDownload}
+              isLoading={loading}
+            />
+          </div>
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+            >
+              Trang trước
+            </button>
+            <span>
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+            >
+              Trang sau
+            </button>
+          </div>
+        </>
       </div>
     </>
   );

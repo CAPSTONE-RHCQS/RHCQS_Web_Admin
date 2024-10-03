@@ -1,4 +1,3 @@
-import React from 'react';
 
 const DownloadButton: React.FC = () => (
   <button className="text-green-500 hover:text-primary">
