@@ -31,7 +31,7 @@ interface ProjectTableManagerProps {
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   handleDownload: (id: string) => void;
-  isLoading: boolean; // Thêm thuộc tính isLoading
+  isLoading: boolean; 
 }
 
 const getStatusStyle = (status: string) => {

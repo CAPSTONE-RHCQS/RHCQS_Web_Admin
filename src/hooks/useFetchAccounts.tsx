@@ -9,7 +9,7 @@ const roleMapping: { [key: string]: string } = {
   '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
 };
 
-const useFetchAccounts = (currentPage: number) => {
+const useFetchAccounts = (currentPage: number, refreshKey: number) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -62,7 +62,7 @@ const useFetchAccounts = (currentPage: number) => {
 
     fetchAccounts();
     fetchTotalAccounts();
-  }, [currentPage]);
+  }, [currentPage, refreshKey]);
 
   return { totalPages, totalAccounts, isLoading, accounts };
 };

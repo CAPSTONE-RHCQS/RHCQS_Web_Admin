@@ -8,7 +8,7 @@ import {
   FaBan,
   FaList,
 } from 'react-icons/fa';
-
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from '../components/Table/ProjectTableManager';
 import { getProjects } from '../../../api/Project/project';
@@ -40,11 +40,12 @@ const ProjectListManager = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const fetchProjects = async (page: number) => {
     setLoading(true);
     try {
-      const data = await getProjects(page, 10); // Mỗi trang có 10 mục
+      const data = await getProjects(page, 10);
       const formattedData = data.Items.map((item: any) => ({
         id: item.Id,
         projectId: item.ProjectCode,
@@ -67,7 +68,11 @@ const ProjectListManager = () => {
 
   useEffect(() => {
     fetchProjects(currentPage);
-  }, [currentPage]);
+  }, [currentPage, refreshKey]);
+
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
 
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
@@ -131,12 +136,10 @@ const ProjectListManager = () => {
   };
 
   const handleViewDetails = (id: string) => {
-    // Logic xử lý khi nhấn nút "Xem chi tiết"
     console.log('View details for:', id);
   };
 
   const handleDownload = (id: string) => {
-    // Logic xử lý khi nhấn nút "Tải về"
     console.log('Download for:', id);
   };
 
@@ -216,6 +219,17 @@ const ProjectListManager = () => {
             >
               Xóa đã chọn
             </button>
+          </div>
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex items-center">
+              <span className="text-lg text-black dark:text-white">
+                Tổng số Dự án: {emails.length}
+              </span>
+            </div>
+            <ArrowPathIcon
+              onClick={handleRefresh}
+              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
+            />
           </div>
           <div className="max-w-full overflow-x-auto">
             <ProjectTableManager

@@ -5,6 +5,7 @@ import {
   BriefcaseIcon,
   PencilIcon,
   ShoppingCartIcon,
+  ArrowPathIcon,
 } from '@heroicons/react/24/solid';
 import useFetchAccounts from '../../hooks/useFetchAccounts';
 import { Account } from '../../types/Account';
@@ -28,12 +29,13 @@ const roleIconMapping: { [key: string]: JSX.Element } = {
 
 const AccountList = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [refreshKey, setRefreshKey] = useState(0);
   const {
     accounts: fetchedAccounts,
     totalPages,
     totalAccounts,
     isLoading,
-  } = useFetchAccounts(currentPage);
+  } = useFetchAccounts(currentPage, refreshKey); 
   const [accounts, setAccounts] = useState<Account[]>(fetchedAccounts);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
@@ -112,6 +114,10 @@ const AccountList = () => {
     setAccounts(accounts.filter((account) => !account.isChecked));
   };
 
+  const handleRefresh = () => {
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
+
   const filteredAccounts = accounts.filter(
     (account) =>
       account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) &&
@@ -130,9 +136,6 @@ const AccountList = () => {
       <Breadcrumb pageName="Quản lý tài khoản hệ thống" />
 
       <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <p className="mb-4 text-lg text-black dark:text-white">
-          Tổng số Tài khoản: {totalAccounts}
-        </p>
         <div className="flex flex-col md:flex-row md:items-center mb-4">
           <input
             type="text"
@@ -158,6 +161,17 @@ const AccountList = () => {
           >
             Xóa đã chọn
           </button>
+        </div>
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center">
+            <span className="text-lg text-black dark:text-white">
+              Tổng số Tài khoản: {totalAccounts}
+            </span>
+          </div>
+          <ArrowPathIcon
+            onClick={handleRefresh}
+            className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
+          />
         </div>
         <div className="max-w-full overflow-x-auto">
           <AccountTable
