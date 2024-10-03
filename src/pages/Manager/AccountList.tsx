@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import StaffTable from '../../components/StaffTable';
+import StaffTable from './components/Table/StaffTable';
 import { getAccounts, getTotalAccounts } from '../../api/Account/Account';
 import {
   UserIcon,
@@ -37,11 +37,10 @@ const roleMapping: { [key: string]: string } = {
   '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
 };
 
-
 const roleClassMapping: { [key: string]: string } = {
   'Sales Staff': 'bg-blue-500 text-white',
   'Design Staff': 'bg-pink-500 text-white',
-  Manager: 'bg-yellow-500 text-white',
+  Manager: 'bg-purple-500 text-white', // Đổi màu cho Manager
   Customer: 'bg-green-500 text-white',
 };
 
@@ -51,7 +50,6 @@ const roleIconMapping: { [key: string]: JSX.Element } = {
   Manager: <BriefcaseIcon className="w-4 h-4" />,
   Customer: <UserIcon className="w-4 h-4" />,
 };
-
 
 const AccountList = () => {
   const [staffs, setStaffs] = useState<Staff[]>([]);
@@ -190,9 +188,8 @@ const AccountList = () => {
   const columns = [
     { key: 'avatar', label: 'Avatar' },
     { key: 'staffName', label: 'Tên Nhân Viên' },
+    { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'role', label: 'Vai Trò' },
-    { key: 'phone', label: 'Số Điện Thoại' },
-    // { key: 'deflag', label: 'Trạng Thái' }, // Bỏ cột Trạng thái
   ];
 
   return (
@@ -221,7 +218,6 @@ const AccountList = () => {
             <option value="Design Staff">Nhân viên thiết kế</option>
             <option value="Sales Staff">Nhân viên bán hàng</option>
             <option value="Customer">Khách hàng</option>
-            {/* Thêm các vai trò khác nếu cần */}
           </select>
           <button
             onClick={handleDeleteSelected}
@@ -239,9 +235,9 @@ const AccountList = () => {
             handleCheckboxChange={handleCheckboxChange}
             handleSort={handleSort}
             handleDelete={handleDelete}
-            roleClassMapping={roleClassMapping} // Truyền roleClassMapping vào StaffTable
-            roleIconMapping={roleIconMapping} // Truyền roleIconMapping vào StaffTable
-            isLoading={isLoading} // Truyền isLoading vào StaffTable
+            roleClassMapping={roleClassMapping}
+            roleIconMapping={roleIconMapping}
+            isLoading={isLoading}
           />
         </div>
         <div className="flex justify-between mt-4">

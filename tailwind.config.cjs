@@ -7,7 +7,7 @@ module.exports = withMT({
   darkMode: 'class',
   theme: {
     fontFamily: {
-      satoshi: ['Satoshi', 'sans-serif'],
+      montserrat: ['Montserrat', 'sans-serif'],
     },
     screens: {
       '2xsm': '375px',
