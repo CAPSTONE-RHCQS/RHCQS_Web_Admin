@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import {
   UserIcon,
@@ -27,27 +27,24 @@ const roleIconMapping: { [key: string]: JSX.Element } = {
   Customer: <UserIcon className="w-4 h-4" />,
 };
 
-const AccountList = () => {
+const AccountList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
-  const {
-    accounts: fetchedAccounts,
-    totalPages,
-    totalAccounts,
-    isLoading,
-  } = useFetchAccounts(currentPage, refreshKey); 
-  const [accounts, setAccounts] = useState<Account[]>(fetchedAccounts);
+  const [selectedRole, setSelectedRole] = useState<string>('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: 'ascending' | 'descending';
   } | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedRole, setSelectedRole] = useState('');
+  const { totalPages, totalAccounts, isLoading, accounts, setAccounts } =
+    useFetchAccounts(currentPage, refreshKey, selectedRole);
 
-  useEffect(() => {
-    setAccounts(fetchedAccounts);
-  }, [fetchedAccounts]);
+  const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(event.target.value);
+    setCurrentPage(1);
+    setRefreshKey((prevKey) => prevKey + 1);
+  };
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -118,12 +115,6 @@ const AccountList = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
 
-  const filteredAccounts = accounts.filter(
-    (account) =>
-      account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedRole === '' || account.role === selectedRole),
-  );
-
   const columns = [
     { key: 'avatar', label: 'Avatar' },
     { key: 'accountName', label: 'Tên Nhân Viên' },
@@ -147,13 +138,21 @@ const AccountList = () => {
           <select
             className="h-14 w-full md:w-48 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
             value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
+            onChange={handleRoleChange}
           >
             <option value="">Tất cả vai trò</option>
-            <option value="Manager">Quản lý</option>
-            <option value="Design Staff">Nhân viên thiết kế</option>
-            <option value="Sales Staff">Nhân viên bán hàng</option>
-            <option value="Customer">Khách hàng</option>
+            <option value="a3bb42ca-de7c-4c9f-8f58-d8175f96688c">
+              Quản lý
+            </option>
+            <option value="7af0d75e-1157-48b4-899d-3196deed5fad">
+              Nhân viên thiết kế
+            </option>
+            <option value="9959ce96-de26-40a7-b8a7-28a704062e89">
+              Nhân viên bán hàng
+            </option>
+            <option value="789dd57d-0f75-40d1-8366-ef6ab582efc8">
+              Khách hàng
+            </option>
           </select>
           <button
             onClick={handleDeleteSelected}
@@ -175,7 +174,7 @@ const AccountList = () => {
         </div>
         <div className="max-w-full overflow-x-auto">
           <AccountTable
-            data={filteredAccounts}
+            data={accounts}
             columns={columns}
             isAllChecked={isAllChecked}
             handleSelectAll={handleSelectAll}

@@ -8,12 +8,8 @@ export type Account = {
   dateOfBirth: string | null;
   insDate: string;
   upsDate: string;
-  avatar: string;
-  accountName: string;
-  role: string;
-  birthday: string;
-  address: string;
-  isChecked: boolean;
   deflag: boolean;
+  roleName: string; // Thêm trường này
+  passwordHash: string; // Thêm trường này
   [key: string]: any;
 };

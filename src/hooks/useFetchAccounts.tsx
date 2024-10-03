@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getAccounts, getTotalAccounts } from '../api/Account/Account';
+import { getAccounts, getAccountsByRoleId, getTotalAccounts } from '../api/Account/Account';
 import { Account } from '../types/Account';
 
 const roleMapping: { [key: string]: string } = {
@@ -9,7 +9,7 @@ const roleMapping: { [key: string]: string } = {
   '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
 };
 
-const useFetchAccounts = (currentPage: number, refreshKey: number) => {
+const useFetchAccounts = (currentPage: number, refreshKey: number, selectedRole: string) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
@@ -19,7 +19,12 @@ const useFetchAccounts = (currentPage: number, refreshKey: number) => {
     const fetchAccounts = async () => {
       setIsLoading(true);
       try {
-        const data = await getAccounts(currentPage, 10);
+        let data;
+        if (selectedRole === '') {
+          data = await getAccounts(currentPage, 10);
+        } else {
+          data = await getAccountsByRoleId(selectedRole, currentPage, 10);
+        }
         const formattedData = data.Items.map((item: any) => ({
           id: item.Id,
           roleId: item.RoleId,
@@ -62,9 +67,9 @@ const useFetchAccounts = (currentPage: number, refreshKey: number) => {
 
     fetchAccounts();
     fetchTotalAccounts();
-  }, [currentPage, refreshKey]);
+  }, [currentPage, refreshKey, selectedRole]);
 
-  return { totalPages, totalAccounts, isLoading, accounts };
+  return { totalPages, totalAccounts, isLoading, accounts, setAccounts };
 };
 
 export default useFetchAccounts;
