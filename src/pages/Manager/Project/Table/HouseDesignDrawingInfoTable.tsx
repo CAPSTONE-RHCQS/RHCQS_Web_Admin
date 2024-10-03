@@ -5,6 +5,9 @@ import { designEmployees } from '../../../../types/Employee';
 interface HouseDesignDrawingInfoTableProps {
   designData: {
     Id: string;
+    Step: number;
+    Name: string;
+    Type: string;
     InsDate: string;
     Status: string;
   }[];
@@ -72,7 +75,7 @@ const HouseDesignDrawingInfoTable: React.FC<
                 {index + 1}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.Id}
+                {item.Name}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 {new Date(item.InsDate).toLocaleString()}

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
-import { Contract } from '../../../../types/project';
 
 interface ContractTableProps {
-  contractData: Contract[];
+  contractData: {
+    Name: string;
+    Status: string;
+    Note: string;
+  }[];
 }
 
 const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
@@ -20,9 +23,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
           <th className="py-4 px-4 font-medium text-black dark:text-white">
             STT
           </th>
-          <th className="py-4 px-4 font-medium text-black dark:text-white">
-            Phiên bản
-          </th>
+
           <th className="py-4 px-4 font-medium text-black dark:text-white">
             Loại hợp đồng
           </th>
@@ -42,22 +43,19 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
         {contractData.map((item, index) => (
           <tr key={index}>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.id}
+              {index + 1}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.version}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.contractType}
+              {item.Name}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
               {item.creator}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.status}
+              {item.Status}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.content}
+              {item.Note}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical

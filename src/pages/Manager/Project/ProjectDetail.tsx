@@ -246,7 +246,7 @@ const ProjectDetail = () => {
         <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
-        <ContractTable contractData={contractData} />
+        <ContractTable contractData={projectDetail.ContractInfo || []} />
         {/* <!-- Thêm nội dung khác ở đây --> */}
       </div>
     </>
