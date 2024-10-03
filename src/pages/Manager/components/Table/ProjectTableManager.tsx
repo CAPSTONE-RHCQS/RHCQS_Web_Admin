@@ -12,7 +12,6 @@ import {
 import RejectionModal from '../../../../components/Modals/RejectionModal';
 import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
 import SortIcon from '../../../../components/Buttonicons/SortIcon';
-import { Link } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 
 type DataItem = {
@@ -31,7 +30,7 @@ interface ProjectTableManagerProps {
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   handleDownload: (id: string) => void;
-  isLoading: boolean; 
+  isLoading: boolean;
 }
 
 const getStatusStyle = (status: string) => {
@@ -62,7 +61,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   handleSelectAll,
   handleCheckboxChange,
   handleSort,
-  handleViewDetails,
+  handleViewDetails, // Sử dụng hàm từ props
   handleDownload,
   isLoading,
 }) => {
@@ -77,7 +76,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
     <>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <ClipLoader size={50} color={"#123abc"} loading={isLoading} />
+          <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
         </div>
       ) : (
         <table className="w-full table-auto">
@@ -135,14 +134,12 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                   </td>
                 ))}
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex space-x-2">
-                  <Link to={`/projectdetail`}>
-                    <button
-                      onClick={() => handleViewDetails(item.id)}
-                      className="text-blue-500 hover:text-blue-700 transition mr-2"
-                    >
-                      <FaEye />
-                    </button>
-                  </Link>
+                  <button
+                    onClick={() => handleViewDetails(item.id)}
+                    className="text-blue-500 hover:text-blue-700 transition mr-2"
+                  >
+                    <FaEye />
+                  </button>
                   <button
                     onClick={() => handleDownload(item.id)}
                     className="text-green-500 hover:text-green-700 transition"

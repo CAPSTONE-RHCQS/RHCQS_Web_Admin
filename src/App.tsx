@@ -69,7 +69,7 @@ function App() {
           }
         />
         <Route
-          path="/projectdetail"
+          path="/projectdetail/:id"
           element={
             <PrivateRoute allowedRoles={['Manager']}>
               <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />

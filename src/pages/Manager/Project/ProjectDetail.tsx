@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 import {
-  FaDownload,
-  FaShareAlt,
   FaCommentDots,
   FaUser,
   FaMapMarkerAlt,
@@ -20,83 +19,47 @@ import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import { Link } from 'react-router-dom';
-import { Contract, Design, DetailedQuote, Quote } from '../../../types/project';
-import PreliminaryQuoteTable from './Table/PreliminaryQuoteTable';
-import DrawingDesignTable from './Table/DrawingDesignTable';
-import DetailedQuoteTable from './Table/DetailedQuoteTable';
+import { Contract } from '../../../types/project';
 import ContractTable from './Table/ContractTable';
+import { getProjectDetail } from '../../../api/Project/project';
+import InitialInfoTable from './Table/InitialInfoTable';
+import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
+import FinalInfoTable from './Table/FinalInfoTable';
 
 const ProjectDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const [projectDetail, setProjectDetail] = useState<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [quoteData, setQuoteData] = useState<Quote[]>([]);
-  const [designData, setDesignData] = useState<Design[]>([]);
-  const [detailedQuoteData, setDetailedQuoteData] = useState<DetailedQuote[]>(
-    [],
-  );
   const [contractData, setContractData] = useState<Contract[]>([]);
 
   useEffect(() => {
-    fetch('/src/data/project/quoteData.json')
-      .then((response) => response.json())
-      .then((data) => setQuoteData(data));
+    const fetchProjectDetail = async () => {
+      if (id) {
+        try {
+          const data = await getProjectDetail(id);
+          setProjectDetail(data);
+        } catch (error) {
+          console.error('Error fetching project detail:', error);
+        }
+      } else {
+        console.error('Project ID is undefined');
+      }
+    };
 
-    fetch('/src/data/project/designData.json')
-      .then((response) => response.json())
-      .then((data) => setDesignData(data));
+    fetchProjectDetail();
+  }, [id]);
 
-    fetch('/src/data/project/detailedQuoteData.json')
-      .then((response) => response.json())
-      .then((data) => setDetailedQuoteData(data));
-
+  useEffect(() => {
     fetch('/src/data/project/contractData.json')
       .then((response) => response.json())
       .then((data) => setContractData(data));
   }, []);
 
-  const contactData1 = {
-    fullName: 'Trần Minh Thiện',
-    phoneNumber: '0965486940',
-    emailAddress: 'email@fpt.edu.vn',
-  };
-
-  const contactFields1 = [
-    { key: 'fullName', label: 'Name' },
-    { key: 'phoneNumber', label: 'Phone' },
-    { key: 'emailAddress', label: 'Email' },
-  ];
-
-  const contactData2 = {
-    nameHouse: 'Nhà ở dân dụng',
-    address: 'Thủ Đức, HCM',
-  };
-
-  const contactFields2 = [
-    { key: 'nameHouse', label: 'Name' },
-    { key: 'address', label: 'Phone' },
-  ];
-
-  const contactData3 = {
-    title: 'Mã số xử lý',
-    number: '#70841',
-  };
-
-  const contactFields3 = [
-    { key: 'title', label: 'Name' },
-    { key: 'number', label: 'Phone' },
-  ];
-
-  const contactData4 = {
-    title: 'Dự phí',
-    priceQuote: formatCurrencyShort(1780518752),
-  };
-
-  const contactFields4 = [
-    { key: 'title', label: 'Name' },
-    { key: 'priceQuote', label: 'Phone' },
-  ];
+  if (!projectDetail) {
+    return <div>Loading...</div>;
+  }
 
   const showMenu = () => {
     setMenuVisible(true);
@@ -119,6 +82,15 @@ const ProjectDetail = () => {
   const toggleChat = () => {
     setShowChat(!showChat);
   };
+
+  const statusMap: { [key: string]: string } = {
+    Processing: 'Đang Xử Lý',
+    Designing: 'Đang Thiết Kế',
+    Quoting: 'Đang Báo Giá',
+    Completed: 'Hoàn Thành',
+  };
+
+  const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
 
   return (
     <>
@@ -177,53 +149,81 @@ const ProjectDetail = () => {
           </button>
         )}
 
-        <div className="flex flex-row gap-3">
+        <div className="flex flex-row gap-3 justify-between">
           <ContactCard
-            data={contactData3}
-            fields={contactFields3}
-            avatarUrl={Process}
-          />
-          <ContactCard
-            data={contactData1}
-            fields={contactFields1}
+            data={{
+              fullName: projectDetail.AccountName || 'N/A',
+              phoneNumber: '0965486940',
+              emailAddress: 'email@fpt.edu.vn',
+            }}
+            fields={[
+              { key: 'fullName', label: 'Name' },
+              { key: 'phoneNumber', label: 'Phone' },
+              { key: 'emailAddress', label: 'Email' },
+            ]}
             avatarUrl={Avatar}
           />
           <ContactCard
-            data={contactData2}
-            fields={contactFields2}
+            data={{
+              nameHouse: 'Nhà ở dân dụng',
+              address: projectDetail.Address || 'N/A',
+            }}
+            fields={[
+              { key: 'nameHouse', label: 'Name' },
+              { key: 'address', label: 'Address' },
+            ]}
             avatarUrl={House}
           />
           <ContactCard
-            data={contactData4}
-            fields={contactFields4}
+            data={{
+              title: 'Mã số xử lý',
+              number: projectDetail.ProjectCode || 'N/A',
+            }}
+            fields={[
+              { key: 'title', label: 'Name' },
+              { key: 'number', label: 'Code' },
+            ]}
+            avatarUrl={Process}
+          />
+          <ContactCard
+            data={{
+              title: 'Dự phí',
+              priceQuote: formatCurrencyShort(1780518752),
+            }}
+            fields={[
+              { key: 'title', label: 'Name' },
+              { key: 'priceQuote', label: 'Quote' },
+            ]}
             avatarUrl={Fee}
           />
         </div>
 
-        <StatusTracker currentStatus="Đang Xử Lý" />
+        <StatusTracker currentStatus={mappedStatus} />
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
-            Tạo lúc 10:33:40 13/09/2024
+            Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaUser className="mr-2" />
           <span className="font-semibold">Tên khách hàng:</span>
-          <span className="text-gray-700 ml-2"> Trần Minh Thiện</span>
+          <span className="text-gray-700 ml-2">
+            {projectDetail.AccountName}
+          </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaMapMarkerAlt className="mr-2" />
           <span className="font-semibold">Địa chỉ thi công:</span>
-          <span className="text-gray-700 ml-2"> Thủ Đức, HCM</span>
+          <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaRulerCombined className="mr-2" />
-          <span className="font-semibold">Diện tích xây dựng:</span>
-          <span className="text-gray-700 ml-2"> 120m²</span>
+          <span className="font-semibold">Diện tích:</span>
+          <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaMoneyBillWave className="mr-2" />
@@ -235,13 +235,15 @@ const ProjectDetail = () => {
         </div>
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Báo giá sơ bộ</h3>
-        <PreliminaryQuoteTable quoteData={quoteData} />
+        <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Thiết kế bản vẽ</h3>
-        <DrawingDesignTable designData={designData} />
+        <HouseDesignDrawingInfoTable
+          designData={projectDetail.HouseDesignDrawingInfo || []}
+        />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Báo giá chi tiết</h3>
-        <DetailedQuoteTable detailedQuoteData={detailedQuoteData} />
+        <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
         <ContractTable contractData={contractData} />

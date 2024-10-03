@@ -12,6 +12,8 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from '../components/Table/ProjectTableManager';
 import { getProjects } from '../../../api/Project/project';
+import { getProjectDetail } from '../../../api/Project/project'; // Import hàm getProjectDetail
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 type Email = {
   id: string;
@@ -41,6 +43,7 @@ const ProjectListManager = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
+  const navigate = useNavigate();
 
   const fetchProjects = async (page: number) => {
     setLoading(true);
@@ -136,7 +139,7 @@ const ProjectListManager = () => {
   };
 
   const handleViewDetails = (id: string) => {
-    console.log('View details for:', id);
+    navigate(`/projectdetail/${id}`);
   };
 
   const handleDownload = (id: string) => {

@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
-import { Design } from '../../../../types/project';
 import EmployeeAllocationDialog from '../../components/Employee/EmployeeAllocationDialog';
 import { designEmployees } from '../../../../types/Employee';
 
-interface DrawingDesignTableProps {
-  designData: Design[];
+interface HouseDesignDrawingInfoTableProps {
+  designData: {
+    Id: string;
+    InsDate: string;
+    Status: string;
+  }[];
 }
 
-const DrawingDesignTable: React.FC<DrawingDesignTableProps> = ({
-  designData,
-}) => {
+const HouseDesignDrawingInfoTable: React.FC<
+  HouseDesignDrawingInfoTableProps
+> = ({ designData }) => {
   const [isApprovalModalOpen, setApprovalModalOpen] = useState(false);
   const [selectedDesignEmployees, setSelectedDesignEmployees] = useState<{
     [key: string]: string[];
@@ -23,7 +26,6 @@ const DrawingDesignTable: React.FC<DrawingDesignTableProps> = ({
   const [currentDrawing, setCurrentDrawing] = useState<string>('');
 
   const handleConfirmAllocation = () => {
-    // Logic xử lý phân bổ nhân viên
     console.log('Design Employees allocated:', selectedDesignEmployees);
     console.log('Notes:', notes);
     setApprovalModalOpen(false);
@@ -58,9 +60,6 @@ const DrawingDesignTable: React.FC<DrawingDesignTableProps> = ({
               Thời gian tạo
             </th>
             <th className="py-4 px-4 font-medium text-black dark:text-white">
-              Người thực hiện
-            </th>
-            <th className="py-4 px-4 font-medium text-black dark:text-white">
               Trạng thái
             </th>
             <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
@@ -68,26 +67,23 @@ const DrawingDesignTable: React.FC<DrawingDesignTableProps> = ({
         </thead>
         <tbody>
           {designData.map((item, index) => (
-            <tr key={index}>
+            <tr key={item.Id}>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.id}
+                {index + 1}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.drawing}
+                {item.Id}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.createdTime}
+                {new Date(item.InsDate).toLocaleString()}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.executor}
-              </td>
-              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.status}
+                {item.Status}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <button
                   className="text-primaryGreenButton hover:text-secondaryGreenButton"
-                  onClick={() => openAllocationDialog(item.drawing)}
+                  onClick={() => openAllocationDialog(item.Id)}
                 >
                   Phân công
                 </button>
@@ -111,4 +107,4 @@ const DrawingDesignTable: React.FC<DrawingDesignTableProps> = ({
   );
 };
 
-export default DrawingDesignTable;
+export default HouseDesignDrawingInfoTable;

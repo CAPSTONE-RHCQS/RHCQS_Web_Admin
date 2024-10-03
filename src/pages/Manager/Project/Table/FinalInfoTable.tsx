@@ -1,17 +1,22 @@
 import React, { useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
-import { DetailedQuote } from '../../../../types/project';
 
-interface DetailedQuoteTableProps {
-  detailedQuoteData: DetailedQuote[];
+interface FinalInfoTableProps {
+  detailedQuoteData: {
+    Id: string;
+    AccountName: string;
+    Version: string;
+    InsDate: string;
+    Status: string;
+  }[];
 }
 
-const DetailedQuoteTable: React.FC<DetailedQuoteTableProps> = ({
+const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
   detailedQuoteData,
 }) => {
-  const [activeMenu, setActiveMenu] = useState<number | null>(null);
+  const [activeMenu, setActiveMenu] = useState<string | null>(null);
 
-  const toggleRowMenu = (id: number) => {
+  const toggleRowMenu = (id: string) => {
     setActiveMenu(activeMenu === id ? null : id);
   };
 
@@ -32,35 +37,35 @@ const DetailedQuoteTable: React.FC<DetailedQuoteTableProps> = ({
             Người tạo
           </th>
           <th className="py-4 px-4 font-medium text-black dark:text-white">
-            Nội dung
+            Trạng thái
           </th>
           <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
         </tr>
       </thead>
       <tbody>
         {detailedQuoteData.map((item, index) => (
-          <tr key={index}>
+          <tr key={item.Id}>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.id}
+              {index + 1}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.version}
+              {item.Version}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.createdTime}
+              {new Date(item.InsDate).toLocaleString()}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.creator}
+              {item.AccountName}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.content}
+              {item.Status}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical
                 className="cursor-pointer"
-                onClick={() => toggleRowMenu(item.id)}
+                onClick={() => toggleRowMenu(item.Id)}
               />
-              {activeMenu === item.id && (
+              {activeMenu === item.Id && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <a
@@ -92,4 +97,4 @@ const DetailedQuoteTable: React.FC<DetailedQuoteTableProps> = ({
   );
 };
 
-export default DetailedQuoteTable;
+export default FinalInfoTable;
