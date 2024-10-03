@@ -69,7 +69,6 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   const [showModal, setShowModal] = useState(false);
 
   const handleConfirmReject = (reason: string) => {
-    // Logic xử lý từ chối với lý do rejectionReason
     console.log('Rejected with reason:', reason);
     setShowModal(false);
   };

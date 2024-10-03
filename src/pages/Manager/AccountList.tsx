@@ -1,46 +1,21 @@
 import { useState, useEffect } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import StaffTable from './components/Table/StaffTable';
-import { getAccounts, getTotalAccounts } from '../../api/Account/Account';
 import {
   UserIcon,
   BriefcaseIcon,
   PencilIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/solid';
-
-type Staff = {
-  id: string;
-  roleId: string;
-  email: string;
-  username: string;
-  imageUrl: string;
-  phoneNumber: string | null;
-  dateOfBirth: string | null;
-  insDate: string;
-  upsDate: string;
-  avatar: string;
-  staffName: string;
-  role: string;
-  birthday: string;
-  address: string;
-  isChecked: boolean;
-  deflag: boolean;
-};
+import useFetchAccounts from '../../hooks/useFetchAccounts';
+import { Account } from '../../types/Account';
+import AccountTable from './components/Table/AccountTable';
 
 type SortKey = string;
-
-const roleMapping: { [key: string]: string } = {
-  '9959ce96-de26-40a7-b8a7-28a704062e89': 'Sales Staff',
-  '7af0d75e-1157-48b4-899d-3196deed5fad': 'Design Staff',
-  'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': 'Manager',
-  '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
-};
 
 const roleClassMapping: { [key: string]: string } = {
   'Sales Staff': 'bg-blue-500 text-white',
   'Design Staff': 'bg-pink-500 text-white',
-  Manager: 'bg-purple-500 text-white', // Đổi màu cho Manager
+  Manager: 'bg-purple-500 text-white',
   Customer: 'bg-green-500 text-white',
 };
 
@@ -52,7 +27,14 @@ const roleIconMapping: { [key: string]: JSX.Element } = {
 };
 
 const AccountList = () => {
-  const [staffs, setStaffs] = useState<Staff[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const {
+    accounts: fetchedAccounts,
+    totalPages,
+    totalAccounts,
+    isLoading,
+  } = useFetchAccounts(currentPage);
+  const [accounts, setAccounts] = useState<Account[]>(fetchedAccounts);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
@@ -60,59 +42,10 @@ const AccountList = () => {
   } | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedRole, setSelectedRole] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [totalAccounts, setTotalAccounts] = useState(0);
-  const [isLoading, setIsLoading] = useState(true); // Thêm trạng thái isLoading
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      setIsLoading(true); // Bắt đầu loading
-      try {
-        const data = await getAccounts(currentPage, 10);
-        const formattedData = data.Items.map((item: any) => ({
-          id: item.Id,
-          roleId: item.RoleId,
-          email: item.Email,
-          username: item.Username,
-          imageUrl: item.ImageUrl || 'default-avatar-url', // Replace with a default avatar URL if needed
-          phoneNumber: item.PhoneNumber || '',
-          dateOfBirth: item.DateOfBirth
-            ? new Date(item.DateOfBirth).toLocaleDateString()
-            : '',
-          insDate: item.InsDate,
-          upsDate: item.UpsDate,
-          avatar: item.ImageUrl || 'default-avatar-url', // Replace with a default avatar URL if needed
-          staffName: item.Username,
-          role: roleMapping[item.RoleId] || 'Unknown', // Map RoleId to a role name
-          birthday: item.DateOfBirth
-            ? new Date(item.DateOfBirth).toLocaleDateString()
-            : '',
-          address: '', // Add address if available
-          isChecked: false,
-          deflag: item.Deflag, // Add deflag status
-        }));
-        setStaffs(formattedData);
-        setTotalPages(data.TotalPages);
-      } catch (error) {
-        console.error('Failed to fetch accounts:', error);
-      } finally {
-        setIsLoading(false); // Kết thúc loading
-      }
-    };
-
-    const fetchTotalAccounts = async () => {
-      try {
-        const total = await getTotalAccounts();
-        setTotalAccounts(total);
-      } catch (error) {
-        console.error('Failed to fetch total accounts:', error);
-      }
-    };
-
-    fetchAccounts();
-    fetchTotalAccounts();
-  }, [currentPage]);
+    setAccounts(fetchedAccounts);
+  }, [fetchedAccounts]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -123,16 +56,16 @@ const AccountList = () => {
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
     setIsAllChecked(newIsAllChecked);
-    setStaffs(
-      staffs.map((staff) => ({ ...staff, isChecked: newIsAllChecked })),
+    setAccounts(
+      accounts.map((account) => ({ ...account, isChecked: newIsAllChecked })),
     );
   };
 
   const handleCheckboxChange = (index: number) => {
-    const newStaffs = [...staffs];
-    newStaffs[index].isChecked = !newStaffs[index].isChecked;
-    setStaffs(newStaffs);
-    setIsAllChecked(newStaffs.every((staff) => staff.isChecked));
+    const newAccounts = [...accounts];
+    newAccounts[index].isChecked = !newAccounts[index].isChecked;
+    setAccounts(newAccounts);
+    setIsAllChecked(newAccounts.every((account) => account.isChecked));
   };
 
   const handleSort = (key: SortKey) => {
@@ -146,9 +79,9 @@ const AccountList = () => {
     }
     setSortConfig({ key, direction });
 
-    const sortedStaffs = [...staffs].sort((a, b) => {
-      const aValue = a[key as keyof Staff];
-      const bValue = b[key as keyof Staff];
+    const sortedAccount = [...accounts].sort((a, b) => {
+      const aValue = a[key as keyof Account];
+      const bValue = b[key as keyof Account];
 
       if (
         key === 'birthday' &&
@@ -168,26 +101,26 @@ const AccountList = () => {
       return 0;
     });
 
-    setStaffs(sortedStaffs);
+    setAccounts(sortedAccount);
   };
 
   const handleDelete = (id: string) => {
-    setStaffs(staffs.filter((staff) => staff.id !== id));
+    setAccounts(accounts.filter((account) => account.id !== id));
   };
 
   const handleDeleteSelected = () => {
-    setStaffs(staffs.filter((staff) => !staff.isChecked));
+    setAccounts(accounts.filter((account) => !account.isChecked));
   };
 
-  const filteredStaffs = staffs.filter(
-    (staff) =>
-      staff.staffName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (selectedRole === '' || staff.role === selectedRole),
+  const filteredAccounts = accounts.filter(
+    (account) =>
+      account.accountName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+      (selectedRole === '' || account.role === selectedRole),
   );
 
   const columns = [
     { key: 'avatar', label: 'Avatar' },
-    { key: 'staffName', label: 'Tên Nhân Viên' },
+    { key: 'accountName', label: 'Tên Nhân Viên' },
     { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'role', label: 'Vai Trò' },
   ];
@@ -227,8 +160,8 @@ const AccountList = () => {
           </button>
         </div>
         <div className="max-w-full overflow-x-auto">
-          <StaffTable
-            data={filteredStaffs}
+          <AccountTable
+            data={filteredAccounts}
             columns={columns}
             isAllChecked={isAllChecked}
             handleSelectAll={handleSelectAll}
