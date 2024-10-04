@@ -4,6 +4,7 @@ import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { postLogin } from '../../api/Authen/login';
 import { jwtDecode } from 'jwt-decode';
+import PhoneSvg from '../../SVG/PhoneSvg';
 
 interface JwtPayload {
   'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': string;
@@ -59,15 +60,9 @@ const SignIn: React.FC = () => {
         <div className="flex flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
-              <Link className="mb-5.5 inline-block" to="/">
-                <img className="hidden dark:block" src={Logo} alt="Logo" />
-                <img className="dark:hidden" src={LogoDark} alt="Logo" />
-              </Link>
-
-              <p className="2xl:px-20">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit
-                suspendisse.
-              </p>
+              <span className="mt-15 inline-block">
+                <PhoneSvg />
+              </span>
             </div>
           </div>
 
@@ -76,7 +71,6 @@ const SignIn: React.FC = () => {
               <h2 className="mb-9 text-2xl font-bold text-black dark:text-white sm:text-title-xl2">
                 Đăng nhập quản trị RHCQS
               </h2>
-
               <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">

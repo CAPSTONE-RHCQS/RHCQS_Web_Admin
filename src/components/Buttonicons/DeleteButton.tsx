@@ -1,5 +1,4 @@
 import React from 'react';
-import DeleteIcon from '../assets/icons/delete-icon.svg';
 
 type DeleteButtonProps = {
   onClick: () => void;
