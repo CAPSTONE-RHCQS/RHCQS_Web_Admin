@@ -22,13 +22,13 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
   const getStatusStyle = (status: string) => {
     switch (status) {
       case 'Proccessing':
-        return 'text-yellow-500';
+        return '#FFA500'; 
       case 'Completed':
-        return 'text-green-500';
+        return '#008000';
       case 'Pending':
-        return 'text-blue-500';
+        return '#0000FF'; 
       case 'Rejected':
-        return 'text-red-500';
+        return '#FF0000';
       default:
         return 'text-gray-500';
     }
@@ -72,11 +72,14 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
               {item.AccountName}
             </td>
             <td
-              className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark ${getStatusStyle(
-                item.Status,
-              )}`}
+              className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark`}
             >
-              {item.Status}
+              <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
+                style={{ backgroundColor: getStatusStyle(item.Status) }}
+              >
+                {item.Status}
+              </span>
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical
@@ -87,7 +90,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <Link
-                      to={`/quotedetail/${item.Id}`}
+                      to={`/initial-quote-detail/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

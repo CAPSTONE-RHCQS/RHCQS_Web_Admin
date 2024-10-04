@@ -11,9 +11,8 @@ import {
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from '../components/Table/ProjectTableManager';
-import { getProjects } from '../../../api/Project/project';
-import { getProjectDetail } from '../../../api/Project/project'; // Import hàm getProjectDetail
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { getProjects } from '../../../api/Project/Project';
+import { useNavigate } from 'react-router-dom';
 
 type Email = {
   id: string;
@@ -139,11 +138,7 @@ const ProjectListManager = () => {
   };
 
   const handleViewDetails = (id: string) => {
-    navigate(`/projectdetail/${id}`);
-  };
-
-  const handleDownload = (id: string) => {
-    console.log('Download for:', id);
+    navigate(`/project-detail/${id}`);
   };
 
   const filteredEmails = emails.filter((email) =>
@@ -244,7 +239,6 @@ const ProjectListManager = () => {
               handleSort={handleSort}
               handleDelete={handleDelete}
               handleViewDetails={handleViewDetails}
-              handleDownload={handleDownload}
               isLoading={loading}
             />
           </div>

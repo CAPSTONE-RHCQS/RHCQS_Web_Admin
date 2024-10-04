@@ -19,12 +19,12 @@ import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import { Contract } from '../../../types/project';
 import ContractTable from './Table/ContractTable';
-import { getProjectDetail } from '../../../api/Project/project';
+import { getProjectDetail } from '../../../api/Project/Project';
 import InitialInfoTable from './Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './Table/FinalInfoTable';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,7 +32,6 @@ const ProjectDetail = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
-  const [contractData, setContractData] = useState<Contract[]>([]);
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
@@ -51,14 +50,12 @@ const ProjectDetail = () => {
     fetchProjectDetail();
   }, [id]);
 
-  useEffect(() => {
-    fetch('/src/data/project/contractData.json')
-      .then((response) => response.json())
-      .then((data) => setContractData(data));
-  }, []);
-
   if (!projectDetail) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={50} color={'#123abc'} loading={true} />
+      </div>
+    );
   }
 
   const showMenu = () => {
@@ -152,6 +149,17 @@ const ProjectDetail = () => {
         <div className="flex flex-row gap-3 justify-between">
           <ContactCard
             data={{
+              title: 'Mã số xử lý',
+              number: projectDetail.ProjectCode || 'N/A',
+            }}
+            fields={[
+              { key: 'title', label: 'Name' },
+              { key: 'number', label: 'Code' },
+            ]}
+            avatarUrl={Process}
+          />
+          <ContactCard
+            data={{
               fullName: projectDetail.AccountName || 'N/A',
               phoneNumber: '0965486940',
               emailAddress: 'email@fpt.edu.vn',
@@ -174,17 +182,7 @@ const ProjectDetail = () => {
             ]}
             avatarUrl={House}
           />
-          <ContactCard
-            data={{
-              title: 'Mã số xử lý',
-              number: projectDetail.ProjectCode || 'N/A',
-            }}
-            fields={[
-              { key: 'title', label: 'Name' },
-              { key: 'number', label: 'Code' },
-            ]}
-            avatarUrl={Process}
-          />
+
           <ContactCard
             data={{
               title: 'Dự phí',
@@ -247,7 +245,6 @@ const ProjectDetail = () => {
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
         <ContractTable contractData={projectDetail.ContractInfo || []} />
-        {/* <!-- Thêm nội dung khác ở đây --> */}
       </div>
     </>
   );

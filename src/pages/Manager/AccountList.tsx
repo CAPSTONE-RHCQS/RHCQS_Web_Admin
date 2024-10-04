@@ -17,7 +17,7 @@ const roleClassMapping: { [key: string]: string } = {
   'Sales Staff': 'bg-blue-500 text-white',
   'Design Staff': 'bg-pink-500 text-white',
   Manager: 'bg-purple-500 text-white',
-  Customer: 'bg-green-500 text-white',
+  Customer: 'bg-primary text-white',
 };
 
 const roleIconMapping: { [key: string]: JSX.Element } = {
@@ -118,8 +118,9 @@ const AccountList: React.FC = () => {
   const columns = [
     { key: 'avatar', label: 'Avatar' },
     { key: 'accountName', label: 'Tên Nhân Viên' },
-    { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'role', label: 'Vai Trò' },
+    { key: 'phoneNumber', label: 'Số Điện Thoại' },
+    { key: 'email', label: 'Email' },
   ];
 
   return (

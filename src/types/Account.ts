@@ -9,7 +9,6 @@ export type Account = {
   insDate: string;
   upsDate: string;
   deflag: boolean;
-  roleName: string; // Thêm trường này
-  passwordHash: string; // Thêm trường này
+  roleName: string;
   [key: string]: any;
 };

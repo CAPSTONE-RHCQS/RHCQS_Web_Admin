@@ -12,7 +12,9 @@ import StatusTracker from '../../components/StatusTracker';
 import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../components/ChatBox';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
+import { getInitialQuotation } from '../../api/Project/InitialQuotation'; // Import hàm
+import { ClipLoader } from 'react-spinners';
 
 interface TableRow {
   stt: number;
@@ -31,7 +33,9 @@ interface OptionRow {
   thanhTien: number;
 }
 
-const QuoteDetail = () => {
+const InitialQuoteDetail = () => {
+  const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
+  const [quotationData, setQuotationData] = useState<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -149,6 +153,29 @@ const QuoteDetail = () => {
       thanhTien: 0,
     },
   ]);
+
+  useEffect(() => {
+    const fetchQuotationData = async () => {
+      if (id) {
+        try {
+          const data = await getInitialQuotation(id);
+          setQuotationData(data);
+        } catch (error) {
+          console.error('Error fetching quotation data:', error);
+        }
+      }
+    };
+
+    fetchQuotationData();
+  }, [id]);
+
+  if (!quotationData) {
+    return (
+      <div>
+        <ClipLoader color="#36d7b7" />
+      </div>
+    );
+  }
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -280,7 +307,7 @@ const QuoteDetail = () => {
 
   const handleEditToggle = () => {
     setIsEditing(!isEditing);
-  };  
+  };
 
   const paymentSchedule = [
     { period: '1', content: 'Ký hợp đồng', percentage: 10 },
@@ -315,7 +342,7 @@ const QuoteDetail = () => {
       <div className="mb-6 flex flex-col gap-3">
         <div className="flex justify-between items-center">
           <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-            Chi tiết báo giá
+            Báo giá sơ bộ
           </h2>
           <div
             onMouseEnter={showMenu}
@@ -760,4 +787,4 @@ const QuoteDetail = () => {
   );
 };
 
-export default QuoteDetail;
+export default InitialQuoteDetail;

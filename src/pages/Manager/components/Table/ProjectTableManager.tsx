@@ -7,7 +7,6 @@ import {
   FaHourglassHalf,
   FaBan,
   FaEye,
-  FaDownload,
 } from 'react-icons/fa';
 import RejectionModal from '../../../../components/Modals/RejectionModal';
 import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
@@ -29,28 +28,27 @@ interface ProjectTableManagerProps {
   handleSort: (key: SortKey) => void;
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
-  handleDownload: (id: string) => void;
   isLoading: boolean;
 }
 
 const getStatusStyle = (status: string) => {
   switch (status) {
-    case 'Đang xử lý':
-      return { color: 'text-yellow-500', icon: <FaSpinner /> };
+    case 'Processing':
+      return { backgroundColor: '#FFB347', icon: <FaSpinner /> };
     case 'Đã thiết kế':
-      return { color: 'text-blue-500', icon: <FaClipboardCheck /> };
+      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
     case 'Đã tạo hợp đồng thiết kế':
-      return { color: 'text-green-500', icon: <FaFileContract /> };
-    case 'Đang chờ kiểm tra':
-      return { color: 'text-orange-500', icon: <FaHourglassHalf /> };
+      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
+    case 'Đang chờ':
+      return { backgroundColor: '#4D4DFF', icon: <FaHourglassHalf /> };
     case 'Đã tạo hợp đồng':
-      return { color: 'text-green-500', icon: <FaFileContract /> };
+      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
     case 'Đã hoàn thành':
-      return { color: 'text-green-500', icon: <FaCheck /> };
-    case 'Hợp đồng đã chấm dứt':
-      return { color: 'text-red-500', icon: <FaBan /> };
+      return { backgroundColor: '#4CAF50', icon: <FaCheck /> };
+    case 'Đã hủy':
+      return { backgroundColor: '#FF6666', icon: <FaBan /> };
     default:
-      return { color: 'text-gray-500', icon: null };
+      return { backgroundColor: '#B0B0B0', icon: null };
   }
 };
 
@@ -61,8 +59,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   handleSelectAll,
   handleCheckboxChange,
   handleSort,
-  handleViewDetails, // Sử dụng hàm từ props
-  handleDownload,
+  handleViewDetails,
   isLoading,
 }) => {
   const [showModal, setShowModal] = useState(false);
@@ -121,9 +118,11 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                   >
                     {column.key === 'status' ? (
                       <span
-                        className={`flex items-center ${
-                          getStatusStyle(item[column.key]).color
-                        }`}
+                        className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                        style={{
+                          backgroundColor: getStatusStyle(item[column.key])
+                            .backgroundColor,
+                        }}
                       >
                         {getStatusStyle(item[column.key]).icon}
                         <span className="ml-2">{item[column.key]}</span>
@@ -133,18 +132,12 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                     )}
                   </td>
                 ))}
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex space-x-2">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <button
                     onClick={() => handleViewDetails(item.id)}
-                    className="text-blue-500 hover:text-blue-700 transition mr-2"
+                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
                   >
-                    <FaEye />
-                  </button>
-                  <button
-                    onClick={() => handleDownload(item.id)}
-                    className="text-green-500 hover:text-green-700 transition"
-                  >
-                    <FaDownload />
+                    <FaEye className="text-xl" />
                   </button>
                 </td>
               </tr>

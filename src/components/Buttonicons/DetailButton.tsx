@@ -5,7 +5,10 @@ interface DetailButtonProps {
 }
 
 const DetailButton: React.FC<DetailButtonProps> = ({ onClick }) => (
-  <button onClick={onClick} className="text-blue-500 hover:text-primary">
+  <button
+    onClick={onClick}
+    className="text-primaryGreenButton hover:text-secondaryGreenButton"
+  >
     <svg
       className="fill-current"
       width="32"
