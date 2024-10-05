@@ -19,12 +19,12 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
 
   return (
     <div className="py-3 flex items-center justify-center w-full">
-      <div className="w-4/5 flex items-center justify-between">
+      <div className="w-full max-w-4xl flex items-center justify-between px-4">
         {statuses.map((status, index) => (
           <React.Fragment key={index}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
                   index <= currentIndex
                     ? 'bg-primary text-white'
                     : 'bg-customGray text-gray-700'
@@ -33,7 +33,7 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
                 {status.icon}
               </div>
               <span
-                className={`mt-2 ${
+                className={`mt-2 text-xs md:text-sm ${
                   index <= currentIndex
                     ? 'text-primary font-semibold'
                     : 'text-gray-700'
@@ -45,7 +45,7 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
             {index < statuses.length - 1 && (
               <div
                 className="flex-1 h-1 flex items-center"
-                style={{ marginTop: '-30px' }}
+                style={{ marginTop: '-20px' }}
               >
                 <div
                   className="w-full h-1"

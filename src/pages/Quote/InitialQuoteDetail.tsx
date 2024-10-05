@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
+import { Link, useParams } from 'react-router-dom';
+import { Dialog } from '@material-tailwind/react';
+import { ClipLoader } from 'react-spinners';
+
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import ContactCard from '../../components/ContactCard';
+import StatusTracker from '../../components/StatusTracker';
+import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
+import ChatBox from '../../components/ChatBox';
+
 import Avatar from '../../images/user/user-01.png';
 import House from '../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../images/process.jpg';
 import Fee from '../../images/fee.jpg';
+
 import { formatCurrencyShort } from '../../utils/format';
-import StatusTracker from '../../components/StatusTracker';
-import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
-import { Dialog } from '@material-tailwind/react';
-import ChatBox from '../../components/ChatBox';
-import { Link, useParams } from 'react-router-dom';
-import { getInitialQuotation } from '../../api/Project/InitialQuotation'; // Import hàm
-import { ClipLoader } from 'react-spinners';
+import { getInitialQuotation } from '../../api/Project/InitialQuotation';
 
 interface TableRow {
   stt: number;
@@ -34,125 +37,20 @@ interface OptionRow {
 }
 
 const InitialQuoteDetail = () => {
-  const { id } = useParams<{ id: string }>(); // Lấy ID từ URL
+  const { id } = useParams<{ id: string }>();
   const [quotationData, setQuotationData] = useState<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-
-  const [tableData, setTableData] = useState<TableRow[]>([
-    {
-      stt: 1,
-      hangMuc: 'Móng',
-      dTich: '90',
-      heSo: '0.5',
-      dienTich: '45',
-      donVi: 'm²',
-    },
-    {
-      stt: 2,
-      hangMuc: 'Hầm (DTSD >= 70m²: độ sâu 1,0m -> 1,3m)',
-      dTich: '90',
-      heSo: '1.5',
-      dienTich: '135',
-      donVi: 'm²',
-    },
-    {
-      stt: 3,
-      hangMuc: 'Trệt',
-      dTich: '90',
-      heSo: '1',
-      dienTich: '90',
-      donVi: 'm²',
-    },
-    {
-      stt: 4,
-      hangMuc: 'Sân',
-      dTich: '10',
-      heSo: '0.7',
-      dienTich: '7',
-      donVi: 'm²',
-    },
-    {
-      stt: 5,
-      hangMuc: 'Lầu 1',
-      dTich: '90',
-      heSo: '1',
-      dienTich: '90',
-      donVi: 'm²',
-    },
-    {
-      stt: 6,
-      hangMuc: 'Thông Tầng Lầu 1 (Thông tầng > 8m²)',
-      dTich: '1',
-      heSo: '0.5',
-      dienTich: '0.5',
-      donVi: 'm²',
-    },
-    {
-      stt: 7,
-      hangMuc: 'Sân thượng có mái che',
-      dTich: '45',
-      heSo: '1',
-      dienTich: '45',
-      donVi: 'm²',
-    },
-    {
-      stt: 8,
-      hangMuc: 'Sân thượng không mái che',
-      dTich: '45',
-      heSo: '0.5',
-      dienTich: '22.5',
-      donVi: 'm²',
-    },
-    {
-      stt: 9,
-      hangMuc: 'Mái che (Mái BTCT)',
-      dTich: '45',
-      heSo: '0.5',
-      dienTich: '22.5',
-      donVi: 'm²',
-    },
-  ]);
-
-  const [optionData, setOptionData] = useState<OptionRow[]>([
-    {
-      stt: 1,
-      hangMuc: 'Chí phí thi công sàn ho hơn 70m2',
-      soLuong: 1,
-      heSo: 0.05,
-      thanhTien: 0,
-    },
-    {
-      stt: 2,
-      hangMuc: 'Chi phí thi công công trình hẻm nhỏ',
-      soLuong: 1,
-      heSo: 0.01,
-      thanhTien: 0,
-    },
-    {
-      stt: 3,
-      hangMuc: 'Hỗ trợ bãi tập kết, điều kiện thi công khó khăn',
-      soLuong: 1,
-      heSo: 0.04,
-      thanhTien: 0,
-    },
-    {
-      stt: 4,
-      hangMuc: 'Chi phí thi công nhà 2 mặt tiền trở lên',
-      soLuong: 1,
-      heSo: 0.02,
-      thanhTien: 0,
-    },
-    {
-      stt: 5,
-      hangMuc: 'Chi phí thi công công trình tỉnh',
-      soLuong: 1,
-      heSo: 0.03,
-      thanhTien: 0,
-    },
-  ]);
+  const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
+  const [optionData, setOptionData] = useState<OptionRow[]>([]);
+  const [paymentSchedule, setPaymentSchedule] = useState<any[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<any[]>([]);
+  const [promotionInfo, setPromotionInfo] = useState<any>(null);
+  const [donGia, setDonGia] = useState<number>(0);
+  const [version, setVersion] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -160,6 +58,44 @@ const InitialQuoteDetail = () => {
         try {
           const data = await getInitialQuotation(id);
           setQuotationData(data);
+          setVersion(data.Version || null);
+
+          const comboDonGia =
+            data.PackageQuotationList.UnitPackageFinished || 0;
+
+          const updatedTableData = data.ItemInitial.map(
+            (item: any, index: number) => ({
+              stt: index + 1,
+              hangMuc: item.Name,
+              dTich: item.Area.toString(),
+              heSo: item.Coefficient.toString(),
+              dienTich: (item.Area * item.Coefficient).toString(),
+              donVi: 'm²',
+            }),
+          );
+          setTableData(updatedTableData);
+
+          const totalRough = data.TotalRough;
+          const totalUtilities = data.TotalUtilities;
+          const totalUtilityCost = data.UtilityInfos.reduce(
+            (total: number, utility: { Price: number }) =>
+              total + utility.Price,
+            0,
+          );
+
+          let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
+
+          if (data.PromotionInfo) {
+            const discountValue =
+              giaTriHopDong * (data.PromotionInfo.Value / 100);
+            giaTriHopDong -= discountValue;
+            setPromotionInfo(data.PromotionInfo);
+          }
+
+          setGiaTriHopDong(giaTriHopDong);
+          setPaymentSchedule(data.BatchPaymentInfos);
+          setUtilityInfos(data.UtilityInfos);
+          setDonGia(data.PackageQuotationList.UnitPackageRough);
         } catch (error) {
           console.error('Error fetching quotation data:', error);
         }
@@ -185,7 +121,6 @@ const InitialQuoteDetail = () => {
     const newData = [...tableData];
     newData[index] = { ...newData[index], [field]: e.target.value };
 
-    // Tính toán lại diện tích
     if (field === 'dTich') {
       newData[index].dienTich = (
         parseFloat(newData[index].dTich) * parseFloat(newData[index].heSo)
@@ -203,7 +138,6 @@ const InitialQuoteDetail = () => {
     const newData = [...optionData];
     newData[index] = { ...newData[index], [field]: parseFloat(e.target.value) };
 
-    // Tính toán lại thành tiền
     if (field === 'soLuong' || field === 'heSo') {
       newData[index].thanhTien =
         newData[index].soLuong * newData[index].heSo * thanhTien;
@@ -217,27 +151,17 @@ const InitialQuoteDetail = () => {
     0,
   );
 
-  const donGia = 3350000;
   const thanhTien = totalDienTich * donGia;
 
   const comboSoLuong = 1;
   const comboDonGia = 18000000;
   const comboThanhTien = comboSoLuong * comboDonGia;
 
-  const totalChiPhi = optionData.reduce(
-    (total, row) => total + row.soLuong * row.heSo * thanhTien,
-    0,
-  );
-
-  const giaTriHopDong = thanhTien + totalChiPhi + comboThanhTien;
-
   const handleDownload = () => {
-    // Logic tải về hợp đồng
     alert('Tải về hợp đồng');
   };
 
   const handleShare = () => {
-    // Logic chia sẻ hợp đồng
     alert('Chia sẻ hợp đồng');
   };
 
@@ -309,31 +233,17 @@ const InitialQuoteDetail = () => {
     setIsEditing(!isEditing);
   };
 
-  const paymentSchedule = [
-    { period: '1', content: 'Ký hợp đồng', percentage: 10 },
-    { period: '2', content: 'Đổ xong Móng', percentage: 15 },
-    { period: '3', content: 'Đổ xong Lầu 1', percentage: 15 },
-    { period: '4', content: 'Đổ xong sàn mái', percentage: 20 },
-    {
-      period: '5',
-      content: 'Hoàn thành 80% khối lượng xây tô',
-      percentage: 15,
-    },
-    {
-      period: '6',
-      content: 'Lát gạch các tầng lầu (trừ tầng trệt)',
-      percentage: 10,
-    },
-    { period: '7', content: 'Hoàn thiện và bàn giao', percentage: 10 },
-    { period: '8', content: 'Bảo hành sau 1 năm', percentage: 5 },
-  ];
-
   const totalPercentage = paymentSchedule.reduce(
-    (total, row) => total + row.percentage,
+    (total, row) => total + parseFloat(row.Percents),
     0,
   );
   const totalAmount = paymentSchedule.reduce(
-    (total, row) => total + Math.round(giaTriHopDong * (row.percentage / 100)),
+    (total, row) => total + row.Price,
+    0,
+  );
+
+  const totalUtilityCost = utilityInfos.reduce(
+    (total, utility) => total + utility.Price,
     0,
   );
 
@@ -344,6 +254,9 @@ const InitialQuoteDetail = () => {
           <h2 className="text-title-md2 font-semibold text-black dark:text-white">
             Báo giá sơ bộ
           </h2>
+          <span className="text-sm text-gray-500">
+            Version: {version !== null ? version.toFixed(1) : 'N/A'}
+          </span>
           <div
             onMouseEnter={showMenu}
             onMouseLeave={hideMenu}
@@ -450,7 +363,8 @@ const InitialQuoteDetail = () => {
 
         <div className="mb-4">
           <p className="mt-4 mb-4 text-lg">
-            <strong>1. PHẦN THÔ TIẾT KIỆM </strong>(Đơn giá: 3,350,000 đồng/m²)
+            <strong>1. PHẦN THÔ TIẾT KIỆM </strong>(Đơn giá:{' '}
+            {donGia.toLocaleString()} đồng/m²)
           </p>
 
           <p className="mb-4 text-lg">
@@ -549,50 +463,37 @@ const InitialQuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>2. TÙY CHỌN & TIỆN ÍCH: </strong>
+          <strong>2. TÙY CHỌN & TIỆN ÍCH:</strong>
         </p>
-
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="px-4 py-2 border text-center">STT</th>
-                <th className="px-4 py-2 border text-center">
-                  Hạng mục tùy chọn
-                </th>
-                <th className="px-4 py-2 border text-center">Số lượng</th>
+                <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Hệ số</th>
-                <th className="px-4 py-2 border text-center">Thành tiền</th>
+                <th className="px-4 py-2 border text-center">Giá</th>
               </tr>
             </thead>
             <tbody>
-              {optionData.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 border text-center">{row.stt}</td>
-                  <td className="px-4 py-2 border text-center border-2 border-green-300">
-                    <input
-                      type="text"
-                      value={row.hangMuc}
-                      onChange={(e) => handleOptionChange(e, index, 'hangMuc')}
-                      className="w-full text-left"
-                      disabled={!isEditing}
-                    />
+              {utilityInfos.map((utility) => (
+                <tr key={utility.Id}>
+                  <td className="px-4 py-2 border text-left">
+                    {utility.Description}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {row.soLuong}
+                    {utility.Coefficient}
                   </td>
-                  <td className="px-4 py-2 border text-center">{row.heSo}</td>
                   <td className="px-4 py-2 border text-center">
-                    {(row.soLuong * row.heSo * thanhTien).toLocaleString()}
+                    {utility.Price.toLocaleString()} VNĐ
                   </td>
                 </tr>
               ))}
               <tr>
-                <td className="px-4 py-2 border text-center" colSpan={4}>
-                  <strong>Tổng chi phí:</strong>
+                <td className="px-4 py-2 border text-center" colSpan={2}>
+                  <strong>Tổng chi phí tiện ích</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
-                  <strong>{totalChiPhi.toLocaleString()}</strong>
+                  <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
                 </td>
               </tr>
             </tbody>
@@ -600,8 +501,36 @@ const InitialQuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>3. KHUYẾN MÃI: </strong>
+          <strong>3. KHUYẾN MÃI:</strong>
         </p>
+        <div className="overflow-x-auto mb-4">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border text-center">Tên khuyến mãi</th>
+                <th className="px-4 py-2 border text-center">Giá trị (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {promotionInfo ? (
+                <tr>
+                  <td className="px-4 py-2 border text-left">
+                    {promotionInfo.Name}
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {promotionInfo.Value}%
+                  </td>
+                </tr>
+              ) : (
+                <tr>
+                  <td className="px-4 py-2 border text-center" colSpan={2}>
+                    Không có khuyến mãi
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
 
         <p className="text-lg mb-4">
           <strong>4. CÁC CHI PHÍ KHÁC:</strong>
@@ -643,14 +572,9 @@ const InitialQuoteDetail = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th
-                  className="px-4 py-2 border text-center"
-                  style={{ width: '30%' }}
-                >
-                  Hạng mục
-                </th>
-                <th className="px-4 py-2 border text-center">Thành tiền</th>
-                <th className="px-4 py-2 border text-center">Đơn vị tiền</th>
+                <th className="px-4 py-2 border text-center">Mô tả</th>
+                <th className="px-4 py-2 border text-center">Giá trị</th>
+                <th className="px-4 py-2 border text-center">Đơn vị</th>
               </tr>
             </thead>
             <tbody>
@@ -668,7 +592,7 @@ const InitialQuoteDetail = () => {
                   Tùy chọn & Tiện ích
                 </td>
                 <td className="px-4 py-2 border text-center">
-                  {totalChiPhi.toLocaleString()} VNĐ
+                  {totalUtilityCost.toLocaleString()} VNĐ
                 </td>
                 <td className="px-4 py-2 border text-center">VNĐ</td>
               </tr>
@@ -679,6 +603,22 @@ const InitialQuoteDetail = () => {
                 </td>
                 <td className="px-4 py-2 border text-center">VNĐ</td>
               </tr>
+              {promotionInfo && (
+                <tr>
+                  <td className="px-4 py-2 border text-left">
+                    Khuyến mãi ({promotionInfo.Name})
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    -
+                    {(
+                      giaTriHopDong *
+                      (promotionInfo.Value / 100)
+                    ).toLocaleString()}{' '}
+                    VNĐ
+                  </td>
+                  <td className="px-4 py-2 border text-center">VNĐ</td>
+                </tr>
+              )}
               <tr>
                 <td className="px-4 py-2 border text-center">
                   <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
@@ -708,30 +648,27 @@ const InitialQuoteDetail = () => {
                   Đợt
                 </th>
                 <th className="px-4 py-2 border text-left">Nội dung</th>
-                <th className="px-4 py-2 border text-center">
-                  T-Toán (% GTHĐ)
-                </th>
+                <th className="px-4 py-2 border text-center">T-Toán (%)</th>
                 <th className="px-4 py-2 border text-center">Số tiền</th>
               </tr>
             </thead>
             <tbody>
               {paymentSchedule.map((row, index) => (
-                <tr key={index}>
+                <tr key={row.Id}>
                   <td
                     className="px-4 py-2 border text-center"
                     style={{ width: '10%' }}
                   >
-                    {row.period}
+                    {index + 1}
                   </td>
-                  <td className="px-4 py-2 border text-left">{row.content}</td>
-                  <td className="px-4 py-2 border text-center">
-                    {row.percentage}%
+                  <td className="px-4 py-2 border text-left">
+                    {row.Description}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {Math.round(
-                      giaTriHopDong * (row.percentage / 100),
-                    ).toLocaleString()}{' '}
-                    VNĐ
+                    {row.Percents}%
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {row.Price.toLocaleString()} {row.Unit}
                   </td>
                 </tr>
               ))}
@@ -744,39 +681,6 @@ const InitialQuoteDetail = () => {
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>{totalAmount.toLocaleString()} VNĐ</strong>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <p className="text-lg mb-4">
-          <strong>7. THỜI GIAN THI CÔNG</strong>
-        </p>
-        <div className="mb-4">
-          <table className="w-1/2 bg-white border border-gray-200">
-            <tbody>
-              <tr>
-                <td className="px-4 py-2 border text-left">
-                  Thời gian hoàn thành công trình là:
-                </td>
-                <td className="px-4 py-2 border text-right">
-                  <strong>165</strong> ngày
-                </td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 border text-left">
-                  <em>Thời gian thi công phần thô:</em>
-                </td>
-                <td className="px-4 py-2 border text-right">
-                  <strong>100</strong> ngày
-                </td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 border text-left">
-                  <em>Phối hợp với CĐT hoàn thiện công trình:</em>
-                </td>
-                <td className="px-4 py-2 border text-right">
-                  <strong>65</strong> ngày
                 </td>
               </tr>
             </tbody>
