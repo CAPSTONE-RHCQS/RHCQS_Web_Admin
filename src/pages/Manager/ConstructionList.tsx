@@ -3,10 +3,12 @@ import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import useFetchConstructions from '../../hooks/useFetchConstructions';
 import ConstructionTable from './components/Table/ConstructionTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import AddConstructionModal from './components/Modals/AddConstructionModal';
 
 const ConstructionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const {
     totalPages,
     totalConstructions,
@@ -25,6 +27,10 @@ const ConstructionList: React.FC = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
 
+  const handleAddSuccess = () => {
+    handleRefresh();
+  };
+
   return (
     <>
       <Breadcrumb pageName="Quản lý hạng mục" />
@@ -36,10 +42,18 @@ const ConstructionList: React.FC = () => {
               Tổng số Hạng mục: {totalConstructions}
             </span>
           </div>
-          <ArrowPathIcon
-            onClick={handleRefresh}
-            className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
-          />
+          <div className="flex items-center">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="mr-4 p-2 bg-blue-500 text-white rounded"
+            >
+              Thêm mới
+            </button>
+            <ArrowPathIcon
+              onClick={handleRefresh}
+              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
+            />
+          </div>
         </div>
         <div className="max-w-full overflow-x-auto">
           <ConstructionTable data={constructions} isLoading={isLoading} />
@@ -64,6 +78,12 @@ const ConstructionList: React.FC = () => {
           </button>
         </div>
       </div>
+
+      <AddConstructionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onAddSuccess={handleAddSuccess}
+      />
     </>
   );
 };

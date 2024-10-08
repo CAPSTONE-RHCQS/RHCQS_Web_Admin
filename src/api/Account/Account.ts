@@ -1,5 +1,19 @@
 import requestWebDriver from '../../utils/axios';
 
+interface AccountUpdateRequest {
+  Id: string;
+  RoleId: string;
+  Email: string;
+  Username: string;
+  ImageUrl: string;
+  PasswordHash: string;
+  PhoneNumber: string | null;
+  DateOfBirth: string | null;
+  InsDate: string;
+  UpsDate: string;
+  Deflag: boolean;
+}
+
 export const getAccounts = async (page: number, size: number) => {
   try {
     const response = await requestWebDriver.get(`/account`, {
@@ -24,9 +38,9 @@ export const getAccountById = async (id: string) => {
   }
 };
 
-export const updateAccount = async (account: any) => {
+export const updateAccount = async (account: AccountUpdateRequest) => {
   try {
-    const response = await requestWebDriver.put(`/account/id`, account, {
+    const response = await requestWebDriver.put(`/account/id?id=${account.Id}`, account, {
       headers: {
         'Content-Type': 'application/json',
       },

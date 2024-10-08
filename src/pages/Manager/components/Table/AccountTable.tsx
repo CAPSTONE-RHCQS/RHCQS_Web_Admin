@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { getAccountById } from '../../../../api/Account/Account';
-import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
 import DetailButton from '../../../../components/Buttonicons/DetailButton';
 import SortIcon from '../../../../components/Buttonicons/SortIcon';
 import AccountDetailModal from '../../../../components/Account/AccountDetailModal';
@@ -12,31 +11,21 @@ type SortKey = string;
 interface AccountTableProps {
   data: Account[];
   columns: { key: string; label: string; width?: string }[];
-  isAllChecked: boolean;
-  handleSelectAll: () => void;
-  handleCheckboxChange: (index: number) => void;
   handleSort: (key: SortKey) => void;
-  handleDelete: (id: string) => void;
   roleClassMapping: { [key: string]: string };
   roleIconMapping: { [key: string]: JSX.Element };
   isLoading: boolean;
+  onUpdateAccount?: (updatedAccount: Account) => void;
+  refreshKey: number;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TableHeader: React.FC<{
   columns: any[];
   handleSort: (key: SortKey) => void;
-  isAllChecked: boolean;
-  handleSelectAll: () => void;
-}> = ({ columns, handleSort, isAllChecked, handleSelectAll }) => (
+}> = ({ columns, handleSort }) => (
   <thead>
     <tr className="bg-gray-2 text-left dark:bg-meta-4">
-      <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
-        <CheckboxTwo
-          id="select-all"
-          isChecked={isAllChecked}
-          onChange={handleSelectAll}
-        />
-      </th>
       {columns.map((column) => (
         <th
           key={column.key}
@@ -64,7 +53,6 @@ const TableRow: React.FC<{
   item: Account;
   index: number;
   columns: any[];
-  handleCheckboxChange: (index: number) => void;
   handleDetailClick: (id: string) => void;
   roleClassMapping: any;
   roleIconMapping: any;
@@ -72,19 +60,11 @@ const TableRow: React.FC<{
   item,
   index,
   columns,
-  handleCheckboxChange,
   handleDetailClick,
   roleClassMapping,
   roleIconMapping,
 }) => (
   <tr key={index}>
-    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-      <CheckboxTwo
-        id={`checkbox-${index}`}
-        isChecked={item.isChecked}
-        onChange={() => handleCheckboxChange(index)}
-      />
-    </td>
     {columns.map((column) => (
       <td
         key={column.key}
@@ -132,13 +112,12 @@ const TableRow: React.FC<{
 const AccountTable: React.FC<AccountTableProps> = ({
   data,
   columns,
-  isAllChecked,
-  handleSelectAll,
-  handleCheckboxChange,
   handleSort,
   roleClassMapping,
   roleIconMapping,
   isLoading,
+  onUpdateAccount,
+  setRefreshKey,
 }) => {
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
 
@@ -163,12 +142,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
         </div>
       ) : (
         <table className="w-full table-auto">
-          <TableHeader
-            columns={columns}
-            handleSort={handleSort}
-            isAllChecked={isAllChecked}
-            handleSelectAll={handleSelectAll}
-          />
+          <TableHeader columns={columns} handleSort={handleSort} />
           <tbody>
             {data.map((item, index) => (
               <TableRow
@@ -176,7 +150,6 @@ const AccountTable: React.FC<AccountTableProps> = ({
                 item={item}
                 index={index}
                 columns={columns}
-                handleCheckboxChange={handleCheckboxChange}
                 handleDetailClick={handleDetailClick}
                 roleClassMapping={roleClassMapping}
                 roleIconMapping={roleIconMapping}
@@ -186,10 +159,12 @@ const AccountTable: React.FC<AccountTableProps> = ({
         </table>
       )}
 
-      {selectedAccount && (
+      {selectedAccount && onUpdateAccount && (
         <AccountDetailModal
           account={selectedAccount}
           onClose={handleCloseModal}
+          onUpdateAccount={onUpdateAccount}
+          setRefreshKey={setRefreshKey}
         />
       )}
     </>

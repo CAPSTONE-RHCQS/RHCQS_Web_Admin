@@ -1,29 +1,53 @@
 import React, { useState } from 'react';
 import { updateAccount, updateDeflag } from '../../api/Account/Account';
 import RejectionModal from '../Modals/RejectionModal';
+import { toast } from 'react-toastify';
+import Alert from '../Alert';
 
 interface AccountDetailModalProps {
   account: {
-    id: string;
-    roleId: string;
-    email: string;
-    username: string;
-    imageUrl: string;
-    phoneNumber: string | null;
-    dateOfBirth: string | null;
-    insDate: string;
-    upsDate: string;
+    Id: string;
+    RoleId: string;
+    Email: string;
+    Username: string;
+    ImageUrl: string;
+    PhoneNumber: string | null;
+    DateOfBirth: string | null;
+    InsDate: string;
+    UpsDate: string;
   };
   onClose: () => void;
+  onUpdateAccount: (updatedAccount: any) => void;
+  setRefreshKey: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   account,
   onClose,
+  onUpdateAccount,
+  setRefreshKey,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedAccount, setEditedAccount] = useState(account);
+  const [editedAccount, setEditedAccount] = useState({
+    Id: account.Id,
+    RoleId: account.RoleId,
+    Email: account.Email,
+    Username: account.Username,
+    ImageUrl: account.ImageUrl,
+    PasswordHash: '',
+    PhoneNumber: account.PhoneNumber,
+    DateOfBirth: account.DateOfBirth,
+    InsDate: account.InsDate,
+    UpsDate: account.UpsDate,
+    Deflag: true,
+  });
   const [showRejectionModal, setShowRejectionModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: 'success' | 'error';
+  } | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,11 +55,24 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   };
 
   const handleSave = async () => {
+    if (!editedAccount.PasswordHash) {
+      setError('Mật khẩu không được để trống.');
+      toast.error('Vui lòng điền mật khẩu.');
+      return;
+    }
+
+    setIsSaving(true);
     try {
       await updateAccount(editedAccount);
+      onUpdateAccount(editedAccount);
+      toast.success('Lưu thành công!');
       onClose();
+      setRefreshKey((prevKey) => prevKey + 1);
     } catch (error) {
       console.error('Error updating account:', error);
+      toast.error('Có lỗi xảy ra khi lưu tài khoản.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -47,11 +84,12 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
 
   const handleDeflag = async (reason: string) => {
     try {
-      await updateDeflag(account.id, reason);
-      alert('Khóa tài khoản thành công');
+      await updateDeflag(account.Id, reason);
+      setAlert({ message: 'Khóa tài khoản thành công', type: 'success' });
       onClose();
     } catch (error) {
       console.error('Error updating deflag:', error);
+      setAlert({ message: 'Có lỗi xảy ra khi khóa tài khoản.', type: 'error' });
     }
   };
 
@@ -89,8 +127,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>ID:</strong>
                   <input
                     type="text"
-                    name="id"
-                    value={editedAccount.id}
+                    name="Id"
+                    value={editedAccount.Id}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                     readOnly
@@ -100,8 +138,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Role ID:</strong>
                   <input
                     type="text"
-                    name="roleId"
-                    value={editedAccount.roleId}
+                    name="RoleId"
+                    value={editedAccount.RoleId}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -110,8 +148,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Email:</strong>
                   <input
                     type="text"
-                    name="email"
-                    value={editedAccount.email}
+                    name="Email"
+                    value={editedAccount.Email}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -120,8 +158,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Username:</strong>
                   <input
                     type="text"
-                    name="username"
-                    value={editedAccount.username}
+                    name="Username"
+                    value={editedAccount.Username}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -132,8 +170,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Image URL:</strong>
                   <input
                     type="text"
-                    name="imageUrl"
-                    value={editedAccount.imageUrl}
+                    name="ImageUrl"
+                    value={editedAccount.ImageUrl}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -142,8 +180,8 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Phone Number:</strong>
                   <input
                     type="text"
-                    name="phoneNumber"
-                    value={editedAccount.phoneNumber || ''}
+                    name="PhoneNumber"
+                    value={editedAccount.PhoneNumber || ''}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -152,8 +190,18 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Date of Birth:</strong>
                   <input
                     type="text"
-                    name="dateOfBirth"
-                    value={editedAccount.dateOfBirth || ''}
+                    name="DateOfBirth"
+                    value={editedAccount.DateOfBirth || ''}
+                    onChange={handleInputChange}
+                    className="w-full border rounded p-2"
+                  />
+                </label>
+                <label>
+                  <strong>Password:</strong>
+                  <input
+                    type="password"
+                    name="PasswordHash"
+                    value={editedAccount.PasswordHash}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
@@ -164,16 +212,16 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p>
-                  <strong>ID:</strong> {account.id}
+                  <strong>ID:</strong> {account.Id}
                 </p>
                 <p>
-                  <strong>Role ID:</strong> {account.roleId}
+                  <strong>Role ID:</strong> {account.RoleId}
                 </p>
                 <p>
-                  <strong>Email:</strong> {account.email}
+                  <strong>Email:</strong> {account.Email}
                 </p>
                 <p>
-                  <strong>Username:</strong> {account.username}
+                  <strong>Username:</strong> {account.Username}
                 </p>
               </div>
               <div>
@@ -181,34 +229,36 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   <strong>Image URL:</strong>
                 </p>
                 <img
-                  src={account.imageUrl}
+                  src={account.ImageUrl}
                   alt="Avatar"
                   className="w-20 h-20 rounded-full"
                 />
                 <p>
-                  <strong>Phone Number:</strong> {account.phoneNumber || 'N/A'}
+                  <strong>Phone Number:</strong> {account.PhoneNumber || 'N/A'}
                 </p>
                 <p>
-                  <strong>Date of Birth:</strong> {account.dateOfBirth || 'N/A'}
+                  <strong>Date of Birth:</strong> {account.DateOfBirth || 'N/A'}
                 </p>
               </div>
             </div>
           )}
+          {error && <p className="text-red-500">{error}</p>}
           <div className="mt-4">
             <p>
-              <strong>Insert Date:</strong> {account.insDate}
+              <strong>Insert Date:</strong> {account.InsDate}
             </p>
             <p>
-              <strong>Update Date:</strong> {account.upsDate}
+              <strong>Update Date:</strong> {account.UpsDate}
             </p>
           </div>
           {isEditing ? (
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={handleSave}
+                disabled={isSaving}
                 className="px-4 py-2 bg-blue-500 text-white rounded"
               >
-                Lưu
+                {isSaving ? 'Đang lưu...' : 'Lưu'}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
@@ -244,6 +294,13 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
             setShowRejectionModal(false);
           }}
           onCancel={() => setShowRejectionModal(false)}
+        />
+      )}
+      {alert && (
+        <Alert
+          message={alert.message}
+          type={alert.type}
+          onClose={() => setAlert(null)}
         />
       )}
     </>

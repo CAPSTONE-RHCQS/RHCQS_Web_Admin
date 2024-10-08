@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -97,7 +99,7 @@ function App() {
             </PrivateRoute>
           }
         />
-         <Route
+        <Route
           path="/project-list-staff"
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
@@ -217,6 +219,7 @@ function App() {
           }
         />
       </Routes>
+      <ToastContainer position="bottom-right" autoClose={5000} />
     </DefaultLayout>
   );
 }

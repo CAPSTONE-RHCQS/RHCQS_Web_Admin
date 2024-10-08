@@ -32,7 +32,6 @@ const AccountList: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: 'ascending' | 'descending';
@@ -50,21 +49,6 @@ const AccountList: React.FC = () => {
     if (newPage > 0 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
-  };
-
-  const handleSelectAll = () => {
-    const newIsAllChecked = !isAllChecked;
-    setIsAllChecked(newIsAllChecked);
-    setAccounts(
-      accounts.map((account) => ({ ...account, isChecked: newIsAllChecked })),
-    );
-  };
-
-  const handleCheckboxChange = (index: number) => {
-    const newAccounts = [...accounts];
-    newAccounts[index].isChecked = !newAccounts[index].isChecked;
-    setAccounts(newAccounts);
-    setIsAllChecked(newAccounts.every((account) => account.isChecked));
   };
 
   const handleSort = (key: SortKey) => {
@@ -103,14 +87,6 @@ const AccountList: React.FC = () => {
     setAccounts(sortedAccount);
   };
 
-  const handleDelete = (id: string) => {
-    setAccounts(accounts.filter((account) => account.id !== id));
-  };
-
-  const handleDeleteSelected = () => {
-    setAccounts(accounts.filter((account) => !account.isChecked));
-  };
-
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
@@ -122,6 +98,14 @@ const AccountList: React.FC = () => {
     { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'email', label: 'Email' },
   ];
+
+  const updateAccountInList = (updatedAccount: Account) => {
+    setAccounts((prevAccounts) =>
+      prevAccounts.map((account) =>
+        account.Id === updatedAccount.Id ? { ...account, ...updatedAccount } : account
+      )
+    );
+  };
 
   return (
     <>
@@ -155,12 +139,6 @@ const AccountList: React.FC = () => {
               Khách hàng
             </option>
           </select>
-          <button
-            onClick={handleDeleteSelected}
-            className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
-          >
-            Xóa đã chọn
-          </button>
         </div>
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center">
@@ -177,14 +155,13 @@ const AccountList: React.FC = () => {
           <AccountTable
             data={accounts}
             columns={columns}
-            isAllChecked={isAllChecked}
-            handleSelectAll={handleSelectAll}
-            handleCheckboxChange={handleCheckboxChange}
             handleSort={handleSort}
-            handleDelete={handleDelete}
             roleClassMapping={roleClassMapping}
             roleIconMapping={roleIconMapping}
             isLoading={isLoading}
+            onUpdateAccount={updateAccountInList}
+            refreshKey={refreshKey}
+            setRefreshKey={setRefreshKey}
           />
         </div>
         <div className="flex justify-between mt-4">
