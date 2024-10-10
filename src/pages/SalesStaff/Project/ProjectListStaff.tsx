@@ -10,8 +10,8 @@ import {
 } from 'react-icons/fa';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import ProjectTableManager from '../components/Table/ProjectTableManager';
-import { getProjects } from '../../../api/Project/Project';
+import ProjectTableManager from '../components/Table/ProjectTableStaff';
+import { postSalesProject } from '../../../api/Project/Project'; // Sử dụng hàm postSalesProject
 import { useNavigate } from 'react-router-dom';
 
 type Email = {
@@ -20,7 +20,6 @@ type Email = {
   projectName: string;
   customerName: string;
   category: string;
-  // serviceType: string;
   date: string;
   status: string;
   isChecked: boolean;
@@ -28,7 +27,7 @@ type Email = {
 
 type SortKey = string;
 
-const ProjectListManager = () => {
+const ProjectListStaff = () => {
   const [emails, setEmails] = useState<Email[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
@@ -47,14 +46,13 @@ const ProjectListManager = () => {
   const fetchProjects = async (page: number) => {
     setLoading(true);
     try {
-      const data = await getProjects(page, 10);
+      const data = await postSalesProject(page, 10);
       const formattedData = data.Items.map((item: any) => ({
         id: item.Id,
         projectId: item.ProjectCode,
         projectName: item.Name,
         customerName: item.AccountName,
         category: item.Type,
-        // serviceType: item.Type,
         date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
         status: item.Status,
         isChecked: false,
@@ -138,7 +136,7 @@ const ProjectListManager = () => {
   };
 
   const handleViewDetails = (id: string) => {
-    navigate(`/project-detail/${id}`);
+    navigate(`/project-detail-staff/${id}`);
   };
 
   const filteredEmails = emails.filter((email) =>
@@ -267,4 +265,4 @@ const ProjectListManager = () => {
   );
 };
 
-export default ProjectListManager;
+export default ProjectListStaff;

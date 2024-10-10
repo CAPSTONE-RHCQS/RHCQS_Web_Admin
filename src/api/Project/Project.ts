@@ -34,3 +34,35 @@ export const getProjectDetail = async (id: string) => {
     throw error;
   }
 };
+
+export const postSalesProject = async (page: number, size: number) => {
+  try {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      throw new Error('Token not found in localStorage');
+    }
+
+    const response = await requestWebDriver.post(
+      '/project/sales',
+      {
+        token: token,
+      },
+      {
+        params: {
+          page,
+          size,
+        },
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error posting sales project:', error);
+    throw error;
+  }
+};
