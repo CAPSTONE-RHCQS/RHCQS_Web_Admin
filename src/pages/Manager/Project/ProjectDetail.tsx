@@ -185,14 +185,14 @@ const ProjectDetail = () => {
 
           <ContactCard
             data={{
-              title: 'Dự phí',
-              priceQuote: formatCurrencyShort(1780518752),
+              staffName: projectDetail.StaffName || 'Chờ phân công...',
+              staffPhone: projectDetail.StaffPhone || '',
             }}
             fields={[
-              { key: 'title', label: 'Name' },
-              { key: 'priceQuote', label: 'Quote' },
+              { key: 'staffName', label: 'Name' },
+              { key: 'staffPhone', label: 'Phone' },
             ]}
-            avatarUrl={Fee}
+            avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
 

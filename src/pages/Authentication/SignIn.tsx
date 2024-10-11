@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import LogoDark from '../../images/logo/logo-dark.svg';
 import Logo from '../../images/logo/logo.svg';
 import { postLogin } from '../../api/Authen/login';
@@ -18,17 +19,17 @@ interface JwtPayload {
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     try {
       const data = await postLogin(email, password);
       console.log('Login successful:', data);
-      // Decode JWT token
       const decodedToken = jwtDecode<JwtPayload>(data.Token);
       console.log('Decoded Token:', decodedToken);
-      // Extract user data
       const userData = {
         role: decodedToken[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
@@ -45,12 +46,16 @@ const SignIn: React.FC = () => {
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ],
       };
-      // Save user data and token to localStorage
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', data.Token);
+      localStorage.setItem('alertMessage', 'Đăng nhập thành công!');
+      localStorage.setItem('alertType', 'success');
       navigate('/');
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error('Đăng nhập thất bại. Vui lòng thử lại.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -146,7 +151,10 @@ const SignIn: React.FC = () => {
                   <input
                     type="submit"
                     value="Đăng nhập"
-                    className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                    className={`w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90 ${
+                      isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                    }`}
+                    disabled={isSubmitting}
                   />
                 </div>
 

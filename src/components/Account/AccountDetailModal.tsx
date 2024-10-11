@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { updateAccount, updateDeflag } from '../../api/Account/Account';
 import RejectionModal from '../Modals/RejectionModal';
 import { toast } from 'react-toastify';
-import Alert from '../Alert';
+// import Alert from '../Alert'; // Loại bỏ import Alert
 
 interface AccountDetailModalProps {
   account: {
@@ -43,10 +43,6 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   });
   const [showRejectionModal, setShowRejectionModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [alert, setAlert] = useState<{
-    message: string;
-    type: 'success' | 'error';
-  } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,11 +81,11 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   const handleDeflag = async (reason: string) => {
     try {
       await updateDeflag(account.Id, reason);
-      setAlert({ message: 'Khóa tài khoản thành công', type: 'success' });
+      toast.success('Khóa tài khoản thành công');
       onClose();
     } catch (error) {
       console.error('Error updating deflag:', error);
-      setAlert({ message: 'Có lỗi xảy ra khi khóa tài khoản.', type: 'error' });
+      toast.error('Có lỗi xảy ra khi khóa tài khoản.');
     }
   };
 
@@ -294,13 +290,6 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
             setShowRejectionModal(false);
           }}
           onCancel={() => setShowRejectionModal(false)}
-        />
-      )}
-      {alert && (
-        <Alert
-          message={alert.message}
-          type={alert.type}
-          onClose={() => setAlert(null)}
         />
       )}
     </>

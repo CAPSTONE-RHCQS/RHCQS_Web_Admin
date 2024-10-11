@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { toast } from 'react-toastify';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
 import ChartThree from '../../components/Charts/ChartThree';
@@ -8,6 +9,20 @@ import MapOne from '../../components/Maps/MapOne';
 import TableOne from '../../components/Tables/TableOne';
 
 const RHCQS: React.FC = () => {
+  useEffect(() => {
+    const message = localStorage.getItem('alertMessage');
+    const type = localStorage.getItem('alertType') as 'success' | 'error' | null;
+    if (message && type) {
+      if (type === 'success') {
+        toast.success(message);
+      } else {
+        toast.error(message);
+      }
+      localStorage.removeItem('alertMessage');
+      localStorage.removeItem('alertType');
+    }
+  }, []);
+
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
