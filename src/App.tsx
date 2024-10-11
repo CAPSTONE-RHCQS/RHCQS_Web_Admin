@@ -24,8 +24,8 @@ import DetailedQuotation from './pages/Quote/DetailedQuotation/DetailedQuotation
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/ConstructionList.tsx';
-import ProjectListStaff from './pages/SalesStaff/Project/ProjectListStaff.tsx';
-import ProjectDetailStaff from './pages/SalesStaff/Project/ProjectDetail.tsx';
+import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
+import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -96,7 +96,7 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
-              <ProjectListStaff />
+              <ProjectListSalesStaff />
             </PrivateRoute>
           }
         />
@@ -105,7 +105,7 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Project Detail Staff | RHCQS - Residential Housing Construction Quotation System" />
-              <ProjectDetailStaff />
+              <ProjectDetailSalesStaff />
             </PrivateRoute>
           }
         />

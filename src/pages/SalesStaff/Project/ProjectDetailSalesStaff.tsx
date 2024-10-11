@@ -26,7 +26,7 @@ import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './Table/FinalInfoTable';
 import ClipLoader from 'react-spinners/ClipLoader';
 
-const ProjectDetailStaff = () => {
+const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
   const [projectDetail, setProjectDetail] = useState<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -250,4 +250,4 @@ const ProjectDetailStaff = () => {
   );
 };
 
-export default ProjectDetailStaff;
+export default ProjectDetailSalesStaff;

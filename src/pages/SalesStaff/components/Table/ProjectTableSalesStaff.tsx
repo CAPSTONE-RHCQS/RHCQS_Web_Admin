@@ -7,6 +7,7 @@ import {
   FaHourglassHalf,
   FaBan,
   FaEye,
+  FaExclamationCircle,
 } from 'react-icons/fa';
 import RejectionModal from '../../../../components/Modals/RejectionModal';
 import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
@@ -19,7 +20,7 @@ type DataItem = {
 
 type SortKey = string;
 
-interface ProjectTableManagerProps {
+interface ProjectTableSalesStaffProps {
   data: DataItem[];
   columns: { key: string; label: string }[];
   isAllChecked: boolean;
@@ -29,6 +30,7 @@ interface ProjectTableManagerProps {
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   isLoading: boolean;
+  error: string | null;
 }
 
 const getStatusStyle = (status: string) => {
@@ -52,7 +54,7 @@ const getStatusStyle = (status: string) => {
   }
 };
 
-const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
+const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
   data,
   columns,
   isAllChecked,
@@ -61,6 +63,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   handleSort,
   handleViewDetails,
   isLoading,
+  error,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -74,6 +77,11 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
           <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+          <FaExclamationCircle className="text-3xl mb-2" /> {/* Icon rỗng */}
+          <span>Hiện tại chưa có dự án nào...</span>
         </div>
       ) : (
         <table className="w-full table-auto">
@@ -158,4 +166,4 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   );
 };
 
-export default ProjectTableManager;
+export default ProjectTableSalesStaff;

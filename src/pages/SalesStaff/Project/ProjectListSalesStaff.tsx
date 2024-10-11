@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   FaSpinner,
   FaClipboardCheck,
@@ -10,8 +10,8 @@ import {
 } from 'react-icons/fa';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import ProjectTableManager from '../components/Table/ProjectTableStaff';
-import { postSalesProject } from '../../../api/Project/Project'; // Sử dụng hàm postSalesProject
+import ProjectTableSalesStaff from '../components/Table/ProjectTableSalesStaff';
+import useProjectsSalesStaff from '../../../hooks/useProjectsSalesStaff';
 import { useNavigate } from 'react-router-dom';
 
 type Email = {
@@ -27,112 +27,33 @@ type Email = {
 
 type SortKey = string;
 
-const ProjectListStaff = () => {
-  const [emails, setEmails] = useState<Email[]>([]);
-  const [isAllChecked, setIsAllChecked] = useState(false);
-  const [sortConfig, setSortConfig] = useState<{
-    key: SortKey;
-    direction: 'ascending' | 'descending';
-  } | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('Tất cả');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+const ProjectListSalesStaff = () => {
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [activeTab, setActiveTab] = useState('Tất cả');
+  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-
-  const fetchProjects = async (page: number) => {
-    setLoading(true);
-    try {
-      const data = await postSalesProject(page, 10);
-      const formattedData = data.Items.map((item: any) => ({
-        id: item.Id,
-        projectId: item.ProjectCode,
-        projectName: item.Name,
-        customerName: item.AccountName,
-        category: item.Type,
-        date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
-        status: item.Status,
-        isChecked: false,
-      }));
-      setEmails(formattedData);
-      setTotalPages(data.TotalPages);
-    } catch (err) {
-      setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProjects(currentPage);
-  }, [currentPage, refreshKey]);
+  const {
+    emails,
+    loading,
+    error,
+    totalPages,
+    isAllChecked,
+    handleSelectAll,
+    handleCheckboxChange,
+    handleSort,
+  } = useProjectsSalesStaff(currentPage, refreshKey);
 
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
 
-  const handleSelectAll = () => {
-    const newIsAllChecked = !isAllChecked;
-    setIsAllChecked(newIsAllChecked);
-    setEmails(
-      emails.map((email) => ({ ...email, isChecked: newIsAllChecked })),
-    );
-  };
-
-  const handleCheckboxChange = (index: number) => {
-    const newEmails = [...emails];
-    newEmails[index].isChecked = !newEmails[index].isChecked;
-    setEmails(newEmails);
-    setIsAllChecked(newEmails.every((email) => email.isChecked));
-  };
-
-  const handleSort = (key: SortKey) => {
-    let direction: 'ascending' | 'descending' = 'ascending';
-    if (
-      sortConfig &&
-      sortConfig.key === key &&
-      sortConfig.direction === 'ascending'
-    ) {
-      direction = 'descending';
-    }
-    setSortConfig({ key, direction });
-
-    const sortedEmails = [...emails].sort((a, b) => {
-      const aValue = a[key as keyof Email];
-      const bValue = b[key as keyof Email];
-
-      if (
-        key === 'date' &&
-        typeof aValue === 'string' &&
-        typeof bValue === 'string'
-      ) {
-        const dateA = new Date(aValue.split('.').reverse().join('-'));
-        const dateB = new Date(bValue.split('.').reverse().join('-'));
-        return direction === 'ascending'
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return direction === 'ascending'
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return direction === 'ascending' ? aValue - bValue : bValue - aValue;
-      }
-      return 0;
-    });
-
-    setEmails(sortedEmails);
-  };
-
   const handleDelete = (id: string) => {
-    setEmails(emails.filter((email) => email.id !== id));
+    const updatedEmails = emails.filter((email) => email.id !== id);
   };
 
   const handleDeleteSelected = () => {
-    setEmails(emails.filter((email) => !email.isChecked));
+    const updatedEmails = emails.filter((email) => !email.isChecked);
   };
 
   const handleViewDetails = (id: string) => {
@@ -151,7 +72,6 @@ const ProjectListStaff = () => {
     { key: 'projectName', label: 'Tên Dự Án' },
     { key: 'customerName', label: 'Khách Hàng' },
     { key: 'category', label: 'Thể loại' },
-    // { key: 'serviceType', label: 'Dịch vụ' },
     { key: 'date', label: 'Ngày' },
     { key: 'status', label: 'Trạng thái' },
   ];
@@ -228,7 +148,7 @@ const ProjectListStaff = () => {
             />
           </div>
           <div className="max-w-full overflow-x-auto">
-            <ProjectTableManager
+            <ProjectTableSalesStaff
               data={filteredEmails}
               columns={columns}
               isAllChecked={isAllChecked}
@@ -238,6 +158,7 @@ const ProjectListStaff = () => {
               handleDelete={handleDelete}
               handleViewDetails={handleViewDetails}
               isLoading={loading}
+              error={error}
             />
           </div>
           <div className="flex justify-between mt-4">
@@ -265,4 +186,4 @@ const ProjectListStaff = () => {
   );
 };
 
-export default ProjectListStaff;
+export default ProjectListSalesStaff;
