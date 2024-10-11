@@ -84,3 +84,21 @@ export const getProjectsStaff = async (page: number, size: number) => {
 //     throw error;
 //   }
 // };
+
+export const assignProject = async (accountId: string, projectId: string) => {
+  try {
+    const response = await requestWebDriver.put('/project/assign', {
+      accountId,
+      projectId,
+    }, {
+      headers: {
+        accept: 'text/plain',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error assigning project:', error);
+    throw error;
+  }
+};

@@ -49,13 +49,17 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     <div
       className={`flex flex-col items-center p-6 border rounded-lg shadow-md cursor-pointer transition-transform transform hover:scale-105 ${
         isSelected ? 'bg-blue-100 border-blue-500' : 'bg-white'
-      }`}
+      } hover:shadow-lg hover:bg-blue-50`}
       onClick={onSelect}
     >
       {avatar ? (
-        <img src={avatar} alt={name} className="w-20 h-20 rounded-full mb-4" />
+        <img
+          src={avatar}
+          alt={name}
+          className="w-20 h-20 rounded-full mb-4 border-2 border-blue-500"
+        />
       ) : (
-        <div className="w-20 h-20 rounded-full mb-4 flex items-center justify-center bg-blue-500 text-white text-2xl">
+        <div className="w-20 h-20 rounded-full mb-4 flex items-center justify-center bg-blue-500 text-white text-2xl shadow-inner">
           {getInitials(name)}
         </div>
       )}
@@ -69,16 +73,16 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
                 key={role}
                 className={`mx-1 text-2xl ${
                   roles.includes(role) ? 'text-blue-500' : 'text-gray-300'
-                }`}
+                } hover:text-blue-700`}
               />
             );
           })}
         </div>
         <p className="text-sm text-gray-600 mb-2 flex items-center">
-          <FaMapMarkerAlt className="mr-2" /> {address}
+          <FaMapMarkerAlt className="mr-2 text-blue-500" /> {address}
         </p>
         <p className="text-sm text-gray-600 flex items-center">
-          <FaPhone className="mr-2" /> {phone}
+          <FaPhone className="mr-2 text-blue-500" /> {phone}
         </p>
       </div>
     </div>

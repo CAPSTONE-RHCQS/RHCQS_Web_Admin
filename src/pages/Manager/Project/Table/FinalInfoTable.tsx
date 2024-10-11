@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
+import { FinalInfo } from '../../../../types/ProjectTypes';
 
 interface FinalInfoTableProps {
-  detailedQuoteData: {
-    Id: string;
-    AccountName: string;
-    Version: string;
-    InsDate: string;
-    Status: string;
-  }[];
+  detailedQuoteData: FinalInfo[];
 }
 
 const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
@@ -49,10 +44,10 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
               {index + 1}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Version}
+              {item.Version ?? 'N/A'}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {new Date(item.InsDate).toLocaleString()}
+              {item.InsDate ? new Date(item.InsDate).toLocaleString() : 'N/A'}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
               {item.AccountName}

@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
+import { ContractInfo } from '../../../../types/ProjectTypes'; // Đảm bảo đường dẫn đúng
 
 interface ContractTableProps {
-  contractData: {
-    Name: string;
-    Status: string;
-    Note: string;
-  }[];
+  contractData: ContractInfo[];
 }
 
 const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
@@ -28,9 +25,6 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
             Loại hợp đồng
           </th>
           <th className="py-4 px-4 font-medium text-black dark:text-white">
-            Người tạo
-          </th>
-          <th className="py-4 px-4 font-medium text-black dark:text-white">
             Trạng thái
           </th>
           <th className="py-4 px-4 font-medium text-black dark:text-white">
@@ -49,20 +43,17 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
               {item.Name}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.creator}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
               {item.Status}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Note}
+              {item.Note ?? 'N/A'}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical
                 className="cursor-pointer"
-                onClick={() => toggleRowMenu(item.id)}
+                onClick={() => toggleRowMenu(index)}
               />
-              {activeMenu === item.id && (
+              {activeMenu === index && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <a

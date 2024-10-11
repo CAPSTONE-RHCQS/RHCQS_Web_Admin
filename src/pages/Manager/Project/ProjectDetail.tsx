@@ -8,13 +8,11 @@ import {
   FaMoneyBillWave,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ContactCard from '../../../components/ContactCard';
 import Avatar from '../../../images/user/user-01.png';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
-import { formatCurrencyShort } from '../../../utils/format';
 import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
@@ -25,13 +23,18 @@ import InitialInfoTable from './Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './Table/FinalInfoTable';
 import ClipLoader from 'react-spinners/ClipLoader';
+import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
+import EmployeeList from '../components/Employee/EmployeeList';
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [projectDetail, setProjectDetail] = useState<any>(null);
+  const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
+    null,
+  );
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
@@ -49,6 +52,17 @@ const ProjectDetail = () => {
 
     fetchProjectDetail();
   }, [id]);
+
+  const refreshProjectDetail = async () => {
+    if (id) {
+      try {
+        const data = await getProjectDetail(id);
+        setProjectDetail(data);
+      } catch (error) {
+        console.error('Error refreshing project detail:', error);
+      }
+    }
+  };
 
   if (!projectDetail) {
     return (
@@ -69,6 +83,8 @@ const ProjectDetail = () => {
   const handleMenuItemClick = (item: string) => {
     if (item === 'history') {
       setShowHistory(true);
+    } else if (item === 'assign') {
+      setShowEmployeeDialog(true);
     }
   };
 
@@ -88,6 +104,16 @@ const ProjectDetail = () => {
   };
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
+
+  const handleCloseEmployeeDialog = () => {
+    setShowEmployeeDialog(false);
+  };
+
+  const handleSelectEmployee = (id: string) => {
+    console.log('Selected Employee ID:', id);
+    setShowEmployeeDialog(false);
+    refreshProjectDetail(); // Gọi lại API để cập nhật chi tiết dự án
+  };
 
   return (
     <>
@@ -121,6 +147,13 @@ const ProjectDetail = () => {
                   >
                     Chỉnh sửa hợp đồng
                   </Link>
+                  <a
+                    href="#"
+                    onClick={() => handleMenuItemClick('assign')}
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Phân công nhân viên
+                  </a>
                   <a
                     href="#"
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
@@ -161,8 +194,8 @@ const ProjectDetail = () => {
           <ContactCard
             data={{
               fullName: projectDetail.AccountName || 'N/A',
-              phoneNumber: '0965486940',
-              emailAddress: 'email@fpt.edu.vn',
+              // phoneNumber: '0965486940',
+              // emailAddress: 'email@fpt.edu.vn',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
@@ -198,7 +231,6 @@ const ProjectDetail = () => {
 
         <StatusTracker currentStatus={mappedStatus} />
       </div>
-
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Thông tin dự án</h2>
@@ -246,6 +278,16 @@ const ProjectDetail = () => {
         <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
         <ContractTable contractData={projectDetail.ContractInfo || []} />
       </div>
+      {projectDetail && (
+        <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
+          <div className="p-4">
+            <EmployeeList
+              onSelectEmployee={handleSelectEmployee}
+              projectId={projectDetail.Id}
+            />
+          </div>
+        </Dialog>
+      )}
     </>
   );
 };

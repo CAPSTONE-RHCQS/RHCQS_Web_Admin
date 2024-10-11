@@ -8,13 +8,11 @@ import {
   FaMoneyBillWave,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ContactCard from '../../../components/ContactCard';
 import Avatar from '../../../images/user/user-01.png';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
-import { formatCurrencyShort } from '../../../utils/format';
 import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
@@ -25,10 +23,13 @@ import InitialInfoTable from './Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './Table/FinalInfoTable';
 import ClipLoader from 'react-spinners/ClipLoader';
+import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
-  const [projectDetail, setProjectDetail] = useState<any>(null);
+  const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
+    null,
+  );
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
@@ -161,8 +162,8 @@ const ProjectDetailSalesStaff = () => {
           <ContactCard
             data={{
               fullName: projectDetail.AccountName || 'N/A',
-              phoneNumber: '0965486940',
-              emailAddress: 'email@fpt.edu.vn',
+              // phoneNumber: '0965486940',
+              // emailAddress: 'email@fpt.edu.vn',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
@@ -185,14 +186,14 @@ const ProjectDetailSalesStaff = () => {
 
           <ContactCard
             data={{
-              title: 'Dự phí',
-              priceQuote: formatCurrencyShort(1780518752),
+              staffName: projectDetail.StaffName || 'Chờ phân công...',
+              staffPhone: projectDetail.StaffPhone || '',
             }}
             fields={[
-              { key: 'title', label: 'Name' },
-              { key: 'priceQuote', label: 'Quote' },
+              { key: 'staffName', label: 'Name' },
+              { key: 'staffPhone', label: 'Phone' },
             ]}
-            avatarUrl={Fee}
+            avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
 
