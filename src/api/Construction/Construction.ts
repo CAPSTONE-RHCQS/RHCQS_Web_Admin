@@ -1,7 +1,8 @@
 import requestWebDriver from '../../utils/axios';
 import axios from 'axios';
 
-interface SubConstructionRequest {
+export interface SubConstructionRequest {
+  id: string;
   name: string;
   coefficient: number;
   unit: string;
@@ -12,7 +13,7 @@ export interface ConstructionRequest {
   coefficient: number;
   unit: string;
   type: string;
-  subConstructionRequests: SubConstructionRequest[];
+  subRequests: SubConstructionRequest[]; // Đổi từ subConstructionRequests thành subRequests
 }
 
 export const getConstructions = async (page: number, size: number) => {
@@ -34,9 +35,14 @@ export const postConstruction = async (
   constructionData: ConstructionRequest,
 ) => {
   try {
+    const dataWithQuotation = {
+      ...constructionData,
+      isFinalQuotation: false,
+    };
+
     const response = await requestWebDriver.post(
       '/construction',
-      constructionData,
+      dataWithQuotation,
       {
         headers: {
           'Content-Type': 'application/json',
@@ -46,6 +52,27 @@ export const postConstruction = async (
     return response.data;
   } catch (error) {
     console.error('Error posting construction:', error);
+    throw error;
+  }
+};
+
+export const putConstruction = async (
+  id: string,
+  constructionData: ConstructionRequest,
+) => {
+  try {
+    const response = await requestWebDriver.put(
+      `/construction?id=${id}`,
+      constructionData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating construction:', error);
     throw error;
   }
 };

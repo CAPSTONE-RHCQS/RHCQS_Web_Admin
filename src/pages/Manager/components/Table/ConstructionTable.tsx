@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
+import EditConstructionModal from '../Modals/EditConstructionModal';
 
-interface SubConstructionItem {
+export interface SubConstructionItem {
+  Id: string;
   Name: string;
   Coefficient: number;
   Unit: string;
   InsDate: string;
 }
 
-interface ConstructionItem {
+export interface ConstructionItem {
+  Id: string; 
   Name: string;
   Coefficient: number;
   Unit: string;
@@ -17,19 +20,24 @@ interface ConstructionItem {
   SubConstructionItems?: SubConstructionItem[];
 }
 
-interface ConstructionTableProps {
+export interface ConstructionTableProps {
   data: ConstructionItem[];
   isLoading: boolean;
+  onEditSuccess: () => void;
 }
 
 const ConstructionTable: React.FC<ConstructionTableProps> = ({
   data,
   isLoading,
+  onEditSuccess,
 }) => {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [selectedSubItems, setSelectedSubItems] = useState<{
     [key: number]: number;
   }>({});
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedConstruction, setSelectedConstruction] =
+    useState<ConstructionItem | null>(null);
 
   const toggleOpenItem = (index: number) => {
     setOpenItems((prev) => {
@@ -55,6 +63,14 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
     data[itemIndex].Coefficient = coefficient;
   };
 
+  const openEditModal = (id: string) => {
+    const construction = data.find((item) => item.Id === id);
+    if (construction) {
+      setSelectedConstruction(construction);
+      setEditModalOpen(true);
+    }
+  };
+
   return (
     <>
       {isLoading ? (
@@ -65,14 +81,16 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo'].map((header) => (
-                <th
-                  key={header}
-                  className="py-4 px-4 font-medium text-black dark:text-white"
-                >
-                  {header}
-                </th>
-              ))}
+              {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo', 'Hành động'].map(
+                (header) => (
+                  <th
+                    key={header}
+                    className="py-4 px-4 font-medium text-black dark:text-white"
+                  >
+                    {header}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody>
@@ -98,6 +116,12 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     {new Date(item.InsDate).toLocaleDateString()}
                   </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    <PencilIcon
+                      className="w-4 h-4 text-blue-500 cursor-pointer"
+                      onClick={() => openEditModal(item.Id)}
+                    />
+                  </td>
                 </tr>
                 {openItems.has(index) &&
                   item.SubConstructionItems &&
@@ -110,16 +134,19 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                         <table className="w-full table-auto">
                           <thead>
                             <tr className="bg-gray-100 text-left dark:bg-meta-5">
-                              {['Tên Mục Con', 'Hệ số', 'Đơn vị', 'Ngày tạo'].map(
-                                (header) => (
-                                  <th
-                                    key={header}
-                                    className="py-2 px-4 font-medium text-black dark:text-white"
-                                  >
-                                    {header}
-                                  </th>
-                                ),
-                              )}
+                              {[
+                                'Tên Mục Con',
+                                'Hệ số',
+                                'Đơn vị',
+                                'Ngày tạo',
+                              ].map((header) => (
+                                <th
+                                  key={header}
+                                  className="py-2 px-4 font-medium text-black dark:text-white"
+                                >
+                                  {header}
+                                </th>
+                              ))}
                             </tr>
                           </thead>
                           <tbody>
@@ -166,6 +193,17 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
             ))}
           </tbody>
         </table>
+      )}
+      {editModalOpen && selectedConstruction && (
+        <EditConstructionModal
+          isOpen={editModalOpen}
+          onClose={() => setEditModalOpen(false)}
+          onEditSuccess={() => {
+            setEditModalOpen(false);
+            onEditSuccess(); 
+          }}
+          construction={selectedConstruction}
+        />
       )}
     </>
   );

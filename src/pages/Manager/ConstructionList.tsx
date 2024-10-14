@@ -14,7 +14,6 @@ const ConstructionList: React.FC = () => {
     totalConstructions,
     isLoading,
     constructions,
-    setConstructions,
   } = useFetchConstructions(currentPage, refreshKey);
 
   const handlePageChange = (newPage: number) => {
@@ -56,7 +55,11 @@ const ConstructionList: React.FC = () => {
           </div>
         </div>
         <div className="max-w-full overflow-x-auto">
-          <ConstructionTable data={constructions} isLoading={isLoading} />
+          <ConstructionTable
+            data={constructions}
+            isLoading={isLoading}
+            onEditSuccess={handleRefresh} 
+          />
         </div>
         <div className="flex justify-between mt-4">
           <button

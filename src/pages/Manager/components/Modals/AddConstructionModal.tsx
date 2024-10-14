@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
 import {
-  ConstructionRequest,
   postConstruction,
+  SubConstructionRequest,
 } from '../../../../api/Construction/Construction';
 
 interface AddConstructionModalProps {
@@ -23,7 +24,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
   const [unit, setUnit] = useState(DEFAULT_UNIT);
   const [type, setType] = useState(DEFAULT_TYPE);
   const [subConstructions, setSubConstructions] = useState([
-    { name: '', coefficient: 0, unit: DEFAULT_UNIT },
+    { id: '', name: '', coefficient: 0, unit: DEFAULT_UNIT },
   ]);
   const [showSubConstructions, setShowSubConstructions] = useState(false);
 
@@ -38,14 +39,16 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
     setCoefficient(0);
     setUnit(DEFAULT_UNIT);
     setType(DEFAULT_TYPE);
-    setSubConstructions([{ name: '', coefficient: 0, unit: DEFAULT_UNIT }]);
+    setSubConstructions([
+      { id: '', name: '', coefficient: 0, unit: DEFAULT_UNIT },
+    ]);
     setShowSubConstructions(false);
   };
 
   const handleAddSubConstruction = () => {
     setSubConstructions([
       ...subConstructions,
-      { name: '', coefficient: 0, unit: DEFAULT_UNIT },
+      { id: '', name: '', coefficient: 0, unit: DEFAULT_UNIT },
     ]);
   };
 
@@ -64,29 +67,40 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      const validSubConstructions = subConstructions.filter(
-        (sub) => sub.name && sub.unit,
-      );
+      const validSubConstructions: SubConstructionRequest[] = subConstructions
+        .filter((sub) => sub.name && sub.unit)
+        .map((sub) => ({
+          id: sub.id || generateTemporaryId(),
+          name: sub.name,
+          coefficient: sub.coefficient,
+          unit: sub.unit,
+        }));
 
       if (!name || !unit) {
         console.error('Please fill in all required fields.');
         return;
       }
 
-      const constructionData: ConstructionRequest = {
+      const constructionData = {
         name,
         coefficient,
         unit,
         type,
-        subConstructionRequests: validSubConstructions,
+        subRequests: validSubConstructions,
       };
 
       await postConstruction(constructionData);
+      toast.success('Thêm mới thành công!');
       onAddSuccess();
       onClose();
     } catch (error) {
       console.error('Failed to add construction:', error);
+      toast.error('Thêm mới thất bại!');
     }
+  };
+
+  const generateTemporaryId = () => {
+    return `temp-${Math.random().toString(36).substr(2, 9)}`;
   };
 
   if (!isOpen) return null;
@@ -100,14 +114,16 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
         className="bg-white p-8 rounded-lg shadow-lg w-1/3 max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="text-2xl font-semibold mb-6 text-center">Thêm mới Construction</h2>
+        <h2 className="text-2xl font-semibold mb-6 text-center">
+          Thêm mới Construction
+        </h2>
         <div className="grid grid-cols-4 gap-4 mb-6">
           <input
             type="text"
             placeholder="Tên"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
             required
           />
           <input
@@ -115,7 +131,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
             placeholder="Hệ số"
             value={coefficient}
             onChange={(e) => setCoefficient(Number(e.target.value))}
-            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
             required
           />
           <input
@@ -123,13 +139,13 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
             placeholder="Đơn vị"
             value={unit}
             onChange={(e) => setUnit(e.target.value)}
-            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
             required
           />
           <select
             value={type}
             onChange={(e) => setType(e.target.value)}
-            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+            className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
           >
             <option value="ROUGH">ROUGH</option>
             <option value="FINISH">FINISH</option>
@@ -152,7 +168,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
                   onChange={(e) =>
                     handleSubConstructionChange(index, 'name', e.target.value)
                   }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
                   required
                 />
                 <input
@@ -166,7 +182,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
                       Number(e.target.value),
                     )
                   }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
                   required
                 />
                 <input
@@ -176,7 +192,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
                   onChange={(e) =>
                     handleSubConstructionChange(index, 'unit', e.target.value)
                   }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
                   required
                 />
               </div>
@@ -190,7 +206,10 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
           </>
         )}
         <div className="flex justify-end">
-          <button onClick={onClose} className="p-2 bg-gray-300 rounded mr-2 hover:bg-gray-400 transition-colors">
+          <button
+            onClick={onClose}
+            className="p-2 bg-gray-300 rounded mr-2 hover:bg-gray-400 transition-colors"
+          >
             Hủy
           </button>
           <button
