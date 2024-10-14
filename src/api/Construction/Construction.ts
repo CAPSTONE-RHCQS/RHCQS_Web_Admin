@@ -1,4 +1,4 @@
-import requestWebDriver from "../../utils/axios";
+import requestWebDriver from '../../utils/axios';
 import axios from 'axios';
 
 interface SubConstructionRequest {
@@ -7,7 +7,7 @@ interface SubConstructionRequest {
   unit: string;
 }
 
-interface ConstructionRequest {
+export interface ConstructionRequest {
   name: string;
   coefficient: number;
   unit: string;
@@ -30,17 +30,22 @@ export const getConstructions = async (page: number, size: number) => {
   }
 };
 
-export const postConstruction = async (constructionData: ConstructionRequest) => {
+export const postConstruction = async (
+  constructionData: ConstructionRequest,
+) => {
   try {
-    const response = await axios.post('/api/v1/construction', constructionData, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await requestWebDriver.post(
+      '/construction',
+      constructionData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Error posting construction:', error);
     throw error;
   }
 };
-

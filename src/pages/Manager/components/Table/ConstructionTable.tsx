@@ -2,8 +2,23 @@ import React, { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 
+interface SubConstructionItem {
+  Name: string;
+  Coefficient: number;
+  Unit: string;
+  InsDate: string;
+}
+
+interface ConstructionItem {
+  Name: string;
+  Coefficient: number;
+  Unit: string;
+  InsDate: string;
+  SubConstructionItems?: SubConstructionItem[];
+}
+
 interface ConstructionTableProps {
-  data: any[];
+  data: ConstructionItem[];
   isLoading: boolean;
 }
 
@@ -50,18 +65,14 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Tên
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Hệ số
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Đơn vị
-              </th>
-              <th className="py-4 px-4 font-medium text-black dark:text-white">
-                Ngày tạo
-              </th>
+              {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo'].map((header) => (
+                <th
+                  key={header}
+                  className="py-4 px-4 font-medium text-black dark:text-white"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>
@@ -99,23 +110,21 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                         <table className="w-full table-auto">
                           <thead>
                             <tr className="bg-gray-100 text-left dark:bg-meta-5">
-                              <th className="py-2 px-4 font-medium text-black dark:text-white">
-                                Tên Mục Con
-                              </th>
-                              <th className="py-2 px-4 font-medium text-black dark:text-white">
-                                Hệ số
-                              </th>
-                              <th className="py-2 px-4 font-medium text-black dark:text-white">
-                                Đơn vị
-                              </th>
-                              <th className="py-2 px-4 font-medium text-black dark:text-white">
-                                Ngày tạo
-                              </th>
+                              {['Tên Mục Con', 'Hệ số', 'Đơn vị', 'Ngày tạo'].map(
+                                (header) => (
+                                  <th
+                                    key={header}
+                                    className="py-2 px-4 font-medium text-black dark:text-white"
+                                  >
+                                    {header}
+                                  </th>
+                                ),
+                              )}
                             </tr>
                           </thead>
                           <tbody>
                             {item.SubConstructionItems.map(
-                              (subItem: any, subIndex: number) => (
+                              (subItem, subIndex) => (
                                 <tr
                                   key={subIndex}
                                   onClick={() =>
