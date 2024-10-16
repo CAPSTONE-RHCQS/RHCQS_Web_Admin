@@ -1,18 +1,50 @@
 import React, { useState } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { FinalInfo } from '../../../../types/ProjectTypes';
+import { useNavigate } from 'react-router-dom';
 
 interface FinalInfoTableProps {
   detailedQuoteData: FinalInfo[];
 }
 
+const statusColorMap: { [key: string]: string } = {
+  Processing: '#FFA500',
+  Rejected: '#FF0000',
+  Reviewing: '#FFD700',
+  Approved: '#008000',
+  Canceled: '#808080',
+  Finalized: '#4B0082',
+};
+
+const statusLabelMap: { [key: string]: string } = {
+  Processing: 'Đang xử lý',
+  Rejected: 'Bị từ chối',
+  Reviewing: 'Đang chờ phản hồi',
+  Approved: 'Đã xác nhận',
+  Canceled: 'Đã đóng',
+  Finalized: 'Đã hoàn thành',
+};
+
+const getStatusStyle = (status: string | null) => {
+  return status ? statusColorMap[status] || 'text-gray-500' : 'text-gray-500';
+};
+
+const getStatusLabel = (status: string | null) => {
+  return status ? statusLabelMap[status] || 'Không xác định' : 'Không xác định';
+};
+
 const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
   detailedQuoteData,
 }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const toggleRowMenu = (id: string) => {
     setActiveMenu(activeMenu === id ? null : id);
+  };
+
+  const handleViewDetail = (id: string) => {
+    navigate(`/final-quotation-detail/${id}`);
   };
 
   return (
@@ -53,7 +85,12 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
               {item.AccountName}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Status}
+              <span
+                className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
+                style={{ backgroundColor: getStatusStyle(item.Status) }}
+              >
+                {getStatusLabel(item.Status)}
+              </span>
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical
@@ -65,18 +102,7 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
                   <div className="py-2">
                     <a
                       href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Chỉnh sửa
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Xóa
-                    </a>
-                    <a
-                      href="#"
+                      onClick={() => handleViewDetail(item.Id)}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết
