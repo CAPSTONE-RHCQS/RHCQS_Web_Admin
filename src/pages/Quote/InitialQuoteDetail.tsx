@@ -7,7 +7,7 @@ import { ClipLoader } from 'react-spinners';
 
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import ContactCard from '../../components/ContactCard';
-import StatusTracker from '../../components/StatusTracker';
+import InitialQuotationStatusTracker from '../../components/InitialQuotationStatusTracker'; // Import component mới
 import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
 import ChatBox from '../../components/ChatBox';
 
@@ -35,6 +35,20 @@ interface OptionRow {
   heSo: number;
   thanhTien: number;
 }
+
+// Hàm ánh xạ trạng thái từ tiếng Anh sang tiếng Việt
+const getStatusLabel = (status: string) => {
+  const statusLabelMap: { [key: string]: string } = {
+    Pending: 'Đang xử lý',
+    Processing: 'Chờ xác nhận',
+    Rejected: 'Từ chối báo giá SB',
+    Reviewing: 'Chờ xác nhận từ quản lý',
+    Approved: 'Đã xác nhận',
+    Canceled: 'Đã đóng',
+    Finalized: 'Đã hoàn thành',
+  };
+  return statusLabelMap[status] || 'Không xác định';
+};
 
 const InitialQuoteDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -249,55 +263,7 @@ const InitialQuoteDetail = () => {
 
   return (
     <>
-      <div className="mb-6 flex flex-col gap-3">
-        <div className="flex justify-between items-center">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
-            Báo giá sơ bộ
-          </h2>
-          <span className="text-sm text-gray-500">
-            Version: {version !== null ? version.toFixed(1) : 'N/A'}
-          </span>
-          <div
-            onMouseEnter={showMenu}
-            onMouseLeave={hideMenu}
-            className="relative"
-          >
-            <FiMoreVertical className="text-xl text-black dark:text-white" />
-            {menuVisible && (
-              <div
-                className="absolute right-4 top-1 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
-                style={{ opacity: menuVisible ? 1 : 0 }}
-              >
-                <div className="py-2">
-                  <a
-                    href="#"
-                    onClick={() => handleMenuItemClick('history')}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Lịch sử chỉnh sửa
-                  </a>
-                  <Link
-                    to={`/editquote`}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Chỉnh sửa hợp đồng
-                  </Link>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    Menu Item 3
-                  </a>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-
-        <Dialog open={showHistory} handler={handleCloseHistory}>
-          <ContractHistoryTimeline onClose={handleCloseHistory} />
-        </Dialog>
-        {showChat && <ChatBox onClose={toggleChat} />}
+      <div>
         {!showChat && (
           <button
             onClick={toggleChat}
@@ -330,7 +296,7 @@ const InitialQuoteDetail = () => {
           />
         </div>
 
-        <StatusTracker currentStatus="Đang Xử Lý" />
+        <InitialQuotationStatusTracker currentStatus={getStatusLabel(quotationData.Status)} /> {/* Sử dụng hàm ánh xạ */}
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">

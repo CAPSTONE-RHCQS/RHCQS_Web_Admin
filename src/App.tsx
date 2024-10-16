@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'; // Import CSS của react-toastify
+import 'react-toastify/dist/ReactToastify.css';
 
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
@@ -20,12 +20,12 @@ import AccountList from './pages/Manager/AccountList';
 import ProjectDetail from './pages/Manager/Project/ProjectDetail';
 import CreateContractDesign from './pages/DesignStaff/CreateContractDesign';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
-import DetailedQuotation from './pages/Quote/DetailedQuotation/DetailedQuotation.tsx';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
+import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -90,6 +90,15 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/final-quotation-detail/:id"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <FinalQuotationDetail />
+            </PrivateRoute>
+          }
+        />
         // Sale Staff
         <Route
           path="/project-list-staff"
@@ -137,11 +146,11 @@ function App() {
           }
         />
         <Route
-          path="/detailed-quotation"
+          path="/final-quotation-detail/:id"
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <DetailedQuotation />
+              <FinalQuotationDetail />
             </PrivateRoute>
           }
         />
