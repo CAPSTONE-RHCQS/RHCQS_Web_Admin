@@ -98,9 +98,11 @@ const ProjectDetail = () => {
 
   const statusMap: { [key: string]: string } = {
     Processing: 'Đang Xử Lý',
-    Designing: 'Đang Thiết Kế',
-    Quoting: 'Đang Báo Giá',
-    Completed: 'Hoàn Thành',
+    Contracted: 'Hoàn thành hợp đồng TK',
+    Reviewing: 'Chờ xác nhận',
+    'Signed Contract': 'Đã ký hợp đồng',
+    Finalized: 'Hoàn Thành',
+    Ended: 'Đã chấm dứt',
   };
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
@@ -112,7 +114,7 @@ const ProjectDetail = () => {
   const handleSelectEmployee = (id: string) => {
     console.log('Selected Employee ID:', id);
     setShowEmployeeDialog(false);
-    refreshProjectDetail(); // Gọi lại API để cập nhật chi tiết dự án
+    refreshProjectDetail(); 
   };
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaCog, FaHome, FaUser, FaCheck } from 'react-icons/fa';
+import { FaHome, FaUser, FaCog, FaCheck, FaFileContract, FaBan } from 'react-icons/fa';
 
 interface StatusTrackerProps {
   currentStatus: string;
@@ -7,9 +7,11 @@ interface StatusTrackerProps {
 
 const statuses = [
   { label: 'Đang Xử Lý', icon: <FaHome /> },
-  { label: 'Đang Thiết Kế', icon: <FaUser /> },
-  { label: 'Đang Báo Giá', icon: <FaCog /> },
+  { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> },
+  { label: 'Chờ xác nhận', icon: <FaUser /> },
+  { label: 'Đã ký hợp đồng', icon: <FaCog /> },
   { label: 'Hoàn Thành', icon: <FaCheck /> },
+  { label: 'Đã chấm dứt', icon: <FaBan /> },
 ];
 
 const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {

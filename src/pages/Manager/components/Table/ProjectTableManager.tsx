@@ -34,22 +34,32 @@ interface ProjectTableManagerProps {
 const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Processing':
-      return { backgroundColor: '#FFB347', icon: <FaSpinner /> };
-    case 'Đã thiết kế':
-      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
-    case 'Đã tạo hợp đồng thiết kế':
-      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
-    case 'Đang chờ':
-      return { backgroundColor: '#4D4DFF', icon: <FaHourglassHalf /> };
-    case 'Đã tạo hợp đồng':
-      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
-    case 'Đã hoàn thành':
-      return { backgroundColor: '#4CAF50', icon: <FaCheck /> };
-    case 'Đã hủy':
-      return { backgroundColor: '#FF6666', icon: <FaBan /> };
+      return { backgroundColor: '#FFB347', icon: <FaSpinner /> }; // Đang xử lý
+    case 'Contracted':
+      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> }; // Hoàn thành hợp đồng TK
+    case 'Reviewing':
+      return { backgroundColor: '#FFD700', icon: <FaHourglassHalf /> }; // Chờ xác nhận
+    case 'Signed Contract':
+      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> }; // Đã ký hợp đồng
+    case 'Finalized':
+      return { backgroundColor: '#4CAF50', icon: <FaCheck /> }; // Hoàn thành
+    case 'Ended':
+      return { backgroundColor: '#FF6666', icon: <FaBan /> }; // Đã chấm dứt
     default:
       return { backgroundColor: '#B0B0B0', icon: null };
   }
+};
+
+const getStatusLabel = (status: string) => {
+  const statusLabelMap: { [key: string]: string } = {
+    Processing: 'Đang xử lý',
+    Contracted: 'Hoàn thành hợp đồng TK',
+    Reviewing: 'Chờ xác nhận',
+    'Signed Contract': 'Đã ký hợp đồng',
+    Finalized: 'Hoàn thành',
+    Ended: 'Đã chấm dứt',
+  };
+  return statusLabelMap[status] || 'Không xác định';
 };
 
 const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
@@ -125,7 +135,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                         }}
                       >
                         {getStatusStyle(item[column.key]).icon}
-                        <span className="ml-2">{item[column.key]}</span>
+                        <span className="ml-2">{getStatusLabel(item[column.key])}</span>
                       </span>
                     ) : (
                       item[column.key]

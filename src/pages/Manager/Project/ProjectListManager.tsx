@@ -14,6 +14,19 @@ import ProjectTableManager from '../components/Table/ProjectTableManager';
 import { getProjects } from '../../../api/Project/Project';
 import { useNavigate } from 'react-router-dom';
 
+// Định nghĩa hàm getStatusLabel
+const getStatusLabel = (status: string) => {
+  const statusLabelMap: { [key: string]: string } = {
+    Processing: 'Đang xử lý',
+    Contracted: 'Hoàn thành hợp đồng TK',
+    Reviewing: 'Chờ xác nhận',
+    'Signed Contract': 'Đã ký hợp đồng',
+    Finalized: 'Hoàn thành',
+    Ended: 'Đã chấm dứt',
+  };
+  return statusLabelMap[status] || 'Không xác định';
+};
+
 type Email = {
   id: string;
   projectId: string;
@@ -144,7 +157,7 @@ const ProjectListManager = () => {
   const filteredEmails = emails.filter((email) =>
     activeTab === 'Tất cả'
       ? email.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-      : email.status === activeTab &&
+      : getStatusLabel(email.status) === activeTab &&
         email.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
@@ -160,13 +173,12 @@ const ProjectListManager = () => {
 
   const tabs = [
     { label: 'Tất cả', icon: <FaList /> },
-    { label: 'Đang xử lý', icon: <FaSpinner /> },
-    { label: 'Đã thiết kế', icon: <FaClipboardCheck /> },
-    { label: 'Đã tạo hợp đồng thiết kế', icon: <FaFileContract /> },
-    { label: 'Đang chờ kiểm tra', icon: <FaHourglassHalf /> },
-    { label: 'Đã tạo hợp đồng', icon: <FaFileContract /> },
-    { label: 'Đã hoàn thành', icon: <FaCheck /> },
-    { label: 'Hợp đồng đã chấm dứt', icon: <FaBan /> },
+    { label: 'Đang xử lý', icon: <FaSpinner /> }, // Processing
+    { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> }, // Contracted
+    { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> }, // Reviewing
+    { label: 'Đã ký hợp đồng', icon: <FaClipboardCheck /> }, // Signed Contract
+    { label: 'Hoàn thành', icon: <FaCheck /> }, // Finalized
+    { label: 'Đã chấm dứt', icon: <FaBan /> }, // Ended
   ];
 
   const handlePageChange = (newPage: number) => {

@@ -19,19 +19,32 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     setActiveMenu(activeMenu === id ? null : id);
   };
 
+  const statusColorMap: { [key: string]: string } = {
+    Pending: '#FFA500',
+    Processing: '#0000FF',
+    Rejected: '#FF0000',
+    Reviewing: '#FFD700',
+    Approved: '#008000',
+    Canceled: '#808080',
+    Finalized: '#4B0082',
+  };
+
+  const statusLabelMap: { [key: string]: string } = {
+    Pending: 'Đang xử lý',
+    Processing: 'Chờ xác nhận',
+    Rejected: 'Từ chối báo giá SB',
+    Reviewing: 'Chờ xác nhận từ quản lý',
+    Approved: 'Đã xác nhận',
+    Canceled: 'Đã đóng',
+    Finalized: 'Đã hoàn thành',
+  };
+
   const getStatusStyle = (status: string) => {
-    switch (status) {
-      case 'Proccessing':
-        return '#FFA500'; 
-      case 'Completed':
-        return '#008000';
-      case 'Pending':
-        return '#0000FF'; 
-      case 'Rejected':
-        return '#FF0000';
-      default:
-        return 'text-gray-500';
-    }
+    return statusColorMap[status] || 'text-gray-500';
+  };
+
+  const getStatusLabel = (status: string) => {
+    return statusLabelMap[status] || 'Không xác định';
   };
 
   return (
@@ -78,7 +91,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
                 className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
                 style={{ backgroundColor: getStatusStyle(item.Status) }}
               >
-                {item.Status}
+                {getStatusLabel(item.Status)}
               </span>
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
