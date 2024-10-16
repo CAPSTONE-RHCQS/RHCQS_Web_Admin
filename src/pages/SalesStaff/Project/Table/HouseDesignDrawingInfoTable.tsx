@@ -13,6 +13,36 @@ interface HouseDesignDrawingInfoTableProps {
   }[];
 }
 
+const statusColorMap: { [key: string]: string } = {
+  Processing: '#FFA500',
+  Rejected: '#FF0000',
+  Updating: '#1E90FF',
+  Reviewing: '#FFD700',
+  Approved: '#008000',
+  Accepted: '#32CD32',
+  Canceled: '#808080',
+  Finalized: '#4B0082',
+};
+
+const statusLabelMap: { [key: string]: string } = {
+  Processing: 'Đang xử lý',
+  Rejected: 'Bị từ chối',
+  Updating: 'Đang chỉnh sửa',
+  Reviewing: 'Đang chờ phản hồi',
+  Approved: 'Quản lý đã xác nhận',
+  Accepted: 'Khách hàng đã xác nhận',
+  Canceled: 'Đã đóng',
+  Finalized: 'Đã hoàn thành',
+};
+
+const getStatusStyle = (status: string | null) => {
+  return status ? statusColorMap[status] || 'text-gray-500' : 'text-gray-500';
+};
+
+const getStatusLabel = (status: string | null) => {
+  return status ? statusLabelMap[status] || 'Không xác định' : 'Không xác định';
+};
+
 const HouseDesignDrawingInfoTable: React.FC<
   HouseDesignDrawingInfoTableProps
 > = ({ designData }) => {
@@ -81,7 +111,12 @@ const HouseDesignDrawingInfoTable: React.FC<
                 {new Date(item.InsDate).toLocaleString()}
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                {item.Status}
+                <span
+                  className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
+                  style={{ backgroundColor: getStatusStyle(item.Status) }}
+                >
+                  {getStatusLabel(item.Status)}
+                </span>
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <button

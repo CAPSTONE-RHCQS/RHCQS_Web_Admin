@@ -41,22 +41,30 @@ const FinalQuotationDetail = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Thông tin báo giá chi tiết</h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold ">Thông tin báo giá chi tiết</h2>
+      </div>
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
-      <div className="mb-4 flex items-center">
+      <div className="mb-2 text-lg flex items-center">
         <FaUser className="mr-2" />
-        <span className="font-semibold">Tên khách hàng:</span>{' '}
-        {quotationDetail.AccountName}
+        <span className="font-semibold">Tên khách hàng:</span>
+        <span className="text-gray-700 ml-2">
+          {quotationDetail.AccountName}
+        </span>
       </div>
-      <div className="mb-4 flex items-center">
+      <div className="mb-2 text-lg flex items-center">
         <FaMapMarkerAlt className="mr-2" />
-        <span className="font-semibold">Địa chỉ thi công:</span>{' '}
-        {quotationDetail.ProjectAddress}
+        <span className="font-semibold">Địa chỉ thi công:</span>
+        <span className="text-gray-700 ml-2">
+          {quotationDetail.ProjectAddress}
+        </span>
       </div>
-      <div className="mb-4 flex items-center">
+      <div className="mb-2 text-lg flex items-center">
         <FaMoneyBillWave className="mr-2" />
-        <span className="font-semibold">Tổng chi phí:</span>{' '}
-        {quotationDetail.TotalPrice.toLocaleString()} VNĐ
+        <span className="font-semibold">Tổng chi phí:</span>
+        <span className="text-gray-700 ml-2">
+          {quotationDetail.TotalPrice.toLocaleString()} VNĐ
+        </span>
       </div>
       <hr className="my-4 border-gray-300" />
       <h3 className="text-xl font-bold mb-4">Các đợt thanh toán</h3>

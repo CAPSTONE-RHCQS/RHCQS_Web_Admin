@@ -17,11 +17,11 @@ import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import ContractTable from './Table/ContractTable';
+import ContractTable from '../../SalesStaff/Project/Table/ContractTable';
 import { getProjectDetail } from '../../../api/Project/Project';
-import InitialInfoTable from './Table/InitialInfoTable';
-import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
-import FinalInfoTable from './Table/FinalInfoTable';
+import InitialInfoTable from '../../SalesStaff/Project/Table/InitialInfoTable';
+import HouseDesignDrawingInfoTable from '../../SalesStaff/Project/Table/HouseDesignDrawingInfoTable';
+import FinalInfoTable from '../../SalesStaff/Project/Table/FinalInfoTable';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 import EmployeeList from '../components/Employee/EmployeeList';
@@ -114,7 +114,7 @@ const ProjectDetail = () => {
   const handleSelectEmployee = (id: string) => {
     console.log('Selected Employee ID:', id);
     setShowEmployeeDialog(false);
-    refreshProjectDetail(); 
+    refreshProjectDetail();
   };
 
   return (
