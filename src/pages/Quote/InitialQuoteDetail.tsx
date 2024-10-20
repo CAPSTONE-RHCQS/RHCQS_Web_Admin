@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
-import { FiMoreVertical } from 'react-icons/fi';
-import { Link, useParams } from 'react-router-dom';
-import { Dialog } from '@material-tailwind/react';
+import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import ContactCard from '../../components/ContactCard';
-import InitialQuotationStatusTracker from '../../components/InitialQuotationStatusTracker'; // Import component mới
-import ContractHistoryTimeline from '../../components/ContractHistoryTimeline';
-import ChatBox from '../../components/ChatBox';
-
-import Avatar from '../../images/user/user-01.png';
-import House from '../../images/house/phan-loai-cac-nha-dan-dung-2.png';
-import Process from '../../images/process.jpg';
-import Fee from '../../images/fee.jpg';
-
+import InitialQuotationStatusTracker from '../../components/InitialQuotationStatusTracker';
+import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
+import { getStatusLabelInitalQuoteDetail } from '../../utils/utils';
 import { formatCurrencyShort } from '../../utils/format';
 import { getInitialQuotation } from '../../api/Project/InitialQuotation';
+import { InitialQuotationResponse } from '../../types/InitialQuotationTypes';
 
 interface TableRow {
   stt: number;
@@ -36,25 +27,10 @@ interface OptionRow {
   thanhTien: number;
 }
 
-// Hàm ánh xạ trạng thái từ tiếng Anh sang tiếng Việt
-const getStatusLabel = (status: string) => {
-  const statusLabelMap: { [key: string]: string } = {
-    Pending: 'Đang xử lý',
-    Processing: 'Chờ xác nhận',
-    Rejected: 'Từ chối báo giá SB',
-    Reviewing: 'Chờ xác nhận từ quản lý',
-    Approved: 'Đã xác nhận',
-    Canceled: 'Đã đóng',
-    Finalized: 'Đã hoàn thành',
-  };
-  return statusLabelMap[status] || 'Không xác định';
-};
-
 const InitialQuoteDetail = () => {
   const { id } = useParams<{ id: string }>();
-  const [quotationData, setQuotationData] = useState<any>(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [showHistory, setShowHistory] = useState(false);
+  const [quotationData, setQuotationData] =
+    useState<InitialQuotationResponse | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
@@ -70,30 +46,33 @@ const InitialQuoteDetail = () => {
     const fetchQuotationData = async () => {
       if (id) {
         try {
-          const data = await getInitialQuotation(id);
+          const data: InitialQuotationResponse = await getInitialQuotation(id);
           setQuotationData(data);
           setVersion(data.Version || null);
 
           const comboDonGia =
             data.PackageQuotationList.UnitPackageFinished || 0;
 
-          const updatedTableData = data.ItemInitial.map(
-            (item: any, index: number) => ({
+          const updatedTableData = data.ItemInitial.map((item, index) => {
+            const coefficient =
+              item.Coefficient !== 0
+                ? item.Coefficient
+                : item.SubCoefficient || 0;
+            return {
               stt: index + 1,
               hangMuc: item.Name,
               dTich: item.Area.toString(),
-              heSo: item.Coefficient.toString(),
-              dienTich: (item.Area * item.Coefficient).toString(),
+              heSo: coefficient.toString(),
+              dienTich: (item.Area * coefficient).toString(),
               donVi: 'm²',
-            }),
-          );
+            };
+          });
           setTableData(updatedTableData);
 
           const totalRough = data.TotalRough;
           const totalUtilities = data.TotalUtilities;
           const totalUtilityCost = data.UtilityInfos.reduce(
-            (total: number, utility: { Price: number }) =>
-              total + utility.Price,
+            (total, utility) => total + utility.Price,
             0,
           );
 
@@ -167,76 +146,12 @@ const InitialQuoteDetail = () => {
 
   const thanhTien = totalDienTich * donGia;
 
-  const comboSoLuong = 1;
-  const comboDonGia = 18000000;
-  const comboThanhTien = comboSoLuong * comboDonGia;
-
   const handleDownload = () => {
     alert('Tải về hợp đồng');
   };
 
   const handleShare = () => {
     alert('Chia sẻ hợp đồng');
-  };
-
-  const contactData1 = {
-    fullName: 'Trần Minh Thiện',
-    phoneNumber: '0965486940',
-    emailAddress: 'email@fpt.edu.vn',
-  };
-
-  const contactFields1 = [
-    { key: 'fullName', label: 'Name' },
-    { key: 'phoneNumber', label: 'Phone' },
-    { key: 'emailAddress', label: 'Email' },
-  ];
-
-  const contactData2 = {
-    nameHouse: 'Nhà ở dân dụng',
-    address: 'Thủ Đức, HCM',
-  };
-
-  const contactFields2 = [
-    { key: 'nameHouse', label: 'Name' },
-    { key: 'address', label: 'Phone' },
-  ];
-
-  const contactData3 = {
-    title: 'Mã số xử lý',
-    number: '#70841',
-  };
-
-  const contactFields3 = [
-    { key: 'title', label: 'Name' },
-    { key: 'number', label: 'Phone' },
-  ];
-
-  const contactData4 = {
-    title: 'Dự phí',
-    priceQuote: formatCurrencyShort(giaTriHopDong),
-  };
-
-  const contactFields4 = [
-    { key: 'title', label: 'Name' },
-    { key: 'priceQuote', label: 'Phone' },
-  ];
-
-  const showMenu = () => {
-    setMenuVisible(true);
-  };
-
-  const hideMenu = () => {
-    setMenuVisible(false);
-  };
-
-  const handleMenuItemClick = (item: string) => {
-    if (item === 'history') {
-      setShowHistory(true);
-    }
-  };
-
-  const handleCloseHistory = () => {
-    setShowHistory(false);
   };
 
   const toggleChat = () => {
@@ -273,125 +188,73 @@ const InitialQuoteDetail = () => {
           </button>
         )}
 
-        <div className="flex flex-row gap-3">
-          <ContactCard
-            data={contactData3}
-            fields={contactFields3}
-            avatarUrl={Process}
-          />
-          <ContactCard
-            data={contactData1}
-            fields={contactFields1}
-            avatarUrl={Avatar}
-          />
-          <ContactCard
-            data={contactData2}
-            fields={contactFields2}
-            avatarUrl={House}
-          />
-          <ContactCard
-            data={contactData4}
-            fields={contactFields4}
-            avatarUrl={Fee}
-          />
-        </div>
+        <InitialQuotationStatusTracker
+          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
+        />
+      </div>
+      <div className="flex justify-end space-x-2">
+        <button
+          onClick={handleEditToggle}
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+        >
+          {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+        </button>
+        <button
+          onClick={handleDownload}
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+        >
+          <FaDownload className="text-lg" />
+        </button>
 
-        <InitialQuotationStatusTracker currentStatus={getStatusLabel(quotationData.Status)} /> {/* Sử dụng hàm ánh xạ */}
+        <button
+          onClick={handleShare}
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+        >
+          <FaShareAlt className="text-lg" />
+        </button>
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Thông tin báo giá sơ bộ</h2>
-
-          <div className="flex space-x-2">
-            <button
-              onClick={handleDownload}
-              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-            >
-              <FaDownload className="text-lg" />
-            </button>
-
-            <button
-              onClick={handleShare}
-              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-            >
-              <FaShareAlt className="text-lg" />
-            </button>
-
-            <button
-              onClick={handleEditToggle}
-              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-            >
-              {isEditing ? 'Lưu' : 'Chỉnh sửa'}
-            </button>
+          <div className="text-right">
+            <span className="font-semibold">Phiên bản:</span>
+            <span className="text-gray-700 ml-2">{quotationData.Version}</span>
+            <div className="text-gray-500 text-sm">
+              Tạo lúc {new Date(quotationData.InsDate).toLocaleString()}
+            </div>
           </div>
         </div>
 
         <div className="mb-4">
           <p className="mt-4 mb-4 text-lg">
-            <strong>1. PHẦN THÔ TIẾT KIỆM </strong>(Đơn giá:{' '}
-            {donGia.toLocaleString()} đồng/m²)
+            <strong>1. ĐƠN GIÁ THI CÔNG</strong>
           </p>
+          <p className="mb-2">
+            {quotationData.PackageQuotationList.PackageRough} -{' '}
+            {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+            đồng/m²
+          </p>
+          {quotationData.PackageQuotationList.PackageFinished &&
+            quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
+              <p className="mb-2">
+                {quotationData.PackageQuotationList.PackageFinished} -{' '}
+                {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                đồng/m²
+              </p>
+            )}
 
           <p className="mb-4 text-lg">
             <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
           </p>
         </div>
-        <div className="overflow-x-auto mb-4">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">STT</th>
-                <th className="px-4 py-2 border text-center">Hạng mục</th>
-                <th className="px-4 py-2 border text-center">D-Tích</th>
-                <th className="px-4 py-2 border text-center">Hệ số</th>
-                <th className="px-4 py-2 border text-center">Diện tích</th>
-                <th className="px-4 py-2 border text-center">Đơn vị</th>
-              </tr>
-            </thead>
-            <tbody>
-              {tableData.map((row, index) => (
-                <tr key={index}>
-                  <td className="px-4 py-2 border text-center">{row.stt}</td>
-                  <td className="px-4 py-2 border text-center border-2 border-green-300">
-                    <input
-                      type="text"
-                      value={row.hangMuc}
-                      onChange={(e) => handleInputChange(e, index, 'hangMuc')}
-                      className="w-full text-left"
-                      disabled={!isEditing}
-                    />
-                  </td>
-                  <td className="px-4 py-2 border text-center border-2 border-green-300">
-                    <input
-                      type="text"
-                      value={row.dTich}
-                      onChange={(e) => handleInputChange(e, index, 'dTich')}
-                      className="w-full text-center"
-                      disabled={!isEditing}
-                    />
-                  </td>
-                  <td className="px-4 py-2 border text-center">{row.heSo}</td>
-                  <td className="px-4 py-2 border text-center">
-                    {row.dienTich}
-                  </td>
-                  <td className="px-4 py-2 border text-center">{row.donVi}</td>
-                </tr>
-              ))}
-              <tr>
-                <td className="px-4 py-2 border text-center" colSpan={4}>
-                  <strong>Tổng diện tích xây dựng theo thiết kế:</strong>
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  <strong>{totalDienTich}</strong>
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  <strong>m²</strong>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+
+        <ConstructionAreaTable
+          tableData={tableData}
+          isEditing={isEditing}
+          handleInputChange={handleInputChange}
+          totalDienTich={totalDienTich}
+        />
 
         <p className="text-lg mb-4">
           <strong>Giá trị báo giá sơ bộ xây dựng trước thuế:</strong>
@@ -498,39 +361,15 @@ const InitialQuoteDetail = () => {
           </table>
         </div>
 
-        <p className="text-lg mb-4">
-          <strong>4. CÁC CHI PHÍ KHÁC:</strong>
-        </p>
-
-        <p className="text-lg mb-4">
-          <strong>Combo Giấy Phép</strong>
-        </p>
-        <div className="overflow-x-auto mb-4">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">Số lượng</th>
-                <th className="px-4 py-2 border text-center">x</th>
-                <th className="px-4 py-2 border text-center">Đơn giá</th>
-                <th className="px-4 py-2 border text-center">=</th>
-                <th className="px-4 py-2 border text-center">Thành tiền</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-4 py-2 border text-center">{comboSoLuong}</td>
-                <td className="px-4 py-2 border text-center">x</td>
-                <td className="px-4 py-2 border text-center">
-                  {comboDonGia.toLocaleString()} đồng
-                </td>
-                <td className="px-4 py-2 border text-center">=</td>
-                <td className="px-4 py-2 border text-center">
-                  {comboThanhTien.toLocaleString()} đồng
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="mb-4">
+          <p className="text-lg">
+            <strong>4. CÁC THỎA THUẬN KHÁC:</strong>
+          </p>
+          <p className="text-gray-700 whitespace-pre-line">
+            {quotationData.OthersAgreement}
+          </p>
         </div>
+
         <p className="text-lg mb-4">
           <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
         </p>
@@ -559,13 +398,6 @@ const InitialQuoteDetail = () => {
                 </td>
                 <td className="px-4 py-2 border text-center">
                   {totalUtilityCost.toLocaleString()} VNĐ
-                </td>
-                <td className="px-4 py-2 border text-center">VNĐ</td>
-              </tr>
-              <tr>
-                <td className="px-4 py-2 border text-left">Combo Giấy Phép</td>
-                <td className="px-4 py-2 border text-center">
-                  {comboThanhTien.toLocaleString()} VNĐ
                 </td>
                 <td className="px-4 py-2 border text-center">VNĐ</td>
               </tr>

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { FinalInfo } from '../../../../types/ProjectTypes';
 import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 interface FinalInfoTableProps {
   detailedQuoteData: FinalInfo[];
@@ -37,15 +38,25 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
   detailedQuoteData,
 }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
 
   const toggleRowMenu = (id: string) => {
     setActiveMenu(activeMenu === id ? null : id);
   };
 
-  const handleViewDetail = (id: string) => {
-    navigate(`/final-quotation-detail/${id}`);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setActiveMenu(null);
+    }
   };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   return (
     <table className="w-full table-auto">
@@ -98,15 +109,17 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
                 onClick={() => toggleRowMenu(item.Id)}
               />
               {activeMenu === item.Id && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div
+                  ref={menuRef}
+                  className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                >
                   <div className="py-2">
-                    <a
-                      href="#"
-                      onClick={() => handleViewDetail(item.Id)}
+                    <Link
+                      to={`/final-quotation-detail/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết
-                    </a>
+                    </Link>
                   </div>
                 </div>
               )}

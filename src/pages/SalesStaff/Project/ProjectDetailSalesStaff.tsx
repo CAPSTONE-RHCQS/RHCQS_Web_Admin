@@ -5,7 +5,6 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
-  FaMoneyBillWave,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -224,14 +223,7 @@ const ProjectDetailSalesStaff = () => {
           <span className="font-semibold">Diện tích:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaMoneyBillWave className="mr-2" />
-          <span className="font-semibold">Đơn giá thi công:</span>
-          <ul className="list-disc list-inside ml-2">
-            <li>Thi công thô: 3.450.000đ/m²</li>
-            <li>Thi công hoàn thiện: 3.550.000đ/m²</li>
-          </ul>
-        </div>
+
         <hr className="my-4 border-gray-300" />
         <h3 className="text-xl font-semibold mb-4">Báo giá sơ bộ</h3>
         <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
 
@@ -14,10 +14,24 @@ interface InitialInfoTableProps {
 
 const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
   const [activeMenu, setActiveMenu] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const toggleRowMenu = (id: string) => {
     setActiveMenu(activeMenu === id ? null : id);
   };
+
+  const handleClickOutside = (event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setActiveMenu(null);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const statusColorMap: { [key: string]: string } = {
     Pending: '#FFA500',
@@ -100,7 +114,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
                 onClick={() => toggleRowMenu(item.Id)}
               />
               {activeMenu === item.Id && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div ref={menuRef} className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                   <div className="py-2">
                     <Link
                       to={`/initial-quote-detail/${item.Id}`}

@@ -152,6 +152,7 @@ const ProjectListManager = () => {
 
   const handleViewDetails = (id: string) => {
     navigate(`/project-detail/${id}`);
+    window.scrollTo(0, 0);
   };
 
   const filteredEmails = emails.filter((email) =>

@@ -1,29 +1,38 @@
 import React from 'react';
-import { FaCog, FaBan, FaUser, FaCheck, FaTimes, FaClipboard } from 'react-icons/fa';
+import {
+  FaCog,
+  FaBan,
+  FaUser,
+  FaCheck,
+  FaTimes,
+  FaClipboard,
+} from 'react-icons/fa';
 
 interface FinalQuotationStatusProps {
   currentStatus: string;
 }
 
-const statusMapping: { [key: string]: string } = {
+const statusMapping: Record<string, string> = {
   Processing: 'Đang xử lý',
-  Rejected: 'Bị từ chối',
   Reviewing: 'Đang chờ phản hồi',
   Approved: 'Đã xác nhận',
   Canceled: 'Đã đóng',
   Finalized: 'Đã hoàn thành',
+  Rejected: 'Bị từ chối',
 };
 
 const statuses = [
   { label: 'Đang xử lý', icon: <FaCog /> },
-  { label: 'Bị từ chối', icon: <FaTimes /> },
   { label: 'Đang chờ phản hồi', icon: <FaUser /> },
   { label: 'Đã xác nhận', icon: <FaCheck /> },
   { label: 'Đã đóng', icon: <FaBan /> },
   { label: 'Đã hoàn thành', icon: <FaClipboard /> },
+  { label: 'Bị từ chối', icon: <FaTimes /> },
 ];
 
-const FinalQuotationStatus: React.FC<FinalQuotationStatusProps> = ({ currentStatus }) => {
+const FinalQuotationStatus: React.FC<FinalQuotationStatusProps> = ({
+  currentStatus,
+}) => {
   const translatedStatus = statusMapping[currentStatus] || currentStatus;
   const currentIndex = statuses.findIndex(
     (status) => status.label === translatedStatus,

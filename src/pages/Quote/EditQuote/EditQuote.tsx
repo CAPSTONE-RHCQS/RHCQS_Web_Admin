@@ -107,7 +107,6 @@ const EditQuote: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Tải dữ liệu mẫu khi trang được tải
     setCustomerName(sampleData.customerName);
     setConstructionAddress(sampleData.constructionAddress);
     setUnitPrice(sampleData.unitPrice);
