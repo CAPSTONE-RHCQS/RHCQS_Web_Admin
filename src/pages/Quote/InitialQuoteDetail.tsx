@@ -7,8 +7,14 @@ import InitialQuotationStatusTracker from '../../components/InitialQuotationStat
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { getStatusLabelInitalQuoteDetail } from '../../utils/utils';
 import { formatCurrencyShort } from '../../utils/format';
-import { getInitialQuotation } from '../../api/Project/InitialQuotation';
-import { InitialQuotationResponse } from '../../types/InitialQuotationTypes';
+import {
+  getInitialQuotation,
+  updateInitialQuotation,
+} from '../../api/Project/InitialQuotation';
+import {
+  InitialQuotationResponse,
+  UpdateInitialQuotationRequest,
+} from '../../types/InitialQuotationTypes';
 
 interface TableRow {
   stt: number;
@@ -176,6 +182,63 @@ const InitialQuoteDetail = () => {
     0,
   );
 
+  const handleSave = async () => {
+    if (!quotationData) return;
+
+    const requestData: UpdateInitialQuotationRequest = {
+      versionPresent: version || 1,
+      projectId: quotationData.ProjectId,
+      area: quotationData.Area,
+      timeProcessing: parseInt(quotationData.TimeProcessing || '0', 10),
+      timeRough: 0,
+      timeOthers: parseInt(quotationData.TimeOthers || '0', 10),
+      othersAgreement: quotationData.OthersAgreement || '',
+      totalRough: quotationData.TotalRough,
+      totalUtilities: quotationData.TotalUtilities,
+      items: tableData.map((item, index) => ({
+        name: item.hangMuc,
+        constructionItemId: quotationData.ItemInitial[index].Id,
+        subConstructionId: quotationData.ItemInitial[index].SubConstructionId,
+        area: parseFloat(item.dTich),
+        price: quotationData.ItemInitial[index].Price,
+      })),
+      packages: [
+        {
+          packageId: quotationData.PackageQuotationList.IdPackageRough,
+          type: 'ROUGH',
+        },
+        {
+          packageId: quotationData.PackageQuotationList.IdPackageFinished,
+          type: 'FINISHED',
+        },
+      ],
+      utilities: utilityInfos.map((utility) => ({
+        utilitiesItemId: utility.Id,
+        coefiicient: utility.Coefficient,
+        price: utility.Price,
+        description: utility.Description,
+      })),
+      promotions:
+        promotionInfo &&
+        promotionInfo.Id !== '00000000-0000-0000-0000-000000000000'
+          ? { id: promotionInfo.Id }
+          : null,
+      batchPayments: paymentSchedule.map((payment) => ({
+        price: payment.Price,
+        percents: payment.Percents,
+        description: payment.Description,
+      })),
+    };
+
+    try {
+      await updateInitialQuotation(requestData);
+      alert('Dữ liệu đã được lưu thành công!');
+    } catch (error) {
+      console.error('Error saving data:', error);
+      alert('Có lỗi xảy ra khi lưu dữ liệu.');
+    }
+  };
+
   return (
     <>
       <div>
@@ -194,7 +257,7 @@ const InitialQuoteDetail = () => {
       </div>
       <div className="flex justify-end space-x-2">
         <button
-          onClick={handleEditToggle}
+          onClick={isEditing ? handleSave : handleEditToggle}
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
         >
           {isEditing ? 'Lưu' : 'Chỉnh sửa'}
@@ -371,7 +434,7 @@ const InitialQuoteDetail = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
+          <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐNG:</strong>
         </p>
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200">

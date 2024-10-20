@@ -39,19 +39,10 @@ const requestWebDriver = axios.create({
 });
 
 requestWebDriver.interceptors.request.use((options) => {
-  const { method, data } = options;
-
   const token = localStorage.getItem('token');
   if (token) {
     options.headers['Authorization'] = `Bearer ${token}`;
   }
-
-  if (!(data instanceof FormData) && (method === 'put' || method === 'post')) {
-    Object.assign(options.headers, {
-      'Content-Type': 'application/json;charset=UTF-8',
-    });
-  }
-
   return options;
 });
 

@@ -13,7 +13,7 @@ export interface ConstructionRequest {
   coefficient: number;
   unit: string;
   type: string;
-  subRequests: SubConstructionRequest[]; // Đổi từ subConstructionRequests thành subRequests
+  subRequests: SubConstructionRequest[];
 }
 
 export const getConstructions = async (page: number, size: number) => {

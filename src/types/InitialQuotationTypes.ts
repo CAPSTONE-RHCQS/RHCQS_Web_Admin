@@ -12,6 +12,7 @@ export interface ItemInitial {
   Id: string;
   Name: string;
   SubConstruction: string | null;
+  SubConstructionId: string | null;
   Area: number;
   Price: number;
   UnitPrice: string;
@@ -64,4 +65,51 @@ export interface InitialQuotationResponse {
   UtilityInfos: UtilityInfo[];
   PromotionInfo: PromotionInfo | null;
   BatchPaymentInfos: BatchPaymentInfo[];
+}
+
+export interface Item {
+  name: string;
+  constructionItemId: string;
+  subConstructionId: string | null;
+  area: number;
+  price: number;
+}
+
+export interface Package {
+  packageId: string;
+  type: string;
+}
+
+export interface Utility {
+  utilitiesItemId: string;
+  coefiicient: number;
+  price: number;
+  description: string;
+}
+
+export interface Promotion {
+  id: string | null;
+}
+
+export interface BatchPayment {
+  price: number;
+  percents: string;
+  description: string;
+}
+
+export interface UpdateInitialQuotationRequest {
+  versionPresent: number;
+  projectId: string;
+  area: number;
+  timeProcessing: number;
+  timeRough: number;
+  timeOthers: number;
+  othersAgreement: string;
+  totalRough: number;
+  totalUtilities: number;
+  items: Item[];
+  packages: Package[];
+  utilities: Utility[];
+  promotions: Promotion | null;
+  batchPayments: BatchPayment[];
 }

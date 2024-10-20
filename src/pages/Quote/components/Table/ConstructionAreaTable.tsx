@@ -61,8 +61,24 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   disabled={!isEditing}
                 />
               </td>
-              <td className="px-4 py-2 border text-center">{row.heSo}</td>
-              <td className="px-4 py-2 border text-center">{row.dienTich}</td>
+              <td className="px-4 py-2 border text-center">
+                <input
+                  type="text"
+                  value={row.heSo}
+                  onChange={(e) => handleInputChange(e, index, 'heSo')}
+                  className="w-full text-center"
+                  disabled={!isEditing}
+                />
+              </td>
+              <td className="px-4 py-2 border text-center">
+                <input
+                  type="text"
+                  value={row.dienTich}
+                  onChange={(e) => handleInputChange(e, index, 'dienTich')}
+                  className="w-full text-center"
+                  disabled={!isEditing}
+                />
+              </td>
               <td className="px-4 py-2 border text-center">{row.donVi}</td>
             </tr>
           ))}
@@ -84,4 +100,3 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
 };
 
 export default ConstructionAreaTable;
-
