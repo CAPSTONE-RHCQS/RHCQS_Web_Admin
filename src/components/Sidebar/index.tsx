@@ -292,6 +292,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
 
+              {/* <!-- Menu Item BlogList --> */}
+              <li>
+                <NavLink
+                  to="/blog-list-manager"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                    pathname.includes('blog-list-manager') &&
+                    'bg-teal-300 dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20px"
+                    viewBox="0 0 24 24"
+                    width="20px"
+                    fill="#5f6368"
+                  >
+                    <path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2zm0 4h16v2H4v-2z" />
+                  </svg>
+                  Danh sách bài đăng
+                </NavLink>
+              </li>
+
               <h3 className="mt-4 mb-4 ml-4 text-sm font-semibold text-bodydark2">
                 STAFF SALE
               </h3>
@@ -431,29 +454,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     <path d="M215.79-144Q186-144 165-165.21t-21-51Q144-246 165.21-267t51-21Q246-288 267-266.79t21 51Q288-186 266.79-165t-51 21ZM720-144q0-120-45.26-224.48-45.25-104.48-123.43-182.71-78.17-78.23-182.57-123.52Q264.34-720 144-720v-96q140 0 261.63 52.38 121.63 52.37 213.59 144.28 91.96 91.9 144.37 213.46Q816-284.33 816-144h-96Zm-240 0q0-70-26-131t-72-107q-46-46-107-72t-131-26v-96q90.52 0 168.74 33.7Q390.96-508.6 450-450q58.6 59.04 92.3 137.26Q576-234.52 576-144h-96Z" />
                   </svg>
                   Tạo bài đăng
-                </NavLink>
-              </li>
-
-              {/* <!-- Menu Item BlogList --> */}
-              <li>
-                <NavLink
-                  to="/postlist"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                    pathname.includes('PostList') &&
-                    'bg-teal-300 dark:bg-meta-4'
-                  }`}
-                >
-                  <svg
-                    className="fill-current"
-                    xmlns="http://www.w3.org/2000/svg"
-                    height="20px"
-                    viewBox="0 -960 960 960"
-                    width="20px"
-                    fill="#5f6368"
-                  >
-                    <path d="M444-192h72v-48h12q20.4 0 34.2-13.8Q576-267.6 576-288v-72q0-20.4-13.8-34.2Q548.4-408 528-408h-96v-72h144v-48h-60v-48h-72v48h-12q-20.4 0-34.2 13.8Q384-500.4 384-480v72q0 20.4 13.8 34.2Q411.6-360 432-360h96v72H384v48h60v48ZM263.72-96Q234-96 213-117.15T192-168v-624q0-29.7 21.15-50.85Q234.3-864 264-864h312l192 192v504q0 29.7-21.16 50.85Q725.68-96 695.96-96H263.72ZM528-624v-168H264v624h432v-456H528ZM264-792v189-189 624-624Z" />
-                  </svg>
-                  Danh sách bài đăng
                 </NavLink>
               </li>
 

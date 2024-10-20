@@ -26,6 +26,7 @@ import ConstructionList from './pages/Manager/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
+import BlogList from './components/BlogList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -54,6 +55,15 @@ function App() {
           }
         />
         // Manager
+        <Route
+          path="/blog-list-manager"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Blog Manager | RHCQS - Residential Housing Construction Quotation System" />
+              <BlogList />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/project-list-manager"
           element={
@@ -139,7 +149,7 @@ function App() {
         <Route
           path="/initial-quote-detail/:id"
           element={
-            <PrivateRoute allowedRoles={['Manager']}>
+            <PrivateRoute allowedRoles={['Manager', 'SalesStaff']}>
               <PageTitle title="Initial Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
               <InitialQuoteDetail />
             </PrivateRoute>
