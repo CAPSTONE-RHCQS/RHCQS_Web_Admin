@@ -11,6 +11,7 @@ export interface PackageQuotation {
 export interface ItemInitial {
   Id: string;
   Name: string;
+  ConstructionItemId: string;
   SubConstruction: string | null;
   SubConstructionId: string | null;
   Area: number;

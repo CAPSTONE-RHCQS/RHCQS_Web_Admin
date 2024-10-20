@@ -197,7 +197,7 @@ const InitialQuoteDetail = () => {
       totalUtilities: quotationData.TotalUtilities,
       items: tableData.map((item, index) => ({
         name: item.hangMuc,
-        constructionItemId: quotationData.ItemInitial[index].Id,
+        constructionItemId: quotationData.ItemInitial[index].ConstructionItemId,
         subConstructionId: quotationData.ItemInitial[index].SubConstructionId,
         area: parseFloat(item.dTich),
         price: quotationData.ItemInitial[index].Price,
