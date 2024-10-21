@@ -12,7 +12,7 @@ import Avatar from '../../../images/user/user-01.png';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
-import StatusTracker from '../../../components/StatusTracker';
+import StatusTracker from '../../../components/StatusTracker/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';

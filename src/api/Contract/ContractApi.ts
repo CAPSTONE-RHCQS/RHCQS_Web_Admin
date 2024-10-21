@@ -14,3 +14,20 @@ export const createContractDesign = async (data: any) => {
     throw error;
   }
 };
+
+export const getContractDesignById = async (contractId: string) => {
+  try {
+    const response = await requestWebDriver.get(
+      `/contract/design/id?contractId=${contractId}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching contract design by ID:', error);
+    throw error;
+  }
+};

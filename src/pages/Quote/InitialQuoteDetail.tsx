@@ -3,7 +3,7 @@ import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 
-import InitialQuotationStatusTracker from '../../components/InitialQuotationStatusTracker';
+import InitialQuotationStatusTracker from '../../components/StatusTracker/InitialQuotationStatusTracker';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { getStatusLabelInitalQuoteDetail } from '../../utils/utils';
 import { formatCurrencyShort } from '../../utils/format';

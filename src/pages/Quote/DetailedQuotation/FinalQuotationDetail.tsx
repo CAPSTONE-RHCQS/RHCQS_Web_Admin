@@ -6,7 +6,7 @@ import { FinalQuotationDetail as FinalQuotationDetailType } from '../../../types
 import BatchPaymentTable from './Table/BatchPaymentTable';
 import EquipmentTable from './Table/EquipmentTable';
 import FinalQuotationTable from './Table/FinalQuotationTable';
-import FinalQuotationStatus from '../../../components/FinalQuotationStatus';
+import FinalQuotationStatus from '../../../components/StatusTracker/FinalQuotationStatus';
 import {
   FaUser,
   FaMapMarkerAlt,

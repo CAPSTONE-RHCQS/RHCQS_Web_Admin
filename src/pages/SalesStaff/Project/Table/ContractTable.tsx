@@ -100,20 +100,8 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
                   className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
                 >
                   <div className="py-2">
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Chỉnh sửa
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Xóa
-                    </a>
                     <Link
-                      to="#"
+                      to={`/contract-detail/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

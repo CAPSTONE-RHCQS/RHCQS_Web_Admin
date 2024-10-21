@@ -27,6 +27,7 @@ import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesSt
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
 import BlogList from './components/BlogList.tsx';
+import ContractDetail from './pages/SalesStaff/ContractDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -179,6 +180,15 @@ function App() {
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />
               <CreateContractDesign />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/contract-detail/:contractId"
+          element={
+            <PrivateRoute allowedRoles={['SalesStaff', 'Manager']}>
+              <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <ContractDetail />
             </PrivateRoute>
           }
         />
