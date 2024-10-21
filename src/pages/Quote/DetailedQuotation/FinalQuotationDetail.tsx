@@ -13,6 +13,8 @@ import {
   FaMoneyBillWave,
   FaDownload,
   FaShareAlt,
+  FaChevronDown,
+  FaChevronUp,
 } from 'react-icons/fa';
 
 const FinalQuotationDetail = () => {
@@ -20,6 +22,9 @@ const FinalQuotationDetail = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
+  const [showBatchPayments, setShowBatchPayments] = useState(false);
+  const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
+  const [showDetailedItems, setShowDetailedItems] = useState(false);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -119,16 +124,37 @@ const FinalQuotationDetail = () => {
           </span>
         </div>
         <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-bold mb-4">1. Các đợt thanh toán:</h3>
-        <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />
-        <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-bold mb-4">2. Chi Phí Thiết bị:</h3>
-        <EquipmentTable items={quotationDetail.EquipmentItems} />
-        <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-bold mb-4">
-          3. Các hạng mục báo giá chi tiết:
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowBatchPayments(!showBatchPayments)}
+        >
+          1. Các đợt thanh toán:
+          {showBatchPayments ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
         </h3>
-        <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+        {showBatchPayments && <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />}
+        
+        <hr className="my-4 border-gray-300" />
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
+        >
+          2. Chi Phí Thiết bị:
+          {showEquipmentCosts ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showEquipmentCosts && <EquipmentTable items={quotationDetail.EquipmentItems} />}
+        
+        <hr className="my-4 border-gray-300" />
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowDetailedItems(!showDetailedItems)}
+        >
+          3. Các hạng mục báo giá chi tiết:
+          {showDetailedItems ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showDetailedItems && <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />}
       </div>
     </div>
   );

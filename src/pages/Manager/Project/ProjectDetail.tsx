@@ -5,6 +5,8 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
+  FaChevronDown,
+  FaChevronUp,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -34,6 +36,10 @@ const ProjectDetail = () => {
   const [showHistory, setShowHistory] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
+  const [showInitialInfo, setShowInitialInfo] = useState(false);
+  const [showDesignDrawing, setShowDesignDrawing] = useState(false);
+  const [showFinalInfo, setShowFinalInfo] = useState(false);
+  const [showContract, setShowContract] = useState(false);
 
   useEffect(() => {
     const fetchProjectDetail = async () => {
@@ -258,19 +264,44 @@ const ProjectDetail = () => {
         </div>
 
         <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-semibold mb-4">Báo giá sơ bộ</h3>
-        <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />
+        <h3
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowInitialInfo(!showInitialInfo)}
+        >
+          Báo giá sơ bộ
+          {showInitialInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showInitialInfo && <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />}
+        
         <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-semibold mb-4">Thiết kế bản vẽ</h3>
-        <HouseDesignDrawingInfoTable
-          designData={projectDetail.HouseDesignDrawingInfo || []}
-        />
+        <h3
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowDesignDrawing(!showDesignDrawing)}
+        >
+          Thiết kế bản vẽ
+          {showDesignDrawing ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showDesignDrawing && <HouseDesignDrawingInfoTable designData={projectDetail.HouseDesignDrawingInfo || []} />}
+        
         <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-semibold mb-4">Báo giá chi tiết</h3>
-        <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />
+        <h3
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowFinalInfo(!showFinalInfo)}
+        >
+          Báo giá chi tiết
+          {showFinalInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showFinalInfo && <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />}
+        
         <hr className="my-4 border-gray-300" />
-        <h3 className="text-xl font-semibold mb-4">Hợp đồng</h3>
-        <ContractTable contractData={projectDetail.ContractInfo || []} />
+        <h3
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          onClick={() => setShowContract(!showContract)}
+        >
+          Hợp đồng
+          {showContract ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+        </h3>
+        {showContract && <ContractTable contractData={projectDetail.ContractInfo || []} />}
       </div>
       {projectDetail && (
         <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
