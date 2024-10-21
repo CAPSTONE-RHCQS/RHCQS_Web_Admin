@@ -17,7 +17,7 @@ import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
 import ContractTable from '../../SalesStaff/Project/Table/ContractTable';
-import { getProjectDetail } from '../../../api/Project/Project';
+import { getProjectDetail } from '../../../api/Project/ProjectApi';
 import InitialInfoTable from '../../SalesStaff/Project/Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from '../../SalesStaff/Project/Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from '../../SalesStaff/Project/Table/FinalInfoTable';

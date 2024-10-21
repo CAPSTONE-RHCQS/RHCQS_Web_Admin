@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getProjectsStaff } from '../api/Project/Project';
+import { getProjectsStaff } from '../api/Project/ProjectApi';
 import axios from 'axios';
 
 type Email = {
@@ -121,7 +121,17 @@ const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
     setEmails(sortedEmails);
   };
 
-  return { emails, loading, error, totalPages, isAllChecked, handleSelectAll, handleCheckboxChange, handleSort, sortConfig };
+  return {
+    emails,
+    loading,
+    error,
+    totalPages,
+    isAllChecked,
+    handleSelectAll,
+    handleCheckboxChange,
+    handleSort,
+    sortConfig,
+  };
 };
 
 export default useProjectsSalesStaff;

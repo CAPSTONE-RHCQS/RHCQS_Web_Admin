@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import {
   putConstruction,
   SubConstructionRequest,
-} from '../../../../api/Construction/Construction';
+} from '../../../../api/Construction/ConstructionApi';
 import {
   ConstructionItem,
   SubConstructionItem,
@@ -26,7 +26,9 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
   const [coefficient, setCoefficient] = useState(0);
   const [unit, setUnit] = useState('');
   const [type, setType] = useState('ROUGH');
-  const [subConstructions, setSubConstructions] = useState<SubConstructionItem[]>([]);
+  const [subConstructions, setSubConstructions] = useState<
+    SubConstructionItem[]
+  >([]);
 
   useEffect(() => {
     if (isOpen && construction) {
@@ -54,12 +56,14 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
 
   const handleSubmit = async () => {
     try {
-      const subRequests: SubConstructionRequest[] = subConstructions.map((sub) => ({
-        id: sub.Id,
-        name: sub.Name,
-        coefficient: sub.Coefficient,
-        unit: sub.Unit,
-      }));
+      const subRequests: SubConstructionRequest[] = subConstructions.map(
+        (sub) => ({
+          id: sub.Id,
+          name: sub.Name,
+          coefficient: sub.Coefficient,
+          unit: sub.Unit,
+        }),
+      );
 
       const constructionData = {
         name,
@@ -73,7 +77,8 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         name !== construction.Name ||
         coefficient !== construction.Coefficient ||
         unit !== construction.Unit ||
-        JSON.stringify(subRequests) !== JSON.stringify(construction.SubConstructionItems)
+        JSON.stringify(subRequests) !==
+          JSON.stringify(construction.SubConstructionItems)
       ) {
         await putConstruction(construction.Id, constructionData);
         toast.success('Chỉnh sửa thành công!');

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import EmployeeCard from './EmployeeCard';
-import { getAccountsByRoleId } from '../../../../api/Account/Account';
-import { assignProject } from '../../../../api/Project/Project';
+import { getAccountsByRoleId } from '../../../../api/Account/AccountApi';
+import { assignProject } from '../../../../api/Project/ProjectApi';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
-import { Dialog } from '@material-tailwind/react'; 
+import { Dialog } from '@material-tailwind/react';
 
 interface Employee {
   id: string;
@@ -100,7 +100,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">Chọn Nhân Viên</h2> {/* Thay đổi màu tiêu đề */}
+      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">
+        Chọn Nhân Viên
+      </h2>{' '}
+      {/* Thay đổi màu tiêu đề */}
       <div className="grid grid-cols-4 gap-4">
         {employees.map((employee) => (
           <EmployeeCard
@@ -150,7 +153,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           Phân bổ
         </button>
       </div>
-      <Dialog open={showModal} handler={handleCloseModal} className="w-64 mx-auto">
+      <Dialog
+        open={showModal}
+        handler={handleCloseModal}
+        className="w-64 mx-auto"
+      >
         <div className="p-6 bg-white rounded-lg shadow-lg">
           <h3 className="text-lg font-bold mb-2">Thông báo</h3>
           <p className="text-gray-700">{message}</p>

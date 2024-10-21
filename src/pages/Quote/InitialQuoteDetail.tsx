@@ -10,7 +10,7 @@ import { formatCurrencyShort } from '../../utils/format';
 import {
   getInitialQuotation,
   updateInitialQuotation,
-} from '../../api/Project/InitialQuotation';
+} from '../../api/Project/InitialQuotationApi';
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,

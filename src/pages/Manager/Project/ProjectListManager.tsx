@@ -11,7 +11,7 @@ import {
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from '../components/Table/ProjectTableManager';
-import { getProjects } from '../../../api/Project/Project';
+import { getProjects } from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
 
 // Định nghĩa hàm getStatusLabel

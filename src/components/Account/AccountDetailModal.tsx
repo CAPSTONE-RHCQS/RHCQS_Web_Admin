@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { updateAccount, updateDeflag } from '../../api/Account/Account';
+import { updateAccount, updateDeflag } from '../../api/Account/AccountApi';
 import RejectionModal from '../Modals/RejectionModal';
 import { toast } from 'react-toastify';
 // import Alert from '../Alert'; // Loại bỏ import Alert

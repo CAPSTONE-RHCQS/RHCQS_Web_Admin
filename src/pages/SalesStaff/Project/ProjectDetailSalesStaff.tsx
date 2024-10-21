@@ -16,7 +16,7 @@ import StatusTracker from '../../../components/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import { getProjectDetail } from '../../../api/Project/Project';
+import { getProjectDetail } from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 import InitialInfoTable from './Table/InitialInfoTable';
@@ -120,6 +120,12 @@ const ProjectDetailSalesStaff = () => {
                     className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
                     Chỉnh sửa hợp đồng
+                  </Link>
+                  <Link
+                    to={`/create-contract-design/${id}`}
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  >
+                    Tạo hợp đồng thiết kế
                   </Link>
                   <a
                     href="#"

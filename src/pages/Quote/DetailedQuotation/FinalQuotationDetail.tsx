@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { getFinalQuotation } from '../../../api/Project/FinalQuotation';
+import { getFinalQuotation } from '../../../api/Project/FinalQuotationApi';
 import { FinalQuotationDetail as FinalQuotationDetailType } from '../../../types/QuotationTypes';
 import BatchPaymentTable from './Table/BatchPaymentTable';
 import EquipmentTable from './Table/EquipmentTable';

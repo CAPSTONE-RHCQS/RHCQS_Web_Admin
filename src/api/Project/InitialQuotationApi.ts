@@ -33,7 +33,6 @@ export async function updateInitialQuotation(
         headers: {
           accept: 'text/plain',
           'Content-Type': 'application/json',
-          // 'Authorization': `Bearer ${yourToken}`, // Nếu cần truyền token trực tiếp
         },
       },
     );

@@ -18,7 +18,7 @@ import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
 import AccountList from './pages/Manager/AccountList';
 import ProjectDetail from './pages/Manager/Project/ProjectDetail';
-import CreateContractDesign from './pages/DesignStaff/CreateContractDesign';
+import CreateContractDesign from './pages/SalesStaff/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
@@ -103,7 +103,7 @@ function App() {
         <Route
           path="/final-quotation-detail/:id"
           element={
-            <PrivateRoute allowedRoles={['Manager']}>
+            <PrivateRoute allowedRoles={['Manager', 'SalesStaff']}>
               <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
               <FinalQuotationDetail />
             </PrivateRoute>
@@ -155,7 +155,7 @@ function App() {
             </PrivateRoute>
           }
         />
-        <Route
+        {/* <Route
           path="/final-quotation-detail/:id"
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
@@ -163,7 +163,7 @@ function App() {
               <FinalQuotationDetail />
             </PrivateRoute>
           }
-        />
+        /> */}
         <Route
           path="/Create-Quote"
           element={
@@ -174,7 +174,7 @@ function App() {
           }
         />
         <Route
-          path="/Create-Contract-Design"
+          path="/create-contract-design/:projectId"
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />

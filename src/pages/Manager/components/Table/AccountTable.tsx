@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { getAccountById } from '../../../../api/Account/Account';
+import { getAccountById } from '../../../../api/Account/AccountApi';
 import DetailButton from '../../../../components/Buttonicons/DetailButton';
 import SortIcon from '../../../../components/Buttonicons/SortIcon';
 import AccountDetailModal from '../../../../components/Account/AccountDetailModal';

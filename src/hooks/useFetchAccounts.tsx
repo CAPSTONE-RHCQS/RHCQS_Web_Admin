@@ -1,5 +1,9 @@
 import { useState, useEffect } from 'react';
-import { getAccounts, getAccountsByRoleId, getTotalAccounts } from '../api/Account/Account';
+import {
+  getAccounts,
+  getAccountsByRoleId,
+  getTotalAccounts,
+} from '../api/Account/AccountApi';
 import { Account } from '../types/Account';
 
 const roleMapping: { [key: string]: string } = {
@@ -9,7 +13,11 @@ const roleMapping: { [key: string]: string } = {
   '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
 };
 
-const useFetchAccounts = (currentPage: number, refreshKey: number, selectedRole: string) => {
+const useFetchAccounts = (
+  currentPage: number,
+  refreshKey: number,
+  selectedRole: string,
+) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [totalAccounts, setTotalAccounts] = useState(0);
