@@ -1,8 +1,8 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 
 export const createContractDesign = async (data: any) => {
   try {
-    const response = await requestWebDriver.post('/contract/design', data, {
+    const response = await requestWebRHCQS.post('/contract/design', data, {
       headers: {
         accept: 'text/plain',
         'Content-Type': 'application/json',
@@ -17,7 +17,7 @@ export const createContractDesign = async (data: any) => {
 
 export const getContractDesignById = async (contractId: string) => {
   try {
-    const response = await requestWebDriver.get(
+    const response = await requestWebRHCQS.get(
       `/contract/design/id?contractId=${contractId}`,
       {
         headers: {
