@@ -7,6 +7,10 @@ import {
   FaRulerCombined,
   FaChevronDown,
   FaChevronUp,
+  FaHistory,
+  FaEdit,
+  FaUserPlus,
+  FaEllipsisH,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -137,34 +141,38 @@ const ProjectDetail = () => {
             <FiMoreVertical className="text-xl text-black dark:text-white" />
             {menuVisible && (
               <div
-                className="absolute right-4 top-1 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
+                className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
                 style={{ opacity: menuVisible ? 1 : 0 }}
               >
                 <div className="py-2">
                   <a
                     href="#"
                     onClick={() => handleMenuItemClick('history')}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
+                    <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
                   </a>
                   <Link
                     to={`/editquote`}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
+                    <FaEdit className="mr-2" />
                     Chỉnh sửa hợp đồng
                   </Link>
                   <a
                     href="#"
                     onClick={() => handleMenuItemClick('assign')}
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
+                    <FaUserPlus className="mr-2" />
                     Phân công nhân viên
                   </a>
                   <a
                     href="#"
-                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
+                    <FaEllipsisH className="mr-2" />
                     Menu Item 3
                   </a>
                 </div>
@@ -269,39 +277,65 @@ const ProjectDetail = () => {
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
-          {showInitialInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showInitialInfo ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showInitialInfo && <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />}
-        
+        {showInitialInfo && (
+          <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />
+        )}
+
         <hr className="my-4 border-gray-300" />
         <h3
           className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
-          {showDesignDrawing ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showDesignDrawing ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showDesignDrawing && <HouseDesignDrawingInfoTable designData={projectDetail.HouseDesignDrawingInfo || []} />}
-        
+        {showDesignDrawing && (
+          <HouseDesignDrawingInfoTable
+            designData={projectDetail.HouseDesignDrawingInfo || []}
+          />
+        )}
+
         <hr className="my-4 border-gray-300" />
         <h3
           className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
-          {showFinalInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showFinalInfo ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showFinalInfo && <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />}
-        
+        {showFinalInfo && (
+          <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />
+        )}
+
         <hr className="my-4 border-gray-300" />
         <h3
           className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
-          {showContract ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showContract ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showContract && <ContractTable contractData={projectDetail.ContractInfo || []} />}
+        {showContract && (
+          <ContractTable contractData={projectDetail.ContractInfo || []} />
+        )}
       </div>
       {projectDetail && (
         <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
