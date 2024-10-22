@@ -1,4 +1,4 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 
 interface AccountUpdateRequest {
   Id: string;
@@ -16,7 +16,7 @@ interface AccountUpdateRequest {
 
 export const getAccounts = async (page: number, size: number) => {
   try {
-    const response = await requestWebDriver.get(`/account`, {
+    const response = await requestWebRHCQS.get(`/account`, {
       params: { page, size },
     });
     return response.data;
@@ -28,7 +28,7 @@ export const getAccounts = async (page: number, size: number) => {
 
 export const getAccountById = async (id: string) => {
   try {
-    const response = await requestWebDriver.get(`/account/id`, {
+    const response = await requestWebRHCQS.get(`/account/id`, {
       params: { id },
     });
     return response.data;
@@ -40,11 +40,15 @@ export const getAccountById = async (id: string) => {
 
 export const updateAccount = async (account: AccountUpdateRequest) => {
   try {
-    const response = await requestWebDriver.put(`/account/id?id=${account.Id}`, account, {
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await requestWebRHCQS.put(
+      `/account/id?id=${account.Id}`,
+      account,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Error updating account:', error);
@@ -54,12 +58,16 @@ export const updateAccount = async (account: AccountUpdateRequest) => {
 
 export const updateDeflag = async (id: string) => {
   try {
-    const response = await requestWebDriver.put(`/account/updatedeflag/id`, null, {
-      params: { id },
-      headers: {
-        'Content-Type': 'application/json',
+    const response = await requestWebRHCQS.put(
+      `/account/updatedeflag/id`,
+      null,
+      {
+        params: { id },
+        headers: {
+          'Content-Type': 'application/json',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error('Error updating deflag:', error);
@@ -69,7 +77,7 @@ export const updateDeflag = async (id: string) => {
 
 export const getTotalAccounts = async () => {
   try {
-    const response = await requestWebDriver.get(`/account/total-account`);
+    const response = await requestWebRHCQS.get(`/account/total-account`);
     return response.data;
   } catch (error) {
     console.error('Error fetching total accounts:', error);
@@ -77,12 +85,16 @@ export const getTotalAccounts = async () => {
   }
 };
 
-export const getAccountsByRoleId = async (id: string, page: number, size: number) => {
+export const getAccountsByRoleId = async (
+  id: string,
+  page: number,
+  size: number,
+) => {
   try {
-    const response = await requestWebDriver.get(`/account/roleid`, {
+    const response = await requestWebRHCQS.get(`/account/roleid`, {
       params: { id, page, size },
       headers: {
-        'accept': 'text/plain',
+        accept: 'text/plain',
       },
     });
     return response.data;

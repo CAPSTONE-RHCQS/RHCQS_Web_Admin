@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import EmployeeCard from './EmployeeCard';
 import { getAccountsByRoleId } from '../../../../api/Account/AccountApi';
 import { assignProject } from '../../../../api/Project/ProjectApi';
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import {
+  FaArrowLeft,
+  FaArrowRight,
+  FaInfoCircle,
+  FaExclamationTriangle,
+  FaCheckCircle,
+} from 'react-icons/fa';
 import { Dialog } from '@material-tailwind/react';
 
 interface Employee {
@@ -65,20 +71,34 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     setSelectedEmployeeId(id);
   };
 
+  useEffect(() => {
+    if (showModal && message?.includes('thành công')) {
+      const timer = setTimeout(() => {
+        setShowModal(false);
+        setMessage(null);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [showModal, message]);
+
   const handleAssign = async () => {
     if (selectedEmployeeId) {
       try {
         await assignProject(selectedEmployeeId, projectId);
         onSelectEmployee(selectedEmployeeId, note);
-        setMessage('Phân công nhân viên thành công!');
-      } catch (error) {
+        // Không cần thông báo khi thành công
+        setMessage(null);
+      } catch (error: any) {
         console.error('Error assigning project:', error);
-        setMessage('Có lỗi xảy ra khi phân công nhân viên.');
+        const errorMessage = error.response?.data?.Error || 'Có lỗi xảy ra khi phân công nhân viên.';
+        setMessage(`Lỗi: ${errorMessage}`);
+        setShowModal(true);
       }
     } else {
       setMessage('Vui lòng chọn một nhân viên trước khi phân bổ.');
+      setShowModal(true);
     }
-    setShowModal(true);
   };
 
   const handleCloseModal = () => {
@@ -102,8 +122,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
     <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">
         Chọn Nhân Viên
-      </h2>{' '}
-      {/* Thay đổi màu tiêu đề */}
+      </h2>
       <div className="grid grid-cols-4 gap-4">
         {employees.map((employee) => (
           <EmployeeCard
@@ -153,22 +172,25 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           Phân bổ
         </button>
       </div>
-      <Dialog
-        open={showModal}
-        handler={handleCloseModal}
-        className="w-64 mx-auto"
-      >
-        <div className="p-6 bg-white rounded-lg shadow-lg">
-          <h3 className="text-lg font-bold mb-2">Thông báo</h3>
-          <p className="text-gray-700">{message}</p>
-          <button
-            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
-            onClick={handleCloseModal}
-          >
-            Đóng
-          </button>
-        </div>
-      </Dialog>
+      {message && (
+        <Dialog
+          open={showModal}
+          handler={handleCloseModal}
+          className="w-80 mx-auto"
+        >
+          <div className="p-6 bg-white rounded-lg shadow-lg flex flex-col items-center">
+            <FaExclamationTriangle className="text-red-500 text-3xl mb-4" />
+            <h3 className="text-xl font-semibold mb-2 text-center">Lỗi</h3>
+            <p className="text-gray-700 text-center">{message}</p>
+            <button
+              className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onClick={handleCloseModal}
+            >
+              Đóng
+            </button>
+          </div>
+        </Dialog>
+      )}
     </div>
   );
 };

@@ -1,4 +1,4 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 import { BlogResponse } from '../../types/BlogTypes';
 
 interface CreateBlogRequest {
@@ -21,7 +21,7 @@ export const getBlogs = async (
   size: number,
 ): Promise<BlogResponse> => {
   try {
-    const response = await requestWebDriver.get<BlogResponse>('/blogs', {
+    const response = await requestWebRHCQS.get<BlogResponse>('/blogs', {
       params: { page, size },
       headers: {
         accept: 'text/plain',
@@ -38,7 +38,7 @@ export const createBlog = async (
   blogData: CreateBlogRequest,
 ): Promise<void> => {
   try {
-    const response = await requestWebDriver.post('/blogs', blogData, {
+    const response = await requestWebRHCQS.post('/blogs', blogData, {
       headers: {
         accept: 'text/plain',
         'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ export const updateBlog = async (
   blogData: UpdateBlogRequest,
 ): Promise<void> => {
   try {
-    const response = await requestWebDriver.put(
+    const response = await requestWebRHCQS.put(
       `/blogs?blogId=${blogData.id}`,
       blogData,
       {
@@ -74,7 +74,7 @@ export const updateBlog = async (
 
 export const deleteBlog = async (id: string): Promise<void> => {
   try {
-    const response = await requestWebDriver.delete(`/blogs?id=${id}`, {
+    const response = await requestWebRHCQS.delete(`/blogs?id=${id}`, {
       headers: {
         accept: '*/*',
       },

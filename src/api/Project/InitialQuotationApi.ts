@@ -1,4 +1,4 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
@@ -8,7 +8,7 @@ export async function getInitialQuotation(
   id: string,
 ): Promise<InitialQuotationResponse> {
   try {
-    const response = await requestWebDriver.get(`/quotation/initial/id`, {
+    const response = await requestWebRHCQS.get(`/quotation/initial/id`, {
       params: { id },
       headers: {
         accept: 'text/plain',
@@ -26,7 +26,7 @@ export async function updateInitialQuotation(
 ): Promise<void> {
   try {
     console.log('Updating initial', data);
-    const response = await requestWebDriver.post(
+    const response = await requestWebRHCQS.post(
       '/quotation/initial/update',
       data,
       {

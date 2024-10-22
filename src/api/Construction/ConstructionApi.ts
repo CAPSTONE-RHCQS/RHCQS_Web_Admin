@@ -1,4 +1,4 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 import axios from 'axios';
 
 export interface SubConstructionRequest {
@@ -16,9 +16,31 @@ export interface ConstructionRequest {
   subRequests: SubConstructionRequest[];
 }
 
+export interface ContractConstructionRequest {
+  projectId: string;
+  startDate: string;
+  endDate: string;
+  validityPeriod: number;
+  taxCode: string;
+  contractValue: number;
+  urlFile: string;
+  note: string;
+}
+
+export interface ConstructionContractRequest {
+  projectId: string;
+  startDate: string;
+  endDate: string;
+  validityPeriod: number;
+  taxCode: string;
+  contractValue: number;
+  urlFile: string;
+  note: string;
+}
+
 export const getConstructions = async (page: number, size: number) => {
   try {
-    const response = await requestWebDriver.get(`/construction`, {
+    const response = await requestWebRHCQS.get(`/construction`, {
       params: { page, size },
       headers: {
         accept: 'text/plain',
@@ -40,7 +62,7 @@ export const postConstruction = async (
       isFinalQuotation: false,
     };
 
-    const response = await requestWebDriver.post(
+    const response = await requestWebRHCQS.post(
       '/construction',
       dataWithQuotation,
       {
@@ -61,7 +83,7 @@ export const putConstruction = async (
   constructionData: ConstructionRequest,
 ) => {
   try {
-    const response = await requestWebDriver.put(
+    const response = await requestWebRHCQS.put(
       `/construction?id=${id}`,
       constructionData,
       {
@@ -73,6 +95,27 @@ export const putConstruction = async (
     return response.data;
   } catch (error) {
     console.error('Error updating construction:', error);
+    throw error;
+  }
+};
+
+export const postConstructionContract = async (
+  contractData: ConstructionContractRequest,
+) => {
+  try {
+    const response = await requestWebRHCQS.post(
+      '/contract/construction',
+      contractData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error posting construction contract:', error);
     throw error;
   }
 };

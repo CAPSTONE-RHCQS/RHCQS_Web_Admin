@@ -1,8 +1,8 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 
 export const getFinalQuotation = async (id: string) => {
   try {
-    const response = await requestWebDriver.get(`/quotation/final/id`, {
+    const response = await requestWebRHCQS.get(`/quotation/final/id`, {
       params: { id },
       headers: {
         accept: 'text/plain',

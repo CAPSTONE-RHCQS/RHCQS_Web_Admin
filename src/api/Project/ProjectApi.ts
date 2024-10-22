@@ -1,8 +1,8 @@
-import requestWebDriver from '../../utils/axios';
+import requestWebRHCQS from '../../utils/axios';
 
 export const getProjects = async (page: number, size: number) => {
   try {
-    const response = await requestWebDriver.get('/project', {
+    const response = await requestWebRHCQS.get('/project', {
       params: {
         page,
         size,
@@ -20,7 +20,7 @@ export const getProjects = async (page: number, size: number) => {
 
 export const getProjectDetail = async (id: string) => {
   try {
-    const response = await requestWebDriver.get(`/project/id`, {
+    const response = await requestWebRHCQS.get(`/project/id`, {
       params: {
         id,
       },
@@ -37,7 +37,7 @@ export const getProjectDetail = async (id: string) => {
 
 export const getProjectsStaff = async (page: number, size: number) => {
   try {
-    const response = await requestWebDriver.get('/project/sales', {
+    const response = await requestWebRHCQS.get('/project/sales', {
       params: {
         page,
         size,
@@ -61,7 +61,7 @@ export const getProjectsStaff = async (page: number, size: number) => {
 //       throw new Error('Token not found in localStorage');
 //     }
 
-//     const response = await requestWebDriver.post(
+//     const response = await requestWebRHCQS.post(
 //       '/project/sales',
 //       {
 //         token: token,
@@ -87,15 +87,19 @@ export const getProjectsStaff = async (page: number, size: number) => {
 
 export const assignProject = async (accountId: string, projectId: string) => {
   try {
-    const response = await requestWebDriver.put('/project/assign', {
-      accountId,
-      projectId,
-    }, {
-      headers: {
-        accept: 'text/plain',
-        'Content-Type': 'application/json',
+    const response = await requestWebRHCQS.put(
+      '/project/assign',
+      {
+        accountId,
+        projectId,
       },
-    });
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
     return response.data;
   } catch (error) {
     console.error('Error assigning project:', error);

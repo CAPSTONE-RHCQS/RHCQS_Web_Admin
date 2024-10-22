@@ -18,7 +18,7 @@ import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
 import AccountList from './pages/Manager/AccountList';
 import ProjectDetail from './pages/Manager/Project/ProjectDetail';
-import CreateContractDesign from './pages/SalesStaff/CreateContractDesign.tsx';
+import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
@@ -27,7 +27,8 @@ import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesSt
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
 import BlogList from './components/BlogList.tsx';
-import ContractDetail from './pages/SalesStaff/ContractDetail.tsx';
+import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
+import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -180,6 +181,15 @@ function App() {
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />
               <CreateContractDesign />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/create-construction-contract/:projectId"
+          element={
+            <PrivateRoute allowedRoles={['SalesStaff']}>
+              <PageTitle title="Create Construction Contract | RHCQS - Residential Housing Construction Quotation System" />
+              <CreateConstructionContract />
             </PrivateRoute>
           }
         />

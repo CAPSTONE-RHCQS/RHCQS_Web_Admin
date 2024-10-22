@@ -33,12 +33,12 @@ const parseParams = (params: any): string => {
 
 const account = `${API_ROOT}`;
 
-const requestWebDriver = axios.create({
+const requestWebRHCQS = axios.create({
   baseURL: account,
   paramsSerializer: parseParams,
 });
 
-requestWebDriver.interceptors.request.use((options) => {
+requestWebRHCQS.interceptors.request.use((options) => {
   const token = localStorage.getItem('token');
   if (token) {
     options.headers['Authorization'] = `Bearer ${token}`;
@@ -89,4 +89,4 @@ export const axiosInstances = {
   login: AxiosClientFactory.getAxiosClient(AxiosClientFactoryEnum.LOGIN),
 };
 
-export default requestWebDriver;
+export default requestWebRHCQS;
