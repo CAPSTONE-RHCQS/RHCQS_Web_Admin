@@ -15,7 +15,7 @@ const statusColorMap: { [key: string]: string } = {
 };
 
 const statusLabelMap: { [key: string]: string } = {
-  Processing: 'Đang xử lý',
+  Processing: 'Chờ xác nhận từ quản lý',
   Completed: 'Đã tạo hợp đồng',
   Ended: 'Chấm dứt hợp đồng',
   Finished: 'Hoàn thành',

@@ -11,7 +11,6 @@ interface TableRow {
 
 interface ConstructionAreaTableProps {
   tableData: TableRow[];
-  isEditing: boolean;
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
@@ -22,7 +21,6 @@ interface ConstructionAreaTableProps {
 
 const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
   tableData,
-  isEditing,
   handleInputChange,
   totalDienTich,
 }) => {
@@ -49,7 +47,6 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={row.hangMuc}
                   onChange={(e) => handleInputChange(e, index, 'hangMuc')}
                   className="w-full text-left"
-                  disabled={!isEditing}
                 />
               </td>
               <td className="px-4 py-2 border text-center border-2 border-green-300">
@@ -58,7 +55,6 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={row.dTich}
                   onChange={(e) => handleInputChange(e, index, 'dTich')}
                   className="w-full text-center"
-                  disabled={!isEditing}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
@@ -67,7 +63,6 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={row.heSo}
                   onChange={(e) => handleInputChange(e, index, 'heSo')}
                   className="w-full text-center"
-                  disabled={!isEditing}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
@@ -76,7 +71,6 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={row.dienTich}
                   onChange={(e) => handleInputChange(e, index, 'dienTich')}
                   className="w-full text-center"
-                  disabled={!isEditing}
                 />
               </td>
               <td className="px-4 py-2 border text-center">{row.donVi}</td>

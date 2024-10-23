@@ -13,8 +13,8 @@ interface FinalQuotationStatusProps {
 }
 
 const statusMapping: Record<string, string> = {
-  Processing: 'Đang xử lý',
-  Reviewing: 'Đang chờ phản hồi',
+  Processing: 'Chờ xác nhận từ quản lý',
+  Reviewing: 'Chờ phản hồi từ khách hàng',
   Approved: 'Đã xác nhận',
   Canceled: 'Đã đóng',
   Finalized: 'Đã hoàn thành',
@@ -22,8 +22,8 @@ const statusMapping: Record<string, string> = {
 };
 
 const statuses = [
-  { label: 'Đang xử lý', icon: <FaCog /> },
-  { label: 'Đang chờ phản hồi', icon: <FaUser /> },
+  { label: 'Chờ xác nhận từ quản lý', icon: <FaCog /> },
+  { label: 'Chờ phản hồi từ khách hàng', icon: <FaUser /> },
   { label: 'Đã xác nhận', icon: <FaCheck /> },
   { label: 'Đã đóng', icon: <FaBan /> },
   { label: 'Đã hoàn thành', icon: <FaClipboard /> },

@@ -36,21 +36,21 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
   const statusColorMap: { [key: string]: string } = {
     Pending: '#FFA500',
     Processing: '#0000FF',
-    Rejected: '#FF0000',
     Reviewing: '#FFD700',
     Approved: '#008000',
-    Canceled: '#808080',
+    Rejected: '#FF0000',
     Finalized: '#4B0082',
+    Canceled: '#808080',
   };
 
   const statusLabelMap: { [key: string]: string } = {
     Pending: 'Đang xử lý',
-    Processing: 'Chờ xác nhận',
-    Rejected: 'Từ chối báo giá SB',
-    Reviewing: 'Chờ xác nhận từ quản lý',
+    Processing: 'Chờ xác nhận từ quản lý',
+    Reviewing: 'Chờ phản hồi khách hàng',
     Approved: 'Đã xác nhận',
-    Canceled: 'Đã đóng',
+    Rejected: 'Từ chối báo giá SB',
     Finalized: 'Đã hoàn thành',
+    Canceled: 'Đã đóng',
   };
 
   const getStatusStyle = (status: string) => {
@@ -114,10 +114,13 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
                 onClick={() => toggleRowMenu(item.Id)}
               />
               {activeMenu === item.Id && (
-                <div ref={menuRef} className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                <div
+                  ref={menuRef}
+                  className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                >
                   <div className="py-2">
                     <Link
-                      to={`/initial-quote-detail/${item.Id}`}
+                      to={`/initial-quotation-detail-manager/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

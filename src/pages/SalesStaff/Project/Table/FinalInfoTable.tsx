@@ -18,9 +18,9 @@ const statusColorMap: { [key: string]: string } = {
 };
 
 const statusLabelMap: { [key: string]: string } = {
-  Processing: 'Đang xử lý',
+  Processing: 'Chờ xác nhận từ quản lý',
   Rejected: 'Bị từ chối',
-  Reviewing: 'Đang chờ phản hồi',
+  Reviewing: 'Chờ phản hồi từ khách hàng',
   Approved: 'Đã xác nhận',
   Canceled: 'Đã đóng',
   Finalized: 'Đã hoàn thành',

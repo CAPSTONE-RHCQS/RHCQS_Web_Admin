@@ -13,13 +13,13 @@ interface InitialQuotationStatusTrackerProps {
 }
 
 const statuses = [
-  { label: 'Đang xử lý', icon: <FaSpinner /> }, // Pending
-  { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> }, // Processing
-  { label: 'Từ chối báo giá SB', icon: <FaBan /> }, // Rejected
-  { label: 'Chờ xác nhận từ quản lý', icon: <FaClipboardCheck /> }, // Reviewing
-  { label: 'Đã xác nhận', icon: <FaCheck /> }, // Approved
-  { label: 'Đã đóng', icon: <FaBan /> }, // Canceled
-  { label: 'Đã hoàn thành', icon: <FaCheck /> }, // Finalized
+  { label: 'Đang xử lý', icon: <FaSpinner /> },
+  { label: 'Chờ xác nhận từ quản lý', icon: <FaClipboardCheck /> },
+  { label: 'Chờ phản hồi khách hàng', icon: <FaHourglassHalf /> },
+  { label: 'Đã xác nhận', icon: <FaCheck /> },
+  { label: 'Từ chối báo giá SB', icon: <FaBan /> },
+  { label: 'Đã hoàn thành', icon: <FaCheck /> },
+  { label: 'Đã đóng', icon: <FaBan /> },
 ];
 
 const InitialQuotationStatusTracker: React.FC<

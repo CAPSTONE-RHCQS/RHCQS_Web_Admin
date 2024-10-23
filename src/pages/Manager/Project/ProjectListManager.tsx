@@ -14,12 +14,11 @@ import ProjectTableManager from '../components/Table/ProjectTableManager';
 import { getProjects } from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
 
-// Định nghĩa hàm getStatusLabel
 const getStatusLabel = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
-    Processing: 'Đang xử lý',
-    Contracted: 'Hoàn thành hợp đồng TK',
-    Reviewing: 'Chờ xác nhận',
+    Processing: 'Chờ xác nhận từ quản lý',
+    Designed: 'Hoàn thành hợp đồng TK',
+    Reviewing: 'Chờ phản hồi từ khách hàng',
     'Signed Contract': 'Đã ký hợp đồng',
     Finalized: 'Hoàn thành',
     Ended: 'Đã chấm dứt',
@@ -174,12 +173,12 @@ const ProjectListManager = () => {
 
   const tabs = [
     { label: 'Tất cả', icon: <FaList /> },
-    { label: 'Đang xử lý', icon: <FaSpinner /> }, // Processing
-    { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> }, // Contracted
-    { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> }, // Reviewing
-    { label: 'Đã ký hợp đồng', icon: <FaClipboardCheck /> }, // Signed Contract
-    { label: 'Hoàn thành', icon: <FaCheck /> }, // Finalized
-    { label: 'Đã chấm dứt', icon: <FaBan /> }, // Ended
+    { label: 'Đang xử lý', icon: <FaSpinner /> },
+    { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> },
+    { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> },
+    { label: 'Đã ký hợp đồng', icon: <FaClipboardCheck /> },
+    { label: 'Hoàn thành', icon: <FaCheck /> },
+    { label: 'Đã chấm dứt', icon: <FaBan /> },
   ];
 
   const handlePageChange = (newPage: number) => {

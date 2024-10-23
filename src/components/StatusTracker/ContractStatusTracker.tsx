@@ -6,13 +6,15 @@ interface ContractStatusTrackerProps {
 }
 
 const contractStatuses = [
-  { label: 'Đang xử lý', icon: <FaCog /> },
+  { label: 'Chờ xác nhận từ quản lý', icon: <FaCog /> },
   { label: 'Đã tạo hợp đồng', icon: <FaFileContract /> },
   { label: 'Hoàn thành', icon: <FaCheck /> },
   { label: 'Chấm dứt hợp đồng', icon: <FaBan /> },
 ];
 
-const ContractStatusTracker: React.FC<ContractStatusTrackerProps> = ({ currentStatus }) => {
+const ContractStatusTracker: React.FC<ContractStatusTrackerProps> = ({
+  currentStatus,
+}) => {
   const currentIndex = contractStatuses.findIndex(
     (status) => status.label === currentStatus,
   );
@@ -68,4 +70,3 @@ const ContractStatusTracker: React.FC<ContractStatusTrackerProps> = ({ currentSt
 };
 
 export default ContractStatusTracker;
-

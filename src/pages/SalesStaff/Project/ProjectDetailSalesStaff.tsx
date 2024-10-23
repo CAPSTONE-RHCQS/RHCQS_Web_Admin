@@ -257,9 +257,17 @@ const ProjectDetailSalesStaff = () => {
             <FaChevronDown className="ml-2" />
           )}
         </h3>
-        {showInitialInfo && (
-          <InitialInfoTable quoteData={projectDetail.InitialInfo || []} />
-        )}
+        {showInitialInfo &&
+          (projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 ? (
+            <InitialInfoTable quoteData={projectDetail.InitialInfo} />
+          ) : (
+            <button
+              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
+              onClick={() => navigate(`/create-initial-quote/${id}`)}
+            >
+              Khởi tạo
+            </button>
+          ))}
 
         <hr className="my-4 border-gray-300" />
         <h3

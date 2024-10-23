@@ -49,13 +49,14 @@ const ContractDetail = () => {
   }
 
   const statusMap: { [key: string]: string } = {
-    Processing: 'Đang xử lý',
+    Processing: 'Chờ xác nhận từ quản lý',
     Created: 'Đã tạo hợp đồng',
     Completed: 'Hoàn thành',
     Ended: 'Chấm dứt hợp đồng',
   };
 
-  const mappedStatus = statusMap[contractDetail.Status] || 'Đang xử lý';
+  const mappedStatus =
+    statusMap[contractDetail.Status] || 'Chờ xác nhận từ quản lý';
 
   return (
     <>
