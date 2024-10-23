@@ -10,7 +10,7 @@ import SignUp from './pages/Authentication/SignUp';
 import Settings from './pages/Settings';
 import DefaultLayout from './layout/DefaultLayout';
 import CreatePost from './pages/BlogPost/CreatePost';
-import InitialQuoteDetail from './pages/Quote/InitialQuoteDetail.tsx';
+import InitialQuotationDetailManager from './pages/Manager/InitialQuotation/InitialQuotationDetailManager.tsx';
 import CreateQuote from './pages/Quote/CreateQuote/CreateQuote';
 import RHCQS from './pages/Dashboard/RHCQS';
 import PostList from './pages/BlogPost/PostList';
@@ -29,6 +29,8 @@ import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotation
 import BlogList from './components/BlogList.tsx';
 import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
+import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
+import InitialQuotationDetailSalesStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailSalesStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -103,6 +105,15 @@ function App() {
           }
         />
         <Route
+          path="/initial-quotation-detail-manager/:id"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <InitialQuotationDetailManager />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/final-quotation-detail/:id"
           element={
             <PrivateRoute allowedRoles={['Manager', 'SalesStaff']}>
@@ -149,11 +160,20 @@ function App() {
           }
         />
         <Route
-          path="/initial-quote-detail/:id"
+          path="/initial-quotation-detail-staff/:id"
           element={
-            <PrivateRoute allowedRoles={['Manager', 'SalesStaff']}>
-              <PageTitle title="Initial Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <InitialQuoteDetail />
+            <PrivateRoute allowedRoles={['SalesStaff']}>
+              <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <InitialQuotationDetailSalesStaff />
+            </PrivateRoute>
+          }
+        />{' '}
+        <Route
+          path="/create-initial-quote/:projectId"
+          element={
+            <PrivateRoute allowedRoles={['SalesStaff']}>
+              <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
+              <CreateInitialQuote />
             </PrivateRoute>
           }
         />
