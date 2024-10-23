@@ -224,7 +224,7 @@ const InitialQuotationDetailManager = () => {
         />
       </div>
       <div className="flex justify-end space-x-2">
-        {quotationData.Status === 'Pending' && (
+        {quotationData.Status === 'Reviewing' && (
           <button
             onClick={handleApproveClick}
             className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"

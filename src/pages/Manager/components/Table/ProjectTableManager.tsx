@@ -52,7 +52,7 @@ const getStatusStyle = (status: string) => {
 
 const getStatusLabel = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
-    Processing: 'Chờ xác nhận từ quản lý',
+    Processing: 'Đang xử lý',
     Designed: 'Hoàn thành hợp đồng TK',
     Reviewing: 'Chờ phản hồi khách hàng',
     'Signed Contract': 'Đã ký hợp đồng',

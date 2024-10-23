@@ -16,12 +16,12 @@ import { useNavigate } from 'react-router-dom';
 
 const getStatusLabel = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
-    Processing: 'Chờ xác nhận từ quản lý',
-    Designed: 'Hoàn thành hợp đồng TK',
-    Reviewing: 'Chờ phản hồi từ khách hàng',
+    Processing: 'Đang xử lý',
+    Designed: 'Đã thiết kế',
+    Reviewing: 'Chờ xác nhận',
     'Signed Contract': 'Đã ký hợp đồng',
     Finalized: 'Hoàn thành',
-    Ended: 'Đã chấm dứt',
+    Ended: 'Kết thúc',
   };
   return statusLabelMap[status] || 'Không xác định';
 };

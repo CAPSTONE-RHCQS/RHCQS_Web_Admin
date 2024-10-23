@@ -106,16 +106,15 @@ const ProjectDetail = () => {
   };
 
   const statusMap: { [key: string]: string } = {
-    Processing: 'Chờ xác nhận từ quản lý',
-    Designed: 'Hoàn thành hợp đồng TK',
-    Reviewing: 'Chờ phản hồi từ khách hàng',
+    Processing: 'Đang xử lý',
+    Designed: 'Đã thiết kế',
+    Reviewing: 'Chờ xác nhận',
     'Signed Contract': 'Đã ký hợp đồng',
-    Finalized: 'Hoàn Thành',
+    Finalized: 'Hoàn thành',
     Ended: 'Đã chấm dứt',
   };
 
-  const mappedStatus =
-    statusMap[projectDetail.Status] || 'Chờ xác nhận từ quản lý';
+  const mappedStatus = statusMap[projectDetail.Status] || 'Đang xử lý';
 
   const handleCloseEmployeeDialog = () => {
     setShowEmployeeDialog(false);

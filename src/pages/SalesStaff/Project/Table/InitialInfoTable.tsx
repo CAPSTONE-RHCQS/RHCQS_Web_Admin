@@ -44,9 +44,9 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
   };
 
   const statusLabelMap: { [key: string]: string } = {
-    Pending: 'Đang xử lý',
-    Processing: 'Chờ xác nhận từ quản lý',
-    Reviewing: 'Chờ phản hồi khách hàng',
+    Pending: 'Chờ xử lý',
+    Processing: 'Đang xử lý',
+    Reviewing: 'Chờ xác nhận từ quản lý',
     Approved: 'Đã xác nhận',
     Rejected: 'Từ chối báo giá SB',
     Finalized: 'Đã hoàn thành',

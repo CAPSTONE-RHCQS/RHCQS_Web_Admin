@@ -1,16 +1,23 @@
 import React from 'react';
-import { FaHome, FaUser, FaCog, FaCheck, FaFileContract, FaBan } from 'react-icons/fa';
+import {
+  FaHome,
+  FaUser,
+  FaCog,
+  FaCheck,
+  FaFileContract,
+  FaBan,
+} from 'react-icons/fa';
 
 interface StatusTrackerProps {
   currentStatus: string;
 }
 
 const statuses = [
-  { label: 'Đang Xử Lý', icon: <FaHome /> },
-  { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> },
+  { label: 'Đang xử lý', icon: <FaHome /> },
+  { label: 'Đã thiết kế', icon: <FaFileContract /> },
   { label: 'Chờ xác nhận', icon: <FaUser /> },
   { label: 'Đã ký hợp đồng', icon: <FaCog /> },
-  { label: 'Hoàn Thành', icon: <FaCheck /> },
+  { label: 'Hoàn thành', icon: <FaCheck /> },
   { label: 'Đã chấm dứt', icon: <FaBan /> },
 ];
 

@@ -37,21 +37,28 @@ const getStatusStyle = (status: string) => {
   switch (status) {
     case 'Processing':
       return { backgroundColor: '#FFB347', icon: <FaSpinner /> };
-    case 'Đã thiết kế':
+    case 'Designed':
       return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
-    case 'Đã tạo hợp đồng thiết kế':
-      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
-    case 'Đang chờ':
+    case 'Reviewing':
       return { backgroundColor: '#4D4DFF', icon: <FaHourglassHalf /> };
-    case 'Đã tạo hợp đồng':
+    case 'Signed Contract':
       return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
-    case 'Đã hoàn thành':
+    case 'Finalized':
       return { backgroundColor: '#4CAF50', icon: <FaCheck /> };
-    case 'Đã hủy':
+    case 'Ended':
       return { backgroundColor: '#FF6666', icon: <FaBan /> };
     default:
       return { backgroundColor: '#B0B0B0', icon: null };
   }
+};
+
+const statusTranslationMap: { [key: string]: string } = {
+  Processing: 'Đang xử lý',
+  Designed: 'Đã thiết kế',
+  Reviewing: 'Chờ xác nhận',
+  'Signed Contract': 'Đã ký hợp đồng',
+  Finalized: 'Hoàn thành',
+  Ended: 'Kết thúc',
 };
 
 const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
@@ -133,7 +140,9 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                         }}
                       >
                         {getStatusStyle(item[column.key]).icon}
-                        <span className="ml-2">{item[column.key]}</span>
+                        <span className="ml-2">
+                          {statusTranslationMap[item[column.key]] || item[column.key]}
+                        </span>
                       </span>
                     ) : (
                       item[column.key]

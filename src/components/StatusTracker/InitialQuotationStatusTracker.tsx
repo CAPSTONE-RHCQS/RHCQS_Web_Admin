@@ -13,9 +13,9 @@ interface InitialQuotationStatusTrackerProps {
 }
 
 const statuses = [
+  { label: 'Chờ xử lý', icon: <FaSpinner /> },
   { label: 'Đang xử lý', icon: <FaSpinner /> },
   { label: 'Chờ xác nhận từ quản lý', icon: <FaClipboardCheck /> },
-  { label: 'Chờ phản hồi khách hàng', icon: <FaHourglassHalf /> },
   { label: 'Đã xác nhận', icon: <FaCheck /> },
   { label: 'Từ chối báo giá SB', icon: <FaBan /> },
   { label: 'Đã hoàn thành', icon: <FaCheck /> },

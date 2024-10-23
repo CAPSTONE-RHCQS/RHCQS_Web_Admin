@@ -92,10 +92,12 @@ const ProjectDetailSalesStaff = () => {
   };
 
   const statusMap: { [key: string]: string } = {
-    Processing: 'Đang Xử Lý',
-    Designing: 'Đang Thiết Kế',
-    Quoting: 'Đang Báo Giá',
-    Completed: 'Hoàn Thành',
+    Processing: 'Đang xử lý',
+    Designed: 'Đã thiết kế',
+    Reviewing: 'Chờ xác nhận',
+    'Signed Contract': 'Đã ký hợp đồng',
+    Finalized: 'Hoàn thành',
+    Ended: 'Đã chấm dứt',
   };
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
