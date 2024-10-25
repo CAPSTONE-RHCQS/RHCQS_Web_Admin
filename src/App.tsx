@@ -16,13 +16,13 @@ import RHCQS from './pages/Dashboard/RHCQS';
 import PostList from './pages/BlogPost/PostList';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
-import AccountList from './pages/Manager/AccountList';
+import AccountList from './pages/Manager/Account/AccountList.tsx';
 import ProjectDetail from './pages/Manager/Project/ProjectDetail';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
-import ConstructionList from './pages/Manager/ConstructionList.tsx';
+import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
@@ -31,6 +31,7 @@ import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
 import InitialQuotationDetailSalesStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailSalesStaff.tsx';
+import PackageList from './pages/Manager/Package/PackageList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -74,6 +75,15 @@ function App() {
             <PrivateRoute allowedRoles={['Manager']}>
               <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
               <ProjectListManager />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/package-list-manager"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
+              <PackageList />
             </PrivateRoute>
           }
         />

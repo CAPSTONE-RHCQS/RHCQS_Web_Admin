@@ -212,14 +212,38 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <svg
                     className="fill-current"
                     xmlns="http://www.w3.org/2000/svg"
+                    height="24px"
+                    viewBox="0 0 960 960"
+                    width="24px"
+                    fill="#5f6368"
+                    preserveAspectRatio="xMidYMid meet"
+                  >
+                    <path d="M192 816v-337l-64 49-44-58 108-82v-124h72v69l216-165 396 302-44 58-64-49v337H192Zm72-72h180v-144.27h72V600h180V279.67L480 198 264 362v321Zm-72-528q0-48 30-78t78-30q17 0 26.5-9.5T336 72h72q0 48-30 78t-78 30q-17 0-26.5 9.5T264 216h-72Zm72 528h432-432Z" />
+                  </svg>
+                  Danh sách dự án
+                </NavLink>
+              </li>
+
+              {/* <!-- Menu Item PackageManager --> */}
+              <li>
+                <NavLink
+                  to="/package-list-manager"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                    pathname.includes('/package-list-manager') &&
+                    'bg-teal-300 dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
                     height="20px"
-                    viewBox="0 -960 960 960"
+                    viewBox="0 0 24 24"
                     width="20px"
                     fill="#5f6368"
                   >
-                    <path d="M192-144v-337l-64 49-44-58 108-82v-124h72v69l216-165 396 302-44 58-64-49v337H192Zm72-72h180v-144.27h72V-216h180v-320.33L480-701 264-537v321Zm-72-528q0-48 30-78t78-30q17 0 26.5-9.5T336-888h72q0 48-30 78t-78 30q-17 0-26.5 9.5T264-744h-72Zm72 528h432-432Z" />
+                    <path d="M12 2L2 7v13h20V7L12 2zm0 2.18l7 3.89V18h-4v-4H9v4H5V8.07l7-3.89zM12 12h2v2h-2v-2z" />
                   </svg>
-                  Danh sách dự án
+                  Quản lý gói xây dựng
                 </NavLink>
               </li>
 
