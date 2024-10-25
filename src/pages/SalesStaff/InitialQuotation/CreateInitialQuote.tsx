@@ -113,7 +113,7 @@ const CreateInitialQuote = () => {
     if (!quotationData) return;
 
     const requestData: UpdateInitialQuotationRequest = {
-      versionPresent: 1,
+      versionPresent: 0,
       projectId: quotationData.ProjectId,
       area: quotationData.Area,
       timeProcessing: 0,

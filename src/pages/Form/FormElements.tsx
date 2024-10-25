@@ -7,7 +7,7 @@ import CheckboxTwo from '../../components/Checkboxes/CheckboxTwo';
 import SwitcherFour from '../../components/Switchers/SwitcherFour';
 import SwitcherOne from '../../components/Switchers/SwitcherOne';
 import SwitcherThree from '../../components/Switchers/SwitcherThree';
-import SwitcherTwo from '../../components/Switchers/SwitcherTwo';
+import SwitcherTwo from '../../components/Switchers/SwitcherTwo.ts';
 import DatePickerOne from '../../components/Forms/DatePicker/DatePickerOne';
 import DatePickerTwo from '../../components/Forms/DatePicker/DatePickerTwo';
 // import SelectGroupTwo from '../../components/Forms/SelectGroup/SelectGroupTwo';

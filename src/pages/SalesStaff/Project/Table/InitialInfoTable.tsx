@@ -120,7 +120,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
                 >
                   <div className="py-2">
                     <Link
-                      to={`/initial-quotation-detail-manager/${item.Id}`}
+                      to={`/initial-quotation-detail-staff/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

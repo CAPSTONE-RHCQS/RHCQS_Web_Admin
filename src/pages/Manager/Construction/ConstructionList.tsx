@@ -1,20 +1,16 @@
 import React, { useState } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import useFetchConstructions from '../../hooks/useFetchConstructions';
-import ConstructionTable from './components/Table/ConstructionTable';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import useFetchConstructions from '../../../hooks/useFetchConstructions';
+import ConstructionTable from '../components/Table/ConstructionTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import AddConstructionModal from './components/Modals/AddConstructionModal';
+import AddConstructionModal from '../components/Modals/AddConstructionModal';
 
 const ConstructionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {
-    totalPages,
-    totalConstructions,
-    isLoading,
-    constructions,
-  } = useFetchConstructions(currentPage, refreshKey);
+  const { totalPages, totalConstructions, isLoading, constructions } =
+    useFetchConstructions(currentPage, refreshKey);
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -58,7 +54,7 @@ const ConstructionList: React.FC = () => {
           <ConstructionTable
             data={constructions}
             isLoading={isLoading}
-            onEditSuccess={handleRefresh} 
+            onEditSuccess={handleRefresh}
           />
         </div>
         <div className="flex justify-between mt-4">

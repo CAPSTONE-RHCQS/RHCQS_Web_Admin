@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import {
   UserIcon,
   BriefcaseIcon,
@@ -7,9 +7,9 @@ import {
   ShoppingCartIcon,
   ArrowPathIcon,
 } from '@heroicons/react/24/solid';
-import useFetchAccounts from '../../hooks/useFetchAccounts';
-import { Account } from '../../types/Account';
-import AccountTable from './components/Table/AccountTable';
+import useFetchAccounts from '../../../hooks/useFetchAccounts';
+import { Account } from '../../../types/Account';
+import AccountTable from '../components/Table/AccountTable';
 
 type SortKey = string;
 
@@ -102,8 +102,10 @@ const AccountList: React.FC = () => {
   const updateAccountInList = (updatedAccount: Account) => {
     setAccounts((prevAccounts) =>
       prevAccounts.map((account) =>
-        account.Id === updatedAccount.Id ? { ...account, ...updatedAccount } : account
-      )
+        account.Id === updatedAccount.Id
+          ? { ...account, ...updatedAccount }
+          : account,
+      ),
     );
   };
 

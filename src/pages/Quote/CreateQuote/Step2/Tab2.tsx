@@ -10,7 +10,11 @@ interface Tab2Props {
     totalAmount: number;
     enabled: boolean;
   }[];
-  handleChangeItem: (index: number, field: string, value: number | boolean) => void;
+  handleChangeItem: (
+    index: number,
+    field: string,
+    value: number | boolean,
+  ) => void;
 }
 
 const Tab2: React.FC<Tab2Props> = ({ items, handleChangeItem }) => {
@@ -23,7 +27,9 @@ const Tab2: React.FC<Tab2Props> = ({ items, handleChangeItem }) => {
             <SwitcherTwo
               id={`switcher-${index}`}
               enabled={item.enabled}
-              setEnabled={(enabled) => handleChangeItem(index, 'enabled', enabled)}
+              setEnabled={(enabled) =>
+                handleChangeItem(index, 'enabled', enabled)
+              }
             />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
