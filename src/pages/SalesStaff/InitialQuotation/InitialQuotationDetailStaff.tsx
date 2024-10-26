@@ -33,7 +33,7 @@ interface OptionRow {
   thanhTien: number;
 }
 
-const InitialQuotationDetailSalesStaff = () => {
+const InitialQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
   const [quotationData, setQuotationData] =
     useState<InitialQuotationResponse | null>(null);
@@ -552,4 +552,4 @@ const InitialQuotationDetailSalesStaff = () => {
   );
 };
 
-export default InitialQuotationDetailSalesStaff;
+export default InitialQuotationDetailStaff;

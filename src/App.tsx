@@ -25,13 +25,15 @@ import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
-import FinalQuotationDetail from './pages/Quote/DetailedQuotation/FinalQuotationDetail.tsx';
 import BlogList from './components/BlogList.tsx';
 import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
-import InitialQuotationDetailSalesStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailSalesStaff.tsx';
+import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
+import FinalQuotationDetailManager from './pages/Quote/DetailedQuotation/FinalQuotationDetailManager.tsx';
+import FinalQuotationDetailStaff from './pages/SalesStaff/FinalQuotation/FinalQuotationDetailStaff.tsx';
+import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -97,6 +99,15 @@ function App() {
           }
         />
         <Route
+          path="/promotion-list-manager"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Promotion List | RHCQS - Residential Housing Construction Quotation System" />
+              <PromotionList />
+            </PrivateRoute>
+          }
+        />
+        <Route
           path="/account-list-manager"
           element={
             <PrivateRoute allowedRoles={['Manager']}>
@@ -124,11 +135,11 @@ function App() {
           }
         />
         <Route
-          path="/final-quotation-detail/:id"
+          path="/final-quotation-detail-manager/:id"
           element={
-            <PrivateRoute allowedRoles={['Manager', 'SalesStaff']}>
-              <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <FinalQuotationDetail />
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Quote Detail Manager | RHCQS - Residential Housing Construction Quotation System" />
+              <FinalQuotationDetailManager />
             </PrivateRoute>
           }
         />
@@ -174,10 +185,19 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <InitialQuotationDetailSalesStaff />
+              <InitialQuotationDetailStaff />
             </PrivateRoute>
           }
-        />{' '}
+        />
+        <Route
+          path="/final-quotation-detail-staff/:id"
+          element={
+            <PrivateRoute allowedRoles={['SalesStaff']}>
+              <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+              <FinalQuotationDetailStaff />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/create-initial-quote/:projectId"
           element={

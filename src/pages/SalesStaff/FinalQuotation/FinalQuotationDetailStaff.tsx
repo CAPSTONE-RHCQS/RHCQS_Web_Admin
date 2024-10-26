@@ -17,7 +17,7 @@ import {
   FaChevronUp,
 } from 'react-icons/fa';
 
-const FinalQuotationDetail = () => {
+const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
   const [isEditing, setIsEditing] = useState(false);
   const [quotationDetail, setQuotationDetail] =
@@ -130,10 +130,16 @@ const FinalQuotationDetail = () => {
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
           1. Các đợt thanh toán:
-          {showBatchPayments ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showBatchPayments ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showBatchPayments && <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />}
-        
+        {showBatchPayments && (
+          <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />
+        )}
+
         <hr className="my-4 border-gray-300" />
 
         <h3
@@ -141,10 +147,16 @@ const FinalQuotationDetail = () => {
           onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
         >
           2. Chi Phí Thiết bị:
-          {showEquipmentCosts ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showEquipmentCosts ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showEquipmentCosts && <EquipmentTable items={quotationDetail.EquipmentItems} />}
-        
+        {showEquipmentCosts && (
+          <EquipmentTable items={quotationDetail.EquipmentItems} />
+        )}
+
         <hr className="my-4 border-gray-300" />
 
         <h3
@@ -152,12 +164,18 @@ const FinalQuotationDetail = () => {
           onClick={() => setShowDetailedItems(!showDetailedItems)}
         >
           3. Các hạng mục báo giá chi tiết:
-          {showDetailedItems ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showDetailedItems ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showDetailedItems && <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />}
+        {showDetailedItems && (
+          <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+        )}
       </div>
     </div>
   );
 };
 
-export default FinalQuotationDetail;
+export default FinalQuotationDetailStaff;
