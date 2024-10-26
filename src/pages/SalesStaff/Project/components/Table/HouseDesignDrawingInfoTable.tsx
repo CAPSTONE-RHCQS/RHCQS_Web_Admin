@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import EmployeeAllocationDialog from '../../../Manager/components/Employee/EmployeeAllocationDialog';
-import { designEmployees } from '../../../../types/Employee';
+import EmployeeAllocationDialog from '../../../../Manager/components/Employee/EmployeeAllocationDialog';
+import { designEmployees } from '../../../../../types/Employee';
 
 interface HouseDesignDrawingInfoTableProps {
   designData: {

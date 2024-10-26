@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import useFetchConstructions from '../../../hooks/useFetchConstructions';
-import ConstructionTable from '../components/Table/ConstructionTable';
+import ConstructionTable from './components/Table/ConstructionTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import AddConstructionModal from '../components/Modals/AddConstructionModal';
+import AddConstructionModal from './components/Modals/AddConstructionModal';
 
 const ConstructionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);

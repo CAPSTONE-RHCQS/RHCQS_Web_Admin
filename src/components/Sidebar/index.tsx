@@ -270,6 +270,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
 
+              {/* <!-- Menu Item UtilityManager --> */}
+              <li>
+                <NavLink
+                  to="/utility-list-manager"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                    pathname.includes('/utility-list-manager') &&
+                    'bg-teal-300 dark:bg-meta-4'
+                  }`}
+                >
+                  <svg
+                    className="fill-current"
+                    xmlns="http://www.w3.org/2000/svg"
+                    height="20px"
+                    viewBox="0 0 24 24"
+                    width="20px"
+                    fill="#5f6368"
+                  >
+                    <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 8h14v-2H7v2zm0-4h14v-2H7v2zm0-6v2h14V7H7z" />
+                  </svg>
+                  Quản lý Dịch vụ và tiện ích
+                </NavLink>
+              </li>
+
               {/* <!-- Menu Item PromotionManager --> */}
               <li>
                 <NavLink

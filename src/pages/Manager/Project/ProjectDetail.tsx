@@ -22,14 +22,14 @@ import StatusTracker from '../../../components/StatusTracker/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import ContractTable from '../../SalesStaff/Project/Table/ContractTable';
 import { getProjectDetail } from '../../../api/Project/ProjectApi';
-import InitialInfoTable from '../../SalesStaff/Project/Table/InitialInfoTable';
-import HouseDesignDrawingInfoTable from '../../SalesStaff/Project/Table/HouseDesignDrawingInfoTable';
-import FinalInfoTable from '../../SalesStaff/Project/Table/FinalInfoTable';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 import EmployeeList from '../components/Employee/EmployeeList';
+import InitialInfoTable from './components/Table/InitialInfoTable';
+import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
+import FinalInfoTable from './components/Table/FinalInfoTable';
+import ContractTable from './components/Table/ContractTable';
 
 const ProjectDetail = () => {
   const { id } = useParams<{ id: string }>();

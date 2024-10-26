@@ -12,7 +12,7 @@ export interface SubConstructionItem {
 }
 
 export interface ConstructionItem {
-  Id: string; 
+  Id: string;
   Name: string;
   Coefficient: number;
   Unit: string;
@@ -200,7 +200,7 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
           onClose={() => setEditModalOpen(false)}
           onEditSuccess={() => {
             setEditModalOpen(false);
-            onEditSuccess(); 
+            onEditSuccess();
           }}
           construction={selectedConstruction}
         />

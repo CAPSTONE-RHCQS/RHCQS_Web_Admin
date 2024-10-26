@@ -34,6 +34,7 @@ import PackageList from './pages/Manager/Package/PackageList.tsx';
 import FinalQuotationDetailManager from './pages/Quote/DetailedQuotation/FinalQuotationDetailManager.tsx';
 import FinalQuotationDetailStaff from './pages/SalesStaff/FinalQuotation/FinalQuotationDetailStaff.tsx';
 import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
+import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,6 +96,15 @@ function App() {
             <PrivateRoute allowedRoles={['Manager']}>
               <PageTitle title="Construction List | RHCQS - Residential Housing Construction Quotation System" />
               <ConstructionList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/utility-list-manager"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="Utility List | RHCQS - Residential Housing Construction Quotation System" />
+              <UtilityList />
             </PrivateRoute>
           }
         />

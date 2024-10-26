@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import {
   putConstruction,
   SubConstructionRequest,
-} from '../../../../api/Construction/ConstructionApi';
+} from '../../../../../api/Construction/ConstructionApi';
 import {
   ConstructionItem,
   SubConstructionItem,
@@ -52,6 +52,10 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
       };
       return newSubConstructions;
     });
+  };
+
+  const handleDeleteSubConstruction = (index: number) => {
+    setSubConstructions((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleSubmit = async () => {
@@ -144,7 +148,10 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         <div className="mb-6">
           <h3 className="text-lg font-semibold mb-2">Sub Constructions</h3>
           {subConstructions.map((sub, index) => (
-            <div key={index} className="mb-2 grid grid-cols-3 gap-4">
+            <div
+              key={index}
+              className="mb-2 grid grid-cols-4 gap-4 items-center"
+            >
               <input
                 type="text"
                 placeholder="Tên Mục Con"
@@ -179,6 +186,26 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
                 required
               />
+              <button
+                type="button"
+                onClick={() => handleDeleteSubConstruction(index)}
+                className="text-red-500 hover:text-red-700"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
             </div>
           ))}
         </div>

@@ -25,10 +25,10 @@ import ChatBox from '../../../components/ChatBox';
 import { getProjectDetail } from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
-import InitialInfoTable from './Table/InitialInfoTable';
-import HouseDesignDrawingInfoTable from './Table/HouseDesignDrawingInfoTable';
-import FinalInfoTable from './Table/FinalInfoTable';
-import ContractTable from './Table/ContractTable';
+import InitialInfoTable from './components/Table/InitialInfoTable';
+import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
+import FinalInfoTable from './components/Table/FinalInfoTable';
+import ContractTable from './components/Table/ContractTable';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();

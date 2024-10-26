@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { postPromotion } from '../../../../api/Promotion/PromotionApi';
-import { PromotionRequest } from '../../../../types/PromotionTypes';
+import { putPromotion } from '../../../../../api/Promotion/PromotionApi';
+import { PromotionItem } from '../../../../../types/PromotionTypes';
 
-interface AddPromotionModalProps {
+interface EditPromotionModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAddSuccess: () => void;
+  onEditSuccess: () => void;
+  promotion: PromotionItem;
 }
 
-const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
+const EditPromotionModal: React.FC<EditPromotionModalProps> = ({
   isOpen,
   onClose,
-  onAddSuccess,
+  onEditSuccess,
+  promotion,
 }) => {
   const [name, setName] = useState('');
   const [value, setValue] = useState(0);
@@ -20,38 +22,38 @@ const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
   const [expTime, setExpTime] = useState('');
 
   useEffect(() => {
-    if (!isOpen) {
-      resetForm();
+    if (isOpen && promotion) {
+      setName(promotion.Name);
+      setValue(promotion.Value);
+      setStartTime(promotion.StartTime);
+      setExpTime(promotion.ExpTime);
     }
-  }, [isOpen]);
-
-  const resetForm = () => {
-    setName('');
-    setValue(0);
-    setStartTime('');
-    setExpTime('');
-  };
+  }, [isOpen, promotion]);
 
   const handleSubmit = async () => {
     try {
-      if (!name || !startTime || !expTime) {
-        toast.error('Vui lòng điền đầy đủ thông tin.');
-        return;
-      }
-
-      const promotionData: PromotionRequest = {
+      const promotionData = {
         name,
         value,
         startTime,
         expTime,
       };
 
-      await postPromotion(promotionData);
-      toast.success('Thêm mới thành công!');
-      onAddSuccess();
+      if (
+        name !== promotion.Name ||
+        value !== promotion.Value ||
+        startTime !== promotion.StartTime ||
+        expTime !== promotion.ExpTime
+      ) {
+        await putPromotion(promotion.Id, promotionData);
+        toast.success('Chỉnh sửa thành công!');
+        onEditSuccess();
+      } else {
+        toast.info('Không có thay đổi nào được thực hiện.');
+      }
       onClose();
     } catch (error: any) {
-      toast.error(error.message || 'Thêm mới thất bại!');
+      toast.error(error.message || 'Chỉnh sửa thất bại!');
     }
   };
 
@@ -67,7 +69,7 @@ const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">
-          Thêm mới Promotion
+          Chỉnh sửa Promotion
         </h2>
         <div className="grid grid-cols-1 gap-4 mb-6">
           <input
@@ -114,7 +116,7 @@ const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
             onClick={handleSubmit}
             className="p-2 bg-green-500 text-white rounded hover:bg-green-600 transition-colors"
           >
-            Thêm
+            Lưu
           </button>
         </div>
       </div>
@@ -122,4 +124,4 @@ const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
   );
 };
 
-export default AddPromotionModal;
+export default EditPromotionModal;

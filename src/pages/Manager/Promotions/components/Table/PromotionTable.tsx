@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
 import EditPromotionModal from '../Modals/EditPromotionModal';
-import { PromotionItem } from '../../../../types/PromotionTypes';
+import { PromotionItem } from '../../../../../types/PromotionTypes';
 
 export interface PromotionTableProps {
   data: PromotionItem[];
@@ -37,16 +37,23 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {['Tên', 'Mã', 'Giá trị', 'Ngày tạo', 'Bắt đầu', 'Kết thúc', 'Đang chạy', 'Hành động'].map(
-                (header) => (
-                  <th
-                    key={header}
-                    className="py-4 px-4 font-medium text-black dark:text-white"
-                  >
-                    {header}
-                  </th>
-                ),
-              )}
+              {[
+                'Tên',
+                'Mã',
+                'Giá trị',
+                'Ngày tạo',
+                'Bắt đầu',
+                'Kết thúc',
+                'Đang chạy',
+                'Hành động',
+              ].map((header) => (
+                <th
+                  key={header}
+                  className="py-4 px-4 font-medium text-black dark:text-white"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>

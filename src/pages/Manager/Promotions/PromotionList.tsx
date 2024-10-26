@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import useFetchPromotions from '../../../hooks/useFetchPromotions';
-import PromotionTable from '../components/Table/PromotionTable';
+import PromotionTable from './components/Table/PromotionTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import AddPromotionModal from '../components/Modals/AddPromotionModal';
+import AddPromotionModal from './components/Modals/AddPromotionModal';
 
 const PromotionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);

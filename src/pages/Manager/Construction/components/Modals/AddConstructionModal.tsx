@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import {
   postConstruction,
   SubConstructionRequest,
-} from '../../../../api/Construction/ConstructionApi';
+} from '../../../../../api/Construction/ConstructionApi';
 
 interface AddConstructionModalProps {
   isOpen: boolean;
@@ -65,6 +65,10 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
     setSubConstructions(newSubConstructions);
   };
 
+  const handleRemoveSubConstruction = (index: number) => {
+    setSubConstructions(subConstructions.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async () => {
     try {
       const validSubConstructions: SubConstructionRequest[] = subConstructions
@@ -111,7 +115,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
       onClick={onClose}
     >
       <div
-        className="bg-white p-8 rounded-lg shadow-lg w-1/3 max-h-[80vh] overflow-y-auto"
+        className="bg-white p-8 rounded-lg shadow-lg w-1/2 max-h-[80vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">
@@ -160,7 +164,10 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
         {showSubConstructions && (
           <>
             {subConstructions.map((sub, index) => (
-              <div key={index} className="grid grid-cols-3 gap-4 mb-4">
+              <div
+                key={index}
+                className="grid grid-cols-4 gap-4 mb-4 items-center"
+              >
                 <input
                   type="text"
                   placeholder="Tên Mục Con"
@@ -195,6 +202,26 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
                   className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => handleRemoveSubConstruction(index)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
               </div>
             ))}
             <button
