@@ -106,3 +106,23 @@ export const assignProject = async (accountId: string, projectId: string) => {
     throw error;
   }
 };
+
+export const cancelProject = async (projectId: string) => {
+  try {
+    const response = await requestWebRHCQS.put(`/project/cancel`, null, {
+      params: { projectId },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data) {
+      console.error('Error cancelling project:', error.response.data);
+      throw new Error(error.response.data);
+    } else {
+      console.error('Error cancelling project:', error);
+      throw error;
+    }
+  }
+};

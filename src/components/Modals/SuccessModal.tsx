@@ -7,9 +7,12 @@ interface SuccessModalProps {
   onConfirm: () => void;
 }
 
-const SuccessModal: React.FC<SuccessModalProps> = ({ title, message, onConfirm }) => {
+const SuccessModal: React.FC<SuccessModalProps> = ({
+  title,
+  message,
+  onConfirm,
+}) => {
   useEffect(() => {
-    // Cuộn về đầu trang khi modal hiển thị
     window.scrollTo(0, 0);
   }, []);
 
@@ -28,7 +31,7 @@ const SuccessModal: React.FC<SuccessModalProps> = ({ title, message, onConfirm }
         </div>
       </div>
     </div>,
-    document.body
+    document.body,
   );
 };
 

@@ -11,6 +11,7 @@ import {
   FaEdit,
   FaUserPlus,
   FaEllipsisH,
+  FaBan,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -22,7 +23,10 @@ import StatusTracker from '../../../components/StatusTracker/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
 import { Dialog } from '@material-tailwind/react';
 import ChatBox from '../../../components/ChatBox';
-import { getProjectDetail } from '../../../api/Project/ProjectApi';
+import {
+  getProjectDetail,
+  cancelProject,
+} from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 import EmployeeList from '../components/Employee/EmployeeList';
@@ -30,9 +34,11 @@ import InitialInfoTable from './components/Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './components/Table/FinalInfoTable';
 import ContractTable from './components/Table/ContractTable';
+import Modal from '../../../components/Modals/Modal';
+import { toast } from 'react-toastify';
 
 const ProjectDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id: projectId } = useParams<{ id: string }>();
   const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
     null,
   );
@@ -44,33 +50,40 @@ const ProjectDetail = () => {
   const [showDesignDrawing, setShowDesignDrawing] = useState(false);
   const [showFinalInfo, setShowFinalInfo] = useState(false);
   const [showContract, setShowContract] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchProjectDetail = async () => {
-      if (id) {
-        try {
-          const data = await getProjectDetail(id);
-          setProjectDetail(data);
-        } catch (error) {
-          console.error('Error fetching project detail:', error);
-        }
-      } else {
-        console.error('Project ID is undefined');
-      }
-    };
-
-    fetchProjectDetail();
-  }, [id]);
-
-  const refreshProjectDetail = async () => {
-    if (id) {
+  const fetchProjectDetail = async () => {
+    if (projectId) {
       try {
-        const data = await getProjectDetail(id);
+        const data = await getProjectDetail(projectId);
         setProjectDetail(data);
       } catch (error) {
-        console.error('Error refreshing project detail:', error);
+        console.error('Error fetching project detail:', error);
+      } finally {
+        setLoading(false);
       }
     }
+  };
+
+  useEffect(() => {
+    fetchProjectDetail();
+  }, [projectId]);
+
+  const handleCancelProject = async () => {
+    if (!projectId) {
+      toast.error('Không tìm thấy ID dự án.');
+      return;
+    }
+
+    try {
+      await cancelProject(projectId);
+      toast.success('Dự án đã được chấm dứt thành công!');
+      fetchProjectDetail();
+    } catch (error) {
+      toast.error('Có lỗi xảy ra khi chấm dứt dự án.');
+    }
+    setIsModalOpen(false);
   };
 
   if (!projectDetail) {
@@ -123,7 +136,7 @@ const ProjectDetail = () => {
   const handleSelectEmployee = (id: string) => {
     console.log('Selected Employee ID:', id);
     setShowEmployeeDialog(false);
-    refreshProjectDetail();
+    fetchProjectDetail();
   };
 
   return (
@@ -170,10 +183,14 @@ const ProjectDetail = () => {
                   </a>
                   <a
                     href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setIsModalOpen(true);
+                    }}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
-                    <FaEllipsisH className="mr-2" />
-                    Menu Item 3
+                    <FaBan className="mr-2" />
+                    Chấm dứt dự án
                   </a>
                 </div>
               </div>
@@ -346,6 +363,14 @@ const ProjectDetail = () => {
             />
           </div>
         </Dialog>
+      )}
+      {isModalOpen && (
+        <Modal
+          title="Xác nhận"
+          message="Bạn có muốn chấm dứt dự án này không?"
+          onConfirm={handleCancelProject}
+          onCancel={() => setIsModalOpen(false)}
+        />
       )}
     </>
   );
