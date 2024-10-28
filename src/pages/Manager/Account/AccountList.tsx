@@ -9,7 +9,7 @@ import {
 } from '@heroicons/react/24/solid';
 import useFetchAccounts from '../../../hooks/useFetchAccounts';
 import { Account } from '../../../types/Account';
-import AccountTable from '../components/Table/AccountTable';
+import AccountTable from './components/Table/AccountTable';
 
 type SortKey = string;
 

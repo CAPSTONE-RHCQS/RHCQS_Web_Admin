@@ -8,9 +8,9 @@ import {
   FaBan,
   FaEye,
 } from 'react-icons/fa';
-import RejectionModal from '../../../../components/Modals/RejectionModal';
-import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
-import SortIcon from '../../../../components/Buttonicons/SortIcon';
+import RejectionModal from '../../../../../components/Modals/RejectionModal';
+import CheckboxTwo from '../../../../../components/Checkboxes/CheckboxTwo';
+import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
 type DataItem = {

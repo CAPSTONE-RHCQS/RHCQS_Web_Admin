@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-import EmployeeAllocationDialog from '../../../components/Employee/EmployeeAllocationDialog';
-import { designEmployees } from '../../../../../types/Employee';
+import React from 'react';
 
 interface HouseDesignDrawingInfoTableProps {
   designData: {
@@ -46,38 +44,6 @@ const getStatusLabel = (status: string | null) => {
 const HouseDesignDrawingInfoTable: React.FC<
   HouseDesignDrawingInfoTableProps
 > = ({ designData }) => {
-  const [isApprovalModalOpen, setApprovalModalOpen] = useState(false);
-  const [selectedDesignEmployees, setSelectedDesignEmployees] = useState<{
-    [key: string]: string[];
-  }>({
-    'Thiết kế phối cảnh': [],
-    'Thiết kế kiến trúc': [],
-    'Thiết kế kết cấu': [],
-    'Thiết kế điện & nước': [],
-  });
-  const [notes, setNotes] = useState<string>('');
-  const [currentDrawing, setCurrentDrawing] = useState<string>('');
-
-  const handleConfirmAllocation = () => {
-    console.log('Design Employees allocated:', selectedDesignEmployees);
-    console.log('Notes:', notes);
-    setApprovalModalOpen(false);
-  };
-
-  const handleSelectDesignEmployee = (role: string, name: string) => {
-    setSelectedDesignEmployees((prev) => ({
-      ...prev,
-      [role]: prev[role].includes(name)
-        ? prev[role].filter((employee) => employee !== name)
-        : [...prev[role], name],
-    }));
-  };
-
-  const openAllocationDialog = (drawing: string) => {
-    setCurrentDrawing(drawing);
-    setApprovalModalOpen(true);
-  };
-
   return (
     <>
       <table className="w-full table-auto">
@@ -118,29 +84,10 @@ const HouseDesignDrawingInfoTable: React.FC<
                   {getStatusLabel(item.Status)}
                 </span>
               </td>
-              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                <button
-                  className="text-primaryGreenButton hover:text-secondaryGreenButton"
-                  onClick={() => openAllocationDialog(item.Id)}
-                >
-                  Phân công
-                </button>
-              </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <EmployeeAllocationDialog
-        isOpen={isApprovalModalOpen}
-        onClose={() => setApprovalModalOpen(false)}
-        handleConfirmAllocation={handleConfirmAllocation}
-        designEmployees={designEmployees}
-        selectedDesignEmployees={selectedDesignEmployees}
-        handleSelectDesignEmployee={handleSelectDesignEmployee}
-        notes={notes}
-        setNotes={setNotes}
-        currentDrawing={currentDrawing}
-      />
     </>
   );
 };

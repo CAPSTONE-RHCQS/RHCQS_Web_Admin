@@ -29,13 +29,16 @@ import {
 } from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
-import EmployeeList from '../components/Employee/EmployeeList';
 import InitialInfoTable from './components/Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './components/Table/FinalInfoTable';
 import ContractTable from './components/Table/ContractTable';
 import Modal from '../../../components/Modals/Modal';
 import { toast } from 'react-toastify';
+import HouseDesignDrawingEmployeeList from './components/Modals/HouseDesignDrawingEmployeeList';
+import { createHouseDesign } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
+import AssignModal from './components/Modals/AssignModal';
+import EmployeeList from './components/Employee/EmployeeList';
 
 const ProjectDetail = () => {
   const { id: projectId } = useParams<{ id: string }>();
@@ -52,6 +55,12 @@ const ProjectDetail = () => {
   const [showContract, setShowContract] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
+  const [selectedEmployees, setSelectedEmployees] = useState<{
+    [key: string]: any;
+  }>({});
+  const [currentCategory, setCurrentCategory] = useState<string | null>(null);
+  const [showEmployeeListModal, setShowEmployeeListModal] = useState(false); // Thêm trạng thái mới
 
   const fetchProjectDetail = async () => {
     if (projectId) {
@@ -106,7 +115,7 @@ const ProjectDetail = () => {
     if (item === 'history') {
       setShowHistory(true);
     } else if (item === 'assign') {
-      setShowEmployeeDialog(true);
+      setShowEmployeeListModal(true);
     }
   };
 
@@ -133,10 +142,63 @@ const ProjectDetail = () => {
     setShowEmployeeDialog(false);
   };
 
-  const handleSelectEmployee = (id: string) => {
-    console.log('Selected Employee ID:', id);
-    setShowEmployeeDialog(false);
+  const handleSelectEmployee = (id: string, employeeData: any) => {
+    if (currentCategory) {
+      setSelectedEmployees((prev) => ({
+        ...prev,
+        [currentCategory]: {
+          id,
+          ...employeeData,
+        },
+      }));
+      setShowEmployeeDialog(false);
+    }
+  };
+
+  const handleAssignDesigners = async () => {
+    const requiredCategories = [
+      'Phối cảnh',
+      'Kiến trúc',
+      'Kết cấu',
+      'Điện nước',
+    ];
+    const hasAllIds = requiredCategories.every(
+      (category) => selectedEmployees[category],
+    );
+
+    if (!hasAllIds) {
+      toast.error('Vui lòng chọn đủ nhân viên cho tất cả các hạng mục.');
+      return;
+    }
+
+    try {
+      const data = {
+        projectId: projectDetail.Id,
+        designerPerspective: selectedEmployees['Phối cảnh'].id,
+        designerArchitecture: selectedEmployees['Kiến trúc'].id,
+        designerStructure: selectedEmployees['Kết cấu'].id,
+        designerElectricityWater: selectedEmployees['Điện nước'].id,
+      };
+      console.log('Data to be sent:', data);
+      await createHouseDesign(data);
+      toast.success('Phân công thành công!');
+      setIsAssignModalOpen(false);
+      fetchProjectDetail();
+    } catch (error: any) {
+      console.error('Error assigning designers:', error);
+      if (error.response && error.response.status === 409) {
+        toast.error(
+          error.response.data.Error || 'Có lỗi xảy ra khi phân công.',
+        );
+      } else {
+        toast.error('Có lỗi xảy ra khi phân công.');
+      }
+    }
+  };
+
+  const refreshProjectDetail = () => {
     fetchProjectDetail();
+    console.log('Refreshing project detail...');
   };
 
   return (
@@ -317,9 +379,40 @@ const ProjectDetail = () => {
           )}
         </h3>
         {showDesignDrawing && (
-          <HouseDesignDrawingInfoTable
-            designData={projectDetail.HouseDesignDrawingInfo || []}
+          <>
+            {projectDetail.HouseDesignDrawingInfo.length === 0 ? (
+              <button
+                onClick={() => setIsAssignModalOpen(true)}
+                className="bg-blue-500 text-white p-2 rounded"
+              >
+                Phân công
+              </button>
+            ) : (
+              <HouseDesignDrawingInfoTable
+                designData={projectDetail.HouseDesignDrawingInfo}
+              />
+            )}
+          </>
+        )}
+
+        {isAssignModalOpen && (
+          <AssignModal
+            onClose={() => setIsAssignModalOpen(false)}
+            onAssign={handleAssignDesigners}
+            setCurrentCategory={setCurrentCategory}
+            setShowEmployeeDialog={setShowEmployeeDialog}
+            selectedEmployees={selectedEmployees}
           />
+        )}
+
+        {showEmployeeDialog && (
+          <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
+            <div className="p-4">
+              <HouseDesignDrawingEmployeeList
+                onSelectEmployee={handleSelectEmployee}
+              />
+            </div>
+          </Dialog>
         )}
 
         <hr className="my-4 border-gray-300" />
@@ -354,16 +447,6 @@ const ProjectDetail = () => {
           <ContractTable contractData={projectDetail.ContractInfo || []} />
         )}
       </div>
-      {projectDetail && (
-        <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
-          <div className="p-4">
-            <EmployeeList
-              onSelectEmployee={handleSelectEmployee}
-              projectId={projectDetail.Id}
-            />
-          </div>
-        </Dialog>
-      )}
       {isModalOpen && (
         <Modal
           title="Xác nhận"
@@ -371,6 +454,20 @@ const ProjectDetail = () => {
           onConfirm={handleCancelProject}
           onCancel={() => setIsModalOpen(false)}
         />
+      )}
+      {showEmployeeListModal && projectId && (
+        <Dialog
+          open={showEmployeeListModal}
+          handler={() => setShowEmployeeListModal(false)}
+        >
+          <EmployeeList
+            onSelectEmployee={(id, note) => {
+              setShowEmployeeListModal(false);
+            }}
+            projectId={projectId}
+            onRefreshProjectDetail={refreshProjectDetail}
+          />
+        </Dialog>
       )}
     </>
   );

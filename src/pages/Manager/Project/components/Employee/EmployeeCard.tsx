@@ -15,7 +15,6 @@ interface EmployeeCardProps {
   avatar: string;
   name: string;
   roles: string[];
-  address: string;
   phone: string;
   onSelect: () => void;
   isSelected: boolean;
@@ -40,7 +39,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
   avatar,
   name,
   roles,
-  address,
   phone,
   onSelect,
   isSelected,
@@ -78,9 +76,6 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
             );
           })}
         </div>
-        <p className="text-sm text-gray-600 mb-2 flex items-center">
-          <FaMapMarkerAlt className="mr-2 text-blue-500" /> {address}
-        </p>
         <p className="text-sm text-gray-600 flex items-center">
           <FaPhone className="mr-2 text-blue-500" /> {phone}
         </p>

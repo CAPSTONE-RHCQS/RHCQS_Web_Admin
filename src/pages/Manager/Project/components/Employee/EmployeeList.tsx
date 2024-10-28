@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EmployeeCard from './EmployeeCard';
-import { getAccountsByRoleId } from '../../../../api/Account/AccountApi';
-import { assignProject } from '../../../../api/Project/ProjectApi';
+import { getAccountsByRoleId } from '../../../../../api/Account/AccountApi';
+import { assignProject } from '../../../../../api/Project/ProjectApi';
 import {
   FaArrowLeft,
   FaArrowRight,
@@ -10,24 +10,26 @@ import {
   FaCheckCircle,
 } from 'react-icons/fa';
 import { Dialog } from '@material-tailwind/react';
+import { truncateName } from '../../../../../utils/stringUtils';
 
 interface Employee {
   id: string;
   avatar: string;
   name: string;
   roles: string[];
-  address: string;
   phone: string;
 }
 
 interface EmployeeListProps {
   onSelectEmployee: (id: string, note: string) => void;
   projectId: string;
+  onRefreshProjectDetail: () => void;
 }
 
 const EmployeeList: React.FC<EmployeeListProps> = ({
   onSelectEmployee,
   projectId,
+  onRefreshProjectDetail,
 }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
@@ -87,11 +89,13 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       try {
         await assignProject(selectedEmployeeId, projectId);
         onSelectEmployee(selectedEmployeeId, note);
-        // Không cần thông báo khi thành công
+        onRefreshProjectDetail();
         setMessage(null);
       } catch (error: any) {
         console.error('Error assigning project:', error);
-        const errorMessage = error.response?.data?.Error || 'Có lỗi xảy ra khi phân công nhân viên.';
+        const errorMessage =
+          error.response?.data?.Error ||
+          'Có lỗi xảy ra khi phân công nhân viên.';
         setMessage(`Lỗi: ${errorMessage}`);
         setShowModal(true);
       }
@@ -128,9 +132,8 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           <EmployeeCard
             key={employee.id}
             avatar={employee.avatar}
-            name={employee.name}
+            name={truncateName(employee.name, 10)}
             roles={employee.roles}
-            address={employee.address}
             phone={employee.phone}
             onSelect={() => handleSelect(employee.id)}
             isSelected={selectedEmployeeId === employee.id}

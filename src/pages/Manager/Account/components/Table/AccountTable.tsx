@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { getAccountById } from '../../../../api/Account/AccountApi';
-import DetailButton from '../../../../components/Buttonicons/DetailButton';
-import SortIcon from '../../../../components/Buttonicons/SortIcon';
-import AccountDetailModal from '../../../../components/Account/AccountDetailModal';
+import { getAccountById } from '../../../../../api/Account/AccountApi';
+import DetailButton from '../../../../../components/Buttonicons/DetailButton';
+import SortIcon from '../../../../../components/Buttonicons/SortIcon';
+import AccountDetailModal from '../../../../../components/Account/AccountDetailModal';
 import { ClipLoader } from 'react-spinners';
-import { Account } from '../../../../types/Account';
+import { Account } from '../../../../../types/Account';
 
 type SortKey = string;
 

@@ -69,6 +69,7 @@ export async function approveInitialQuotation(
   data: { type: string; reason: string },
 ): Promise<void> {
   try {
+    console.log('data', data);
     const response = await requestWebRHCQS.put(
       `/quotation/initial/approve`,
       data,
