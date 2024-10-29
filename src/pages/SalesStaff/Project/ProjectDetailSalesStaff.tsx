@@ -249,76 +249,58 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-semibold mb-4 flex items-center"
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
-          {showInitialInfo ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
+          {projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 && (
+            showInitialInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
           )}
         </h3>
-        {showInitialInfo &&
-          (projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 ? (
-            <InitialInfoTable quoteData={projectDetail.InitialInfo} />
-          ) : (
-            <button
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200"
-              onClick={() => navigate(`/create-initial-quote/${id}`)}
-            >
-              Khởi tạo
-            </button>
-          ))}
+        {projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 && showInitialInfo && (
+          <InitialInfoTable quoteData={projectDetail.InitialInfo} />
+        )}
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-semibold mb-4 flex items-center"
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
-          {showDesignDrawing ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
+          {projectDetail.HouseDesignDrawingInfo && projectDetail.HouseDesignDrawingInfo.length > 0 && (
+            showDesignDrawing ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
           )}
         </h3>
-        {showDesignDrawing && (
-          <HouseDesignDrawingInfoTable
-            designData={projectDetail.HouseDesignDrawingInfo || []}
-          />
+        {projectDetail.HouseDesignDrawingInfo && projectDetail.HouseDesignDrawingInfo.length > 0 && showDesignDrawing && (
+          <HouseDesignDrawingInfoTable designData={projectDetail.HouseDesignDrawingInfo} />
         )}
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-semibold mb-4 flex items-center"
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
-          {showFinalInfo ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
+          {projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0 && (
+            showFinalInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
           )}
         </h3>
-        {showFinalInfo && (
-          <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo || []} />
+        {projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0 && showFinalInfo && (
+          <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo} />
         )}
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-semibold mb-4 flex items-center"
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
-          {showContract ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
+          {projectDetail.ContractInfo && projectDetail.ContractInfo.length > 0 && (
+            showContract ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
           )}
         </h3>
-        {showContract && (
-          <ContractTable contractData={projectDetail.ContractInfo || []} />
+        {projectDetail.ContractInfo && projectDetail.ContractInfo.length > 0 && showContract && (
+          <ContractTable contractData={projectDetail.ContractInfo} />
         )}
       </div>
     </>
