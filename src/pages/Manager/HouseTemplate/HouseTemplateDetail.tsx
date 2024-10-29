@@ -12,7 +12,7 @@ import {
 } from '@material-tailwind/react';
 import { Tab } from '@headlessui/react';
 import Zoom from 'react-medium-image-zoom';
-import 'react-medium-image-zoom/dist/styles.css';  
+import 'react-medium-image-zoom/dist/styles.css';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -87,6 +87,7 @@ const HouseTemplateDetail: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
+      <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
       {houseTemplate && (
         <>
           <div className="flex mb-6 justify-between"></div>
@@ -282,7 +283,7 @@ const HouseTemplateDetail: React.FC = () => {
           </div>
           <div className="mt-6">
             <Typography variant="h5" className="font-bold text-gray-800">
-              Danh sách gói nhà:
+              Danh sách gói xây dựng nhà:
             </Typography>
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
               {houseTemplate.PackageHouses.map((packageHouse) => (
