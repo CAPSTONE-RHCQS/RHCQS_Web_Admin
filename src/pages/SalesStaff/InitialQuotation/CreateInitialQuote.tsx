@@ -54,8 +54,8 @@ const CreateInitialQuote = () => {
     stt: index + 1,
     hangMuc: item.Name,
     dTich: item.Area.toString(),
-    heSo: item.SubCoefficient.toString(),
-    dienTich: (item.Area * item.SubCoefficient).toString(),
+    heSo: item.SubCoefficient ? item.SubCoefficient.toString() : '0',
+    dienTich: (item.Area * (item.SubCoefficient || 1)).toString(),
     donVi: item.UnitPrice,
   });
 
