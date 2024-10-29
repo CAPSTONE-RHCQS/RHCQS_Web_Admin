@@ -7,6 +7,7 @@ import {
 } from '../api/Blog/BlogApi';
 import { BlogItem } from '../types/BlogTypes';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const BlogList: React.FC = () => {
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
@@ -110,7 +111,11 @@ const BlogList: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={50} color={'#123abc'} loading={true} />
+      </div>
+    );
   }
 
   if (error) {

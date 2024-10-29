@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { fetchPackages } from '../../../api/Package/PackageApi';
 import { Package } from '../../../types/PackagesTypes';
 import { FaHammer, FaPaintBrush } from 'react-icons/fa';
+import ClipLoader from 'react-spinners/ClipLoader';
 
 const PackageList: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
@@ -51,7 +52,11 @@ const PackageList: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center text-lg font-semibold">Đang tải...</div>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <ClipLoader size={50} color={'#123abc'} loading={true} />
+      </div>
+    );
   }
 
   if (error) {
