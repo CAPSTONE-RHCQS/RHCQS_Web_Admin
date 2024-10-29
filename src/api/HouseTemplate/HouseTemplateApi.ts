@@ -11,7 +11,7 @@ export const fetchHouseTemplates = async (
 ): Promise<HouseTemplateResponse> => {
   try {
     const response: AxiosResponse<HouseTemplateResponse> =
-      await requestWebRHCQS.get('/housetemplate', {
+      await requestWebRHCQS.get('/house-templates-list', {
         params: {
           page,
           size,

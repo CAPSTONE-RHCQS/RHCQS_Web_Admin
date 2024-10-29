@@ -10,6 +10,8 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import * as pdfjsLib from 'pdfjs-dist';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
@@ -86,8 +88,11 @@ const HouseDesignDetail: React.FC = () => {
     try {
       const response = await createDesign(designData);
       console.log('Design submitted successfully:', response.data);
-    } catch (error) {
+      toast.success('Design submitted successfully!');
+    } catch (error: any) {
       console.error('Error submitting design:', error);
+      const errorMessage = error.response?.data?.Error || 'Error submitting design';
+      toast.error(errorMessage);
     }
   };
 
