@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
-import { ContractInfo } from '../../../../types/ProjectTypes';
+import { ContractInfo } from '../../../../../types/ProjectTypes';
 import { Link } from 'react-router-dom';
 
 interface ContractTableProps {

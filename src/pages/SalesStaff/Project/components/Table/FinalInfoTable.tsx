@@ -115,7 +115,7 @@ const FinalInfoTable: React.FC<FinalInfoTableProps> = ({
                 >
                   <div className="py-2">
                     <Link
-                      to={`/final-quotation-detail/${item.Id}`}
+                      to={`/final-quotation-detail-staff/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

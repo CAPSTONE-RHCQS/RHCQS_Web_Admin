@@ -35,6 +35,8 @@ import FinalQuotationDetailManager from './pages/Quote/DetailedQuotation/FinalQu
 import FinalQuotationDetailStaff from './pages/SalesStaff/FinalQuotation/FinalQuotationDetailStaff.tsx';
 import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
 import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
+import HouseDesignList from './pages/DesignStaff/HouseDesignDrawing/HouseDesignList.tsx';
+import HouseDesignDetail from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -268,6 +270,25 @@ function App() {
             <PrivateRoute allowedRoles={['DesignStaff']}>
               <PageTitle title="Edit Quote | RHCQS - Residential Housing Construction Quotation System" />
               <EditQuote />
+            </PrivateRoute>
+          }
+        />
+        // Design staff
+        <Route
+          path="/house-design-list"
+          element={
+            <PrivateRoute allowedRoles={['DesignStaff']}>
+              <PageTitle title="Design House List | RHCQS - Residential Housing Construction Quotation System" />
+              <HouseDesignList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/house-design-detail/:id"
+          element={
+            <PrivateRoute allowedRoles={['DesignStaff']}>
+              <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <HouseDesignDetail />
             </PrivateRoute>
           }
         />

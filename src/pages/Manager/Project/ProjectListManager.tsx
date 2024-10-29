@@ -32,7 +32,6 @@ type Email = {
   projectName: string;
   customerName: string;
   category: string;
-  // serviceType: string;
   date: string;
   status: string;
   isChecked: boolean;
@@ -166,7 +165,6 @@ const ProjectListManager = () => {
     { key: 'projectName', label: 'Tên Dự Án' },
     { key: 'customerName', label: 'Khách Hàng' },
     { key: 'category', label: 'Thể loại' },
-    // { key: 'serviceType', label: 'Dịch vụ' },
     { key: 'date', label: 'Ngày' },
     { key: 'status', label: 'Trạng thái' },
   ];

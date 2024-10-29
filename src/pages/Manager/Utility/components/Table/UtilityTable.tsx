@@ -38,7 +38,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {['Tên', 'Loại', 'Ngày tạo', 'Ngày cập nhật', 'Hành động'].map(
+              {['Tên', 'Loại', 'Ngày tạo', 'Ngày cập nhật', ''].map(
                 (header) => (
                   <th
                     key={header}

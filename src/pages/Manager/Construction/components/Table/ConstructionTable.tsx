@@ -81,16 +81,14 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo', 'Hành động'].map(
-                (header) => (
-                  <th
-                    key={header}
-                    className="py-4 px-4 font-medium text-black dark:text-white"
-                  >
-                    {header}
-                  </th>
-                ),
-              )}
+              {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo', ''].map((header) => (
+                <th
+                  key={header}
+                  className="py-4 px-4 font-medium text-black dark:text-white"
+                >
+                  {header}
+                </th>
+              ))}
             </tr>
           </thead>
           <tbody>

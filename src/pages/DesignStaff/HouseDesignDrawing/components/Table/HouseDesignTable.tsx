@@ -1,30 +1,38 @@
 import React, { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
-import EditPromotionModal from '../Modals/EditPromotionModal';
-import { PromotionItem } from '../../../../../types/PromotionTypes';
+import { PencilIcon, EyeIcon } from '@heroicons/react/24/solid';
+import { useNavigate } from 'react-router-dom';
+import { HouseDesign } from '../../../../../types/HouseDesignTypes';
+import { FaEye } from 'react-icons/fa';
 
-export interface PromotionTableProps {
-  data: PromotionItem[];
+export interface HouseDesignTableProps {
+  data: HouseDesign[];
   isLoading: boolean;
   onEditSuccess: () => void;
 }
 
-const PromotionTable: React.FC<PromotionTableProps> = ({
+const HouseDesignTable: React.FC<HouseDesignTableProps> = ({
   data,
   isLoading,
   onEditSuccess,
 }) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedPromotion, setSelectedPromotion] =
-    useState<PromotionItem | null>(null);
+  const [selectedDesign, setSelectedDesign] = useState<HouseDesign | null>(
+    null,
+  );
+  const navigate = useNavigate();
 
   const openEditModal = (id: string) => {
-    const promotion = data.find((item) => item.Id === id);
-    if (promotion) {
-      setSelectedPromotion(promotion);
+    const design = data.find((item) => item.Id === id);
+    if (design) {
+      setSelectedDesign(design);
       setEditModalOpen(true);
     }
+  };
+
+  const viewDetails = (id: string) => {
+    navigate(`/house-design-detail/${id}`);
+    onEditSuccess();
   };
 
   return (
@@ -37,23 +45,16 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {[
-                'Tên',
-                'Mã',
-                'Giá trị',
-                'Ngày tạo',
-                'Bắt đầu',
-                'Kết thúc',
-                'Đang chạy',
-                '',
-              ].map((header) => (
-                <th
-                  key={header}
-                  className="py-4 px-4 font-medium text-black dark:text-white"
-                >
-                  {header}
-                </th>
-              ))}
+              {['Tên', 'Bước', 'Trạng thái', 'Loại', 'Ngày tạo', ''].map(
+                (header) => (
+                  <th
+                    key={header}
+                    className="py-4 px-4 font-medium text-black dark:text-white"
+                  >
+                    {header}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody>
@@ -63,47 +64,47 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
                   {item.Name}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.Code || 'N/A'}
+                  {item.Step}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.Value.toLocaleString()} VND
+                  {item.Status}
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  {item.Type}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   {new Date(item.InsDate).toLocaleDateString()}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {new Date(item.StartTime).toLocaleDateString()}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {new Date(item.ExpTime).toLocaleDateString()}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.IsRunning ? 'Có' : 'Không'}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <PencilIcon
+                  {/* <PencilIcon
                     className="w-4 h-4 text-blue-500 cursor-pointer"
                     onClick={() => openEditModal(item.Id)}
-                  />
+                  /> */}
+                  <button
+                    onClick={() => viewDetails(item.Id)}
+                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
+                  >
+                    <FaEye className="text-xl" />
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-      {editModalOpen && selectedPromotion && (
-        <EditPromotionModal
+      {/* {editModalOpen && selectedDesign && (
+        <EditHouseDesignModal
           isOpen={editModalOpen}
           onClose={() => setEditModalOpen(false)}
           onEditSuccess={() => {
             setEditModalOpen(false);
             onEditSuccess();
           }}
-          promotion={selectedPromotion}
+          design={selectedDesign}
         />
-      )}
+      )} */}
     </>
   );
 };
 
-export default PromotionTable;
+export default HouseDesignTable;
