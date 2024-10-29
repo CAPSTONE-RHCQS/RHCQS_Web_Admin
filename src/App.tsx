@@ -37,6 +37,8 @@ import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
 import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
 import HouseDesignList from './pages/DesignStaff/HouseDesignDrawing/HouseDesignList.tsx';
 import HouseDesignDetail from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetail.tsx';
+import HouseTemplateList from './pages/Manager/HouseTemplate/HouseTemplateList.tsx';
+import HouseTemplateDetail from './pages/Manager/HouseTemplate/HouseTemplateDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -89,6 +91,24 @@ function App() {
             <PrivateRoute allowedRoles={['Manager']}>
               <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
               <PackageList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/house-templates"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="House Templates | RHCQS - Residential Housing Construction Quotation System" />
+              <HouseTemplateList />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/house-template/:id"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="House Template Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <HouseTemplateDetail />
             </PrivateRoute>
           }
         />

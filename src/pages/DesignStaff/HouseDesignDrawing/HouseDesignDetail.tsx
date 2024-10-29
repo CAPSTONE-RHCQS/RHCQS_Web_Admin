@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
-import { uploadFile } from '../../../api/UploadApi';
+import { uploadFile } from '../../../api/Upload/UploadApi';
 import { createDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
 import { CreateDesignRequest } from '../../../types/HouseDesignVersionTypes';
@@ -11,7 +11,6 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import * as pdfjsLib from 'pdfjs-dist';
 
-// Đặt đường dẫn đến pdf.worker.js
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 interface HouseDesignDetailProps {
