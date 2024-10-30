@@ -12,7 +12,7 @@ const DropdownUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('alertMessage');
     localStorage.removeItem('alertType');
-    navigate('/');
+    navigate('/auth/signin');
   };
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">

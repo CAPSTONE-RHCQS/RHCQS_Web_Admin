@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { uploadFile } from '../../../api/Upload/UploadApi';
@@ -56,26 +56,26 @@ const HouseDesignDetailStaff: React.FC = () => {
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  useEffect(() => {
-    const fetchDesignDetail = async () => {
-      if (!id) {
-        console.error('ID is undefined');
-        setLoading(false);
-        return;
-      }
+  const fetchDesignDetail = useCallback(async () => {
+    if (!id) {
+      console.error('ID is undefined');
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const response = await getHouseDesignById(id);
-        setDesignDetail(response.data);
-      } catch (error) {
-        console.error('Error fetching design detail:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDesignDetail();
+    try {
+      const response = await getHouseDesignById(id);
+      setDesignDetail(response.data);
+    } catch (error) {
+      console.error('Error fetching design detail:', error);
+    } finally {
+      setLoading(false);
+    }
   }, [id]);
+
+  useEffect(() => {
+    fetchDesignDetail();
+  }, [fetchDesignDetail]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -108,6 +108,7 @@ const HouseDesignDetailStaff: React.FC = () => {
       const response = await createDesign(designData);
       console.log('Design submitted successfully:', response.data);
       toast.success('Design submitted successfully!');
+      fetchDesignDetail();
     } catch (error: any) {
       console.error('Error submitting design:', error);
       const errorMessage =
