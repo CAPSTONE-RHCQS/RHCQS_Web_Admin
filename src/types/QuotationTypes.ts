@@ -18,12 +18,24 @@ export interface EquipmentItem {
   Note: string | null;
 }
 
-export interface FinalQuotationItem {
+export interface QuotationMaterial {
+  Id: string;
+  MaterialName: string;
+  Unit: string;
+  MaterialPrice: number;
+}
+
+export interface QuotationLabor {
+  Id: string;
+  LaborName: string;
+  LaborPrice: number;
+}
+
+export interface QuotationItem {
   Id: string;
   Name: string;
-  Type: string;
   Unit: string;
-  Weight: string;
+  Weight: number;
   UnitPriceLabor: number | null;
   UnitPriceRough: number | null;
   UnitPriceFinished: number | null;
@@ -31,6 +43,19 @@ export interface FinalQuotationItem {
   TotalPriceRough: number | null;
   TotalPriceFinished: number | null;
   InsDate: string | null;
+  UpsDate: string | null;
+  Note: string | null;
+  QuotationLabors: QuotationLabor[];
+  QuotationMaterials: QuotationMaterial[];
+}
+
+export interface FinalQuotationItem {
+  Id: string;
+  ContructionName: string;
+  Type: string;
+  Coefficient: number;
+  InsDate: string | null;
+  QuotationItems: QuotationItem[];
 }
 
 export interface PromotionInfo {

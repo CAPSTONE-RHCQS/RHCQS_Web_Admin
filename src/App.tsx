@@ -239,15 +239,15 @@ function App() {
             </PrivateRoute>
           }
         />
-        {/* <Route
-          path="/final-quotation-detail/:id"
+        <Route
+          path="/final-quotation-detail-manager/:id"
           element={
             <PrivateRoute allowedRoles={['SalesStaff']}>
               <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <FinalQuotationDetail />
+              <FinalQuotationDetailManager />
             </PrivateRoute>
           }
-        /> */}
+        />
         <Route
           path="/Create-Quote"
           element={

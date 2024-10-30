@@ -2,14 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchHouseTemplateDetail } from '../../../api/HouseTemplate/HouseTemplateApi';
 import { HouseTemplateDetail as HouseTemplateDetailType } from '../../../types/HouseTemplateTypes';
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Typography,
-  Spinner,
-  Alert,
-} from '@material-tailwind/react';
+import { Typography, Alert } from '@material-tailwind/react';
 import { Tab } from '@headlessui/react';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
@@ -21,6 +14,8 @@ import {
   faChevronLeft,
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
+import PackageHouseList from './components/PackageHouseList';
+import ExteriorImageList from './components/ExteriorImageList';
 
 const HouseTemplateDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -91,8 +86,8 @@ const HouseTemplateDetail: React.FC = () => {
       {houseTemplate && (
         <>
           <div className="flex mb-6 justify-between"></div>
-          <div className="flex">
-            <div className="w-1/2">
+          <div className="flex flex-col md:flex-row">
+            <div className="w-full md:w-1/2">
               <Zoom>
                 <div className="relative">
                   <div className="mt-4 mb-4 text-center flex justify-center space-x-4">
@@ -151,20 +146,20 @@ const HouseTemplateDetail: React.FC = () => {
                 </div>
               </Zoom>
             </div>
-            <div className="w-1/2 pl-4">
+            <div className="w-full md:w-1/2 pl-4">
               <Tab.Group
                 selectedIndex={selectedTabIndex}
                 onChange={setSelectedTabIndex}
               >
-                <div className="flex">
-                  <div className="w-1/2">
+                <div className="flex flex-col md:flex-row">
+                  <div className="w-full md:w-1/2">
                     <img
                       src={houseTemplate.ImgUrl}
                       alt={houseTemplate.Name}
                       className="w-full h-full object-cover rounded-lg shadow-md"
                     />
                   </div>
-                  <div className="w-1/2 pl-6">
+                  <div className="w-full md:w-1/2 pl-6">
                     <div className="flex flex-col">
                       <Typography
                         variant="h4"
@@ -187,7 +182,7 @@ const HouseTemplateDetail: React.FC = () => {
                       </Typography>
                     </div>
                   </div>
-                  <div className="w-1/2 pl-6">
+                  <div className="w-full md:w-1/2 pl-6">
                     <Tab.List className="flex flex-col space-y-2 mt-4">
                       {houseTemplate.SubTemplates.map((subTemplate, index) => (
                         <Tab
@@ -246,7 +241,7 @@ const HouseTemplateDetail: React.FC = () => {
               </Tab.Group>
             </div>
           </div>
-          <div className="flex space-x-2 mt-2">
+          <div className="flex flex-wrap space-x-2 mt-2">
             <button
               onClick={() => setSelectedDrawingIndex(-1)}
               className={`w-16 h-16 border-2 rounded-lg overflow-hidden transition-colors duration-300 ${
@@ -281,53 +276,8 @@ const HouseTemplateDetail: React.FC = () => {
               ),
             )}
           </div>
-          <div className="mt-6">
-            <Typography variant="h5" className="font-bold text-gray-800">
-              Danh sách gói xây dựng nhà:
-            </Typography>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-              {houseTemplate.PackageHouses.map((packageHouse) => (
-                <div
-                  key={packageHouse.Id}
-                  className="border p-4 rounded-lg shadow-md"
-                >
-                  <img
-                    src={packageHouse.ImgUrl || 'default-image-url.jpg'}
-                    alt={packageHouse.PackageName}
-                    className="w-full h-32 object-cover rounded-md mb-2"
-                  />
-                  <Typography variant="h6" className="font-bold text-gray-800">
-                    {packageHouse.PackageName}
-                  </Typography>
-                  <Typography className="text-gray-600">
-                    {packageHouse.Description}
-                  </Typography>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="mt-6">
-            <Typography variant="h5" className="font-bold text-gray-800">
-              Danh sách hình ảnh ngoại thất:
-            </Typography>
-            <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-              {houseTemplate.ExteriorsUrls.map((exterior) => (
-                <div
-                  key={exterior.Id}
-                  className="border p-4 rounded-lg shadow-md"
-                >
-                  <img
-                    src={exterior.Url}
-                    alt={exterior.Name}
-                    className="w-full h-32 object-cover rounded-md mb-2"
-                  />
-                  <Typography variant="h6" className="font-bold text-gray-800">
-                    {exterior.Name}
-                  </Typography>
-                </div>
-              ))}
-            </div>
-          </div>
+          <PackageHouseList packageHouses={houseTemplate.PackageHouses} />
+          <ExteriorImageList exteriors={houseTemplate.ExteriorsUrls} />
         </>
       )}
     </div>

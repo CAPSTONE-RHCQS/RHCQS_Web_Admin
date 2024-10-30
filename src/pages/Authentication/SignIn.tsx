@@ -27,9 +27,7 @@ const SignIn: React.FC = () => {
     setIsSubmitting(true);
     try {
       const data = await postLogin(email, password);
-      console.log('Login successful:', data);
       const decodedToken = jwtDecode<JwtPayload>(data.Token);
-      console.log('Decoded Token:', decodedToken);
       const userData = {
         role: decodedToken[
           'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'

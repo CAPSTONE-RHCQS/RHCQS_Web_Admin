@@ -32,7 +32,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ items }) => {
                 {item.TotalOfMaterial.toLocaleString()} VNĐ
               </td>
               <td className="px-4 py-2 border text-center">
-                {item.Note || 'N/A'}
+                {item.Note || 'null'}
               </td>
             </tr>
           ))}
