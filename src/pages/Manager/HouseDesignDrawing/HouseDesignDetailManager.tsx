@@ -7,8 +7,27 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { FiMoreVertical } from 'react-icons/fi';
+import {
+  FiMoreVertical,
+  FiFileText,
+  FiPenTool,
+  FiLayers,
+  FiType,
+  FiCalendar,
+} from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
+import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
+
+interface VersionProps {
+  Id: string;
+  Name: string;
+  Version: number;
+  FileUrl: string;
+  InsDate: string;
+  PreviousDrawingId: string | null;
+  NamePrevious: string | null;
+  Note: string;
+}
 
 interface HouseDesignDetailProps {
   Id: string;
@@ -19,7 +38,7 @@ interface HouseDesignDetailProps {
   Type: string;
   IsCompany: boolean;
   InsDate: string;
-  Versions: any[];
+  Versions: VersionProps[];
 }
 
 const HouseDesignDetailManager: React.FC = () => {
@@ -31,25 +50,28 @@ const HouseDesignDetailManager: React.FC = () => {
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [approvalType, setApprovalType] = useState<string>('Approved');
   const [reason, setReason] = useState<string>('');
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+    null,
+  );
+
+  const fetchDesignDetail = async () => {
+    if (!id) {
+      console.error('ID is undefined');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await getHouseDesignById(id);
+      setDesignDetail(response.data);
+    } catch (error) {
+      console.error('Error fetching design detail:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDesignDetail = async () => {
-      if (!id) {
-        console.error('ID is undefined');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await getHouseDesignById(id);
-        setDesignDetail(response.data);
-      } catch (error) {
-        console.error('Error fetching design detail:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchDesignDetail();
   }, [id]);
 
@@ -57,16 +79,19 @@ const HouseDesignDetailManager: React.FC = () => {
   const hideMenu = () => setMenuVisible(false);
 
   const handleApproveDesign = async () => {
-    if (!designDetail) return;
+    if (!selectedVersionId) return;
 
     try {
-      await approveDesign(designDetail.Id, {
+      await approveDesign(selectedVersionId, {
         type: approvalType,
         reason,
       });
       toast.success('Design approved successfully!');
       setModalVisible(false);
-    } catch (error) {}
+      fetchDesignDetail();
+    } catch (error) {
+      console.error('Error approving design:', error);
+    }
   };
 
   if (loading) {
@@ -78,14 +103,16 @@ const HouseDesignDetailManager: React.FC = () => {
   }
 
   if (!designDetail) {
-    return <div>Không tìm thấy chi tiết công việc.</div>;
+    return <div>Không tìm thấy chi tiết bản vẽ thiết kế.</div>;
   }
 
   return (
     <>
-      <div className="p-4 max-w-2xl mx-auto">
+      <div className="p-4  mx-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-3xl font-bold text-center">Chi tiết công việc</h2>
+          <h2 className="text-3xl font-bold text-center">
+            Chi tiết bản vẽ thiết kế
+          </h2>
           <div
             onMouseEnter={showMenu}
             onMouseLeave={hideMenu}
@@ -114,27 +141,100 @@ const HouseDesignDetailManager: React.FC = () => {
             )}
           </div>
         </div>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="grid grid-cols-2 gap-4">
-            <p>
-              <strong>ID:</strong> {designDetail.Id}
-            </p>
-            <p>
-              <strong>Tên:</strong> {designDetail.Name}
-            </p>
-            <p>
-              <strong>Bước:</strong> {designDetail.Step}
-            </p>
-            <p>
-              <strong>Trạng thái:</strong> {designDetail.Status}
-            </p>
-            <p>
-              <strong>Loại:</strong> {designDetail.Type}
-            </p>
-            <p>
-              <strong>Ngày tạo:</strong>{' '}
-              {new Date(designDetail.InsDate).toLocaleDateString()}
-            </p>
+        <WorkDetailStatusTracker currentStatus={designDetail.Status} />
+        <div className="flex items-start">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 flex-none">
+            <div className="grid grid-cols-2 gap-4">
+              <p className="flex items-center">
+                <FiPenTool className="mr-2" />
+                {designDetail.Name}
+              </p>
+              <p className="flex items-center">
+                <FiLayers className="mr-2" />
+                <strong className="mr-2">Bước:</strong> {designDetail.Step}
+              </p>
+              <p className="flex items-center">
+                <FiType className="mr-2" />
+                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+              </p>
+              {/* <p className="flex items-center">
+                <FiBriefcase className="mr-2" />
+                <strong className="mr-2">Is Company:</strong>{' '}
+                {designDetail.IsCompany ? 'Yes' : 'No'}
+              </p> */}
+              <p className="flex items-center">
+                <FiCalendar className="mr-2" />
+                <strong className="mr-2">Ngày tạo:</strong>{' '}
+                {new Date(designDetail.InsDate).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
+            <h3 className="text-xl font-bold">Versions</h3>
+            <table className="w-full table-auto mt-4">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Chọn
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    STT
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tên
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Ngày tạo
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Ghi chú
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {designDetail.Versions.map((version, index) => (
+                  <tr
+                    key={version.Id}
+                    onClick={() => setSelectedVersionId(version.Id)}
+                    className={`cursor-pointer ${
+                      selectedVersionId === version.Id
+                        ? 'bg-primary text-white'
+                        : ''
+                    }`}
+                  >
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {index + 1}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Name}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Version}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {new Date(version.InsDate).toLocaleDateString()}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Note || 'N/A'}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <a
+                        href={version.FileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" hover:underline"
+                      >
+                        <FiFileText className="inline-block" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

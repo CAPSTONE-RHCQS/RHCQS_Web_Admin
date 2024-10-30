@@ -12,8 +12,27 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import * as pdfjsLib from 'pdfjs-dist';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
+import {
+  FiCalendar,
+  FiFileText,
+  FiLayers,
+  FiPenTool,
+  FiType,
+} from 'react-icons/fi';
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
+
+interface VersionProps {
+  Id: string;
+  Name: string;
+  Version: number;
+  FileUrl: string;
+  InsDate: string;
+  PreviousDrawingId: string | null;
+  NamePrevious: string | null;
+  Note: string;
+}
 
 interface HouseDesignDetailProps {
   Id: string;
@@ -24,7 +43,7 @@ interface HouseDesignDetailProps {
   Type: string;
   IsCompany: boolean;
   InsDate: string;
-  Versions: any[];
+  Versions: VersionProps[];
 }
 
 const HouseDesignDetailStaff: React.FC = () => {
@@ -91,7 +110,8 @@ const HouseDesignDetailStaff: React.FC = () => {
       toast.success('Design submitted successfully!');
     } catch (error: any) {
       console.error('Error submitting design:', error);
-      const errorMessage = error.response?.data?.Error || 'Error submitting design';
+      const errorMessage =
+        error.response?.data?.Error || 'Error submitting design';
       toast.error(errorMessage);
     }
   };
@@ -110,33 +130,96 @@ const HouseDesignDetailStaff: React.FC = () => {
 
   return (
     <>
-      <div className="p-4 max-w-2xl mx-auto">
+      <div className="p-4 mx-auto">
         <h2 className="text-3xl font-bold mb-6 text-center">
           Chi tiết công việc
         </h2>
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <div className="grid grid-cols-2 gap-4">
-            <p>
-              <strong>ID:</strong> {designDetail.Id}
-            </p>
-            <p>
-              <strong>Tên:</strong> {designDetail.Name}
-            </p>
-            <p>
-              <strong>Bước:</strong> {designDetail.Step}
-            </p>
-            <p>
-              <strong>Trạng thái:</strong> {designDetail.Status}
-            </p>
-            <p>
-              <strong>Loại:</strong> {designDetail.Type}
-            </p>
-            <p>
-              <strong>Ngày tạo:</strong>{' '}
-              {new Date(designDetail.InsDate).toLocaleDateString()}
-            </p>
+        <WorkDetailStatusTracker currentStatus={designDetail.Status} />
+        <div className="flex items-start">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 flex-none">
+            <div className="grid grid-cols-2 gap-4">
+              <p className="flex items-center">
+                <FiPenTool className="mr-2" />
+                {designDetail.Name}
+              </p>
+              <p className="flex items-center">
+                <FiLayers className="mr-2" />
+                <strong className="mr-2">Bước:</strong> {designDetail.Step}
+              </p>
+              <p className="flex items-center">
+                <FiType className="mr-2" />
+                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+              </p>
+              {/* <p className="flex items-center">
+                <FiBriefcase className="mr-2" />
+                <strong className="mr-2">Is Company:</strong>{' '}
+                {designDetail.IsCompany ? 'Yes' : 'No'}
+              </p> */}
+              <p className="flex items-center">
+                <FiCalendar className="mr-2" />
+                <strong className="mr-2">Ngày tạo:</strong>{' '}
+                {new Date(designDetail.InsDate).toLocaleDateString()}
+              </p>
+            </div>
+          </div>
+          <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
+            <h3 className="text-xl font-bold">Versions</h3>
+            <table className="w-full table-auto mt-4">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    STT
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tên
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Ngày tạo
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Ghi chú
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {designDetail.Versions.map((version, index) => (
+                  <tr key={version.Id}>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {index + 1}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Name}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Version}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {new Date(version.InsDate).toLocaleDateString()}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Note || 'N/A'}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <a
+                        href={version.FileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" hover:underline"
+                      >
+                        <FiFileText className="inline-block" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
+
         <div className="mt-6 flex flex-col items-center">
           <div className="w-full max-w-md">
             <label className="block text-sm font-medium text-gray-700 mb-2">

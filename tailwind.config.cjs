@@ -55,6 +55,7 @@ module.exports = withMT({
         primaryGreenButton: '#5badae',
         secondaryGreenButton: '#53a0a2',
         secondaryGreen: '#1F7F81',
+        thirdGreen: '#5BABAC',
         customRed: '#FF0000',
         customGray: '#D1D5DB',
       },
