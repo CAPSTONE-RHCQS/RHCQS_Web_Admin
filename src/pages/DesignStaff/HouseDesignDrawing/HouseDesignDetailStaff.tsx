@@ -27,7 +27,7 @@ interface HouseDesignDetailProps {
   Versions: any[];
 }
 
-const HouseDesignDetail: React.FC = () => {
+const HouseDesignDetailStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
     useState<HouseDesignDetailProps | null>(null);
@@ -201,4 +201,4 @@ const HouseDesignDetail: React.FC = () => {
   );
 };
 
-export default HouseDesignDetail;
+export default HouseDesignDetailStaff;

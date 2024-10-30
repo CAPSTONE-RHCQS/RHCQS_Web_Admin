@@ -10,12 +10,10 @@ import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import { formatCurrencyShort } from '../../../utils/format';
 import {
   getInitialQuotation,
-  updateInitialQuotation,
   approveInitialQuotation,
 } from '../../../api/Project/InitialQuotationApi';
 import {
   InitialQuotationResponse,
-  UpdateInitialQuotationRequest,
 } from '../../../types/InitialQuotationTypes';
 
 interface TableRow {

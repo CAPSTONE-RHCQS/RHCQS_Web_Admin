@@ -36,9 +36,10 @@ import FinalQuotationDetailStaff from './pages/SalesStaff/FinalQuotation/FinalQu
 import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
 import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
 import HouseDesignList from './pages/DesignStaff/HouseDesignDrawing/HouseDesignList.tsx';
-import HouseDesignDetail from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetail.tsx';
 import HouseTemplateList from './pages/Manager/HouseTemplate/HouseTemplateList.tsx';
 import HouseTemplateDetail from './pages/Manager/HouseTemplate/HouseTemplateDetail.tsx';
+import HouseDesignDetailStaff from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetailStaff.tsx';
+import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDesignDetailManager.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -175,6 +176,15 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/house-design-detail-manager/:id"
+          element={
+            <PrivateRoute allowedRoles={['Manager']}>
+              <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+              <HouseDesignDetailManager />
+            </PrivateRoute>
+          }
+        />
         // Sale Staff
         <Route
           path="/project-list-staff"
@@ -304,11 +314,11 @@ function App() {
           }
         />
         <Route
-          path="/house-design-detail/:id"
+          path="/house-design-detail-staff/:id"
           element={
             <PrivateRoute allowedRoles={['DesignStaff']}>
               <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-              <HouseDesignDetail />
+              <HouseDesignDetailStaff />
             </PrivateRoute>
           }
         />

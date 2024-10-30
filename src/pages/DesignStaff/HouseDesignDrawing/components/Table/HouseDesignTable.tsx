@@ -16,22 +16,10 @@ const HouseDesignTable: React.FC<HouseDesignTableProps> = ({
   isLoading,
   onEditSuccess,
 }) => {
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [selectedDesign, setSelectedDesign] = useState<HouseDesign | null>(
-    null,
-  );
   const navigate = useNavigate();
 
-  const openEditModal = (id: string) => {
-    const design = data.find((item) => item.Id === id);
-    if (design) {
-      setSelectedDesign(design);
-      setEditModalOpen(true);
-    }
-  };
-
   const viewDetails = (id: string) => {
-    navigate(`/house-design-detail/${id}`);
+    navigate(`/house-design-detail-staff/${id}`);
     onEditSuccess();
   };
 

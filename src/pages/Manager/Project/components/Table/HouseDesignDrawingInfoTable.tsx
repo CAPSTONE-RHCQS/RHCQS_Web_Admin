@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { FaEye } from 'react-icons/fa';
 
 interface HouseDesignDrawingInfoTableProps {
   designData: {
@@ -44,6 +46,12 @@ const getStatusLabel = (status: string | null) => {
 const HouseDesignDrawingInfoTable: React.FC<
   HouseDesignDrawingInfoTableProps
 > = ({ designData }) => {
+  const navigate = useNavigate();
+
+  const handleViewDetails = (id: string) => {
+    navigate(`/house-design-detail-manager/${id}`);
+  };
+
   return (
     <>
       <table className="w-full table-auto">
@@ -83,6 +91,14 @@ const HouseDesignDrawingInfoTable: React.FC<
                 >
                   {getStatusLabel(item.Status)}
                 </span>
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                <button
+                  onClick={() => handleViewDetails(item.Id)}
+                  className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
+                >
+                  <FaEye className="text-xl" />
+                </button>
               </td>
             </tr>
           ))}

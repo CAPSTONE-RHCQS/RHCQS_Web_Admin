@@ -69,7 +69,6 @@ export async function approveInitialQuotation(
   data: { type: string; reason: string },
 ): Promise<void> {
   try {
-    console.log('data', data);
     const response = await requestWebRHCQS.put(
       `/quotation/initial/approve`,
       data,
@@ -81,7 +80,6 @@ export async function approveInitialQuotation(
         },
       },
     );
-    console.log('Approval successful:', response.data);
   } catch (error: any) {
     console.error(
       `Error approving initial quotation for ID ${initialId}:`,
