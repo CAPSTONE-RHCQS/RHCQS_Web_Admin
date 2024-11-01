@@ -31,7 +31,7 @@ import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstr
 import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
-import FinalQuotationDetailManager from './pages/Quote/DetailedQuotation/FinalQuotationDetailManager.tsx';
+import FinalQuotationDetailManager from './pages/Manager/FinalQuotation/FinalQuotationDetailManager.tsx';
 import FinalQuotationDetailStaff from './pages/SalesStaff/FinalQuotation/FinalQuotationDetailStaff.tsx';
 import PromotionList from './pages/Manager/Promotions/PromotionList.tsx';
 import UtilityList from './pages/Manager/Utility/UtilityList.tsx';

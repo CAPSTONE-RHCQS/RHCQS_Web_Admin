@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { getFinalQuotation } from '../../../api/Project/FinalQuotationApi';
 import { FinalQuotationDetail as FinalQuotationDetailType } from '../../../types/QuotationTypes';
-import BatchPaymentTable from './Table/BatchPaymentTable';
-import EquipmentTable from './Table/EquipmentTable';
-import FinalQuotationTable from './Table/FinalQuotationTable';
+import BatchPaymentTable from '../../Quote/DetailedQuotation/Table/BatchPaymentTable';
+import EquipmentTable from '../../Quote/DetailedQuotation/Table/EquipmentTable';
+import FinalQuotationTable from '../../Quote/DetailedQuotation/Table/FinalQuotationTable';
 import FinalQuotationStatus from '../../../components/StatusTracker/FinalQuotationStatus';
 import {
   FaUser,
@@ -130,10 +130,16 @@ const FinalQuotationDetailManager = () => {
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
           1. Các đợt thanh toán:
-          {showBatchPayments ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showBatchPayments ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showBatchPayments && <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />}
-        
+        {showBatchPayments && (
+          <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />
+        )}
+
         <hr className="my-4 border-gray-300" />
 
         <h3
@@ -141,10 +147,16 @@ const FinalQuotationDetailManager = () => {
           onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
         >
           2. Chi Phí Thiết bị:
-          {showEquipmentCosts ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showEquipmentCosts ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showEquipmentCosts && <EquipmentTable items={quotationDetail.EquipmentItems} />}
-        
+        {showEquipmentCosts && (
+          <EquipmentTable items={quotationDetail.EquipmentItems} />
+        )}
+
         <hr className="my-4 border-gray-300" />
 
         <h3
@@ -152,9 +164,15 @@ const FinalQuotationDetailManager = () => {
           onClick={() => setShowDetailedItems(!showDetailedItems)}
         >
           3. Các hạng mục báo giá chi tiết:
-          {showDetailedItems ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />}
+          {showDetailedItems ? (
+            <FaChevronUp className="ml-2" />
+          ) : (
+            <FaChevronDown className="ml-2" />
+          )}
         </h3>
-        {showDetailedItems && <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />}
+        {showDetailedItems && (
+          <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+        )}
       </div>
     </div>
   );

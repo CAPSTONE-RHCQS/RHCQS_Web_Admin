@@ -27,6 +27,7 @@ const CreateInitialQuote = () => {
     },
   ]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -112,6 +113,8 @@ const CreateInitialQuote = () => {
   const handleCreateInitialQuote = async () => {
     if (!quotationData) return;
 
+    setIsButtonDisabled(true);
+
     const requestData: UpdateInitialQuotationRequest = {
       versionPresent: 0,
       projectId: quotationData.ProjectId,
@@ -151,6 +154,7 @@ const CreateInitialQuote = () => {
     } catch (error) {
       console.error('Failed to create initial quotation:', error);
       toast.error('Khởi tạo báo giá sơ bộ thất bại!');
+      setIsButtonDisabled(false);
     }
   };
 
@@ -423,7 +427,8 @@ const CreateInitialQuote = () => {
         <button
           type="button"
           onClick={handleCreateInitialQuote}
-          className="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors duration-200 shadow-md"
+          className="bg-primaryGreenButton text-white px-6 py-3 rounded-lg hover:bg-secondaryGreenButton transition-colors duration-200 shadow-md"
+          disabled={isButtonDisabled}
         >
           Khởi tạo báo giá sơ bộ
         </button>
