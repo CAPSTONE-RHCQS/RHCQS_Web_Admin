@@ -46,7 +46,7 @@ const FinalQuotationDetailManager = () => {
   if (!quotationDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={50} color={'#123abc'} loading={true} />
+        <ClipLoader size={50} color={'#5BABAC'} loading={true} />
       </div>
     );
   }

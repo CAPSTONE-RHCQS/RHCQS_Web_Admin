@@ -75,7 +75,7 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
     <>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
+          <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center h-64 text-gray-500">
@@ -124,7 +124,9 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                         </span>
                       </span>
                     ) : column.key === 'projectId' ? (
-                      <strong style={{ color: '#FF5733' }}>{item[column.key]}</strong>
+                      <strong style={{ color: '#FF5733' }}>
+                        {item[column.key]}
+                      </strong>
                     ) : (
                       item[column.key]
                     )}

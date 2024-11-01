@@ -40,7 +40,7 @@ const HouseTemplateList: React.FC = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader color="#123abc" />
+        <ClipLoader color="#5BABAC" />
       </div>
     );
   if (error) return <div className="text-center text-red-500">{error}</div>;
@@ -50,8 +50,14 @@ const HouseTemplateList: React.FC = () => {
       <h1 className="text-2xl font-bold mb-4">Danh sách mẫu nhà</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {houseTemplates.map((template) => (
-          <Card key={template.Id} className="shadow-lg rounded-lg overflow-hidden">
-            <div onClick={() => handleTemplateClick(template.Id)} className="cursor-pointer">
+          <Card
+            key={template.Id}
+            className="shadow-lg rounded-lg overflow-hidden"
+          >
+            <div
+              onClick={() => handleTemplateClick(template.Id)}
+              className="cursor-pointer"
+            >
               <img
                 src={template.ImgUrl}
                 alt={template.Name}
@@ -66,7 +72,10 @@ const HouseTemplateList: React.FC = () => {
                 {template.Description}
               </Typography>
             </CardBody>
-            <CardFooter divider className="flex items-center justify-between py-2">
+            <CardFooter
+              divider
+              className="flex items-center justify-between py-2"
+            >
               <div className="flex items-center">
                 <IconButton variant="text" size="sm">
                   <FaBuilding style={{ color: '#008080' }} />
@@ -79,9 +88,7 @@ const HouseTemplateList: React.FC = () => {
                 <IconButton variant="text" size="sm">
                   <FaBed style={{ color: '#008080' }} />
                 </IconButton>
-                <Typography className="ml-2">
-                  {template.NumberOfBed}
-                </Typography>
+                <Typography className="ml-2">{template.NumberOfBed}</Typography>
               </div>
             </CardFooter>
           </Card>

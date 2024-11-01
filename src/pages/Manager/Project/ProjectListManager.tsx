@@ -264,7 +264,7 @@ const ProjectListManager = () => {
           <div className="max-w-full overflow-x-auto">
             {loading ? (
               <div className="flex justify-center items-center h-64">
-                <ClipLoader size={50} color={'#123abc'} loading={loading} />
+                <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
               </div>
             ) : filteredProjects.length > 0 ? (
               <ProjectTableManager

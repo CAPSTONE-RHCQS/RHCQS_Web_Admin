@@ -90,7 +90,7 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
     <>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
+          <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
         <table className="w-full table-auto">
@@ -147,7 +147,9 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                         </span>
                       </span>
                     ) : column.key === 'projectId' ? (
-                      <strong style={{ color: '#FF5733' }}>{item[column.key]}</strong>
+                      <strong style={{ color: '#FF5733' }}>
+                        {item[column.key]}
+                      </strong>
                     ) : (
                       item[column.key]
                     )}
