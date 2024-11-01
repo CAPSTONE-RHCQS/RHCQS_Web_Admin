@@ -7,11 +7,10 @@ import {
   FaHourglassHalf,
   FaBan,
   FaEye,
-  FaExclamationCircle,
+  FaBoxOpen,
 } from 'react-icons/fa';
-import RejectionModal from '../../../../components/Modals/RejectionModal';
-import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
-import SortIcon from '../../../../components/Buttonicons/SortIcon';
+import RejectionModal from '../../../../../components/Modals/RejectionModal';
+import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
 type DataItem = {
@@ -23,11 +22,7 @@ type SortKey = string;
 interface ProjectTableSalesStaffProps {
   data: DataItem[];
   columns: { key: string; label: string }[];
-  isAllChecked: boolean;
-  handleSelectAll: () => void;
-  handleCheckboxChange: (index: number) => void;
   handleSort: (key: SortKey) => void;
-  handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   isLoading: boolean;
   error: string | null;
@@ -58,15 +53,12 @@ const statusTranslationMap: { [key: string]: string } = {
   Reviewing: 'Chờ xác nhận',
   'Signed Contract': 'Đã ký hợp đồng',
   Finalized: 'Hoàn thành',
-  Ended: 'Kết thúc',
+  Ended: 'Đã chấm dứt',
 };
 
 const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
   data,
   columns,
-  isAllChecked,
-  handleSelectAll,
-  handleCheckboxChange,
   handleSort,
   handleViewDetails,
   isLoading,
@@ -87,20 +79,13 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
         </div>
       ) : error ? (
         <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-          <FaExclamationCircle className="text-3xl mb-2" /> {/* Icon rỗng */}
+          <FaBoxOpen className="mx-auto mb-4 text-4xl text-primary" />
           <span>Hiện tại chưa có dự án nào...</span>
         </div>
       ) : (
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
-                <CheckboxTwo
-                  id="select-all"
-                  isChecked={isAllChecked}
-                  onChange={handleSelectAll}
-                />
-              </th>
               {columns.map((column) => (
                 <th
                   key={column.key}
@@ -114,18 +99,11 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((item, index) => (
+            {data.map((item) => (
               <tr
                 key={item.id}
                 className="border-b border-[#eee] dark:border-strokedark"
               >
-                <td className="py-5 px-4">
-                  <CheckboxTwo
-                    id={`select-${item.id}`}
-                    isChecked={item.isChecked}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                </td>
                 {columns.map((column) => (
                   <td
                     key={column.key}
@@ -141,9 +119,12 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                       >
                         {getStatusStyle(item[column.key]).icon}
                         <span className="ml-2">
-                          {statusTranslationMap[item[column.key]] || item[column.key]}
+                          {statusTranslationMap[item[column.key]] ||
+                            item[column.key]}
                         </span>
                       </span>
+                    ) : column.key === 'projectId' ? (
+                      <strong style={{ color: '#FF5733' }}>{item[column.key]}</strong>
                     ) : (
                       item[column.key]
                     )}

@@ -1,6 +1,28 @@
 import requestWebRHCQS from '../../utils/axios';
 
-export const getProjects = async (page: number, size: number) => {
+interface ProjectItem {
+  Id: string;
+  AccountName: string;
+  Name: string;
+  Type: string;
+  Status: string;
+  InsDate: string;
+  UpsDate: string;
+  ProjectCode: string;
+}
+
+interface ProjectListResponse {
+  Size: number;
+  Page: number;
+  Total: number;
+  TotalPages: number;
+  Items: ProjectItem[];
+}
+
+export const getProjectsList = async (
+  page: number,
+  size: number,
+): Promise<ProjectListResponse> => {
   try {
     const response = await requestWebRHCQS.get('/project', {
       params: {
@@ -11,6 +33,53 @@ export const getProjects = async (page: number, size: number) => {
         accept: 'text/plain',
       },
     });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching projects:', error);
+    throw error;
+  }
+};
+
+export const getProjectsListWithType = async (
+  page: number,
+  size: number,
+  type: string,
+): Promise<ProjectListResponse> => {
+  try {
+    const response = await requestWebRHCQS.get('/project/filter', {
+      params: {
+        page,
+        size,
+        type,
+      },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching projects with type:', error);
+    throw error;
+  }
+};
+
+export const getProjectsListSalesStaff = async (
+  page: number,
+  size: number,
+): Promise<ProjectListResponse> => {
+  try {
+    const response = await requestWebRHCQS.get<ProjectListResponse>(
+      '/project/sales',
+      {
+        params: {
+          page,
+          size,
+        },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
     return response.data;
   } catch (error) {
     console.error('Error fetching projects:', error);
@@ -31,24 +100,6 @@ export const getProjectDetail = async (id: string) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching project detail:', error);
-    throw error;
-  }
-};
-
-export const getProjectsStaff = async (page: number, size: number) => {
-  try {
-    const response = await requestWebRHCQS.get('/project/sales', {
-      params: {
-        page,
-        size,
-      },
-      headers: {
-        accept: 'text/plain',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching projects:', error);
     throw error;
   }
 };

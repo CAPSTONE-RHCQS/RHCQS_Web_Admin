@@ -172,7 +172,7 @@ const ProjectDetailSalesStaff = () => {
         <div className="flex flex-row gap-3 justify-between">
           <ContactCard
             data={{
-              title: 'Mã số xử lý',
+              title: 'Mã Dự Án',
               number: projectDetail.ProjectCode || 'N/A',
             }}
             fields={[

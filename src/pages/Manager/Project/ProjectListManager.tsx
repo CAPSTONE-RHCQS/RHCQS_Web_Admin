@@ -7,12 +7,17 @@ import {
   FaCheck,
   FaBan,
   FaList,
+  FaBoxOpen,
 } from 'react-icons/fa';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import ProjectTableManager from '../Promotions/components/Table/ProjectTableManager';
-import { getProjects } from '../../../api/Project/ProjectApi';
+import ProjectTableManager from './components/Table/ProjectTableManager';
+import {
+  getProjectsList,
+  getProjectsListWithType,
+} from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
+import { ClipLoader } from 'react-spinners';
 
 const getStatusLabel = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
@@ -21,12 +26,12 @@ const getStatusLabel = (status: string) => {
     Reviewing: 'Chờ xác nhận',
     'Signed Contract': 'Đã ký hợp đồng',
     Finalized: 'Hoàn thành',
-    Ended: 'Kết thúc',
+    Ended: 'Đã chấm dứt',
   };
   return statusLabelMap[status] || 'Không xác định';
 };
 
-type Email = {
+type Project = {
   id: string;
   projectId: string;
   projectName: string;
@@ -37,10 +42,10 @@ type Email = {
   isChecked: boolean;
 };
 
-type SortKey = string;
+type SortKey = keyof Project;
 
 const ProjectListManager = () => {
-  const [emails, setEmails] = useState<Email[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
@@ -52,25 +57,38 @@ const ProjectListManager = () => {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [refreshKey, setRefreshKey] = useState(0);
   const navigate = useNavigate();
 
   const fetchProjects = async (page: number) => {
     setLoading(true);
     try {
-      const data = await getProjects(page, 10);
+      let data;
+      if (activeTab === 'Tất cả') {
+        data = await getProjectsList(page, 10);
+      } else {
+        const statusMap: { [key: string]: string } = {
+          'Đang xử lý': 'Processing',
+          'Đã thiết kế': 'Designed',
+          'Chờ xác nhận': 'Reviewing',
+          'Đã ký hợp đồng': 'Signed Contract',
+          'Hoàn thành': 'Finalized',
+          'Đã chấm dứt': 'Ended',
+        };
+        const type = statusMap[activeTab];
+        data = await getProjectsListWithType(page, 10, type);
+      }
+
       const formattedData = data.Items.map((item: any) => ({
         id: item.Id,
         projectId: item.ProjectCode,
         projectName: item.Name,
         customerName: item.AccountName,
         category: item.Type,
-        // serviceType: item.Type,
         date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
         status: item.Status,
         isChecked: false,
       }));
-      setEmails(formattedData);
+      setProjects(formattedData);
       setTotalPages(data.TotalPages);
     } catch (err) {
       setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
@@ -81,25 +99,29 @@ const ProjectListManager = () => {
 
   useEffect(() => {
     fetchProjects(currentPage);
-  }, [currentPage, refreshKey]);
+  }, [currentPage, activeTab]);
 
   const handleRefresh = () => {
-    setRefreshKey((prevKey) => prevKey + 1);
+    setLoading(true);
+    setProjects([]);
+    fetchProjects(currentPage).finally(() => {
+      setLoading(false);
+    });
   };
 
   const handleSelectAll = () => {
     const newIsAllChecked = !isAllChecked;
     setIsAllChecked(newIsAllChecked);
-    setEmails(
-      emails.map((email) => ({ ...email, isChecked: newIsAllChecked })),
+    setProjects(
+      projects.map((project) => ({ ...project, isChecked: newIsAllChecked })),
     );
   };
 
   const handleCheckboxChange = (index: number) => {
-    const newEmails = [...emails];
-    newEmails[index].isChecked = !newEmails[index].isChecked;
-    setEmails(newEmails);
-    setIsAllChecked(newEmails.every((email) => email.isChecked));
+    const newProjects = [...projects];
+    newProjects[index].isChecked = !newProjects[index].isChecked;
+    setProjects(newProjects);
+    setIsAllChecked(newProjects.every((project) => project.isChecked));
   };
 
   const handleSort = (key: SortKey) => {
@@ -113,9 +135,9 @@ const ProjectListManager = () => {
     }
     setSortConfig({ key, direction });
 
-    const sortedEmails = [...emails].sort((a, b) => {
-      const aValue = a[key as keyof Email];
-      const bValue = b[key as keyof Email];
+    const sortedProjects = [...projects].sort((a, b) => {
+      const aValue = a[key];
+      const bValue = b[key];
 
       if (
         key === 'date' &&
@@ -137,15 +159,15 @@ const ProjectListManager = () => {
       return 0;
     });
 
-    setEmails(sortedEmails);
+    setProjects(sortedProjects);
   };
 
   const handleDelete = (id: string) => {
-    setEmails(emails.filter((email) => email.id !== id));
+    setProjects(projects.filter((project) => project.id !== id));
   };
 
   const handleDeleteSelected = () => {
-    setEmails(emails.filter((email) => !email.isChecked));
+    setProjects(projects.filter((project) => !project.isChecked));
   };
 
   const handleViewDetails = (id: string) => {
@@ -153,14 +175,14 @@ const ProjectListManager = () => {
     window.scrollTo(0, 0);
   };
 
-  const filteredEmails = emails.filter((email) =>
+  const filteredProjects = projects.filter((project) =>
     activeTab === 'Tất cả'
-      ? email.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-      : getStatusLabel(email.status) === activeTab &&
-        email.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
+      ? project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
+      : getStatusLabel(project.status) === activeTab &&
+        project.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  const columns = [
+  const columns: { key: SortKey; label: string }[] = [
     { key: 'projectId', label: 'Mã Dự Án' },
     { key: 'projectName', label: 'Tên Dự Án' },
     { key: 'customerName', label: 'Khách Hàng' },
@@ -172,7 +194,7 @@ const ProjectListManager = () => {
   const tabs = [
     { label: 'Tất cả', icon: <FaList /> },
     { label: 'Đang xử lý', icon: <FaSpinner /> },
-    { label: 'Hoàn thành hợp đồng TK', icon: <FaFileContract /> },
+    { label: 'Đã thiết kế', icon: <FaFileContract /> },
     { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> },
     { label: 'Đã ký hợp đồng', icon: <FaClipboardCheck /> },
     { label: 'Hoàn thành', icon: <FaCheck /> },
@@ -198,7 +220,7 @@ const ProjectListManager = () => {
                   key={tab.label}
                   className={`mr-1 ${
                     activeTab === tab.label
-                      ? 'border-blue-500 text-blue-500'
+                      ? 'border-primary text-primary'
                       : 'border-transparent text-gray-500'
                   } transition-colors duration-300`}
                 >
@@ -231,7 +253,7 @@ const ProjectListManager = () => {
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <span className="text-lg text-black dark:text-white">
-                Tổng số Dự án: {emails.length}
+                Tổng số Dự án: {projects.length}
               </span>
             </div>
             <ArrowPathIcon
@@ -240,17 +262,28 @@ const ProjectListManager = () => {
             />
           </div>
           <div className="max-w-full overflow-x-auto">
-            <ProjectTableManager
-              data={filteredEmails}
-              columns={columns}
-              isAllChecked={isAllChecked}
-              handleSelectAll={handleSelectAll}
-              handleCheckboxChange={handleCheckboxChange}
-              handleSort={handleSort}
-              handleDelete={handleDelete}
-              handleViewDetails={handleViewDetails}
-              isLoading={loading}
-            />
+            {loading ? (
+              <div className="flex justify-center items-center h-64">
+                <ClipLoader size={50} color={'#123abc'} loading={loading} />
+              </div>
+            ) : filteredProjects.length > 0 ? (
+              <ProjectTableManager
+                data={filteredProjects}
+                columns={columns}
+                isAllChecked={isAllChecked}
+                handleSelectAll={handleSelectAll}
+                handleCheckboxChange={handleCheckboxChange}
+                handleSort={handleSort}
+                handleDelete={handleDelete}
+                handleViewDetails={handleViewDetails}
+                isLoading={loading}
+              />
+            ) : (
+              <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                <FaBoxOpen className="mx-auto mb-4 text-4xl text-primary" />
+                Không có dữ liệu để hiển thị.
+              </div>
+            )}
           </div>
           <div className="flex justify-between mt-4">
             <button

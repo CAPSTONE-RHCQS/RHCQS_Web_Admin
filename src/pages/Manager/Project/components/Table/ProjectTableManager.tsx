@@ -13,15 +13,22 @@ import CheckboxTwo from '../../../../../components/Checkboxes/CheckboxTwo';
 import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
-type DataItem = {
-  [key: string]: any;
+type Project = {
+  id: string;
+  projectId: string;
+  projectName: string;
+  customerName: string;
+  category: string;
+  date: string;
+  status: string;
+  isChecked: boolean;
 };
 
-type SortKey = string;
+type SortKey = keyof Project;
 
 interface ProjectTableManagerProps {
-  data: DataItem[];
-  columns: { key: string; label: string }[];
+  data: Project[];
+  columns: { key: SortKey; label: string }[];
   isAllChecked: boolean;
   handleSelectAll: () => void;
   handleCheckboxChange: (index: number) => void;
@@ -53,8 +60,8 @@ const getStatusStyle = (status: string) => {
 const getStatusLabel = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
     Processing: 'Đang xử lý',
-    Designed: 'Hoàn thành hợp đồng TK',
-    Reviewing: 'Chờ phản hồi khách hàng',
+    Designed: 'Đã thiết kế',
+    Reviewing: 'Chờ xác nhận',
     'Signed Contract': 'Đã ký hợp đồng',
     Finalized: 'Hoàn thành',
     Ended: 'Đã chấm dứt',
@@ -139,6 +146,8 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                           {getStatusLabel(item[column.key])}
                         </span>
                       </span>
+                    ) : column.key === 'projectId' ? (
+                      <strong style={{ color: '#FF5733' }}>{item[column.key]}</strong>
                     ) : (
                       item[column.key]
                     )}
