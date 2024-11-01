@@ -64,12 +64,15 @@ const SignIn: React.FC = () => {
     <div
       className="relative flex items-center justify-center min-h-screen bg-gray-100 dark:bg-boxdark"
       style={{
-        backgroundImage: `url('/src/assets/background.jpg')`,
+        backgroundImage: `url('https://img.upanh.tv/2024/11/01/background.jpg')`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}
     >
-      <div className="absolute inset-0 bg-black opacity-50" style={{ filter: 'blur(8px)' }}></div>
+      <div
+        className="absolute inset-0 bg-black opacity-50"
+        style={{ filter: 'blur(8px)' }}
+      ></div>
       <div className="relative flex flex-wrap w-full max-w-4xl bg-white rounded-lg shadow-md dark:bg-boxdark">
         <div className="hidden xl:flex xl:w-1/2 items-center justify-center bg-gray-200 dark:bg-boxdark-2">
           <div className="p-8 text-center">
