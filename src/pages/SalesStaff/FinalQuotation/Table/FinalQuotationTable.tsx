@@ -1,5 +1,5 @@
 import React from 'react';
-import { FinalQuotationItem } from '../../../../types/QuotationTypes';
+import { FinalQuotationItem } from '../../../../types/FinalQuotationTypes';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -21,42 +21,66 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
             <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
-            <th className="px-4 py-2 border text-center">Tổng giá vật tư thô</th>
+            <th className="px-4 py-2 border text-center">
+              Tổng giá vật tư thô
+            </th>
           </tr>
         </thead>
         <tbody>
           {items.map((item) => (
             <React.Fragment key={item.Id}>
               <tr>
-                <td className="px-4 py-2 border text-center" rowSpan={item.QuotationItems.length + 1}>
+                <td
+                  className="px-4 py-2 border text-center"
+                  rowSpan={item.QuotationItems.length + 1}
+                >
                   {item.ContructionName}
                 </td>
-                <td className="px-4 py-2 border text-center" rowSpan={item.QuotationItems.length + 1}>
+                <td
+                  className="px-4 py-2 border text-center"
+                  rowSpan={item.QuotationItems.length + 1}
+                >
                   {item.Type}
                 </td>
-                <td className="px-4 py-2 border text-center" rowSpan={item.QuotationItems.length + 1}>
+                <td
+                  className="px-4 py-2 border text-center"
+                  rowSpan={item.QuotationItems.length + 1}
+                >
                   {item.Coefficient}
                 </td>
-                <td className="px-4 py-2 border text-center" rowSpan={item.QuotationItems.length + 1}>
+                <td
+                  className="px-4 py-2 border text-center"
+                  rowSpan={item.QuotationItems.length + 1}
+                >
                   {item.InsDate || 'null'}
                 </td>
               </tr>
               {item.QuotationItems.map((quotationItem) => (
                 <tr key={quotationItem.Id}>
-                  <td className="px-4 py-2 border text-center">{quotationItem.Name}</td>
-                  <td className="px-4 py-2 border text-center">{quotationItem.Unit}</td>
-                  <td className="px-4 py-2 border text-center">{quotationItem.Weight}</td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceLabor?.toLocaleString() || 'null'} VNĐ
+                    {quotationItem.Name}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceRough?.toLocaleString() || 'null'} VNĐ
+                    {quotationItem.Unit}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceLabor?.toLocaleString() || 'null'} VNĐ
+                    {quotationItem.Weight}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceRough?.toLocaleString() || 'null'} VNĐ
+                    {quotationItem.UnitPriceLabor?.toLocaleString() || 'null'}{' '}
+                    VNĐ
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {quotationItem.UnitPriceRough?.toLocaleString() || 'null'}{' '}
+                    VNĐ
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {quotationItem.TotalPriceLabor?.toLocaleString() || 'null'}{' '}
+                    VNĐ
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {quotationItem.TotalPriceRough?.toLocaleString() || 'null'}{' '}
+                    VNĐ
                   </td>
                 </tr>
               ))}

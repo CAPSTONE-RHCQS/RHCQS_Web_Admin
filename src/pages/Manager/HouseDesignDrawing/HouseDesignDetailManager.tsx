@@ -129,7 +129,11 @@ const HouseDesignDetailManager: React.FC = () => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      setModalVisible(true);
+                      if (selectedVersionId) {
+                        setModalVisible(true);
+                      } else {
+                        toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
+                      }
                     }}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
                   >

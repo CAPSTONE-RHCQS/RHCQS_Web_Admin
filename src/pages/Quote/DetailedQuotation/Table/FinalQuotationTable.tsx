@@ -1,5 +1,5 @@
 import React from 'react';
-import { FinalQuotationItem } from '../../../../types/QuotationTypes';
+import { FinalQuotationItem } from '../../../../types/FinalQuotationTypes';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];

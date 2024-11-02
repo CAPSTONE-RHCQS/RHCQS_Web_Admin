@@ -1,6 +1,9 @@
 import requestWebRHCQS from '../../utils/axios';
+import { FinalQuotationResponse } from '../../types/FinalQuotationTypes';
 
-export const getFinalQuotation = async (id: string) => {
+export const getFinalQuotation = async (
+  id: string,
+): Promise<FinalQuotationResponse> => {
   try {
     const response = await requestWebRHCQS.get(`/quotation/final/id`, {
       params: { id },
@@ -14,5 +17,3 @@ export const getFinalQuotation = async (id: string) => {
     throw error;
   }
 };
-
-
