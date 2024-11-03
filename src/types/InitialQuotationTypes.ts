@@ -72,6 +72,7 @@ export interface Construction {
   Id: string;
   SubConstructionId: string;
   Name: string;
+  Price: number;
   Coefficient: number;
 }
 

@@ -55,6 +55,7 @@ const CreateInitialQuote = () => {
     heSo: item.SubCoefficient ? item.SubCoefficient.toString() : '0',
     dienTich: (item.Area * (item.SubCoefficient || 1)).toString(),
     donVi: item.UnitPrice,
+    price: item.Price,
     constructionItemId: item.ConstructionItemId,
     subConstructionId: item.SubConstructionId,
   });
@@ -136,9 +137,18 @@ const CreateInitialQuote = () => {
         constructionItemId: row.constructionItemId || 'default-id',
         subConstructionId: row.subConstructionId ?? null,
         area: parseFloat(row.dTich),
-        price: 0,
+        price: row.price || 0,
       })),
-      packages: [],
+      packages: [
+        {
+          packageId: quotationData.PackageQuotationList.IdPackageRough,
+          type: 'ROUGH',
+        },
+        {
+          packageId: quotationData.PackageQuotationList.IdPackageFinished,
+          type: 'FINISHED',
+        },
+      ],
       utilities: quotationData.UtilityInfos.map((utility) => ({
         utilitiesItemId: utility.Id,
         coefiicient: utility.Coefficient,
@@ -174,6 +184,7 @@ const CreateInitialQuote = () => {
         heSo: '',
         dienTich: '',
         donVi: 'm²',
+        price: 0,
       },
     ]);
   };

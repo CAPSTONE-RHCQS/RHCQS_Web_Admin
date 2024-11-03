@@ -6,18 +6,7 @@ import {
 import { getConstructionByName } from '../../../../api/InitialQuotation/InitialQuotationApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-
-interface TableRow {
-  stt: number;
-  hangMuc: string;
-  dTich: string;
-  heSo: string;
-  dienTich: string;
-  donVi: string;
-  uniqueId?: string;
-  constructionItemId?: string;
-  subConstructionId?: string | null;
-}
+import { TableRow } from '../../InitialQuotation/components/types';
 
 interface ConstructionAreaTableProps {
   tableData: TableRow[];
@@ -66,6 +55,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
           ).toString(),
           constructionItemId: construction.Id,
           subConstructionId: construction.SubConstructionId,
+          price: construction.Price,
         };
         setTableData(newData);
       }

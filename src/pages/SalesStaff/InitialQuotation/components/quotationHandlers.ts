@@ -41,6 +41,7 @@ export const fetchQuotationData = async (
           heSo: coefficient.toString(),
           dienTich: (item.Area * coefficient).toString(),
           donVi: 'm²',
+          price: item.Price,
           uniqueId: item.Id,
           constructionItemId: item.ConstructionItemId,
           subConstructionId: item.SubConstructionId ?? null,

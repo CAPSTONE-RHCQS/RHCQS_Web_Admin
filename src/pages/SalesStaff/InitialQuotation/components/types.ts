@@ -5,6 +5,7 @@ export interface TableRow {
   heSo: string;
   dienTich: string;
   donVi: string;
+  price: number;
   uniqueId?: string;
   constructionItemId?: string;
   subConstructionId?: string | null;

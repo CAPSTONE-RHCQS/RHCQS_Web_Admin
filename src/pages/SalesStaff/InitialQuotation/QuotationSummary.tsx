@@ -65,6 +65,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                   heSo: '',
                   dienTich: '',
                   donVi: 'm²',
+                  price: 0,
                 },
               ])
             }
