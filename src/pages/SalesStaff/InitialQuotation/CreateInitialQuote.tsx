@@ -11,11 +11,13 @@ import {
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
+import { TableRow } from './components/types';
 
 const CreateInitialQuote = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const [quotationData, setQuotationData] = useState<InitialQuotationResponse | null>(null);
+  const [quotationData, setQuotationData] =
+    useState<InitialQuotationResponse | null>(null);
   const [paymentSchedule, setPaymentSchedule] = useState<any[]>([
     {
       price: 0,
@@ -27,6 +29,7 @@ const CreateInitialQuote = () => {
   ]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
+  const [tableData, setTableData] = useState<TableRow[]>([]);
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -34,6 +37,9 @@ const CreateInitialQuote = () => {
         try {
           const data = await createNewInitialQuotation(projectId);
           setQuotationData(data);
+
+          const initialTableData = data.ItemInitial.map(convertToTableRow);
+          setTableData(initialTableData);
         } catch (error) {
           console.error('Error fetching initial quotation:', error);
         }
@@ -49,6 +55,8 @@ const CreateInitialQuote = () => {
     heSo: item.SubCoefficient ? item.SubCoefficient.toString() : '0',
     dienTich: (item.Area * (item.SubCoefficient || 1)).toString(),
     donVi: item.UnitPrice,
+    constructionItemId: item.ConstructionItemId,
+    subConstructionId: item.SubConstructionId,
   });
 
   if (!quotationData) {
@@ -59,7 +67,6 @@ const CreateInitialQuote = () => {
     );
   }
 
-  const tableData = quotationData.ItemInitial.map(convertToTableRow);
   const totalDienTich = tableData.reduce(
     (total, row) => total + parseFloat(row.dienTich),
     0,
@@ -124,12 +131,12 @@ const CreateInitialQuote = () => {
       othersAgreement: '',
       totalRough: thanhTien,
       totalUtilities: totalUtilityCost,
-      items: quotationData.ItemInitial.map((item) => ({
-        name: item.Name,
-        constructionItemId: item.ConstructionItemId,
-        subConstructionId: item.SubConstructionId,
-        area: item.Area,
-        price: item.Price,
+      items: tableData.map((row) => ({
+        name: row.hangMuc,
+        constructionItemId: row.constructionItemId || 'default-id',
+        subConstructionId: row.subConstructionId ?? null,
+        area: parseFloat(row.dTich),
+        price: 0,
       })),
       packages: [],
       utilities: quotationData.UtilityInfos.map((utility) => ({
@@ -157,6 +164,20 @@ const CreateInitialQuote = () => {
     }
   };
 
+  const addTableRow = () => {
+    setTableData([
+      ...tableData,
+      {
+        stt: tableData.length + 1,
+        hangMuc: '',
+        dTich: '',
+        heSo: '',
+        dienTich: '',
+        donVi: 'm²',
+      },
+    ]);
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Khởi tạo báo giá sơ bộ</h2>
@@ -182,10 +203,28 @@ const CreateInitialQuote = () => {
       <ConstructionAreaTable
         tableData={tableData}
         isEditing={true}
-        handleInputChange={() => {}}
+        handleInputChange={(e, index, field) => {
+          const newData = [...tableData];
+          newData[index] = { ...newData[index], [field]: e.target.value };
+
+          if (field === 'dTich' || field === 'heSo') {
+            const dTich = parseFloat(newData[index].dTich) || 0;
+            const heSo = parseFloat(newData[index].heSo) || 0;
+            newData[index].dienTich = (dTich * heSo).toString();
+          }
+
+          setTableData(newData);
+        }}
         totalDienTich={totalDienTich}
-        setTableData={() => {}}
+        setTableData={setTableData}
       />
+
+      <button
+        onClick={addTableRow}
+        className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+      >
+        +
+      </button>
 
       <div className="mt-4">
         <h3 className="text-lg font-bold">

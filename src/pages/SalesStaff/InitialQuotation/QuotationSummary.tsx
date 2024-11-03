@@ -49,28 +49,30 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         </div>
       </div>
 
-      <div className="mb-4">
+      <div className="flex items-center mb-4">
         <p className="mt-4 mb-4 text-lg">
           <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
         </p>
-        <button
-          onClick={() =>
-            setTableData([
-              ...tableData,
-              {
-                stt: tableData.length + 1,
-                hangMuc: '',
-                dTich: '',
-                heSo: '',
-                dienTich: '',
-                donVi: 'm²',
-              },
-            ])
-          }
-          className="bg-blue-500 text-white px-2 py-1 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-        >
-          +
-        </button>
+        {isEditing && (
+          <button
+            onClick={() =>
+              setTableData([
+                ...tableData,
+                {
+                  stt: tableData.length + 1,
+                  hangMuc: '',
+                  dTich: '',
+                  heSo: '',
+                  dienTich: '',
+                  donVi: 'm²',
+                },
+              ])
+            }
+            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+          >
+            +
+          </button>
+        )}
       </div>
 
       <ConstructionAreaTable
@@ -79,6 +81,13 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         handleInputChange={(e, index, field) => {
           const newData = [...tableData];
           newData[index] = { ...newData[index], [field]: e.target.value };
+
+          if (field === 'dTich' || field === 'heSo') {
+            const dTich = parseFloat(newData[index].dTich) || 0;
+            const heSo = parseFloat(newData[index].heSo) || 0;
+            newData[index].dienTich = (dTich * heSo).toString();
+          }
+
           setTableData(newData);
         }}
         totalDienTich={totalDienTich}
@@ -94,7 +103,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <thead>
             <tr>
               <th className="px-4 py-2 border text-center">
-                Tổng diện tch xây dựng
+                Tổng diện tích xây dựng
               </th>
               <th className="px-4 py-2 border text-center">x</th>
               <th className="px-4 py-2 border text-center">Đơn giá</th>

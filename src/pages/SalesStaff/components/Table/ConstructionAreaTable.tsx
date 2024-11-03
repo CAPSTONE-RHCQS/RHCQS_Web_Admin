@@ -4,7 +4,8 @@ import {
   GetConstructionByNameResponse,
 } from '../../../../types/InitialQuotationTypes';
 import { getConstructionByName } from '../../../../api/InitialQuotation/InitialQuotationApi';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 interface TableRow {
   stt: number;
@@ -73,6 +74,11 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
     }
   };
 
+  const handleDeleteRow = (index: number) => {
+    const newData = tableData.filter((_, i) => i !== index);
+    setTableData(newData);
+  };
+
   return (
     <div className="overflow-x-auto mb-4">
       <table className="min-w-full bg-white border border-gray-200">
@@ -84,6 +90,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
             <th className="px-4 py-2 border text-center">Hệ số</th>
             <th className="px-4 py-2 border text-center">Diện tích</th>
             <th className="px-4 py-2 border text-center">Đơn vị</th>
+            {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
@@ -145,6 +152,16 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 />
               </td>
               <td className="px-4 py-2 border text-center">{item.donVi}</td>
+              {isEditing && (
+                <td className="px-4 py-2 border text-center">
+                  <button
+                    onClick={() => handleDeleteRow(index)}
+                    className="text-red-500 hover:text-red-700"
+                  >
+                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                  </button>
+                </td>
+              )}
             </tr>
           ))}
           <tr>

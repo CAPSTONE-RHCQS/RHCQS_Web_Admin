@@ -83,9 +83,12 @@ export const handleSave = async (
 ) => {
   if (!quotationData) return;
 
-  const hasEmptyDich = tableData.some((item) => item.dTich.trim() === '');
-  if (hasEmptyDich) {
-    toast.error('Vui lòng điền đầy đủ D-Tích trước khi lưu.');
+  const hasEmptyFields = tableData.some(
+    (item) => item.dTich.trim() === '' || item.hangMuc.trim() === ''
+  );
+
+  if (hasEmptyFields) {
+    toast.error('Vui lòng điền đầy đủ D-Tích và Tên hạng mục trước khi lưu.');
     return;
   }
 
