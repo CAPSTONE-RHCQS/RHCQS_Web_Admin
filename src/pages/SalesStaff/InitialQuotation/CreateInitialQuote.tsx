@@ -15,8 +15,7 @@ import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 const CreateInitialQuote = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
-  const [quotationData, setQuotationData] =
-    useState<InitialQuotationResponse | null>(null);
+  const [quotationData, setQuotationData] = useState<InitialQuotationResponse | null>(null);
   const [paymentSchedule, setPaymentSchedule] = useState<any[]>([
     {
       price: 0,
@@ -43,14 +42,6 @@ const CreateInitialQuote = () => {
     fetchQuotationData();
   }, [projectId]);
 
-  if (!quotationData) {
-    return (
-      <div>
-        <ClipLoader color="#36d7b7" />
-      </div>
-    );
-  }
-
   const convertToTableRow = (item: any, index: number) => ({
     stt: index + 1,
     hangMuc: item.Name,
@@ -59,6 +50,14 @@ const CreateInitialQuote = () => {
     dienTich: (item.Area * (item.SubCoefficient || 1)).toString(),
     donVi: item.UnitPrice,
   });
+
+  if (!quotationData) {
+    return (
+      <div>
+        <ClipLoader color="#36d7b7" />
+      </div>
+    );
+  }
 
   const tableData = quotationData.ItemInitial.map(convertToTableRow);
   const totalDienTich = tableData.reduce(
@@ -185,6 +184,7 @@ const CreateInitialQuote = () => {
         isEditing={true}
         handleInputChange={() => {}}
         totalDienTich={totalDienTich}
+        setTableData={() => {}}
       />
 
       <div className="mt-4">
