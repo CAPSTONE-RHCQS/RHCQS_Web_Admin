@@ -209,6 +209,17 @@ const CreateInitialQuote = () => {
               đồng/m²
             </p>
           )}
+        <div className="flex items-center">
+          <p className="mt-4 mb-4 text-lg inline-block">
+            <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
+          </p>
+          <button
+            onClick={addTableRow}
+            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+          >
+            +
+          </button>
+        </div>
       </div>
 
       <ConstructionAreaTable
@@ -229,13 +240,6 @@ const CreateInitialQuote = () => {
         totalDienTich={totalDienTich}
         setTableData={setTableData}
       />
-
-      <button
-        onClick={addTableRow}
-        className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-      >
-        +
-      </button>
 
       <div className="mt-4">
         <h3 className="text-lg font-bold">
