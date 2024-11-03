@@ -68,7 +68,16 @@ export interface InitialQuotationResponse {
   BatchPaymentInfos: BatchPaymentInfo[];
 }
 
-export interface Item {
+export interface Construction {
+  Id: string;
+  SubConstructionId: string;
+  Name: string;
+  Coefficient: number;
+}
+
+export type GetConstructionByNameResponse = Construction[];
+
+interface Item {
   name: string;
   constructionItemId: string;
   subConstructionId: string | null;

@@ -11,10 +11,8 @@ import { formatCurrencyShort } from '../../../utils/format';
 import {
   getInitialQuotation,
   approveInitialQuotation,
-} from '../../../api/Project/InitialQuotationApi';
-import {
-  InitialQuotationResponse,
-} from '../../../types/InitialQuotationTypes';
+} from '../../../api/InitialQuotation/InitialQuotationApi';
+import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 
 interface TableRow {
   stt: number;

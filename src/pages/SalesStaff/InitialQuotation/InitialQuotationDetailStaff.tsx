@@ -2,19 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import { formatCurrencyShort } from '../../../utils/format';
-import {
-  getInitialQuotation,
-  updateInitialQuotation,
-} from '../../../api/Project/InitialQuotationApi';
+
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
 } from '../../../types/InitialQuotationTypes';
+import {
+  getInitialQuotation,
+  updateInitialQuotation,
+} from '../../../api/InitialQuotation/InitialQuotationApi';
 
 interface TableRow {
   stt: number;
@@ -23,6 +26,9 @@ interface TableRow {
   heSo: string;
   dienTich: string;
   donVi: string;
+  uniqueId?: string;
+  constructionItemId?: string;
+  subConstructionId?: string | null;
 }
 
 interface OptionRow {
@@ -53,6 +59,7 @@ const InitialQuotationDetailStaff = () => {
       if (id) {
         try {
           const data: InitialQuotationResponse = await getInitialQuotation(id);
+          console.log('Fetched Quotation Data:', data);
           setQuotationData(data);
           setVersion(data.Version || null);
 
@@ -71,6 +78,9 @@ const InitialQuotationDetailStaff = () => {
               heSo: coefficient.toString(),
               dienTich: (item.Area * coefficient).toString(),
               donVi: 'm²',
+              uniqueId: item.Id,
+              constructionItemId: item.ConstructionItemId,
+              subConstructionId: item.SubConstructionId ?? null,
             };
           });
           setTableData(updatedTableData);
@@ -121,6 +131,10 @@ const InitialQuotationDetailStaff = () => {
     newData[index] = { ...newData[index], [field]: e.target.value };
 
     if (field === 'dTich') {
+      if (e.target.value.trim() === '') {
+        toast.error('D-Tích không được để trống');
+        return;
+      }
       newData[index].dienTich = (
         parseFloat(newData[index].dTich) * parseFloat(newData[index].heSo)
       ).toString();
@@ -145,19 +159,19 @@ const InitialQuotationDetailStaff = () => {
     setOptionData(newData);
   };
 
-  const totalDienTich = tableData.reduce(
-    (total, row) => total + parseFloat(row.dienTich),
-    0,
-  );
+  const totalDienTich = tableData.reduce((total, row) => {
+    const dienTich = parseFloat(row.dienTich);
+    return total + (isNaN(dienTich) ? 0 : dienTich);
+  }, 0);
 
   const thanhTien = totalDienTich * donGia;
 
   const handleDownload = () => {
-    alert('Tải về hợp đồng');
+    toast.info('Tải về hợp đồng');
   };
 
   const handleShare = () => {
-    alert('Chia sẻ hợp đồng');
+    toast.info('Chia sẻ hợp đồng');
   };
 
   const toggleChat = () => {
@@ -185,6 +199,14 @@ const InitialQuotationDetailStaff = () => {
   const handleSave = async () => {
     if (!quotationData) return;
 
+    const hasEmptyDich = tableData.some((item) => item.dTich.trim() === '');
+    if (hasEmptyDich) {
+      toast.error('Vui lòng điền đầy đủ D-Tích trước khi lưu.');
+      return;
+    }
+
+    console.log('Data to be sent:', tableData);
+
     const requestData: UpdateInitialQuotationRequest = {
       versionPresent: version || 1,
       projectId: quotationData.ProjectId,
@@ -195,13 +217,15 @@ const InitialQuotationDetailStaff = () => {
       othersAgreement: quotationData.OthersAgreement || '',
       totalRough: quotationData.TotalRough,
       totalUtilities: quotationData.TotalUtilities,
-      items: tableData.map((item, index) => ({
-        name: item.hangMuc,
-        constructionItemId: quotationData.ItemInitial[index].ConstructionItemId,
-        subConstructionId: quotationData.ItemInitial[index].SubConstructionId,
-        area: parseFloat(item.dTich),
-        price: quotationData.ItemInitial[index].Price,
-      })),
+      items: tableData.map((item) => {
+        return {
+          name: item.hangMuc,
+          constructionItemId: item.constructionItemId || 'default-id',
+          subConstructionId: item.subConstructionId ?? null,
+          area: parseFloat(item.dTich),
+          price: 0,
+        };
+      }),
       packages: [
         {
           packageId: quotationData.PackageQuotationList.IdPackageRough,
@@ -232,15 +256,31 @@ const InitialQuotationDetailStaff = () => {
 
     try {
       await updateInitialQuotation(requestData);
-      alert('Dữ liệu đã được lưu thành công!');
+      toast.success('Dữ liệu đã được lưu thành công!');
     } catch (error) {
       console.error('Error saving data:', error);
-      alert('Có lỗi xảy ra khi lưu dữ liệu.');
+      toast.error('Có lỗi xảy ra khi lưu dữ liệu.');
     }
+  };
+
+  const addNewRow = () => {
+    const newRow: TableRow = {
+      stt: tableData.length + 1,
+      hangMuc: '',
+      dTich: '',
+      heSo: '',
+      dienTich: '',
+      donVi: 'm²',
+      uniqueId: undefined,
+      constructionItemId: undefined,
+      subConstructionId: undefined,
+    };
+    setTableData([...tableData, newRow]);
   };
 
   return (
     <>
+      <ToastContainer />
       <div>
         {!showChat && (
           <button
@@ -291,25 +331,14 @@ const InitialQuotationDetailStaff = () => {
 
         <div className="mb-4">
           <p className="mt-4 mb-4 text-lg">
-            <strong>1. ĐƠN GIÁ THI CÔNG</strong>
-          </p>
-          <p className="mb-2">
-            {quotationData.PackageQuotationList.PackageRough} -{' '}
-            {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-            đồng/m²
-          </p>
-          {quotationData.PackageQuotationList.PackageFinished &&
-            quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-              <p className="mb-2">
-                {quotationData.PackageQuotationList.PackageFinished} -{' '}
-                {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
-                đồng/m²
-              </p>
-            )}
-
-          <p className="mb-4 text-lg">
             <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
           </p>
+          <button
+            onClick={addNewRow}
+            className="bg-blue-500 text-white px-2 py-1 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+          >
+            +
+          </button>
         </div>
 
         <ConstructionAreaTable
@@ -317,6 +346,7 @@ const InitialQuotationDetailStaff = () => {
           isEditing={isEditing}
           handleInputChange={handleInputChange}
           totalDienTich={totalDienTich}
+          setTableData={setTableData}
         />
 
         <p className="text-lg mb-4">
@@ -328,7 +358,7 @@ const InitialQuotationDetailStaff = () => {
             <thead>
               <tr>
                 <th className="px-4 py-2 border text-center">
-                  Tổng diện tích xây dựng
+                  Tổng diện tch xây dựng
                 </th>
                 <th className="px-4 py-2 border text-center">x</th>
                 <th className="px-4 py-2 border text-center">Đơn giá</th>
@@ -496,7 +526,7 @@ const InitialQuotationDetailStaff = () => {
         </div>
 
         <p className="text-lg mb-4">
-          <strong>6. CÁC ĐỢT THANH TOÁN:</strong>
+          <strong>6. CÁC ĐT THANH TOÁN:</strong>
         </p>
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200">

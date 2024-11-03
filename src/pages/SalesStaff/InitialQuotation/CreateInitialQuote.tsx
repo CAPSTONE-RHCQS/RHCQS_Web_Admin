@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import {
   createNewInitialQuotation,
   updateInitialQuotation,
-} from '../../../api/Project/InitialQuotationApi';
+} from '../../../api/InitialQuotation/InitialQuotationApi';
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
