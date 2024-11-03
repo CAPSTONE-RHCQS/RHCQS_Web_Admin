@@ -81,19 +81,18 @@ export const handleSave = async (
   paymentSchedule: any[],
   utilityInfos: any[],
   promotionInfo: any,
+  navigate: (path: string) => void,
 ) => {
   if (!quotationData) return;
 
   const hasEmptyFields = tableData.some(
-    (item) => item.dTich.trim() === '' || item.hangMuc.trim() === ''
+    (item) => item.dTich.trim() === '' || item.hangMuc.trim() === '',
   );
 
   if (hasEmptyFields) {
     toast.error('Vui lòng điền đầy đủ D-Tích và Tên hạng mục trước khi lưu.');
     return;
   }
-
-  console.log('Data to be sent:', tableData);
 
   const requestData: UpdateInitialQuotationRequest = {
     versionPresent: version || 1,
@@ -145,6 +144,7 @@ export const handleSave = async (
   try {
     await updateInitialQuotation(requestData);
     toast.success('Dữ liệu đã được lưu thành công!');
+    navigate(`/project-detail-staff/${quotationData.ProjectId}`);
   } catch (error) {
     console.error('Error saving data:', error);
     toast.error('Có lỗi xảy ra khi lưu dữ liệu.');

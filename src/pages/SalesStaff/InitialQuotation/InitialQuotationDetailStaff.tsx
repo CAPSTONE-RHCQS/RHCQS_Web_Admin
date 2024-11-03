@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +27,7 @@ const InitialQuotationDetailStaff = () => {
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchQuotationData(
@@ -108,6 +109,7 @@ const InitialQuotationDetailStaff = () => {
             paymentSchedule,
             utilityInfos,
             promotionInfo,
+            navigate
           )
         }
       />
