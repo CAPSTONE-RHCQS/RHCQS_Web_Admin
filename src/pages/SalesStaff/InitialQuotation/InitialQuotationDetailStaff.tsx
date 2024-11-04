@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import { fetchQuotationData, handleSave } from './components/quotationHandlers';
-import { TableRow, OptionRow } from './components/types';
+import { TableRow } from './components/types';
 import ActionButtons from './components/ActionButtons';
 import QuotationSummary from './QuotationSummary';
 import {
@@ -24,7 +23,6 @@ const InitialQuotationDetailStaff = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
-  const [optionData, setOptionData] = useState<OptionRow[]>([]);
   const [batchPayment, setBatchPayment] = useState<any[]>([]);
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
@@ -133,6 +131,7 @@ const InitialQuotationDetailStaff = () => {
         totalUtilityCost={totalUtilityCost}
         promotionInfo={promotionInfo}
         giaTriHopDong={giaTriHopDong}
+        setGiaTriHopDong={setGiaTriHopDong}
         batchPayment={batchPayment}
         setBatchPayment={setBatchPayment}
         totalPercentage={totalPercentage}

@@ -3,10 +3,9 @@ import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
 import UtilityTable from './components/Table/UtilityTable';
-import { getPackageByName } from '../../../api/Package/PackageApi';
-import { Package } from '../../../types/SearchContainNameTypes';
 import ConstructionPrice from './components/Table/ConstructionPrice';
 import BatchPaymentTable from './components/Table/BatchPaymentTable';
+import ContractValueSummaryTable from './components/Table/ContractValueSummaryTable';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -24,6 +23,7 @@ interface QuotationSummaryProps {
   totalUtilityCost: number;
   promotionInfo: any;
   giaTriHopDong: number;
+  setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>;
   batchPayment: any[];
   setBatchPayment: React.Dispatch<React.SetStateAction<any[]>>;
   totalPercentage: number;
@@ -44,6 +44,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalUtilityCost,
   promotionInfo,
   giaTriHopDong,
+  setGiaTriHopDong,
   batchPayment,
   setBatchPayment,
   totalPercentage,
@@ -217,7 +218,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       <p className="text-lg mb-4">
         <strong>3. KHUYẾN MÃI:</strong>
       </p>
-      <div className="overflow-x-auto mb-4">
+      {/* <div className="overflow-x-auto mb-4">
         <table className="min-w-full bg-white border border-gray-200">
           <thead>
             <tr>
@@ -244,7 +245,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             )}
           </tbody>
         </table>
-      </div>
+      </div> */}
 
       <div className="mb-4">
         <p className="text-lg">
@@ -258,62 +259,12 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       <p className="text-lg mb-4">
         <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
       </p>
-      <div className="overflow-x-auto mb-4">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border text-center">Mô tả</th>
-              <th className="px-4 py-2 border text-center">Giá trị</th>
-              <th className="px-4 py-2 border text-center">Đơn vị</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="px-4 py-2 border text-left">Phần Thô Tiết Kiệm</td>
-              <td className="px-4 py-2 border text-center">
-                {thanhTien.toLocaleString()} VNĐ
-              </td>
-              <td className="px-4 py-2 border text-center">VNĐ</td>
-            </tr>
-            <tr>
-              <td className="px-4 py-2 border text-left">
-                Tùy chọn & Tiện ích
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {totalUtilityCost.toLocaleString()} VNĐ
-              </td>
-              <td className="px-4 py-2 border text-center">VNĐ</td>
-            </tr>
-            {promotionInfo && (
-              <tr>
-                <td className="px-4 py-2 border text-left">
-                  Khuyến mãi ({promotionInfo.Name})
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  -
-                  {(
-                    giaTriHopDong *
-                    (promotionInfo.Value / 100)
-                  ).toLocaleString()}{' '}
-                  VNĐ
-                </td>
-                <td className="px-4 py-2 border text-center">VNĐ</td>
-              </tr>
-            )}
-            <tr>
-              <td className="px-4 py-2 border text-center">
-                <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <strong>VNĐ</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <ContractValueSummaryTable
+        thanhTien={thanhTien}
+        totalUtilityCost={totalUtilityCost}
+        promotionInfo={promotionInfo}
+        updateGiaTriHopDong={setGiaTriHopDong}
+      />
 
       <div className="flex items-center">
         <p className="mt-4 mb-4 text-lg inline-block">
