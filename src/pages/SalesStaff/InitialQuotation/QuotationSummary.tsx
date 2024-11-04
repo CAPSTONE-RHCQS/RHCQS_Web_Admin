@@ -2,6 +2,7 @@ import React from 'react';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
+import UtilityTable from '../components/Table/UtilityTable';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -12,6 +13,7 @@ interface QuotationSummaryProps {
   donGia: number;
   thanhTien: number;
   utilityInfos: any[];
+  setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
   totalUtilityCost: number;
   promotionInfo: any;
   giaTriHopDong: number;
@@ -29,6 +31,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   donGia,
   thanhTien,
   utilityInfos,
+  setUtilityInfos,
   totalUtilityCost,
   promotionInfo,
   giaTriHopDong,
@@ -36,6 +39,33 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalPercentage,
   totalAmount,
 }) => {
+  const addUtilityRow = () => {
+    setUtilityInfos([
+      ...utilityInfos,
+      {
+        utilitiesItemId: '',
+        coefficient: 0,
+        price: 0,
+        description: '',
+      },
+    ]);
+  };
+
+  const addConstructionRow = () => {
+    setTableData([
+      ...tableData,
+      {
+        stt: tableData.length + 1,
+        hangMuc: '',
+        dTich: '',
+        heSo: '',
+        dienTich: '',
+        donVi: 'm²',
+        price: 0,
+      },
+    ]);
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -73,20 +103,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             </p>
             {isEditing && (
               <button
-                onClick={() =>
-                  setTableData([
-                    ...tableData,
-                    {
-                      stt: tableData.length + 1,
-                      hangMuc: '',
-                      dTich: '',
-                      heSo: '',
-                      dienTich: '',
-                      donVi: 'm²',
-                      price: 0,
-                    },
-                  ])
-                }
+                onClick={addConstructionRow}
                 className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200 inline-block"
               >
                 +
@@ -149,44 +166,25 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           </tbody>
         </table>
       </div>
-
-      <p className="text-lg mb-4">
-        <strong>2. TÙY CHỌN & TIỆN ÍCH:</strong>
-      </p>
-      <div className="overflow-x-auto mb-4">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th className="px-4 py-2 border text-center">Mô tả</th>
-              <th className="px-4 py-2 border text-center">Hệ số</th>
-              <th className="px-4 py-2 border text-center">Giá</th>
-            </tr>
-          </thead>
-          <tbody>
-            {utilityInfos.map((utility) => (
-              <tr key={utility.Id}>
-                <td className="px-4 py-2 border text-left">
-                  {utility.Description}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  {utility.Coefficient}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  {utility.Price.toLocaleString()} VNĐ
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td className="px-4 py-2 border text-center" colSpan={2}>
-                <strong>Tổng chi phí tiện ích</strong>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="flex items-center">
+        <p className="mt-4 mb-4 text-lg inline-block">
+          <strong>2. TÙY CHỌN & TIỆN ÍCH:</strong>
+        </p>
+        {isEditing && (
+          <button
+            onClick={addUtilityRow}
+            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+          >
+            +
+          </button>
+        )}
       </div>
+
+      <UtilityTable
+        utilityInfos={utilityInfos}
+        setUtilityInfos={setUtilityInfos}
+        isEditing={isEditing}
+      />
 
       <p className="text-lg mb-4">
         <strong>3. KHUYẾN MÃI:</strong>

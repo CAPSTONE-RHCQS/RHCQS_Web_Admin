@@ -6,12 +6,28 @@ import {
 } from '../../../api/InitialQuotation/InitialQuotationApi';
 import {
   InitialQuotationResponse,
+  QuotationUtility,
   UpdateInitialQuotationRequest,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 import { TableRow } from './components/types';
+import UtilityTable from '../components/Table/UtilityTable';
+import { Utility } from '../../../types/ConstructionUtilityTypes';
+
+// Định nghĩa hàm chuyển đổi từ UtilityInfo sang QuotationUtility
+const convertToQuotationUtility = (
+  utilityInfo: UtilityInfo,
+): QuotationUtility => {
+  return {
+    utilitiesItemId: utilityInfo.Id,
+    coefficient: utilityInfo.Coefficient,
+    price: utilityInfo.Price,
+    description: utilityInfo.Description,
+  };
+};
 
 const CreateInitialQuote = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -30,6 +46,7 @@ const CreateInitialQuote = () => {
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableRow[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -40,6 +57,8 @@ const CreateInitialQuote = () => {
 
           const initialTableData = data.ItemInitial.map(convertToTableRow);
           setTableData(initialTableData);
+
+          setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
         } catch (error) {
           console.error('Error fetching initial quotation:', error);
         }
@@ -74,8 +93,8 @@ const CreateInitialQuote = () => {
   );
   const donGia = quotationData.PackageQuotationList.UnitPackageRough;
   const thanhTien = totalDienTich * donGia;
-  const totalUtilityCost = quotationData.UtilityInfos.reduce(
-    (total, utility) => total + utility.Price,
+  const totalUtilityCost = utilityInfos.reduce(
+    (total, utility) => total + utility.price,
     0,
   );
   const giaTriHopDong =
@@ -149,11 +168,11 @@ const CreateInitialQuote = () => {
           type: 'FINISHED',
         },
       ],
-      utilities: quotationData.UtilityInfos.map((utility) => ({
-        utilitiesItemId: utility.Id,
-        coefiicient: utility.Coefficient,
-        price: utility.Price,
-        description: utility.Description,
+      utilities: utilityInfos.map((utility) => ({
+        utilitiesItemId: utility.utilitiesItemId,
+        coefficient: utility.coefficient,
+        price: utility.price,
+        description: utility.description,
       })),
       promotions: promotionInfo ? { id: promotionInfo.Id } : null,
       batchPayments: paymentSchedule.map((payment) => ({
@@ -185,6 +204,18 @@ const CreateInitialQuote = () => {
         dienTich: '',
         donVi: 'm²',
         price: 0,
+      },
+    ]);
+  };
+
+  const addUtilityRow = () => {
+    setUtilityInfos([
+      ...utilityInfos,
+      {
+        utilitiesItemId: '', // Hoặc một giá trị mặc định
+        coefficient: 0,
+        price: 0,
+        description: '',
       },
     ]);
   };
@@ -277,44 +308,22 @@ const CreateInitialQuote = () => {
         </div>
       </div>
 
-      <div className="mt-4">
-        <h3 className="text-lg font-bold">3. TÙY CHỌN & TIỆN ÍCH:</h3>
-        <div className="overflow-x-auto mb-4">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">Mô tả</th>
-                <th className="px-4 py-2 border text-center">Hệ số</th>
-                <th className="px-4 py-2 border text-center">Giá</th>
-              </tr>
-            </thead>
-            <tbody>
-              {quotationData.UtilityInfos.map((utility) => (
-                <tr key={utility.Id}>
-                  <td className="px-4 py-2 border text-left">
-                    {utility.Description || ''}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {utility.Coefficient}
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {utility.Price.toLocaleString()} VNĐ
-                  </td>
-                </tr>
-              ))}
-              <tr>
-                <td className="px-4 py-2 border text-center" colSpan={2}>
-                  <strong>Tổng chi phí tiện ích</strong>
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div className="flex items-center">
+        <p className="mt-4 mb-4 text-lg inline-block">
+          <strong>3. TÙY CHỌN & TIỆN ÍCH:</strong>
+        </p>
+        <button
+          onClick={addUtilityRow}
+          className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+        >
+          +
+        </button>
       </div>
-
+      <UtilityTable
+        utilityInfos={utilityInfos}
+        setUtilityInfos={setUtilityInfos}
+        isEditing={true}
+      />
       <div className="mt-4">
         <h3 className="text-lg font-bold">4. KHUYẾN MÃI:</h3>
         <input

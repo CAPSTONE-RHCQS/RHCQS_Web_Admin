@@ -10,7 +10,10 @@ import { fetchQuotationData, handleSave } from './components/quotationHandlers';
 import { TableRow, OptionRow } from './components/types';
 import ActionButtons from './components/ActionButtons';
 import QuotationSummary from './QuotationSummary';
-import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
+import {
+  InitialQuotationResponse,
+  QuotationUtility,
+} from '../../../types/InitialQuotationTypes';
 import { FaCommentDots } from 'react-icons/fa';
 
 const InitialQuotationDetailStaff = () => {
@@ -23,25 +26,29 @@ const InitialQuotationDetailStaff = () => {
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [optionData, setOptionData] = useState<OptionRow[]>([]);
   const [paymentSchedule, setPaymentSchedule] = useState<any[]>([]);
-  const [utilityInfos, setUtilityInfos] = useState<any[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchQuotationData(
-      id,
-      setQuotationData,
-      setVersion,
-      setTableData,
-      setGiaTriHopDong,
-      setPaymentSchedule,
-      setUtilityInfos,
-      setDonGia,
-      setPromotionInfo,
-    );
-  }, [id]);
+    const fetchData = async () => {
+      await fetchQuotationData(
+        id,
+        setQuotationData,
+        setVersion,
+        setTableData,
+        setGiaTriHopDong,
+        setPaymentSchedule,
+        setUtilityInfos,
+        setDonGia,
+        setPromotionInfo,
+      );
+    };
+
+    fetchData();
+  }, []);
 
   if (!quotationData) {
     return (
@@ -68,7 +75,7 @@ const InitialQuotationDetailStaff = () => {
   const thanhTien = totalDienTich * donGia;
 
   const totalUtilityCost = utilityInfos.reduce(
-    (total, utility) => total + utility.Price,
+    (total, utility) => total + utility.price,
     0,
   );
 
@@ -109,7 +116,7 @@ const InitialQuotationDetailStaff = () => {
             paymentSchedule,
             utilityInfos,
             promotionInfo,
-            navigate
+            navigate,
           )
         }
       />
@@ -122,6 +129,7 @@ const InitialQuotationDetailStaff = () => {
         donGia={donGia}
         thanhTien={thanhTien}
         utilityInfos={utilityInfos}
+        setUtilityInfos={setUtilityInfos}
         totalUtilityCost={totalUtilityCost}
         promotionInfo={promotionInfo}
         giaTriHopDong={giaTriHopDong}

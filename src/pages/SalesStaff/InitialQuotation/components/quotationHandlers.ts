@@ -1,6 +1,7 @@
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
+  QuotationUtility,
 } from '../../../../types/InitialQuotationTypes';
 import {
   getInitialQuotation,
@@ -8,6 +9,15 @@ import {
 } from '../../../../api/InitialQuotation/InitialQuotationApi';
 import { toast } from 'react-toastify';
 import { TableRow } from './types';
+
+const convertToQuotationUtility = (utility: any): QuotationUtility => {
+  return {
+    utilitiesItemId: utility.Id,
+    coefficient: utility.Coefficient,
+    price: utility.Price,
+    description: utility.Description,
+  };
+};
 
 export const fetchQuotationData = async (
   id: string | undefined,
@@ -18,7 +28,7 @@ export const fetchQuotationData = async (
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
   setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>,
   setPaymentSchedule: React.Dispatch<React.SetStateAction<any[]>>,
-  setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>,
+  setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
 ) => {
@@ -66,7 +76,7 @@ export const fetchQuotationData = async (
 
       setGiaTriHopDong(giaTriHopDong);
       setPaymentSchedule(data.BatchPaymentInfos);
-      setUtilityInfos(data.UtilityInfos);
+      setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
       setDonGia(data.PackageQuotationList.UnitPackageRough);
     } catch (error) {
       console.error('Error fetching quotation data:', error);
@@ -79,7 +89,7 @@ export const handleSave = async (
   tableData: TableRow[],
   version: number | null,
   paymentSchedule: any[],
-  utilityInfos: any[],
+  utilityInfos: QuotationUtility[],
   promotionInfo: any,
   navigate: (path: string) => void,
 ) => {
@@ -124,10 +134,10 @@ export const handleSave = async (
       },
     ],
     utilities: utilityInfos.map((utility) => ({
-      utilitiesItemId: utility.Id,
-      coefiicient: utility.Coefficient,
-      price: utility.Price,
-      description: utility.Description,
+      utilitiesItemId: utility.utilitiesItemId,
+      coefficient: utility.coefficient,
+      price: utility.price,
+      description: utility.description,
     })),
     promotions:
       promotionInfo &&

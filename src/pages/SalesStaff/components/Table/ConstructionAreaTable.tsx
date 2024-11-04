@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import {
   Construction,
   GetConstructionByNameResponse,
-} from '../../../../types/InitialQuotationTypes';
+} from '../../../../types/ConstructionUtilityTypes';
 import { getConstructionByName } from '../../../../api/InitialQuotation/InitialQuotationApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';

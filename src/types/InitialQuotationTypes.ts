@@ -68,16 +68,6 @@ export interface InitialQuotationResponse {
   BatchPaymentInfos: BatchPaymentInfo[];
 }
 
-export interface Construction {
-  Id: string;
-  SubConstructionId: string;
-  Name: string;
-  Price: number;
-  Coefficient: number;
-}
-
-export type GetConstructionByNameResponse = Construction[];
-
 interface Item {
   name: string;
   constructionItemId: string;
@@ -91,9 +81,9 @@ export interface Package {
   type: string;
 }
 
-export interface Utility {
+export interface QuotationUtility {
   utilitiesItemId: string;
-  coefiicient: number;
+  coefficient: number;
   price: number;
   description: string;
 }
@@ -120,7 +110,7 @@ export interface UpdateInitialQuotationRequest {
   totalUtilities: number;
   items: Item[];
   packages: Package[];
-  utilities: Utility[];
+  utilities: QuotationUtility[];
   promotions: Promotion | null;
   batchPayments: BatchPayment[];
 }

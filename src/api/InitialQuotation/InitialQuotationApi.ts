@@ -2,9 +2,9 @@ import requestWebRHCQS from '../../utils/axios';
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
-  GetConstructionByNameResponse,
 } from '../../types/InitialQuotationTypes';
 import { toast } from 'react-toastify';
+import { GetConstructionByNameResponse, GetUtilityByNameResponse } from '../../types/ConstructionUtilityTypes';
 
 export async function getInitialQuotation(
   id: string,
@@ -37,6 +37,23 @@ export async function getConstructionByName(
   } catch (error) {
     console.error(`Error fetching construction by name ${name}:`, error);
     throw new Error('Failed to fetch construction by name');
+  }
+}
+
+export async function getUtilityByName(
+  name: string,
+): Promise<GetUtilityByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/utilities/contain/name', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching utilities by name ${name}:`, error);
+    throw new Error('Failed to fetch utilities by name');
   }
 }
 
