@@ -46,14 +46,14 @@ export const fetchQuotationData = async (
           item.Coefficient !== 0 ? item.Coefficient : item.SubCoefficient || 0;
         return {
           stt: index + 1,
-          hangMuc: item.Name,
+          hangMuc: item.SubConstruction || item.Name,
           dTich: item.Area.toString(),
           heSo: coefficient.toString(),
           dienTich: (item.Area * coefficient).toString(),
           donVi: 'm²',
           price: item.Price,
           uniqueId: item.Id,
-          constructionItemId: item.ConstructionItemId,
+          constructionItemId: item.SubConstructionId || item.ConstructionItemId,
           subConstructionId: item.SubConstructionId ?? null,
         };
       });
