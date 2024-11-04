@@ -80,3 +80,29 @@ export interface HouseTemplateDetail {
   PackageHouses: PackageHouse[];
   ExteriorsUrls: ExteriorUrl[];
 } 
+
+// Create House Template
+export interface CreateHouseTemplateRequest {
+  name: string;
+  description: string;
+  numberOfFloor: number;
+  numberOfBed: number;
+  packageRoughId: string;
+  descriptionPackage: string;
+  subTemplates: SubTemplate[];
+}
+
+export interface SubTemplate {
+  buildingArea: number;
+  floorArea: number;
+  size: string;
+  templateItems: TemplateItem[];
+}
+
+export interface TemplateItem {
+  constructionItemId: string;
+  subConstructionItemId: string;
+  name: string;
+  area: number;
+  unit: string;
+}

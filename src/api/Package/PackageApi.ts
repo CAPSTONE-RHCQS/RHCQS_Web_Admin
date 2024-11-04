@@ -10,6 +10,14 @@ interface PackageResponse {
   Items: Package[];
 }
 
+
+export interface PackageTypeSearchResponse {
+  PackageId: string;
+  PackageName: string;
+  Type: string;
+  Price: number;
+}
+
 export const fetchPackages = async (
   page: number = 1,
   size: number = 10,
@@ -30,3 +38,26 @@ export const fetchPackages = async (
     }
   }
 };
+
+export const searchPackagesByName = async (
+  name: string,
+): Promise<AxiosResponse<PackageTypeSearchResponse[]>> => {
+  try {
+    const response = await requestWebRHCQS.get<PackageTypeSearchResponse[]>(
+      `/package/contain/name?name=${name}`,
+      {
+        headers: { accept: 'text/plain' },
+      },
+    );
+    return response;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      throw new Error(
+        (error.response && error.response.data) || 'Có lỗi xảy ra',
+      );
+    } else {
+      throw new Error('Có lỗi xảy ra');
+    }
+  }
+};
+

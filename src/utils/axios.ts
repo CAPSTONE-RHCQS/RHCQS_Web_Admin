@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { API_ROOT } from './constants';
+import { API_ROOT, API_ROOT_V2 } from './constants';
 
 // Custom Axios Type
 enum AxiosClientFactoryEnum {
@@ -31,7 +31,7 @@ const parseParams = (params: any): string => {
   return options ? options.slice(0, -1) : options;
 };
 
-const account = `${API_ROOT}`;
+const account = `${API_ROOT_V2}`;
 
 const requestWebRHCQS = axios.create({
   baseURL: account,

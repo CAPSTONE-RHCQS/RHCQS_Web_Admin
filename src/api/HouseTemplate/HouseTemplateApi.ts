@@ -4,6 +4,7 @@ import {
   HouseTemplateDetail,
   HouseTemplateResponse,
 } from '../../types/HouseTemplateTypes';
+import { CreateHouseTemplateRequest } from '../../types/HouseTemplateTypes';
 
 export const fetchHouseTemplates = async (
   page: number,
@@ -41,6 +42,23 @@ export const fetchHouseTemplateDetail = async (
     return response.data;
   } catch (error) {
     console.error('Error fetching house template detail:', error);
+    throw error;
+  }
+};
+
+export const createHouseTemplate = async (
+  request: CreateHouseTemplateRequest,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> =
+      await requestWebRHCQS.post('/housetemplate', request, {
+        headers: {
+          accept: 'text/plain',
+        },
+      });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating house template:', error);
     throw error;
   }
 };
