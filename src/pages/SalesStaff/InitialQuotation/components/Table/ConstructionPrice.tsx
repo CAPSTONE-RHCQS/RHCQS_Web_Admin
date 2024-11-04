@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Package } from '../../../types/SearchContainNameTypes';
-import { getPackageByName } from '../../../api/Package/PackageApi';
+import { Package } from '../../../../../types/SearchContainNameTypes';
+import { getPackageByName } from '../../../../../api/Package/PackageApi';
 
 interface ConstructionPriceProps {
   quotationData: any;

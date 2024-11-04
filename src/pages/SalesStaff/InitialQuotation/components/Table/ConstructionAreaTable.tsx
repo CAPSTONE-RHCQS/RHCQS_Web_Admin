@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import {
   Construction,
   GetConstructionByNameResponse,
-} from '../../../../types/SearchContainNameTypes';
-import { getConstructionByName } from '../../../../api/Construction/ConstructionApi';
+} from '../../../../../types/SearchContainNameTypes';
+import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { TableRow } from '../../InitialQuotation/components/types';
+import { TableRow } from '../types';
 
 interface ConstructionAreaTableProps {
   tableData: TableRow[];

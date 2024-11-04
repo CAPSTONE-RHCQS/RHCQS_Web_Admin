@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
+import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
-import UtilityTable from '../components/Table/UtilityTable';
+import UtilityTable from './components/Table/UtilityTable';
 import { getPackageByName } from '../../../api/Package/PackageApi';
 import { Package } from '../../../types/SearchContainNameTypes';
-import ConstructionPrice from './ConstructionPrice';
+import ConstructionPrice from './components/Table/ConstructionPrice';
+import BatchPaymentTable from './components/Table/BatchPaymentTable';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -23,7 +24,8 @@ interface QuotationSummaryProps {
   totalUtilityCost: number;
   promotionInfo: any;
   giaTriHopDong: number;
-  paymentSchedule: any[];
+  batchPayment: any[];
+  setBatchPayment: React.Dispatch<React.SetStateAction<any[]>>;
   totalPercentage: number;
   totalAmount: number;
 }
@@ -42,7 +44,8 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalUtilityCost,
   promotionInfo,
   giaTriHopDong,
-  paymentSchedule,
+  batchPayment,
+  setBatchPayment,
   totalPercentage,
   totalAmount,
 }) => {
@@ -71,6 +74,30 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         price: 0,
       },
     ]);
+  };
+
+  const addPaymentRow = () => {
+    setBatchPayment([
+      ...batchPayment,
+      {
+        Id: batchPayment.length + 1,
+        Description: '',
+        Percents: 0,
+        Price: 0,
+        Unit: 'VNĐ',
+      },
+    ]);
+  };
+
+  const handlePaymentChange = (index: number, field: string, value: any) => {
+    const newSchedule = [...batchPayment];
+    newSchedule[index] = { ...newSchedule[index], [field]: value };
+    setBatchPayment(newSchedule);
+  };
+
+  const handleDeletePayment = (index: number) => {
+    const newSchedule = batchPayment.filter((_, i) => i !== index);
+    setBatchPayment(newSchedule);
   };
 
   return (
@@ -288,58 +315,29 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         </table>
       </div>
 
-      <p className="text-lg mb-4">
-        <strong>6. CÁC ĐT THANH TOÁN:</strong>
-      </p>
-      <div className="overflow-x-auto mb-4">
-        <table className="min-w-full bg-white border border-gray-200">
-          <thead>
-            <tr>
-              <th
-                className="px-4 py-2 border text-center"
-                style={{ width: '10%' }}
-              >
-                Đợt
-              </th>
-              <th className="px-4 py-2 border text-left">Nội dung</th>
-              <th className="px-4 py-2 border text-center">T-Toán (%)</th>
-              <th className="px-4 py-2 border text-center">Số tiền</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paymentSchedule.map((row, index) => (
-              <tr key={row.Id}>
-                <td
-                  className="px-4 py-2 border text-center"
-                  style={{ width: '10%' }}
-                >
-                  {index + 1}
-                </td>
-                <td className="px-4 py-2 border text-left">
-                  {row.Description}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  {row.Percents}%
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  {row.Price.toLocaleString()} {row.Unit}
-                </td>
-              </tr>
-            ))}
-            <tr>
-              <td className="px-4 py-2 border text-center" colSpan={2}>
-                <strong>Tổng giá trị hợp đồng</strong>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <strong>{totalPercentage}%</strong>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <strong>{totalAmount.toLocaleString()} VNĐ</strong>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <div className="flex items-center">
+        <p className="mt-4 mb-4 text-lg inline-block">
+          <strong>6. CÁC ĐỢT THANH TOÁN:</strong>
+        </p>
+        {isEditing && (
+          <button
+            onClick={addPaymentRow}
+            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+          >
+            +
+          </button>
+        )}
       </div>
+
+      <BatchPaymentTable
+        batchPayment={batchPayment}
+        totalPercentage={totalPercentage}
+        totalAmount={totalAmount}
+        giaTriHopDong={giaTriHopDong}
+        isEditing={isEditing}
+        handlePaymentChange={handlePaymentChange}
+        handleDeletePayment={handleDeletePayment}
+      />
     </div>
   );
 };

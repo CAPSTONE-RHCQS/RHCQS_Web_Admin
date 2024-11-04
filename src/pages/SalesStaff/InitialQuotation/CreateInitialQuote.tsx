@@ -12,10 +12,10 @@ import {
 } from '../../../types/InitialQuotationTypes';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
-import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
+import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { TableRow } from './components/types';
-import UtilityTable from '../components/Table/UtilityTable';
-import ConstructionPrice from './ConstructionPrice';
+import UtilityTable from './components/Table/UtilityTable';
+import ConstructionPrice from './components/Table/ConstructionPrice';
 
 const convertToQuotationUtility = (
   utilityInfo: UtilityInfo,

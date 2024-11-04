@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { getUtilityByName } from '../../../../api/Utility/UtilityApi';
-import { QuotationUtility } from '../../../../types/InitialQuotationTypes';
-import { Utility } from '../../../../types/SearchContainNameTypes';
+import { getUtilityByName } from '../../../../../api/Utility/UtilityApi';
+import { QuotationUtility } from '../../../../../types/InitialQuotationTypes';
+import { Utility } from '../../../../../types/SearchContainNameTypes';
 
 interface UtilityTableProps {
   utilityInfos: QuotationUtility[];

@@ -25,7 +25,7 @@ const InitialQuotationDetailStaff = () => {
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [optionData, setOptionData] = useState<OptionRow[]>([]);
-  const [paymentSchedule, setPaymentSchedule] = useState<any[]>([]);
+  const [batchPayment, setBatchPayment] = useState<any[]>([]);
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
@@ -40,7 +40,7 @@ const InitialQuotationDetailStaff = () => {
         setVersion,
         setTableData,
         setGiaTriHopDong,
-        setPaymentSchedule,
+        setBatchPayment,
         setUtilityInfos,
         setDonGia,
         setPromotionInfo,
@@ -78,13 +78,13 @@ const InitialQuotationDetailStaff = () => {
     0,
   );
 
-  const totalPercentage = paymentSchedule.reduce(
+  const totalPercentage = batchPayment.reduce(
     (total, row) => total + parseFloat(row.Percents),
     0,
   );
 
-  const totalAmount = paymentSchedule.reduce(
-    (total, row) => total + row.Price,
+  const totalAmount = batchPayment.reduce(
+    (total, row) => total + (row.Percents / 100) * giaTriHopDong,
     0,
   );
 
@@ -112,7 +112,7 @@ const InitialQuotationDetailStaff = () => {
             quotationData,
             tableData,
             version,
-            paymentSchedule,
+            batchPayment,
             utilityInfos,
             promotionInfo,
             navigate,
@@ -133,7 +133,8 @@ const InitialQuotationDetailStaff = () => {
         totalUtilityCost={totalUtilityCost}
         promotionInfo={promotionInfo}
         giaTriHopDong={giaTriHopDong}
-        paymentSchedule={paymentSchedule}
+        batchPayment={batchPayment}
+        setBatchPayment={setBatchPayment}
         totalPercentage={totalPercentage}
         totalAmount={totalAmount}
       />
