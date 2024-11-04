@@ -61,11 +61,6 @@ export const fetchQuotationData = async (
 
       const totalRough = data.TotalRough;
       const totalUtilities = data.TotalUtilities;
-      const totalUtilityCost = data.UtilityInfos.reduce(
-        (total, utility) => total + utility.Price,
-        0,
-      );
-
       let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
 
       if (data.PromotionInfo) {

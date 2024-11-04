@@ -1,3 +1,4 @@
+import { GetConstructionByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 import axios from 'axios';
 
@@ -119,3 +120,20 @@ export const postConstructionContract = async (
     throw error;
   }
 };
+
+export async function getConstructionByName(
+  name: string,
+): Promise<GetConstructionByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/construction/contain/name', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw new Error('Failed to fetch construction by name');
+  }
+}

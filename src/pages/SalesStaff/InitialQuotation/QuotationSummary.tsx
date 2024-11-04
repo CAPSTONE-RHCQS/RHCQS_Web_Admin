@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
 import UtilityTable from '../components/Table/UtilityTable';
+import { getPackageByName } from '../../../api/Package/PackageApi';
+import { Package } from '../../../types/SearchContainNameTypes';
+import ConstructionPrice from './ConstructionPrice';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
+  setQuotationData: React.Dispatch<
+    React.SetStateAction<InitialQuotationResponse | null>
+  >;
   tableData: TableRow[];
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>;
   isEditing: boolean;
@@ -24,6 +30,7 @@ interface QuotationSummaryProps {
 
 const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   quotationData,
+  setQuotationData,
   tableData,
   setTableData,
   isEditing,
@@ -78,25 +85,19 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           </div>
         </div>
       </div>
+      <div className="flex items-center mb-4">
+        <div className="mb-4">
+          <p className="text-lg font-bold mb-2">1. ĐƠN GIÁ THI CÔNG</p>
+          <ConstructionPrice
+            quotationData={quotationData}
+            setQuotationData={setQuotationData}
+            isEditing={isEditing}
+          />
+        </div>
+      </div>
 
       <div className="flex items-center mb-4">
         <div className="mb-4">
-          <p className="mt-4 mb-4 text-lg">
-            <strong>1. ĐƠN GIÁ THI CÔNG</strong>
-          </p>
-          <p className="mb-2">
-            {quotationData.PackageQuotationList.PackageRough} -{' '}
-            {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-            đồng/m²
-          </p>
-          {quotationData.PackageQuotationList.PackageFinished &&
-            quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-              <p className="mb-2">
-                {quotationData.PackageQuotationList.PackageFinished} -{' '}
-                {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
-                đồng/m²
-              </p>
-            )}
           <div className="flex items-center">
             <p className="mt-4 mb-4 text-lg inline-block">
               <strong>Diện tích xây dựng theo phương án thiết kế:</strong>

@@ -15,9 +15,8 @@ import { toast } from 'react-toastify';
 import ConstructionAreaTable from '../components/Table/ConstructionAreaTable';
 import { TableRow } from './components/types';
 import UtilityTable from '../components/Table/UtilityTable';
-import { Utility } from '../../../types/ConstructionUtilityTypes';
+import ConstructionPrice from './ConstructionPrice';
 
-// Định nghĩa hàm chuyển đổi từ UtilityInfo sang QuotationUtility
 const convertToQuotationUtility = (
   utilityInfo: UtilityInfo,
 ): QuotationUtility => {
@@ -212,7 +211,7 @@ const CreateInitialQuote = () => {
     setUtilityInfos([
       ...utilityInfos,
       {
-        utilitiesItemId: '', // Hoặc một giá trị mặc định
+        utilitiesItemId: '',
         coefficient: 0,
         price: 0,
         description: '',
@@ -223,36 +222,36 @@ const CreateInitialQuote = () => {
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4">Khởi tạo báo giá sơ bộ</h2>
-      <div className="mb-4">
-        <p className="text-lg">
-          <strong>1. ĐƠN GIÁ THI CÔNG</strong>
-        </p>
-        <p className="mb-2">
-          {quotationData.PackageQuotationList.PackageRough} -{' '}
-          {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-          đồng/m²
-        </p>
-        {quotationData.PackageQuotationList.PackageFinished &&
-          quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-            <p className="mb-2">
-              {quotationData.PackageQuotationList.PackageFinished} -{' '}
-              {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
-              đồng/m²
-            </p>
-          )}
-        <div className="flex items-center">
-          <p className="mt-4 mb-4 text-lg inline-block">
-            <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
-          </p>
-          <button
-            onClick={addTableRow}
-            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-          >
-            +
-          </button>
+      <div className="flex items-center mb-4">
+        <div className="mb-4">
+          <p className="text-lg font-bold mb-2">1. ĐƠN GIÁ THI CÔNG</p>
+          <ConstructionPrice
+            quotationData={quotationData}
+            setQuotationData={setQuotationData}
+            isEditing={true}
+          />
         </div>
       </div>
-
+      <ConstructionPrice
+        quotationData={quotationData}
+        setQuotationData={setQuotationData}
+        isEditing={false}
+      />
+      <div className="flex items-center mb-4">
+        <div className="mb-4">
+          <div className="flex items-center">
+            <p className="mt-4 mb-4 text-lg inline-block">
+              <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
+            </p>
+            <button
+              onClick={addTableRow}
+              className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
       <ConstructionAreaTable
         tableData={tableData}
         isEditing={true}
@@ -271,7 +270,6 @@ const CreateInitialQuote = () => {
         totalDienTich={totalDienTich}
         setTableData={setTableData}
       />
-
       <div className="mt-4">
         <h3 className="text-lg font-bold">
           2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG TRƯỚC THUẾ:
@@ -307,7 +305,6 @@ const CreateInitialQuote = () => {
           </table>
         </div>
       </div>
-
       <div className="flex items-center">
         <p className="mt-4 mb-4 text-lg inline-block">
           <strong>3. TÙY CHỌN & TIỆN ÍCH:</strong>
@@ -341,7 +338,6 @@ const CreateInitialQuote = () => {
           className="w-full p-2 border rounded mt-2"
         />
       </div>
-
       <div className="mt-4">
         <h3 className="text-lg font-bold">5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</h3>
         <div className="overflow-x-auto mb-4">
@@ -398,7 +394,6 @@ const CreateInitialQuote = () => {
           </table>
         </div>
       </div>
-
       <div className="mt-4">
         <h3 className="text-lg font-bold">6. CÁC ĐỢT THANH TOÁN:</h3>
         {paymentSchedule.map((payment, index) => (
@@ -485,7 +480,6 @@ const CreateInitialQuote = () => {
           Thêm đợt thanh toán
         </button>
       </div>
-
       <div className="mt-6 flex justify-end">
         <button
           type="button"

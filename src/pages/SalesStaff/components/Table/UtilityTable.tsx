@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-import { getUtilityByName } from '../../../../api/InitialQuotation/InitialQuotationApi';
+import { getUtilityByName } from '../../../../api/Utility/UtilityApi';
 import { QuotationUtility } from '../../../../types/InitialQuotationTypes';
-import { Utility } from '../../../../types/ConstructionUtilityTypes';
+import { Utility } from '../../../../types/SearchContainNameTypes';
 
 interface UtilityTableProps {
   utilityInfos: QuotationUtility[];
@@ -12,7 +12,6 @@ interface UtilityTableProps {
   isEditing: boolean;
 }
 
-// Hàm chuyển đổi từ Utility sang QuotationUtility
 const convertToQuotationUtility = (utility: Utility): QuotationUtility => {
   return {
     utilitiesItemId: utility.UtilityItemId || utility.UtilitySectionId,

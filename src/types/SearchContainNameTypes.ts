@@ -17,3 +17,12 @@ export interface Utility {
 }
 
 export type GetUtilityByNameResponse = Utility[];
+
+export interface Package {
+  PackageId: string;
+  PackageName: string;
+  Type: string;
+  Price: number;
+}
+
+export type GetPackageByNameResponse = Package[];

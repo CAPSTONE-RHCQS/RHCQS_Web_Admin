@@ -1,6 +1,7 @@
 import requestWebRHCQS from '../../utils/axios';
 import { AxiosResponse, AxiosError } from 'axios';
 import { Package } from '../../types/PackagesTypes';
+import { GetPackageByNameResponse } from '../../types/SearchContainNameTypes';
 
 interface PackageResponse {
   Size: number;
@@ -30,3 +31,20 @@ export const fetchPackages = async (
     }
   }
 };
+
+export async function getPackageByName(
+  name: string,
+): Promise<GetPackageByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/package/contain/name', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching package by name ${name}:`, error);
+    throw new Error('Failed to fetch package by name');
+  }
+}

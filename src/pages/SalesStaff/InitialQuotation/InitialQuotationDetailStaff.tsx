@@ -66,7 +66,6 @@ const InitialQuotationDetailStaff = () => {
     setIsEditing(!isEditing);
   };
 
-  // Tính toán các giá trị cần thiết
   const totalDienTich = tableData.reduce((total, row) => {
     const dienTich = parseFloat(row.dienTich);
     return total + (isNaN(dienTich) ? 0 : dienTich);
@@ -122,6 +121,7 @@ const InitialQuotationDetailStaff = () => {
       />
       <QuotationSummary
         quotationData={quotationData}
+        setQuotationData={setQuotationData}
         tableData={tableData}
         setTableData={setTableData}
         isEditing={isEditing}
