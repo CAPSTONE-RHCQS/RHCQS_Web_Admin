@@ -1,0 +1,43 @@
+import React from 'react';
+import { FaDownload, FaShareAlt } from 'react-icons/fa';
+
+interface ButtonGroupProps {
+  isEditing: boolean;
+  handleSave: () => void;
+  handleEditToggle: () => void;
+  handleDownload: () => void;
+  handleShare: () => void;
+}
+
+const ButtonGroup: React.FC<ButtonGroupProps> = ({
+  isEditing,
+  handleSave,
+  handleEditToggle,
+  handleDownload,
+  handleShare,
+}) => {
+  return (
+    <div className="flex justify-end space-x-2">
+      <button
+        onClick={isEditing ? handleSave : handleEditToggle}
+        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+      >
+        {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+      </button>
+      <button
+        onClick={handleDownload}
+        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+      >
+        <FaDownload className="text-lg" />
+      </button>
+      <button
+        onClick={handleShare}
+        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+      >
+        <FaShareAlt className="text-lg" />
+      </button>
+    </div>
+  );
+};
+
+export default ButtonGroup; 

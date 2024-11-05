@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { getProjectsStaff } from '../api/Project/ProjectApi';
+import { getProjectsListSalesStaff } from '../api/Project/ProjectApi';
 import axios from 'axios';
 
-type Email = {
+type Project = {
   id: string;
   projectId: string;
   projectName: string;
@@ -10,7 +10,6 @@ type Email = {
   category: string;
   date: string;
   status: string;
-  isChecked: boolean;
 };
 
 type SortConfig = {
@@ -19,18 +18,17 @@ type SortConfig = {
 };
 
 const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
-  const [emails, setEmails] = useState<Email[]>([]); // Chỉ định kiểu Email[]
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [totalPages, setTotalPages] = useState(1);
-  const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<SortConfig | null>(null);
 
   useEffect(() => {
     const fetchProjects = async (page: number) => {
       setLoading(true);
       try {
-        const data = await getProjectsStaff(page, 10);
+        const data = await getProjectsListSalesStaff(page, 10);
         if (data.Items.length === 0) {
           setError('Hiện tại chưa có dự án nào...');
         } else {
@@ -42,9 +40,8 @@ const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
             category: item.Type,
             date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
             status: item.Status,
-            isChecked: false,
           }));
-          setEmails(formattedData);
+          setProjects(formattedData);
           setTotalPages(data.TotalPages);
           setError(null);
         }
@@ -68,21 +65,6 @@ const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
     fetchProjects(currentPage);
   }, [currentPage, refreshKey]);
 
-  const handleSelectAll = () => {
-    const newIsAllChecked = !isAllChecked;
-    setIsAllChecked(newIsAllChecked);
-    setEmails(
-      emails.map((email) => ({ ...email, isChecked: newIsAllChecked })),
-    );
-  };
-
-  const handleCheckboxChange = (index: number) => {
-    const newEmails = [...emails];
-    newEmails[index].isChecked = !newEmails[index].isChecked;
-    setEmails(newEmails);
-    setIsAllChecked(newEmails.every((email) => email.isChecked));
-  };
-
   const handleSort = (key: string) => {
     let direction: 'ascending' | 'descending' = 'ascending';
     if (
@@ -94,9 +76,9 @@ const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
     }
     setSortConfig({ key, direction });
 
-    const sortedEmails = [...emails].sort((a, b) => {
-      const aValue = a[key as keyof Email];
-      const bValue = b[key as keyof Email];
+    const sortedProjects = [...projects].sort((a, b) => {
+      const aValue = a[key as keyof Project];
+      const bValue = b[key as keyof Project];
 
       if (
         key === 'date' &&
@@ -118,17 +100,14 @@ const useProjectsSalesStaff = (currentPage: number, refreshKey: number) => {
       return 0;
     });
 
-    setEmails(sortedEmails);
+    setProjects(sortedProjects);
   };
 
   return {
-    emails,
+    projects,
     loading,
     error,
     totalPages,
-    isAllChecked,
-    handleSelectAll,
-    handleCheckboxChange,
     handleSort,
     sortConfig,
   };

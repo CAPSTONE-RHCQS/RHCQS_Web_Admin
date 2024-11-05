@@ -1,21 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { getFinalQuotation } from '../../../api/Project/FinalQuotationApi';
-import { FinalQuotationDetail as FinalQuotationDetailType } from '../../../types/QuotationTypes';
+import { getFinalQuotation } from '../../../api/FinalQuotation/FinalQuotationApi';
+import {
+  FinalQuotationDetail as FinalQuotationDetailType,
+  UtilityInfo,
+  EquipmentItem,
+  BatchPaymentInfo,
+  FinalQuotationItem,
+} from '../../../types/FinalQuotationTypes';
 import BatchPaymentTable from './Table/BatchPaymentTable';
 import EquipmentTable from './Table/EquipmentTable';
 import FinalQuotationTable from './Table/FinalQuotationTable';
+import UtilityInfoTable from './Table/UtilityInfoTable';
 import FinalQuotationStatus from '../../../components/StatusTracker/FinalQuotationStatus';
 import {
   FaUser,
   FaMapMarkerAlt,
   FaMoneyBillWave,
-  FaDownload,
-  FaShareAlt,
   FaChevronDown,
   FaChevronUp,
+  FaPlus,
 } from 'react-icons/fa';
+import 'react-toastify/dist/ReactToastify.css';
+import ButtonGroup from './ButtonGroup';
+import { handleSave, handleEditToggle } from './handlers';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -25,6 +34,7 @@ const FinalQuotationDetailStaff = () => {
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
+  const [showUtilities, setShowUtilities] = useState(false);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -43,10 +53,128 @@ const FinalQuotationDetailStaff = () => {
     fetchQuotationDetail();
   }, [id]);
 
+  const handleUtilitiesChange = (updatedUtilities: UtilityInfo[]) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        UtilityInfos: updatedUtilities,
+      });
+    }
+  };
+
+  const handleEquipmentItemsChange = (updatedItems: EquipmentItem[]) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        EquipmentItems: updatedItems,
+      });
+    }
+  };
+
+  const handleBatchPaymentsChange = (updatedPayments: BatchPaymentInfo[]) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        BatchPaymentInfos: updatedPayments,
+      });
+    }
+  };
+
+  const addBatchPaymentRow = () => {
+    if (quotationDetail) {
+      const newPayment: BatchPaymentInfo = {
+        PaymentId: '',
+        InitailQuotationId: '',
+        ContractId: '',
+        InsDate: new Date().toISOString(),
+        Status: 'Pending',
+        UpsDate: new Date().toISOString(),
+        Description: '',
+        Percents: '0',
+        Price: 0,
+        Unit: 'VNĐ',
+        PaymentDate: new Date().toISOString(),
+        PaymentPhase: new Date().toISOString(),
+      };
+      const updatedPayments = [
+        ...quotationDetail.BatchPaymentInfos,
+        newPayment,
+      ];
+      setQuotationDetail({
+        ...quotationDetail,
+        BatchPaymentInfos: updatedPayments,
+      });
+      console.log('Added new payment row:', newPayment);
+    } else {
+      console.error('Quotation detail is null');
+    }
+  };
+
+  const handleFinalQuotationItemsChange = (
+    updatedItems: FinalQuotationItem[],
+  ) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
+      });
+    }
+  };
+
+  const addFinalQuotationRow = () => {
+    if (quotationDetail) {
+      const newQuotationItem: FinalQuotationItem = {
+        Id: `new-${Date.now()}`,
+        ContructionId: '',
+        ContructionName: '',
+        Type: '',
+        Coefficient: 0,
+        InsDate: null,
+        QuotationItems: [
+          {
+            Id: `new-quotation-${Date.now()}`,
+            Name: '',
+            Unit: '',
+            Weight: 0,
+            UnitPriceLabor: null,
+            UnitPriceRough: null,
+            UnitPriceFinished: null,
+            TotalPriceLabor: null,
+            TotalPriceRough: null,
+            TotalPriceFinished: null,
+            InsDate: null,
+            UpsDate: null,
+            Note: null,
+            QuotationLabors: [],
+            QuotationMaterials: [],
+          },
+        ],
+      };
+      const updatedItems = [
+        ...quotationDetail.FinalQuotationItems,
+        newQuotationItem,
+      ];
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
+      });
+    }
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing) {
+      setShowBatchPayments(true);
+      setShowEquipmentCosts(true);
+      setShowDetailedItems(true);
+      setShowUtilities(true);
+    }
+  };
+
   if (!quotationDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={50} color={'#123abc'} loading={true} />
+        <ClipLoader size={50} color={'#5BABAC'} loading={true} />
       </div>
     );
   }
@@ -59,35 +187,38 @@ const FinalQuotationDetailStaff = () => {
     // Logic chia sẻ
   };
 
-  const handleEditToggle = () => {
-    setIsEditing(!isEditing);
+  const addUtilityRow = () => {
+    if (quotationDetail) {
+      const newUtility: UtilityInfo = {
+        Id: '',
+        utilitiesItemId: '',
+        utilitiesSectionId: '',
+        Name: '',
+        Coefficient: 0,
+        UnitPrice: 0,
+        Price: 0,
+        Unit: '',
+        Description: '',
+      };
+      const updatedUtilities = [...quotationDetail.UtilityInfos, newUtility];
+      setQuotationDetail({
+        ...quotationDetail,
+        UtilityInfos: updatedUtilities,
+      });
+    }
   };
 
   return (
     <div>
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
 
-      <div className="flex justify-end space-x-2">
-        <button
-          onClick={handleEditToggle}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-        >
-          {isEditing ? 'Lưu' : 'Chỉnh sửa'}
-        </button>
-        <button
-          onClick={handleDownload}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-        >
-          <FaDownload className="text-lg" />
-        </button>
-
-        <button
-          onClick={handleShare}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-        >
-          <FaShareAlt className="text-lg" />
-        </button>
-      </div>
+      <ButtonGroup
+        isEditing={isEditing}
+        handleSave={() => handleSave(quotationDetail, setIsEditing)}
+        handleEditToggle={handleEditToggle}
+        handleDownload={handleDownload}
+        handleShare={handleShare}
+      />
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">Thông tin báo giá chi tiết</h2>
@@ -123,21 +254,116 @@ const FinalQuotationDetailStaff = () => {
             {quotationDetail.TotalPrice.toLocaleString()} VNĐ
           </span>
         </div>
-        <hr className="my-4 border-gray-300" />
 
-        <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
-          onClick={() => setShowBatchPayments(!showBatchPayments)}
-        >
-          1. Các đợt thanh toán:
-          {showBatchPayments ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
-          )}
-        </h3>
-        {showBatchPayments && (
-          <BatchPaymentTable payments={quotationDetail.BatchPaymentInfos} />
+        {/* Thêm thông tin PromotionInfo */}
+        {/* {quotationDetail.PromotionInfo && (
+          <div className="mb-2 text-lg flex items-center">
+            <span className="font-semibold">Khuyến mãi:</span>
+            <span className="text-gray-700 ml-2">
+              {quotationDetail.PromotionInfo.Name} -{' '}
+              {quotationDetail.PromotionInfo.Percents}%
+            </span>
+          </div>
+        )} */}
+
+        {/* Thêm thông tin ConstructionRough và ConstructionFinished */}
+        <div className="mb-2 text-lg">
+          <span className="font-semibold">Chi tiết xây dựng:</span>
+          <div className="ml-6">
+            <div className="text-gray-700">
+              <span className="font-semibold">Thô:</span>{' '}
+              {quotationDetail.ConstructionRough.TotalPriceRough.toLocaleString()}{' '}
+              VNĐ
+            </div>
+            <div className="text-gray-700">
+              <span className="font-semibold">Hoàn thiện:</span>{' '}
+              {quotationDetail.ConstructionFinished.TotalPriceRough.toLocaleString()}{' '}
+              VNĐ
+            </div>
+          </div>
+        </div>
+
+        {/* Thêm thông tin Equitment */}
+        <div className="mb-2 text-lg">
+          <span className="font-semibold">Thiết bị:</span>
+          <div className="ml-6">
+            <div className="text-gray-700">
+              <span className="font-semibold">Thô:</span>{' '}
+              {quotationDetail.Equitment.TotalPriceRough.toLocaleString()} VNĐ
+            </div>
+            <div className="text-gray-700">
+              <span className="font-semibold">Hoàn thiện:</span>{' '}
+              {quotationDetail.Equitment.TotalPriceLabor.toLocaleString()} VNĐ
+            </div>
+          </div>
+        </div>
+
+        <hr className="my-4 border-gray-300" />
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowDetailedItems(!showDetailedItems)}
+            >
+              <strong className="text-xl font-bold">
+                1. Các hạng mục báo giá chi tiết:
+              </strong>
+              {showDetailedItems ? (
+                <FaChevronUp className="ml-2" />
+              ) : (
+                <FaChevronDown className="ml-2" />
+              )}
+            </div>
+            {isEditing && (
+              <button
+                onClick={addFinalQuotationRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
+            )}
+          </div>
+        </div>
+        {showDetailedItems && (
+          <FinalQuotationTable
+            items={quotationDetail.FinalQuotationItems}
+            onItemsChange={handleFinalQuotationItemsChange}
+            isEditing={isEditing}
+          />
+        )}
+
+        <hr className="my-4 border-gray-300" />
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowUtilities(!showUtilities)}
+            >
+              <strong className="text-xl font-bold">
+                2. Tùy chọn & Tiện ích:
+              </strong>
+              {showUtilities ? (
+                <FaChevronUp className="ml-2" />
+              ) : (
+                <FaChevronDown className="ml-2" />
+              )}
+            </div>
+            {isEditing && (
+              <button
+                onClick={addUtilityRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
+            )}
+          </div>
+        </div>
+        {showUtilities && (
+          <UtilityInfoTable
+            utilities={quotationDetail.UtilityInfos}
+            isEditing={isEditing}
+            onUtilitiesChange={handleUtilitiesChange}
+          />
         )}
 
         <hr className="my-4 border-gray-300" />
@@ -146,7 +372,7 @@ const FinalQuotationDetailStaff = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer"
           onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
         >
-          2. Chi Phí Thiết bị:
+          3. Chi Phí Thiết bị:
           {showEquipmentCosts ? (
             <FaChevronUp className="ml-2" />
           ) : (
@@ -154,24 +380,46 @@ const FinalQuotationDetailStaff = () => {
           )}
         </h3>
         {showEquipmentCosts && (
-          <EquipmentTable items={quotationDetail.EquipmentItems} />
+          <EquipmentTable
+            items={quotationDetail.EquipmentItems}
+            isEditing={isEditing}
+            onItemsChange={handleEquipmentItemsChange}
+          />
         )}
 
         <hr className="my-4 border-gray-300" />
-
-        <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
-          onClick={() => setShowDetailedItems(!showDetailedItems)}
-        >
-          3. Các hạng mục báo giá chi tiết:
-          {showDetailedItems ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
-          )}
-        </h3>
-        {showDetailedItems && (
-          <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowBatchPayments(!showBatchPayments)}
+            >
+              <strong className="text-xl font-bold">
+                4. Các đợt thanh toán:
+              </strong>
+              {showBatchPayments ? (
+                <FaChevronUp className="ml-2" />
+              ) : (
+                <FaChevronDown className="ml-2" />
+              )}
+            </div>
+            {isEditing && (
+              <button
+                onClick={addBatchPaymentRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
+            )}
+          </div>
+        </div>
+        {showBatchPayments && (
+          <BatchPaymentTable
+            payments={quotationDetail.BatchPaymentInfos}
+            isEditing={isEditing}
+            totalPrice={quotationDetail.TotalPrice}
+            onPaymentsChange={handleBatchPaymentsChange}
+          />
         )}
       </div>
     </div>

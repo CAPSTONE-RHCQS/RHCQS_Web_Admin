@@ -44,7 +44,7 @@ const HouseTemplateList: React.FC = () => {
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader color="#123abc" />
+        <ClipLoader color="#5BABAC" />
       </div>
     );
   if (error) return <div className="text-center text-red-500">{error}</div>;

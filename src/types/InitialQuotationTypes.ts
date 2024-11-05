@@ -68,7 +68,7 @@ export interface InitialQuotationResponse {
   BatchPaymentInfos: BatchPaymentInfo[];
 }
 
-export interface Item {
+interface Item {
   name: string;
   constructionItemId: string;
   subConstructionId: string | null;
@@ -81,9 +81,9 @@ export interface Package {
   type: string;
 }
 
-export interface Utility {
+export interface QuotationUtility {
   utilitiesItemId: string;
-  coefiicient: number;
+  coefficient: number;
   price: number;
   description: string;
 }
@@ -110,7 +110,7 @@ export interface UpdateInitialQuotationRequest {
   totalUtilities: number;
   items: Item[];
   packages: Package[];
-  utilities: Utility[];
+  utilities: QuotationUtility[];
   promotions: Promotion | null;
   batchPayments: BatchPayment[];
 }
