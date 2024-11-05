@@ -1,5 +1,7 @@
 export interface BatchPaymentInfo {
   PaymentId: string;
+  InitailQuotationId: string;
+  ContractId: string;
   InsDate: string;
   Status: string;
   UpsDate: string;
@@ -23,6 +25,7 @@ export interface EquipmentItem {
 
 export interface QuotationMaterial {
   Id: string;
+  MaterialId: string;
   MaterialName: string;
   Unit: string;
   MaterialPrice: number;
@@ -30,6 +33,7 @@ export interface QuotationMaterial {
 
 export interface QuotationLabor {
   Id: string;
+  LaborId: string;
   LaborName: string;
   LaborPrice: number;
 }
@@ -54,6 +58,7 @@ export interface QuotationItem {
 
 export interface FinalQuotationItem {
   Id: string;
+  ContructionId: string;
   ContructionName: string;
   Type: string;
   Coefficient: number;
@@ -71,9 +76,14 @@ export interface PromotionInfo {
 
 export interface UtilityInfo {
   Id: string;
+  utilitiesItemId: string;
+  utilitiesSectionId: string;
+  Name: string;
   Description: string;
   Coefficient: number;
   Price: number;
+  UnitPrice: number;
+  Unit: string;
 }
 
 export interface ConstructionDetail {
@@ -92,6 +102,7 @@ export interface FinalQuotationDetail {
   Id: string;
   AccountName: string;
   ProjectId: string;
+  InitailQuotationId: string;
   ProjectType: string;
   ProjectAddress: string;
   TotalPrice: number;
@@ -116,6 +127,7 @@ export interface FinalQuotationResponse {
   Id: string;
   AccountName: string;
   ProjectId: string;
+  InitailQuotationId: string;
   ProjectType: string;
   ProjectAddress: string;
   TotalPrice: number;

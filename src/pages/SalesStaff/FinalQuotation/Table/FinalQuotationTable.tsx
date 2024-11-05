@@ -21,9 +21,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
             <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
-            <th className="px-4 py-2 border text-center">
-              Tổng giá vật tư thô
-            </th>
+            <th className="px-4 py-2 border text-center">Tổng giá vật tư thô</th>
           </tr>
         </thead>
         <tbody>
@@ -52,7 +50,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                   className="px-4 py-2 border text-center"
                   rowSpan={item.QuotationItems.length + 1}
                 >
-                  {item.InsDate || 'null'}
+                  {item.InsDate ? new Date(item.InsDate).toLocaleDateString() : 'null'}
                 </td>
               </tr>
               {item.QuotationItems.map((quotationItem) => (
@@ -67,20 +65,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                     {quotationItem.Weight}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceLabor?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.UnitPriceLabor?.toLocaleString() || 'null'} VNĐ
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceRough?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.UnitPriceRough?.toLocaleString() || 'null'} VNĐ
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceLabor?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.TotalPriceLabor?.toLocaleString() || 'null'} VNĐ
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceRough?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.TotalPriceRough?.toLocaleString() || 'null'} VNĐ
                   </td>
                 </tr>
               ))}
