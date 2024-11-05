@@ -1,5 +1,5 @@
 import React from 'react';
-import { FinalQuotationItem } from '../../../../types/FinalQuotationTypes';
+import { FinalQuotationItem } from '../../../../../types/FinalQuotationTypes';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -13,8 +13,6 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
           <tr>
             <th className="px-4 py-2 border text-center">Tên công trình</th>
             <th className="px-4 py-2 border text-center">Loại</th>
-            <th className="px-4 py-2 border text-center">Hệ số</th>
-            <th className="px-4 py-2 border text-center">Ngày tạo</th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
             <th className="px-4 py-2 border text-center">Đơn vị</th>
             <th className="px-4 py-2 border text-center">Khối lượng</th>
@@ -41,18 +39,6 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                   rowSpan={item.QuotationItems.length + 1}
                 >
                   {item.Type}
-                </td>
-                <td
-                  className="px-4 py-2 border text-center"
-                  rowSpan={item.QuotationItems.length + 1}
-                >
-                  {item.Coefficient}
-                </td>
-                <td
-                  className="px-4 py-2 border text-center"
-                  rowSpan={item.QuotationItems.length + 1}
-                >
-                  {item.InsDate || 'null'}
                 </td>
               </tr>
               {item.QuotationItems.map((quotationItem) => (

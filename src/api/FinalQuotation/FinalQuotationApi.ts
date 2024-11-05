@@ -35,3 +35,26 @@ export const updateFinalQuotation = async (data: FinalQuotationRequest) => {
     throw error;
   }
 };
+
+export async function approveFinalQuotation(
+  finalId: string,
+  data: { type: string; reason: string },
+): Promise<void> {
+  try {
+    const response = await requestWebRHCQS.put(
+      `/quotation/final/approve`,
+      data,
+      {
+        params: { finalId },
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    console.log('Approval successful:', response.data);
+  } catch (error) {
+    console.error('Error approving final quotation:', error);
+    throw new Error('Failed to approve final quotation');
+  }
+}
