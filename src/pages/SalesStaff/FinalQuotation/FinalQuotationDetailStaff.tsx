@@ -7,6 +7,7 @@ import {
   UtilityInfo,
   EquipmentItem,
   BatchPaymentInfo,
+  FinalQuotationItem,
 } from '../../../types/FinalQuotationTypes';
 import BatchPaymentTable from './Table/BatchPaymentTable';
 import EquipmentTable from './Table/EquipmentTable';
@@ -17,15 +18,11 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaMoneyBillWave,
-  FaDownload,
-  FaShareAlt,
   FaChevronDown,
   FaChevronUp,
   FaPlus,
 } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import axios, { AxiosError } from 'axios';
 import ButtonGroup from './ButtonGroup';
 import { handleSave, handleEditToggle } from './handlers';
 
@@ -113,6 +110,67 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
+  const handleFinalQuotationItemsChange = (
+    updatedItems: FinalQuotationItem[],
+  ) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
+      });
+    }
+  };
+
+  const addFinalQuotationRow = () => {
+    if (quotationDetail) {
+      const newQuotationItem: FinalQuotationItem = {
+        Id: `new-${Date.now()}`,
+        ContructionId: '',
+        ContructionName: '',
+        Type: '',
+        Coefficient: 0,
+        InsDate: null,
+        QuotationItems: [
+          {
+            Id: `new-quotation-${Date.now()}`,
+            Name: '',
+            Unit: '',
+            Weight: 0,
+            UnitPriceLabor: null,
+            UnitPriceRough: null,
+            UnitPriceFinished: null,
+            TotalPriceLabor: null,
+            TotalPriceRough: null,
+            TotalPriceFinished: null,
+            InsDate: null,
+            UpsDate: null,
+            Note: null,
+            QuotationLabors: [],
+            QuotationMaterials: [],
+          },
+        ],
+      };
+      const updatedItems = [
+        ...quotationDetail.FinalQuotationItems,
+        newQuotationItem,
+      ];
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
+      });
+    }
+  };
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+    if (!isEditing) {
+      setShowBatchPayments(true);
+      setShowEquipmentCosts(true);
+      setShowDetailedItems(true);
+      setShowUtilities(true);
+    }
+  };
+
   if (!quotationDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -157,7 +215,7 @@ const FinalQuotationDetailStaff = () => {
       <ButtonGroup
         isEditing={isEditing}
         handleSave={() => handleSave(quotationDetail, setIsEditing)}
-        handleEditToggle={() => handleEditToggle(isEditing, setIsEditing)}
+        handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
         handleShare={handleShare}
       />
@@ -241,20 +299,37 @@ const FinalQuotationDetailStaff = () => {
         </div>
 
         <hr className="my-4 border-gray-300" />
-
-        <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
-          onClick={() => setShowDetailedItems(!showDetailedItems)}
-        >
-          1. Các hạng mục báo giá chi tiết:
-          {showDetailedItems ? (
-            <FaChevronUp className="ml-2" />
-          ) : (
-            <FaChevronDown className="ml-2" />
-          )}
-        </h3>
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={() => setShowDetailedItems(!showDetailedItems)}
+            >
+              <strong className="text-xl font-bold">
+                1. Các hạng mục báo giá chi tiết:
+              </strong>
+              {showDetailedItems ? (
+                <FaChevronUp className="ml-2" />
+              ) : (
+                <FaChevronDown className="ml-2" />
+              )}
+            </div>
+            {isEditing && (
+              <button
+                onClick={addFinalQuotationRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
+            )}
+          </div>
+        </div>
         {showDetailedItems && (
-          <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+          <FinalQuotationTable
+            items={quotationDetail.FinalQuotationItems}
+            onItemsChange={handleFinalQuotationItemsChange}
+            isEditing={isEditing}
+          />
         )}
 
         <hr className="my-4 border-gray-300" />

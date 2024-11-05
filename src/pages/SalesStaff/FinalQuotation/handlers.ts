@@ -48,21 +48,19 @@ export const handleSave = async (
           totalPriceRough: qItem.TotalPriceRough || 0,
           totalPriceFinished: qItem.TotalPriceFinished || 0,
           note: qItem.Note || '',
-          quotationLabors:
-            qItem.QuotationLabors.length > 0
-              ? {
-                  laborId: qItem.QuotationLabors[0].LaborId,
-                  laborPrice: qItem.QuotationLabors[0].LaborPrice,
-                }
-              : null,
-          quotationMaterials:
-            qItem.QuotationMaterials.length > 0
-              ? {
-                  materialId: qItem.QuotationMaterials[0].MaterialId,
-                  unit: qItem.QuotationMaterials[0].Unit,
-                  materialPrice: qItem.QuotationMaterials[0].MaterialPrice,
-                }
-              : null,
+          quotationLabors: qItem.QuotationLabors.length > 0
+            ? {
+                laborId: qItem.QuotationLabors[0].LaborId,
+                laborPrice: qItem.QuotationLabors[0].LaborPrice,
+              }
+            : null,
+          quotationMaterials: qItem.QuotationMaterials.length > 0
+            ? {
+                materialId: qItem.QuotationMaterials[0].MaterialId,
+                unit: qItem.QuotationMaterials[0].Unit,
+                materialPrice: qItem.QuotationMaterials[0].MaterialPrice,
+              }
+            : null,
         })),
       })),
     };
