@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { API_ROOT } from '../../utils/constants';
+import { API_ROOT_V2 } from '../../utils/constants';
 
 export const postLogin = async (email: string, password: string) => {
   try {
-    const response = await axios.post(`${API_ROOT}/login`, {
+    const response = await axios.post(`${API_ROOT_V2}/login`, {
       email,
       password,
     });

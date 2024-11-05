@@ -114,3 +114,5 @@ export interface UpdateInitialQuotationRequest {
   promotions: Promotion | null;
   batchPayments: BatchPayment[];
 }
+
+

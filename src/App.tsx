@@ -39,7 +39,11 @@ import HouseTemplateList from './pages/Manager/HouseTemplate/HouseTemplateList.t
 import HouseTemplateDetail from './pages/Manager/HouseTemplate/HouseTemplateDetail.tsx';
 import HouseDesignDetailStaff from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetailStaff.tsx';
 import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDesignDetailManager.tsx';
+import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
+import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
+
+// ... existing imports ...
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -137,6 +141,24 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="House Template Detail | RHCQS - Residential Housing Construction Quotation System" />
                   <HouseTemplateDetail />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-house-template"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Create House Template | RHCQS - Residential Housing Construction Quotation System" />
+                  <CreateHouseModel />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/add-image-house"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Add Image House | RHCQS - Residential Housing Construction Quotation System" />
+                  <AddImageHouse />
                 </PrivateRoute>
               }
             />
@@ -273,15 +295,6 @@ function App() {
                 <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
                   <CreateInitialQuote />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/final-quotation-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Quote Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <FinalQuotationDetailManager />
                 </PrivateRoute>
               }
             />
