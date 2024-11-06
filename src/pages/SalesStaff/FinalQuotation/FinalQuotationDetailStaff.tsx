@@ -123,6 +123,42 @@ const FinalQuotationDetailStaff = () => {
 
   const addFinalQuotationRow = () => {
     if (quotationDetail) {
+      const newLaborQuotationItem = {
+        Id: `new-labor-quotation-${Date.now()}`,
+        Name: 'Labor Item',
+        Unit: '',
+        Weight: 0,
+        UnitPriceLabor: null,
+        UnitPriceRough: null,
+        UnitPriceFinished: null,
+        TotalPriceLabor: null,
+        TotalPriceRough: null,
+        TotalPriceFinished: null,
+        InsDate: null,
+        UpsDate: null,
+        Note: null,
+        QuotationLabors: [], // Initialize as empty array
+        QuotationMaterials: null, // Set to null for labor
+      };
+
+      const newMaterialQuotationItem = {
+        Id: `new-material-quotation-${Date.now()}`,
+        Name: 'Material Item',
+        Unit: '',
+        Weight: 0,
+        UnitPriceLabor: null,
+        UnitPriceRough: null,
+        UnitPriceFinished: null,
+        TotalPriceLabor: null,
+        TotalPriceRough: null,
+        TotalPriceFinished: null,
+        InsDate: null,
+        UpsDate: null,
+        Note: null,
+        QuotationLabors: null, // Set to null for material
+        QuotationMaterials: [], // Initialize as empty array
+      };
+
       const newQuotationItem: FinalQuotationItem = {
         Id: `new-${Date.now()}`,
         ContructionId: '',
@@ -130,26 +166,9 @@ const FinalQuotationDetailStaff = () => {
         Type: '',
         Coefficient: 0,
         InsDate: null,
-        QuotationItems: [
-          {
-            Id: `new-quotation-${Date.now()}`,
-            Name: '',
-            Unit: '',
-            Weight: 0,
-            UnitPriceLabor: null,
-            UnitPriceRough: null,
-            UnitPriceFinished: null,
-            TotalPriceLabor: null,
-            TotalPriceRough: null,
-            TotalPriceFinished: null,
-            InsDate: null,
-            UpsDate: null,
-            Note: null,
-            QuotationLabors: [],
-            QuotationMaterials: [],
-          },
-        ],
+        QuotationItems: [newLaborQuotationItem, newMaterialQuotationItem],
       };
+
       const updatedItems = [
         ...quotationDetail.FinalQuotationItems,
         newQuotationItem,
