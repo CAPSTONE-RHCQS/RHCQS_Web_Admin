@@ -31,6 +31,7 @@ import FinalInfoTable from './components/Table/FinalInfoTable';
 import ContractTable from './components/Table/ContractTable';
 import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -113,7 +114,16 @@ const ProjectDetailSalesStaff = () => {
       }
     } catch (error) {
       console.error('Error initializing final quotation:', error);
-      toast.error('Đã xảy ra lỗi khi khởi tạo báo giá.');
+      if (axios.isAxiosError(error) && error.response) {
+        const { StatusCode, Error } = error.response.data;
+        if (StatusCode === 404) {
+          toast.error(`Lỗi: ${Error}`);
+        } else {
+          toast.error('Đã xảy ra lỗi khi khởi tạo báo giá.');
+        }
+      } else {
+        toast.error('Đã xảy ra lỗi không xác định.');
+      }
     }
   };
 
