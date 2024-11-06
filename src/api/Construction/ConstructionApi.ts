@@ -10,6 +10,9 @@ export interface SubConstructionRequest {
 }
 
 export interface ConstructionRequest {
+  //Search
+  Name: string;
+
   name: string;
   coefficient: number;
   unit: string;
@@ -37,6 +40,14 @@ export interface ConstructionContractRequest {
   contractValue: number;
   urlFile: string;
   note: string;
+}
+
+// Search
+export interface ConstructionSearchResponse {
+  Id: string;
+  SubConstructionId: string;
+  Name: string;
+  Coefficient: number;
 }
 
 export const getConstructions = async (page: number, size: number) => {
@@ -121,6 +132,22 @@ export const postConstructionContract = async (
   }
 };
 
+
+export const getConstructionByName = async (name: string): Promise<ConstructionSearchResponse[]> => {
+  try {
+    const response = await requestWebRHCQS.get(`/construction/contain/name`, {
+      params: { name },
+      headers: {
+        accept: 'application/json',
+      },
+    });
+    return response.data as ConstructionSearchResponse[];
+  } catch (error) {
+    console.error('Error fetching construction by name:', error);
+    throw error;
+  }
+};
+
 export async function getConstructionByName(
   name: string,
 ): Promise<GetConstructionByNameResponse> {
@@ -137,3 +164,4 @@ export async function getConstructionByName(
     throw new Error('Failed to fetch construction by name');
   }
 }
+

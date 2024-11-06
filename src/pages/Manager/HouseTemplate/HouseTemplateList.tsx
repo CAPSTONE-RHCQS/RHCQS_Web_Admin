@@ -37,6 +37,10 @@ const HouseTemplateList: React.FC = () => {
     navigate(`/house-template/${id}`);
   };
 
+  const handleCreateTemplateClick = () => {
+    navigate('/create-house-template');
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -47,7 +51,15 @@ const HouseTemplateList: React.FC = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Danh sách mẫu nhà</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Danh sách mẫu nhà</h1>
+        <h6
+          className="text-blue-500 cursor-pointer font-bold"
+          onClick={handleCreateTemplateClick}
+        >
+          Thêm mẫu nhà mới +
+        </h6>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {houseTemplates.map((template) => (
           <Card
