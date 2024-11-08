@@ -1,5 +1,5 @@
 import React from 'react';
-import { EquipmentItem } from '../../../../types/QuotationTypes';
+import { EquipmentItem } from '../../../../../types/FinalQuotationTypes';
 
 interface EquipmentTableProps {
   items: EquipmentItem[];

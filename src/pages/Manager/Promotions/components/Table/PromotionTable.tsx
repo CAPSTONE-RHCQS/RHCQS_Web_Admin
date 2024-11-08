@@ -31,7 +31,7 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
     <>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
+          <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
         <table className="w-full table-auto">

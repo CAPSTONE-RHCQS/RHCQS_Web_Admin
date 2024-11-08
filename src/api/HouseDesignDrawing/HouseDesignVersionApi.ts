@@ -3,12 +3,6 @@ import requestWebRHCQS from '../../utils/axios';
 import { CreateDesignRequest } from '../../types/HouseDesignVersionTypes';
 import { toast } from 'react-toastify';
 
-interface ApproveDesignParams {
-  id: string;
-  type: string;
-  reason: string;
-}
-
 export const createDesign = async (
   data: CreateDesignRequest,
 ): Promise<AxiosResponse> => {

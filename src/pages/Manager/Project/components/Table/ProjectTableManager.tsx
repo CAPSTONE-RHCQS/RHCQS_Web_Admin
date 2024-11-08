@@ -7,22 +7,28 @@ import {
   FaHourglassHalf,
   FaBan,
   FaEye,
-  FaExclamationCircle,
 } from 'react-icons/fa';
-import RejectionModal from '../../../../components/Modals/RejectionModal';
-import CheckboxTwo from '../../../../components/Checkboxes/CheckboxTwo';
-import SortIcon from '../../../../components/Buttonicons/SortIcon';
+import RejectionModal from '../../../../../components/Modals/RejectionModal';
+import CheckboxTwo from '../../../../../components/Checkboxes/CheckboxTwo';
+import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
-type DataItem = {
-  [key: string]: any;
+type Project = {
+  id: string;
+  projectId: string;
+  projectName: string;
+  customerName: string;
+  category: string;
+  date: string;
+  status: string;
+  isChecked: boolean;
 };
 
-type SortKey = string;
+type SortKey = keyof Project;
 
-interface ProjectTableSalesStaffProps {
-  data: DataItem[];
-  columns: { key: string; label: string }[];
+interface ProjectTableManagerProps {
+  data: Project[];
+  columns: { key: SortKey; label: string }[];
   isAllChecked: boolean;
   handleSelectAll: () => void;
   handleCheckboxChange: (index: number) => void;
@@ -30,7 +36,6 @@ interface ProjectTableSalesStaffProps {
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   isLoading: boolean;
-  error: string | null;
 }
 
 const getStatusStyle = (status: string) => {
@@ -38,11 +43,11 @@ const getStatusStyle = (status: string) => {
     case 'Processing':
       return { backgroundColor: '#FFB347', icon: <FaSpinner /> };
     case 'Designed':
-      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
-    case 'Reviewing':
-      return { backgroundColor: '#4D4DFF', icon: <FaHourglassHalf /> };
-    case 'Signed Contract':
       return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
+    case 'Reviewing':
+      return { backgroundColor: '#FFD700', icon: <FaHourglassHalf /> };
+    case 'Signed Contract':
+      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
     case 'Finalized':
       return { backgroundColor: '#4CAF50', icon: <FaCheck /> };
     case 'Ended':
@@ -52,16 +57,19 @@ const getStatusStyle = (status: string) => {
   }
 };
 
-const statusTranslationMap: { [key: string]: string } = {
-  Processing: 'Đang xử lý',
-  Designed: 'Đã thiết kế',
-  Reviewing: 'Chờ xác nhận',
-  'Signed Contract': 'Đã ký hợp đồng',
-  Finalized: 'Hoàn thành',
-  Ended: 'Kết thúc',
+const getStatusLabel = (status: string) => {
+  const statusLabelMap: { [key: string]: string } = {
+    Processing: 'Đang xử lý',
+    Designed: 'Đã thiết kế',
+    Reviewing: 'Chờ xác nhận',
+    'Signed Contract': 'Đã ký hợp đồng',
+    Finalized: 'Hoàn thành',
+    Ended: 'Đã chấm dứt',
+  };
+  return statusLabelMap[status] || 'Không xác định';
 };
 
-const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
+const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   data,
   columns,
   isAllChecked,
@@ -70,7 +78,6 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
   handleSort,
   handleViewDetails,
   isLoading,
-  error,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -83,12 +90,7 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
     <>
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
-          <ClipLoader size={50} color={'#123abc'} loading={isLoading} />
-        </div>
-      ) : error ? (
-        <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-          <FaExclamationCircle className="text-3xl mb-2" /> {/* Icon rỗng */}
-          <span>Hiện tại chưa có dự án nào...</span>
+          <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
         <table className="w-full table-auto">
@@ -141,9 +143,13 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                       >
                         {getStatusStyle(item[column.key]).icon}
                         <span className="ml-2">
-                          {statusTranslationMap[item[column.key]] || item[column.key]}
+                          {getStatusLabel(item[column.key])}
                         </span>
                       </span>
+                    ) : column.key === 'projectId' ? (
+                      <strong style={{ color: '#FF5733' }}>
+                        {item[column.key]}
+                      </strong>
                     ) : (
                       item[column.key]
                     )}
@@ -175,4 +181,4 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
   );
 };
 
-export default ProjectTableSalesStaff;
+export default ProjectTableManager;

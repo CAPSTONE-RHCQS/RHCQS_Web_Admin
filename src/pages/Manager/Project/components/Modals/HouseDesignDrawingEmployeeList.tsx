@@ -66,7 +66,7 @@ const HouseDesignDrawingEmployeeList: React.FC<
     <>
       {loading ? (
         <div className="flex justify-center">
-          <ClipLoader size={50} color={'#123abc'} loading={loading} />
+          <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
         </div>
       ) : (
         <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">

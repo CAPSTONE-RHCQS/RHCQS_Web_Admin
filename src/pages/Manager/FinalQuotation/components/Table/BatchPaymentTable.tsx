@@ -1,5 +1,5 @@
 import React from 'react';
-import { BatchPaymentInfo } from '../../../../types/QuotationTypes';
+import { BatchPaymentInfo } from '../../../../../types/FinalQuotationTypes';
 
 interface BatchPaymentTableProps {
   payments: BatchPaymentInfo[];

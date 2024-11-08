@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
+import { toast } from 'react-toastify';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -12,6 +13,8 @@ const DropdownUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('alertMessage');
     localStorage.removeItem('alertType');
+    setDropdownOpen(false);
+    toast.success('Đăng xuất thành công!');
     navigate('/auth/signin');
   };
   return (
@@ -148,7 +151,7 @@ const DropdownUser = () => {
                 fill=""
               />
             </svg>
-            Log Out
+            Đăng xuất
           </button>
         </div>
       )}

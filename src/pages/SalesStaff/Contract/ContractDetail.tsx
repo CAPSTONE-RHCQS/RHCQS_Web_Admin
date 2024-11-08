@@ -43,7 +43,7 @@ const ContractDetail = () => {
   if (!contractDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={50} color={'#123abc'} loading={true} />
+        <ClipLoader size={50} color={'#5BABAC'} loading={true} />
       </div>
     );
   }
@@ -55,8 +55,7 @@ const ContractDetail = () => {
     Ended: 'Chấm dứt hợp đồng',
   };
 
-  const mappedStatus =
-    statusMap[contractDetail.Status] || 'Đang xử lý';
+  const mappedStatus = statusMap[contractDetail.Status] || 'Đang xử lý';
 
   return (
     <>

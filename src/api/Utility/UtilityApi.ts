@@ -1,3 +1,4 @@
+import { GetUtilityByNameResponse } from '../../types/SearchContainNameTypes';
 import { UtilityRequest } from '../../types/UtilityTypes';
 import requestWebRHCQS from '../../utils/axios';
 
@@ -56,7 +57,7 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
         coefficient: item.coefficient,
       })),
     };
-    console.log('putUtility', formattedData );
+    console.log('putUtility', formattedData);
 
     const response = await requestWebRHCQS.put('/utilities', formattedData, {
       headers: {
@@ -75,3 +76,20 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
     }
   }
 };
+
+export async function getUtilityByName(
+  name: string,
+): Promise<GetUtilityByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/utilities/contain/name', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching utilities by name ${name}:`, error);
+    throw new Error('Failed to fetch utilities by name');
+  }
+}

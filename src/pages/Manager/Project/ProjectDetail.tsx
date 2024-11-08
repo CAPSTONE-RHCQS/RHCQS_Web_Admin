@@ -98,7 +98,7 @@ const ProjectDetail = () => {
   if (!projectDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <ClipLoader size={50} color={'#123abc'} loading={true} />
+        <ClipLoader size={50} color={'#5BABAC'} loading={true} />
       </div>
     );
   }
@@ -179,7 +179,6 @@ const ProjectDetail = () => {
         designerStructure: selectedEmployees['Kết cấu'].id,
         designerElectricityWater: selectedEmployees['Điện nước'].id,
       };
-      console.log('Data to be sent:', data);
       await createHouseDesign(data);
       toast.success('Phân công thành công!');
       setIsAssignModalOpen(false);
@@ -276,7 +275,7 @@ const ProjectDetail = () => {
         <div className="flex flex-row gap-3 justify-between">
           <ContactCard
             data={{
-              title: 'Mã số xử lý',
+              title: 'Mã Dự Án',
               number: projectDetail.ProjectCode || 'N/A',
             }}
             fields={[
@@ -356,13 +355,19 @@ const ProjectDetail = () => {
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
-          {projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 && (
-            showInitialInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
-          )}
+          {projectDetail.InitialInfo &&
+            projectDetail.InitialInfo.length > 0 &&
+            (showInitialInfo ? (
+              <FaChevronUp className="ml-2" />
+            ) : (
+              <FaChevronDown className="ml-2" />
+            ))}
         </h3>
-        {projectDetail.InitialInfo && projectDetail.InitialInfo.length > 0 && showInitialInfo && (
-          <InitialInfoTable quoteData={projectDetail.InitialInfo} />
-        )}
+        {projectDetail.InitialInfo &&
+          projectDetail.InitialInfo.length > 0 &&
+          showInitialInfo && (
+            <InitialInfoTable quoteData={projectDetail.InitialInfo} />
+          )}
 
         <hr className="my-4 border-gray-300" />
         <h3
@@ -370,13 +375,21 @@ const ProjectDetail = () => {
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
-          {projectDetail.HouseDesignDrawingInfo && projectDetail.HouseDesignDrawingInfo.length > 0 && (
-            showDesignDrawing ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
-          )}
+          {projectDetail.HouseDesignDrawingInfo &&
+            projectDetail.HouseDesignDrawingInfo.length > 0 &&
+            (showDesignDrawing ? (
+              <FaChevronUp className="ml-2" />
+            ) : (
+              <FaChevronDown className="ml-2" />
+            ))}
         </h3>
-        {projectDetail.HouseDesignDrawingInfo && projectDetail.HouseDesignDrawingInfo.length > 0 && showDesignDrawing && (
-          <HouseDesignDrawingInfoTable designData={projectDetail.HouseDesignDrawingInfo} />
-        )}
+        {projectDetail.HouseDesignDrawingInfo &&
+          projectDetail.HouseDesignDrawingInfo.length > 0 &&
+          showDesignDrawing && (
+            <HouseDesignDrawingInfoTable
+              designData={projectDetail.HouseDesignDrawingInfo}
+            />
+          )}
 
         {isAssignModalOpen && (
           <AssignModal
@@ -404,13 +417,19 @@ const ProjectDetail = () => {
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
-          {projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0 && (
-            showFinalInfo ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
-          )}
+          {projectDetail.FinalInfo &&
+            projectDetail.FinalInfo.length > 0 &&
+            (showFinalInfo ? (
+              <FaChevronUp className="ml-2" />
+            ) : (
+              <FaChevronDown className="ml-2" />
+            ))}
         </h3>
-        {projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0 && showFinalInfo && (
-          <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo} />
-        )}
+        {projectDetail.FinalInfo &&
+          projectDetail.FinalInfo.length > 0 &&
+          showFinalInfo && (
+            <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo} />
+          )}
 
         <hr className="my-4 border-gray-300" />
         <h3
@@ -418,13 +437,19 @@ const ProjectDetail = () => {
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
-          {projectDetail.ContractInfo && projectDetail.ContractInfo.length > 0 && (
-            showContract ? <FaChevronUp className="ml-2" /> : <FaChevronDown className="ml-2" />
-          )}
+          {projectDetail.ContractInfo &&
+            projectDetail.ContractInfo.length > 0 &&
+            (showContract ? (
+              <FaChevronUp className="ml-2" />
+            ) : (
+              <FaChevronDown className="ml-2" />
+            ))}
         </h3>
-        {projectDetail.ContractInfo && projectDetail.ContractInfo.length > 0 && showContract && (
-          <ContractTable contractData={projectDetail.ContractInfo} />
-        )}
+        {projectDetail.ContractInfo &&
+          projectDetail.ContractInfo.length > 0 &&
+          showContract && (
+            <ContractTable contractData={projectDetail.ContractInfo} />
+          )}
       </div>
       {isModalOpen && (
         <Modal
