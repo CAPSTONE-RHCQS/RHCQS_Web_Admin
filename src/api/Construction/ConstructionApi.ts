@@ -148,20 +148,20 @@ export const getConstructionByName = async (name: string): Promise<ConstructionS
   }
 };
 
-export async function getConstructionByName(
-  name: string,
-): Promise<GetConstructionByNameResponse> {
-  try {
-    const response = await requestWebRHCQS.get('/construction/contain/name', {
-      params: { name },
-      headers: {
-        accept: 'text/plain',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching construction by name ${name}:`, error);
-    throw new Error('Failed to fetch construction by name');
-  }
-}
+// export async function getConstructionByName(
+//   name: string,
+// ): Promise<GetConstructionByNameResponse> {
+//   try {
+//     const response = await requestWebRHCQS.get('/construction/contain/name', {
+//       params: { name },
+//       headers: {
+//         accept: 'text/plain',
+//       },
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error(`Error fetching construction by name ${name}:`, error);
+//     throw new Error('Failed to fetch construction by name');
+//   }
+// }
 
