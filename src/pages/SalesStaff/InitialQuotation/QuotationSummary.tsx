@@ -6,6 +6,7 @@ import UtilityTable from './components/Table/UtilityTable';
 import ConstructionPrice from './components/Table/ConstructionPrice';
 import BatchPaymentTable from './components/Table/BatchPaymentTable';
 import ContractValueSummaryTable from './components/Table/ContractValueSummaryTable';
+import { FaPlus } from 'react-icons/fa';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -125,20 +126,20 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       </div>
 
       <div className="flex items-center mb-4">
-        <div className="mb-4">
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
-            <p className="mt-4 mb-4 text-lg inline-block">
-              <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
-            </p>
-            {isEditing && (
-              <button
-                onClick={addConstructionRow}
-                className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200 inline-block"
-              >
-                +
-              </button>
-            )}
+            <strong className="text-xl font-bold">
+              2. DIỆN TÍCH XÂY DỰNG THEO PHƯƠNG ÁN THIẾT KẾ:
+            </strong>
           </div>
+          {isEditing && (
+            <button
+              onClick={addConstructionRow}
+              className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
         </div>
       </div>
 
@@ -195,18 +196,23 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           </tbody>
         </table>
       </div>
-      <div className="flex items-center">
-        <p className="mt-4 mb-4 text-lg inline-block">
-          <strong>2. TÙY CHỌN & TIỆN ÍCH:</strong>
-        </p>
-        {isEditing && (
-          <button
-            onClick={addUtilityRow}
-            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-          >
-            +
-          </button>
-        )}
+
+      <div className="flex items-center mb-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center">
+            <strong className="text-xl font-bold">
+              3. TÙY CHỌN & TIỆN ÍCH:
+            </strong>
+          </div>
+          {isEditing && (
+            <button
+              onClick={addUtilityRow}
+              className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
+        </div>
       </div>
 
       <UtilityTable
@@ -216,7 +222,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       />
 
       <p className="text-lg mb-4">
-        <strong>3. KHUYẾN MÃI:</strong>
+        <strong>4. KHUYẾN MÃI:</strong>
       </p>
       {/* <div className="overflow-x-auto mb-4">
         <table className="min-w-full bg-white border border-gray-200">
@@ -249,7 +255,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
       <div className="mb-4">
         <p className="text-lg">
-          <strong>4. CÁC THỎA THUẬN KHÁC:</strong>
+          <strong>5. CÁC THỎA THUẬN KHÁC:</strong>
         </p>
         <p className="text-gray-700 whitespace-pre-line">
           {quotationData.OthersAgreement}
@@ -257,7 +263,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       </div>
 
       <p className="text-lg mb-4">
-        <strong>5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
+        <strong>6. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:</strong>
       </p>
       <ContractValueSummaryTable
         thanhTien={thanhTien}
@@ -265,19 +271,22 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         promotionInfo={promotionInfo}
         updateGiaTriHopDong={setGiaTriHopDong}
       />
-
-      <div className="flex items-center">
-        <p className="mt-4 mb-4 text-lg inline-block">
-          <strong>6. CÁC ĐỢT THANH TOÁN:</strong>
-        </p>
-        {isEditing && (
-          <button
-            onClick={addPaymentRow}
-            className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-          >
-            +
-          </button>
-        )}
+      <div className="flex items-center mb-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center">
+            <strong className="text-xl font-bold">
+              7. CÁC ĐỢT THANH TOÁN:
+            </strong>
+          </div>
+          {isEditing && (
+            <button
+              onClick={addPaymentRow}
+              className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+            >
+              <FaPlus />
+            </button>
+          )}
+        </div>
       </div>
 
       <BatchPaymentTable

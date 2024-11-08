@@ -69,7 +69,7 @@ const HouseDesignDrawingEmployeeList: React.FC<
           <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
         </div>
       ) : (
-        <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
+        <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
           <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">
             Chọn Nhân Viên
           </h2>
@@ -85,7 +85,7 @@ const HouseDesignDrawingEmployeeList: React.FC<
                 isSelected={selectedEmployeeId === employee.id}
               />
             ))}
-          </div>{' '}
+          </div>
           <div className="mt-4 flex justify-end">
             <button
               className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"

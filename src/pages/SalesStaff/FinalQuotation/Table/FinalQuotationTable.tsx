@@ -8,6 +8,8 @@ import {
   Labor,
   Material,
 } from '../../../../types/SearchContainNameTypes';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -152,16 +154,22 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     const quotationItem = updatedItems[index].QuotationItems[qItemIndex];
     const coefficient = updatedItems[index].Coefficient || 1;
 
-    quotationItem.TotalPriceLabor = 
-      (quotationItem.Weight || 0) * 
-      (quotationItem.UnitPriceLabor || 0) * 
+    quotationItem.TotalPriceLabor =
+      (quotationItem.Weight || 0) *
+      (quotationItem.UnitPriceLabor || 0) *
       coefficient;
 
-    quotationItem.TotalPriceRough = 
-      (quotationItem.Weight || 0) * 
-      (quotationItem.UnitPriceRough || 0) * 
+    quotationItem.TotalPriceRough =
+      (quotationItem.Weight || 0) *
+      (quotationItem.UnitPriceRough || 0) *
       coefficient;
 
+    onItemsChange(updatedItems);
+  };
+
+  const handleDeleteRow = (index: number, qItemIndex: number) => {
+    const updatedItems = [...items];
+    updatedItems[index].QuotationItems.splice(qItemIndex, 1);
     onItemsChange(updatedItems);
   };
 
@@ -172,16 +180,32 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
           <tr>
             <th className="px-4 py-2 border text-center">Tên công trình</th>
             <th className="px-4 py-2 border text-center">Loại</th>
-            <th className="px-4 py-2 border text-center" style={{ maxWidth: '110px' }}>Hệ số</th>
+            <th
+              className="px-4 py-2 border text-center"
+              style={{ maxWidth: '110px' }}
+            >
+              Hệ số
+            </th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
-            <th className="px-4 py-2 border text-center" style={{ maxWidth: '75px' }}>Đơn vị</th>
-            <th className="px-4 py-2 border text-center" style={{ maxWidth: '75px' }}>Khối lượng</th>
+            <th
+              className="px-4 py-2 border text-center"
+              style={{ maxWidth: '75px' }}
+            >
+              Đơn vị
+            </th>
+            <th
+              className="px-4 py-2 border text-center"
+              style={{ maxWidth: '75px' }}
+            >
+              Khối lượng
+            </th>
             <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
             <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
             <th className="px-4 py-2 border text-center">
               Tổng giá vật tư thô
             </th>
+            {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
@@ -263,7 +287,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                       value={item.Coefficient}
                       onChange={(e) => {
                         const updatedItems = [...items];
-                        updatedItems[index].Coefficient = parseFloat(e.target.value);
+                        updatedItems[index].Coefficient = parseFloat(
+                          e.target.value,
+                        );
                         onItemsChange(updatedItems);
                         item.QuotationItems.forEach((_, qItemIndex) => {
                           calculateTotalPrices(index, qItemIndex);
@@ -282,7 +308,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     {isEditing ? (
                       <>
                         <select
-                          value={searchTypes[`${index}-${qItemIndex}`] || 'Labor'}
+                          value={
+                            searchTypes[`${index}-${qItemIndex}`] || 'Labor'
+                          }
                           onChange={(e) =>
                             handleSearchTypeChange(
                               index,
@@ -335,10 +363,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                       quotationItem.Name
                     )}
                   </td>
-                  <td className="px-4 py-2 border text-center" style={{ maxWidth: '80px' }}>
+                  <td
+                    className="px-4 py-2 border text-center"
+                    style={{ maxWidth: '80px' }}
+                  >
                     {quotationItem.Unit}
                   </td>
-                  <td className="px-4 py-2 border text-center" style={{ maxWidth: '80px' }}>
+                  <td
+                    className="px-4 py-2 border text-center"
+                    style={{ maxWidth: '80px' }}
+                  >
                     {quotationItem.Weight}
                   </td>
                   <td className="px-4 py-2 border text-center">
@@ -348,7 +382,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                         value={quotationItem.UnitPriceLabor || ''}
                         onChange={(e) => {
                           const updatedItems = [...items];
-                          updatedItems[index].QuotationItems[qItemIndex].UnitPriceLabor = parseFloat(e.target.value);
+                          updatedItems[index].QuotationItems[
+                            qItemIndex
+                          ].UnitPriceLabor = parseFloat(e.target.value);
                           onItemsChange(updatedItems);
                           calculateTotalPrices(index, qItemIndex);
                         }}
@@ -366,7 +402,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                         value={quotationItem.UnitPriceRough || ''}
                         onChange={(e) => {
                           const updatedItems = [...items];
-                          updatedItems[index].QuotationItems[qItemIndex].UnitPriceRough = parseFloat(e.target.value);
+                          updatedItems[index].QuotationItems[
+                            qItemIndex
+                          ].UnitPriceRough = parseFloat(e.target.value);
                           onItemsChange(updatedItems);
                           calculateTotalPrices(index, qItemIndex);
                         }}
@@ -385,6 +423,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     {quotationItem.TotalPriceRough?.toLocaleString() || 'null'}{' '}
                     VNĐ
                   </td>
+                  {isEditing && (
+                    <td className="px-4 py-2 border text-center">
+                      <button
+                        onClick={() => handleDeleteRow(index, qItemIndex)}
+                        className="text-red-500 hover:text-red-700 px-2 py-1 rounded flex items-center justify-center"
+                      >
+                        <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </React.Fragment>

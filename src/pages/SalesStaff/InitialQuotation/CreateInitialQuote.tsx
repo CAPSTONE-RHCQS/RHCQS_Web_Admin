@@ -162,10 +162,12 @@ const CreateInitialQuote = () => {
           packageId: quotationData.PackageQuotationList.IdPackageRough,
           type: 'ROUGH',
         },
-        {
-          packageId: quotationData.PackageQuotationList.IdPackageFinished,
-          type: 'FINISHED',
-        },
+        ...(quotationData.PackageQuotationList.IdPackageFinished !== '00000000-0000-0000-0000-000000000000'
+          ? [{
+              packageId: quotationData.PackageQuotationList.IdPackageFinished,
+              type: 'FINISHED',
+            }]
+          : []),
       ],
       utilities: utilityInfos.map((utility) => ({
         utilitiesItemId: utility.utilitiesItemId,

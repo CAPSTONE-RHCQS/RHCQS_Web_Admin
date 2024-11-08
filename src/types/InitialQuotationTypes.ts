@@ -77,7 +77,7 @@ interface Item {
 }
 
 export interface Package {
-  packageId: string;
+  packageId: string | null;
   type: string;
 }
 

@@ -29,6 +29,9 @@ import InitialInfoTable from './components/Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './components/Table/FinalInfoTable';
 import ContractTable from './components/Table/ContractTable';
+import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
+import { toast } from 'react-toastify';
+import axios from 'axios';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,20 +47,20 @@ const ProjectDetailSalesStaff = () => {
   const [showContract, setShowContract] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProjectDetail = async () => {
-      if (id) {
-        try {
-          const data = await getProjectDetail(id);
-          setProjectDetail(data);
-        } catch (error) {
-          console.error('Error fetching project detail:', error);
-        }
-      } else {
-        console.error('Project ID is undefined');
+  const fetchProjectDetail = async () => {
+    if (id) {
+      try {
+        const data = await getProjectDetail(id);
+        setProjectDetail(data);
+      } catch (error) {
+        console.error('Error fetching project detail:', error);
       }
-    };
+    } else {
+      console.error('Project ID is undefined');
+    }
+  };
 
+  useEffect(() => {
     fetchProjectDetail();
   }, [id]);
 
@@ -101,6 +104,28 @@ const ProjectDetailSalesStaff = () => {
   };
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
+
+  const handleInitializeFinalQuotation = async () => {
+    try {
+      if (id) {
+        await postFinalQuotationByProjectId(id);
+        await fetchProjectDetail();
+        toast.success('Khởi tạo báo giá thành công!');
+      }
+    } catch (error) {
+      console.error('Error initializing final quotation:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        const { StatusCode, Error } = error.response.data;
+        if (StatusCode === 404) {
+          toast.error(`Lỗi: ${Error}`);
+        } else {
+          toast.error('Đã xảy ra lỗi khi khởi tạo báo giá.');
+        }
+      } else {
+        toast.error('Đã xảy ra lỗi không xác định.');
+      }
+    }
+  };
 
   return (
     <>
@@ -312,6 +337,15 @@ const ProjectDetailSalesStaff = () => {
               <FaChevronDown className="ml-2" />
             ))}
         </h3>
+        {projectDetail.FinalInfo &&
+          projectDetail.FinalInfo.length === 0 && (
+            <button
+              className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 mb-4"
+              onClick={handleInitializeFinalQuotation}
+            >
+              Khởi tạo
+            </button>
+          )}
         {projectDetail.FinalInfo &&
           projectDetail.FinalInfo.length > 0 &&
           showFinalInfo && (
