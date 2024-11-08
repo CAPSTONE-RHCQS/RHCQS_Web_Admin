@@ -132,22 +132,6 @@ export const postConstructionContract = async (
   }
 };
 
-
-export const getConstructionByName = async (name: string): Promise<ConstructionSearchResponse[]> => {
-  try {
-    const response = await requestWebRHCQS.get(`/construction/contain/name`, {
-      params: { name },
-      headers: {
-        accept: 'application/json',
-      },
-    });
-    return response.data as ConstructionSearchResponse[];
-  } catch (error) {
-    console.error('Error fetching construction by name:', error);
-    throw error;
-  }
-};
-
 export async function getConstructionByName(
   name: string,
 ): Promise<GetConstructionByNameResponse> {
@@ -164,4 +148,3 @@ export async function getConstructionByName(
     throw new Error('Failed to fetch construction by name');
   }
 }
-
