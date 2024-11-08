@@ -59,25 +59,33 @@ const CreateHouseModel: React.FC = () => {
       packageRoughId: packageType,
       descriptionPackage: selectedPackageName,
       subTemplates: areas.map((area) => ({
-        buildingArea: parseFloat(area.constructionArea) || 0,
+        buildingArea: parseFloat(area.buildingArea) || 0,
         floorArea: parseFloat(area.floorArea) || 0,
-        size: area.area,
-        templateItems: area.addedItems.map((item) => ({
+        size: area.size,
+        templateItems: area.selectedItems.map((item) => ({
           constructionItemId: item.Id,
           subConstructionItemId: item.SubConstructionId,
           name: item.Name,
           area: item.area,
-          unit: 'm²', // Assuming unit is m²
+          unit: 'm²',
         })),
       })),
     };
 
+    console.log('subTemplates:', areas);
+
     try {
       const response = await createHouseTemplate(data);
+      console.log(data)
       console.log('Data submitted successfully:', response);
     } catch (error) {
+      console.log(data)
       console.error('Error submitting data:', error);
     }
+  };
+
+  const handleAreaDataChange = (updatedAreas: AreaData[]) => {
+    setAreas(updatedAreas);
   };
 
   return (
@@ -154,6 +162,7 @@ const CreateHouseModel: React.FC = () => {
         searchPackageResults={searchPackageResults}
         selectedPackagePrice={selectedPackagePrice}
         formatCurrency={formatCurrency}
+        onAreaDataChange={handleAreaDataChange}
       />
       <button onClick={handleSubmit} className="mt-4 bg-primary text-white py-2 px-4 rounded">
         Gửi dữ liệu
