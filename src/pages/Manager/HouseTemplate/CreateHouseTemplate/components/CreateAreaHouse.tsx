@@ -16,6 +16,7 @@ export interface AreaData {
   buildingArea: string;
   floorArea: string;
   size: string;
+  totalRough: number;
   searchContruction: string;
   searchResults: ConstructionSearchResponse[];
   addedItems: {
@@ -43,6 +44,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
       buildingArea: '',
       floorArea: '',
       size: '',
+      totalRough: 0,
       searchContruction: '',
       searchResults: [],
       addedItems: [],
@@ -65,7 +67,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     value: string,
   ) => {
     const newAreas = [...areas];
-    newAreas[index][field] = value as any;
+    newAreas[index][field] = value as never;  
     setAreas(newAreas);
   };
 
@@ -100,17 +102,13 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
 
   const handleAddItemForArea = (index: number, item: any) => {
     const newAreas = [...areas];
-    newAreas[index].addedItems.push({ 
-      ...item, 
-      area: 0,
-      SubConstructionId: item.SubConstructionId || '00000000-0000-0000-0000-000000000000'
-    });
+    newAreas[index].addedItems.push({ ...item, area: 0 });
     newAreas[index].searchResults = [];
     setAreas(newAreas);
 
     const selectedItem = {
       Id: item.Id,
-      SubConstructionId: item.SubConstructionId || '00000000-0000-0000-0000-000000000000',
+      SubConstructionId: item.SubConstructionId,
       Name: item.Name,
       area: 0,
     };
@@ -134,6 +132,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     newAreas[areaIndex].selectedItems[itemIndex].area = areaValue;
 
     setAreas(newAreas);
+    updateTotalRoughForArea(areaIndex);
   };
 
   const calculateTotalCostForArea = (index: number) => {
@@ -150,6 +149,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
         buildingArea: '',
         floorArea: '',
         size: '',
+        totalRough: 0,
         searchContruction: '',
         searchResults: [],
         addedItems: [],
@@ -157,6 +157,16 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
       },
     ]);
   };
+
+  const updateTotalRoughForArea = (index: number) => {
+    const newAreas = [...areas];
+    newAreas[index].totalRough = calculateTotalCostForArea(index);
+    setAreas(newAreas);
+  };
+
+  useEffect(() => {
+    areas.forEach((_, index) => updateTotalRoughForArea(index));
+  }, [areas]);
 
   return (
     <div>

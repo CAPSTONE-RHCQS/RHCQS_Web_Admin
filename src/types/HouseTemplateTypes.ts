@@ -96,6 +96,7 @@ export interface CreateSubTemplate {
   buildingArea: number;
   floorArea: number;
   size: string;
+  totalRough: number;
   templateItems: CreateTemplateItem[];
 }
 
@@ -105,4 +106,9 @@ export interface CreateTemplateItem {
   name: string;
   area: number;
   unit: string;
+}
+
+export interface AddImageHouseTemplateRequest {
+  id: string;
+  imgUrl: string;
 }

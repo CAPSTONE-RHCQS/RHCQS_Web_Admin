@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import requestWebRHCQS from '../../utils/axios';
 import {
+  AddImageHouseTemplateRequest,
   HouseTemplateDetail,
   HouseTemplateResponse,
 } from '../../types/HouseTemplateTypes';
@@ -59,6 +60,27 @@ export const createHouseTemplate = async (
     return response.data;
   } catch (error) {
     console.error('Error creating house template:', error);
+    throw error;
+  }
+};
+
+export const addImageHouseTemplate = async (
+  designTemplateId: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.post(
+      `/upload-design-images?designTemplateId=${designTemplateId}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error adding image house template:', error);
     throw error;
   }
 };

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   PackageTypeSearchResponse,
   searchPackagesByName,
@@ -6,6 +7,7 @@ import {
 import CreateAreaHouse, { AreaData } from './components/CreateAreaHouse';
 import { createHouseTemplate } from '../../../../api/HouseTemplate/HouseTemplateApi';
 import { CreateHouseTemplateRequest } from '../../../../types/HouseTemplateTypes';
+import Alert from '../../../../components/Alert';
 
 const CreateHouseModel: React.FC = () => {
   const [name, setName] = useState('');
@@ -19,6 +21,9 @@ const CreateHouseModel: React.FC = () => {
   const [selectedPackagePrice, setSelectedPackagePrice] = useState<number>(0);
   const [selectedPackageName, setSelectedPackageName] = useState('');
   const [areas, setAreas] = useState<AreaData[]>([]);
+  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const fetchPackageTypes = async () => {
       try {
@@ -62,6 +67,7 @@ const CreateHouseModel: React.FC = () => {
         buildingArea: parseFloat(area.buildingArea) || 0,
         floorArea: parseFloat(area.floorArea) || 0,
         size: area.size,
+        totalRough: area.totalRough,
         templateItems: area.selectedItems.map((item) => ({
           constructionItemId: item.Id,
           subConstructionItemId: item.SubConstructionId,
@@ -76,11 +82,12 @@ const CreateHouseModel: React.FC = () => {
 
     try {
       const response = await createHouseTemplate(data);
-      console.log(data)
       console.log('Data submitted successfully:', response);
+      setAlert({ message: 'Tạo mẫu nhà thành công!', type: 'success' });
+      setTimeout(() => navigate('/add-image-house', { state: { responseData: response } }), 5000);
     } catch (error) {
-      console.log(data)
       console.error('Error submitting data:', error);
+      setAlert({ message: 'Tạo mẫu nhà thất bại!', type: 'error' });
     }
   };
 
@@ -90,6 +97,7 @@ const CreateHouseModel: React.FC = () => {
 
   return (
     <>
+      {alert && <Alert message={alert.message} type={alert.type} onClose={() => setAlert(null)} />}
       <h1 className="text-2xl font-bold mb-4 text-black">
         Bước 1 - Tạo mẫu nhà
       </h1>
