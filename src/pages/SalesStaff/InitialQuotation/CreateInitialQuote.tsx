@@ -143,6 +143,8 @@ const CreateInitialQuote = () => {
     const requestData: UpdateInitialQuotationRequest = {
       versionPresent: 0,
       projectId: quotationData.ProjectId,
+      accountName: quotationData.AccountName,
+      address: quotationData.Address,
       area: quotationData.Area,
       timeProcessing: 0,
       timeRough: 0,
@@ -158,15 +160,21 @@ const CreateInitialQuote = () => {
         price: row.price || 0,
       })),
       packages: [
-        {
-          packageId: quotationData.PackageQuotationList.IdPackageRough,
-          type: 'ROUGH',
-        },
-        ...(quotationData.PackageQuotationList.IdPackageFinished !== '00000000-0000-0000-0000-000000000000'
-          ? [{
-              packageId: quotationData.PackageQuotationList.IdPackageFinished,
-              type: 'FINISHED',
-            }]
+        ...(quotationData.PackageQuotationList.IdPackageRough
+          ? [
+              {
+                packageId: quotationData.PackageQuotationList.IdPackageRough,
+                type: 'ROUGH',
+              },
+            ]
+          : []),
+        ...(quotationData.PackageQuotationList.IdPackageFinished
+          ? [
+              {
+                packageId: quotationData.PackageQuotationList.IdPackageFinished,
+                type: 'FINISHED',
+              },
+            ]
           : []),
       ],
       utilities: utilityInfos.map((utility) => ({

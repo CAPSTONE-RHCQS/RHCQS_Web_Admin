@@ -1,8 +1,8 @@
 export interface PackageQuotation {
-  IdPackageRough: string;
+  IdPackageRough: string | null;
   PackageRough: string;
   UnitPackageRough: number;
-  IdPackageFinished: string;
+  IdPackageFinished: string | null;
   PackageFinished: string;
   UnitPackageFinished: number;
   Unit: string;
@@ -45,6 +45,7 @@ export interface BatchPaymentInfo {
 export interface InitialQuotationResponse {
   Id: string;
   AccountName: string;
+  Address: string;
   ProjectId: string;
   PromotionId: string;
   PackageId: string;
@@ -99,6 +100,8 @@ export interface BatchPayment {
 }
 
 export interface UpdateInitialQuotationRequest {
+  accountName: string;
+  address: string;
   versionPresent: number;
   projectId: string;
   area: number;
@@ -114,5 +117,3 @@ export interface UpdateInitialQuotationRequest {
   promotions: Promotion | null;
   batchPayments: BatchPayment[];
 }
-
-
