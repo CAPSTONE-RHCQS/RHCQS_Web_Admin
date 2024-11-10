@@ -32,6 +32,28 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     [key: string]: 'Labor' | 'Material';
   }>({});
 
+  const handleAddQuotationItem = (index: number) => {
+    const updatedItems = [...items];
+    updatedItems[index].QuotationItems.push({
+      Id: '',
+      LaborId: '',
+      MaterialId: '',
+      Name: '',
+      Unit: '',
+      Weight: 0,
+      UnitPriceLabor: null,
+      UnitPriceRough: null,
+      UnitPriceFinished: null,
+      TotalPriceLabor: null,
+      TotalPriceRough: null,
+      TotalPriceFinished: null,
+      InsDate: null,
+      UpsDate: null,
+      Note: null,
+    });
+    onItemsChange(updatedItems);
+  };
+
   const handleNameChange = async (index: number, name: string) => {
     const updatedItems = [...items];
     updatedItems[index].ContructionName = name;
@@ -60,12 +82,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     try {
       const searchType = searchTypes[`${index}-${qItemIndex}`] || 'Labor';
+      console.log('Search type:', searchType); // Debug: Kiểm tra loại tìm kiếm
       let results;
       if (searchType === 'Labor') {
         results = await getLaborByName(name);
       } else {
         results = await getMaterialByName(name);
       }
+      console.log('Search results:', results); // Debug: Kiểm tra kết quả tìm kiếm
       setSearchResults((prev) => ({
         ...prev,
         [`item-${index}-${qItemIndex}`]: results,
@@ -99,7 +123,13 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     qItemIndex: number,
   ) => {
     const updatedItems = [...items];
-    const isLabor = 'Type' in item && item.Type === 'Labor';
+    
+    // Sử dụng searchType để xác định isLabor
+    const searchType = searchTypes[`${index}-${qItemIndex}`] || 'Labor';
+    const isLabor = searchType === 'Labor';
+
+    console.log('Selected item:', item); // Debug: Kiểm tra item được chọn
+    console.log('Is Labor:', isLabor); // Debug: Kiểm tra loại item
 
     updatedItems[index].QuotationItems[qItemIndex] = {
       ...updatedItems[index].QuotationItems[qItemIndex],
@@ -107,28 +137,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       UnitPriceLabor: isLabor ? item.Price || 0 : 0,
       UnitPriceRough: !isLabor ? item.Price || 0 : 0,
       Unit: !isLabor && 'Unit' in item ? item.Unit : '',
-      QuotationLabors: isLabor
-        ? [
-            {
-              Id: `labor-${Date.now()}`,
-              LaborId: item.Id,
-              LaborName: item.Name,
-              LaborPrice: item.Price || 0,
-            },
-          ]
-        : [],
-      QuotationMaterials: !isLabor
-        ? [
-            {
-              Id: `material-${Date.now()}`,
-              MaterialId: item.Id,
-              MaterialName: item.Name,
-              MaterialPrice: item.Price || 0,
-              Unit: 'Unit' in item ? item.Unit : '',
-            },
-          ]
-        : [],
+      LaborId: isLabor ? item.Id : null, // Cập nhật LaborId nếu là Labor, ngược lại đặt null
+      MaterialId: !isLabor ? item.Id : null, // Cập nhật MaterialId nếu là Material, ngược lại đặt null
     };
+
+    console.log('Updated Quotation Item:', updatedItems[index].QuotationItems[qItemIndex]); // Debug: Kiểm tra Quotation Item sau khi cập nhật
 
     onItemsChange(updatedItems);
     setSearchResults((prev) => ({
@@ -218,41 +231,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                   rowSpan={item.QuotationItems.length + 1}
                 >
                   {isEditing ? (
-                    <>
-                      <input
-                        type="text"
-                        value={item.ContructionName}
-                        onChange={(e) =>
-                          handleNameChange(index, e.target.value)
-                        }
-                        className="w-full text-center"
-                      />
-                      {selectedItemIndex === index &&
-                        searchResults[`construction-${index}`]?.length > 0 && (
-                          <ul className="bg-white border border-gray-300 mt-1">
-                            {searchResults[`construction-${index}`].map(
-                              (result, idx) => (
-                                <li
-                                  key={`${result.Id}-${idx}`}
-                                  onClick={() => {
-                                    if (
-                                      'SubConstructionId' in result ||
-                                      'Coefficientts' in result
-                                    ) {
-                                      handleConstructionSelect(
-                                        result as Construction,
-                                      );
-                                    }
-                                  }}
-                                  className="cursor-pointer hover:bg-gray-200 p-2"
-                                >
-                                  {result.Name}
-                                </li>
-                              ),
-                            )}
-                          </ul>
-                        )}
-                    </>
+                    <input
+                      type="text"
+                      value={item.ContructionName}
+                      onChange={(e) => {
+                        const updatedItems = [...items];
+                        updatedItems[index].ContructionName = e.target.value;
+                        onItemsChange(updatedItems);
+                      }}
+                      className="w-full text-center"
+                    />
                   ) : (
                     item.ContructionName
                   )}
@@ -278,22 +266,18 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                 </td>
                 <td
                   className="px-4 py-2 border text-center"
-                  style={{ maxWidth: '120px' }}
                   rowSpan={item.QuotationItems.length + 1}
                 >
                   {isEditing ? (
                     <input
                       type="number"
-                      value={item.Coefficient}
+                      value={item.Coefficient || 1}
                       onChange={(e) => {
                         const updatedItems = [...items];
                         updatedItems[index].Coefficient = parseFloat(
                           e.target.value,
                         );
                         onItemsChange(updatedItems);
-                        item.QuotationItems.forEach((_, qItemIndex) => {
-                          calculateTotalPrices(index, qItemIndex);
-                        });
                       }}
                       className="w-full text-center"
                     />
@@ -301,9 +285,19 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     item.Coefficient
                   )}
                 </td>
+                <td colSpan={7} className="px-4 py-2 border text-center">
+                  {isEditing && (
+                    <button
+                      onClick={() => handleAddQuotationItem(index)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      Thêm hạng mục
+                    </button>
+                  )}
+                </td>
               </tr>
               {item.QuotationItems.map((quotationItem, qItemIndex) => (
-                <tr key={quotationItem.Id}>
+                <tr key={quotationItem.Id || qItemIndex}>
                   <td className="px-4 py-2 border text-center">
                     {isEditing ? (
                       <>
@@ -427,9 +421,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     <td className="px-4 py-2 border text-center">
                       <button
                         onClick={() => handleDeleteRow(index, qItemIndex)}
-                        className="text-red-500 hover:text-red-700 px-2 py-1 rounded flex items-center justify-center"
+                        className="text-red-500 hover:text-red-700"
                       >
-                        <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                        Xóa
                       </button>
                     </td>
                   )}

@@ -46,6 +46,7 @@ const CreateInitialQuote = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
+  const [othersAgreement, setOthersAgreement] = useState<string>('');
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -149,7 +150,7 @@ const CreateInitialQuote = () => {
       timeProcessing: 0,
       timeRough: 0,
       timeOthers: 0,
-      othersAgreement: '',
+      othersAgreement,
       totalRough: thanhTien,
       totalUtilities: totalUtilityCost,
       items: tableData.map((row) => ({
@@ -489,6 +490,15 @@ const CreateInitialQuote = () => {
         >
           Thêm đợt thanh toán
         </button>
+      </div>
+      <div className="mt-4">
+        <h3 className="text-lg font-bold">6. CÁC THỎA THUẬN KHÁC:</h3>
+        <textarea
+          value={othersAgreement}
+          onChange={(e) => setOthersAgreement(e.target.value)}
+          className="w-full p-2 border rounded h-32"
+          placeholder="Nhập nội dung thỏa thuận khác..."
+        />
       </div>
       <div className="mt-6 flex justify-end">
         <button

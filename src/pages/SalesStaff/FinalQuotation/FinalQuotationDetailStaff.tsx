@@ -84,7 +84,8 @@ const FinalQuotationDetailStaff = () => {
     if (quotationDetail) {
       const newPayment: BatchPaymentInfo = {
         PaymentId: '',
-        InitailQuotationId: '',
+        PaymentTypeId: '',
+        PaymentTypeName: '',
         ContractId: '',
         InsDate: new Date().toISOString(),
         Status: 'Pending',
@@ -114,65 +115,6 @@ const FinalQuotationDetailStaff = () => {
     updatedItems: FinalQuotationItem[],
   ) => {
     if (quotationDetail) {
-      setQuotationDetail({
-        ...quotationDetail,
-        FinalQuotationItems: updatedItems,
-      });
-    }
-  };
-
-  const addFinalQuotationRow = () => {
-    if (quotationDetail) {
-      const newLaborQuotationItem = {
-        Id: `new-labor-quotation-${Date.now()}`,
-        Name: 'Labor Item',
-        Unit: '',
-        Weight: 0,
-        UnitPriceLabor: null,
-        UnitPriceRough: null,
-        UnitPriceFinished: null,
-        TotalPriceLabor: null,
-        TotalPriceRough: null,
-        TotalPriceFinished: null,
-        InsDate: null,
-        UpsDate: null,
-        Note: null,
-        QuotationLabors: [], // Initialize as empty array
-        QuotationMaterials: null, // Set to null for labor
-      };
-
-      const newMaterialQuotationItem = {
-        Id: `new-material-quotation-${Date.now()}`,
-        Name: 'Material Item',
-        Unit: '',
-        Weight: 0,
-        UnitPriceLabor: null,
-        UnitPriceRough: null,
-        UnitPriceFinished: null,
-        TotalPriceLabor: null,
-        TotalPriceRough: null,
-        TotalPriceFinished: null,
-        InsDate: null,
-        UpsDate: null,
-        Note: null,
-        QuotationLabors: null, // Set to null for material
-        QuotationMaterials: [], // Initialize as empty array
-      };
-
-      const newQuotationItem: FinalQuotationItem = {
-        Id: `new-${Date.now()}`,
-        ContructionId: '',
-        ContructionName: '',
-        Type: '',
-        Coefficient: 0,
-        InsDate: null,
-        QuotationItems: [newLaborQuotationItem, newMaterialQuotationItem],
-      };
-
-      const updatedItems = [
-        ...quotationDetail.FinalQuotationItems,
-        newQuotationItem,
-      ];
       setQuotationDetail({
         ...quotationDetail,
         FinalQuotationItems: updatedItems,
@@ -333,14 +275,6 @@ const FinalQuotationDetailStaff = () => {
                 <FaChevronDown className="ml-2" />
               )}
             </div>
-            {isEditing && (
-              <button
-                onClick={addFinalQuotationRow}
-                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-              >
-                <FaPlus />
-              </button>
-            )}
           </div>
         </div>
         {showDetailedItems && (
