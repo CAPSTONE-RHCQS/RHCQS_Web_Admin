@@ -169,6 +169,30 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
+  const addConstructionRow = () => {
+    if (quotationDetail) {
+      const newConstruction: FinalQuotationItem = {
+        Id: '',
+        ConstructionId: '',
+        ContructionName: '',
+        SubConstructionId: '',
+        Coefficient: 0,
+        Type: '',
+        InsDate: new Date().toISOString(),
+        QuotationItems: [],
+        // Thêm các thuộc tính khác nếu cần
+      };
+      const updatedItems = [
+        ...quotationDetail.FinalQuotationItems,
+        newConstruction,
+      ];
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
+      });
+    }
+  };
+
   return (
     <div>
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
@@ -275,6 +299,14 @@ const FinalQuotationDetailStaff = () => {
                 <FaChevronDown className="ml-2" />
               )}
             </div>
+            {isEditing && (
+              <button
+                onClick={addConstructionRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
+            )}
           </div>
         </div>
         {showDetailedItems && (

@@ -31,7 +31,7 @@ export interface QuotationItemRequest {
 
 export interface FinalQuotationItemRequest {
   constructionId: string;
-  subconstructionId: string;
+  subconstructionId: string | null;
   quotationItems: QuotationItemRequest[];
 }
 

@@ -1,6 +1,6 @@
 export interface Construction {
   Id: string;
-  SubConstructionId: string;
+  SubConstructionId: string | null;
   Name: string;
   Price: number;
   Coefficient: number;

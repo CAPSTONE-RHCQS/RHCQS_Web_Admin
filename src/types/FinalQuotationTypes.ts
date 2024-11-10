@@ -46,7 +46,7 @@ export interface QuotationItem {
 export interface FinalQuotationItem {
   Id: string;
   ConstructionId: string;
-  SubConstructionId: string;
+  SubConstructionId: string | null;
   ContructionName: string;
   Type: string;
   Coefficient: number;
