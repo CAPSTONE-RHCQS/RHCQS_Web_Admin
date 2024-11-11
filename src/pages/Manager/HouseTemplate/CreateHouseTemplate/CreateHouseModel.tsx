@@ -103,11 +103,11 @@ const CreateHouseModel: React.FC = () => {
     try {
       const response = await createHouseTemplate(data);
       setAlert({ message: 'Tạo mẫu nhà thành công!', type: 'success' });
-      setTimeout(
-        () =>
-          navigate('/add-image-house', { state: { responseData: response } }),
-        5000,
-      );
+      setTimeout(() => {
+        navigate('/add-image-house', {
+          state: { responseData: response, packageFinished: data.packageFinished },
+        });
+      }, 5000);
     } catch (error) {
       console.error('Error submitting data:', error);
       setAlert({ message: 'Tạo mẫu nhà thất bại!', type: 'error' });
