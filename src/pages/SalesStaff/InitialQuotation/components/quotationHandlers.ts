@@ -53,7 +53,7 @@ export const fetchQuotationData = async (
           donVi: 'm²',
           price: item.Price,
           uniqueId: item.Id,
-          constructionItemId: item.SubConstructionId || item.ConstructionItemId,
+          constructionItemId: item.ConstructionItemId,
           subConstructionId: item.SubConstructionId ?? null,
         };
       });
@@ -101,6 +101,8 @@ export const handleSave = async (
 
   const requestData: UpdateInitialQuotationRequest = {
     versionPresent: version || 1,
+    accountName: quotationData.AccountName,
+    address: quotationData.Address,
     projectId: quotationData.ProjectId,
     area: quotationData.Area,
     timeProcessing: parseInt(quotationData.TimeProcessing || '0', 10),
@@ -119,14 +121,22 @@ export const handleSave = async (
       };
     }),
     packages: [
-      {
-        packageId: quotationData.PackageQuotationList.IdPackageRough,
-        type: 'ROUGH',
-      },
-      {
-        packageId: quotationData.PackageQuotationList.IdPackageFinished,
-        type: 'FINISHED',
-      },
+      ...(quotationData.PackageQuotationList.IdPackageRough
+        ? [
+            {
+              packageId: quotationData.PackageQuotationList.IdPackageRough,
+              type: 'ROUGH',
+            },
+          ]
+        : []),
+      ...(quotationData.PackageQuotationList.IdPackageFinished
+        ? [
+            {
+              packageId: quotationData.PackageQuotationList.IdPackageFinished,
+              type: 'FINISHED',
+            },
+          ]
+        : []),
     ],
     utilities: utilityInfos.map((utility) => ({
       utilitiesItemId: utility.utilitiesItemId,
@@ -152,6 +162,9 @@ export const handleSave = async (
     navigate(`/project-detail-staff/${quotationData.ProjectId}`);
   } catch (error) {
     console.error('Error saving data:', error);
-    toast.error('Có lỗi xảy ra khi lưu dữ liệu.');
+
+    const errorMessage =
+      error instanceof Error ? error.message : 'Có lỗi xảy ra khi lưu dữ liệu.';
+    toast.error(errorMessage);
   }
 };

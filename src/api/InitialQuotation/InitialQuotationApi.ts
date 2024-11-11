@@ -4,6 +4,7 @@ import {
   UpdateInitialQuotationRequest,
 } from '../../types/InitialQuotationTypes';
 import { toast } from 'react-toastify';
+import axios, { AxiosError } from 'axios';
 
 export async function getInitialQuotation(
   id: string,
@@ -40,7 +41,14 @@ export async function updateInitialQuotation(
     console.log('Update successful:', response.data);
   } catch (error) {
     console.error('Error updating initial quotation:', error);
-    throw new Error('Failed to update initial quotation');
+
+    if (axios.isAxiosError(error) && error.response) {
+      const apiError =
+        error.response.data?.Error || 'Failed to update initial quotation';
+      throw new Error(apiError);
+    } else {
+      throw new Error('Failed to update initial quotation');
+    }
   }
 }
 

@@ -84,7 +84,8 @@ const FinalQuotationDetailStaff = () => {
     if (quotationDetail) {
       const newPayment: BatchPaymentInfo = {
         PaymentId: '',
-        InitailQuotationId: '',
+        PaymentTypeId: '',
+        PaymentTypeName: '',
         ContractId: '',
         InsDate: new Date().toISOString(),
         Status: 'Pending',
@@ -114,65 +115,6 @@ const FinalQuotationDetailStaff = () => {
     updatedItems: FinalQuotationItem[],
   ) => {
     if (quotationDetail) {
-      setQuotationDetail({
-        ...quotationDetail,
-        FinalQuotationItems: updatedItems,
-      });
-    }
-  };
-
-  const addFinalQuotationRow = () => {
-    if (quotationDetail) {
-      const newLaborQuotationItem = {
-        Id: `new-labor-quotation-${Date.now()}`,
-        Name: 'Labor Item',
-        Unit: '',
-        Weight: 0,
-        UnitPriceLabor: null,
-        UnitPriceRough: null,
-        UnitPriceFinished: null,
-        TotalPriceLabor: null,
-        TotalPriceRough: null,
-        TotalPriceFinished: null,
-        InsDate: null,
-        UpsDate: null,
-        Note: null,
-        QuotationLabors: [], // Initialize as empty array
-        QuotationMaterials: null, // Set to null for labor
-      };
-
-      const newMaterialQuotationItem = {
-        Id: `new-material-quotation-${Date.now()}`,
-        Name: 'Material Item',
-        Unit: '',
-        Weight: 0,
-        UnitPriceLabor: null,
-        UnitPriceRough: null,
-        UnitPriceFinished: null,
-        TotalPriceLabor: null,
-        TotalPriceRough: null,
-        TotalPriceFinished: null,
-        InsDate: null,
-        UpsDate: null,
-        Note: null,
-        QuotationLabors: null, // Set to null for material
-        QuotationMaterials: [], // Initialize as empty array
-      };
-
-      const newQuotationItem: FinalQuotationItem = {
-        Id: `new-${Date.now()}`,
-        ContructionId: '',
-        ContructionName: '',
-        Type: '',
-        Coefficient: 0,
-        InsDate: null,
-        QuotationItems: [newLaborQuotationItem, newMaterialQuotationItem],
-      };
-
-      const updatedItems = [
-        ...quotationDetail.FinalQuotationItems,
-        newQuotationItem,
-      ];
       setQuotationDetail({
         ...quotationDetail,
         FinalQuotationItems: updatedItems,
@@ -223,6 +165,30 @@ const FinalQuotationDetailStaff = () => {
       setQuotationDetail({
         ...quotationDetail,
         UtilityInfos: updatedUtilities,
+      });
+    }
+  };
+
+  const addConstructionRow = () => {
+    if (quotationDetail) {
+      const newConstruction: FinalQuotationItem = {
+        Id: '',
+        ConstructionId: '',
+        ContructionName: '',
+        SubConstructionId: '',
+        Coefficient: 0,
+        Type: '',
+        InsDate: new Date().toISOString(),
+        QuotationItems: [],
+        // Thêm các thuộc tính khác nếu cần
+      };
+      const updatedItems = [
+        ...quotationDetail.FinalQuotationItems,
+        newConstruction,
+      ];
+      setQuotationDetail({
+        ...quotationDetail,
+        FinalQuotationItems: updatedItems,
       });
     }
   };
@@ -335,7 +301,7 @@ const FinalQuotationDetailStaff = () => {
             </div>
             {isEditing && (
               <button
-                onClick={addFinalQuotationRow}
+                onClick={addConstructionRow}
                 className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
               >
                 <FaPlus />

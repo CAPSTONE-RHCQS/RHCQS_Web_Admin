@@ -11,6 +11,7 @@ export async function getLaborByName(
         accept: 'text/plain',
       },
     });
+    console.log('Labor search results:', response.data);
     return response.data;
   } catch (error) {
     console.error(`Error fetching labor by name ${name}:`, error);
