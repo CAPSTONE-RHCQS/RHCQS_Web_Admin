@@ -1,14 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { addImageHouseTemplate } from '../../../../api/HouseTemplate/HouseTemplateApi';
-
+import {
+  addImageHouseTemplate,
+  fetchHouseTemplateDetail,
+} from '../../../../api/HouseTemplate/HouseTemplateApi';
+import { HouseTemplateDetail as HouseTemplateDetailType } from '../../../../types/HouseTemplateTypes';
 const AddImageHouse: React.FC = () => {
   const location = useLocation();
   const responseData = location.state?.responseData;
 
   const [overallImage, setOverallImage] = useState<File | null>(null);
   const [outsideImages, setOutsideImages] = useState<File[]>([]);
+  const [houseTemplate, setHouseTemplate] =
+    useState<HouseTemplateDetailType | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
   const [designDrawingImages, setDesignDrawingImages] = useState<File[]>([]);
+  const [packageFinishedImages, setPackageFinishedImages] = useState<File[]>(
+    [],
+  );
   const [previewOverallImage, setPreviewOverallImage] = useState<string | null>(
     null,
   );
@@ -21,6 +31,25 @@ const AddImageHouse: React.FC = () => {
   const [confirmationMessage, setConfirmationMessage] = useState<string | null>(
     null,
   );
+  const [previewPackageFinishedImages, setPreviewPackageFinishedImages] =
+    useState<string[]>([]);
+
+  useEffect(() => {
+    const loadHouseTemplateDetail = async () => {
+      try {
+        if (responseData) {
+          const data = await fetchHouseTemplateDetail(responseData);
+          setHouseTemplate(data);
+        }
+      } catch (err) {
+        setError('Failed to fetch house template detail');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHouseTemplateDetail();
+  }, [responseData]);
 
   const handleOverallImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -56,6 +85,21 @@ const AddImageHouse: React.FC = () => {
     }
   };
 
+  const handlePackageFinishedImagesChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setPackageFinishedImages((prevImages) => [...prevImages, ...files]);
+      const newPreviews = files.map((file) => URL.createObjectURL(file));
+      console.log('New package finished image previews:', newPreviews);
+      setPreviewPackageFinishedImages((prevPreviews) => [
+        ...prevPreviews,
+        ...newPreviews,
+      ]);
+    }
+  };
+
   const handleSubmit = async () => {
     if (responseData && overallImage) {
       try {
@@ -74,19 +118,26 @@ const AddImageHouse: React.FC = () => {
           formData.append('DesignDrawingImage', image, image.name);
         });
 
+        packageFinishedImages.forEach((image) => {
+          formData.append('PackageFinishedImage', image, image.name);
+        });
+
+        // Gọi hàm addImageHouseTemplate để gửi dữ liệu
         const result = await addImageHouseTemplate(responseData, formData);
-        console.log('Image uploaded successfully:', result);
+        console.log('Image uploaded successfully:', result, formData);
         setConfirmationMessage('Hình ảnh đã được gửi thành công!');
       } catch (error) {
         console.error('Error uploading image:', error);
         setConfirmationMessage('Có lỗi xảy ra khi gửi hình ảnh.');
       }
+    } else {
+      setConfirmationMessage('Vui lòng chọn ít nhất một hình ảnh để gửi.');
     }
   };
 
   const removeImage = (
     index: number,
-    type: 'overall' | 'outside' | 'design',
+    type: 'overall' | 'outside' | 'design' | 'package',
   ) => {
     if (type === 'overall') {
       setOverallImage(null);
@@ -105,16 +156,24 @@ const AddImageHouse: React.FC = () => {
       newPreviewDesignDrawingImages.splice(index, 1);
       setDesignDrawingImages(newDesignDrawingImages);
       setPreviewDesignDrawingImages(newPreviewDesignDrawingImages);
+    } else if (type === 'package') {
+      const newPackageFinishedImages = [...packageFinishedImages];
+      const newPreviewPackageFinishedImages = [...previewPackageFinishedImages];
+      newPackageFinishedImages.splice(index, 1);
+      newPreviewPackageFinishedImages.splice(index, 1);
+      setPackageFinishedImages(newPackageFinishedImages);
+      setPreviewPackageFinishedImages(newPreviewPackageFinishedImages);
     }
   };
 
   return (
     <div>
+      <h3 className="text-2xl font-bold mb-4 text-black">
+        Tên nhà mẫu: {houseTemplate?.Name}
+      </h3>
       <div>
-        <h2 className="text-2xl font-bold mb-4 text-black">
-          Hình ảnh tổng thể
-        </h2>
-        <div className="flex flex-wrap items-center rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+        <h2 className="text-2xl font-bold mb-4">Hình ảnh tổng thể</h2>
+        <div className="flex flex-wrap items-center rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6 ">
           {previewOverallImage ? (
             <div className="relative group">
               <img
@@ -127,12 +186,6 @@ const AddImageHouse: React.FC = () => {
                   marginBottom: '10px',
                 }}
               />
-              <button
-                onClick={() => removeImage(0, 'overall')}
-                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
-              >
-                -
-              </button>
               <label className="absolute inset-0 cursor-pointer flex items-center justify-center bg-opacity-50 bg-black text-white opacity-0 group-hover:opacity-100 transition-opacity">
                 <input
                   type="file"
@@ -158,9 +211,7 @@ const AddImageHouse: React.FC = () => {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4 mt-4 text-black">
-          Ảnh ngoại cảnh
-        </h2>
+        <h2 className="text-2xl font-bold mb-4 mt-4">Ảnh ngoại cảnh</h2>
         <div className="flex flex-wrap items-center rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           {previewOutsideImages.map((src, index) => (
             <div key={index} className="relative">
@@ -196,7 +247,7 @@ const AddImageHouse: React.FC = () => {
       </div>
 
       <div>
-        <h2 className="text-2xl font-bold mb-4 mt-4 text-black">Bản vẽ</h2>
+        <h2 className="text-2xl font-bold mb-4 mt-4">Bản vẽ</h2>
         <div className="flex flex-wrap items-center rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           {previewDesignDrawingImages.map((src, index) => (
             <div key={index} className="relative">
@@ -225,6 +276,42 @@ const AddImageHouse: React.FC = () => {
               accept="image/*"
               multiple
               onChange={handleDesignDrawingImagesChange}
+              style={{ display: 'none' }}
+            />
+          </label>
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-2xl font-bold mb-4 mt-4">Ảnh gói hoàn thiện</h2>
+        <div className="flex flex-wrap items-center rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
+          {previewPackageFinishedImages.map((src, index) => (
+            <div key={index} className="relative">
+              <img
+                src={src}
+                alt={`Package Finished Preview ${index}`}
+                style={{
+                  width: '150px',
+                  height: '100px',
+                  marginRight: '10px',
+                  marginBottom: '10px',
+                }}
+              />
+              <button
+                onClick={() => removeImage(index, 'package')}
+                className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+              >
+                -
+              </button>
+            </div>
+          ))}
+          <label className="cursor-pointer flex items-center justify-center w-36 h-24 border-2 border-dashed rounded-md">
+            <span className="text-3xl">+</span>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handlePackageFinishedImagesChange}
               style={{ display: 'none' }}
             />
           </label>

@@ -90,6 +90,7 @@ export interface CreateHouseTemplateRequest {
   packageRoughId: string;
   descriptionPackage: string;
   subTemplates: CreateSubTemplate[];
+  packageFinished: CreatePackageFinished[];
 }
 
 export interface CreateSubTemplate {
@@ -106,6 +107,11 @@ export interface CreateTemplateItem {
   name: string;
   area: number;
   unit: string;
+}
+
+export interface CreatePackageFinished {
+  packageId: string;
+  description: string;
 }
 
 export interface AddImageHouseTemplateRequest {
