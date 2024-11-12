@@ -11,6 +11,7 @@ import {
   IconButton,
 } from '@material-tailwind/react';
 import { FaBuilding, FaBed } from 'react-icons/fa';
+import { defaultImageHouseTemplateUrl } from '../../../utils/constants';
 
 const HouseTemplateList: React.FC = () => {
   const [houseTemplates, setHouseTemplates] = useState<HouseTemplateItem[]>([]);
@@ -71,7 +72,7 @@ const HouseTemplateList: React.FC = () => {
               className="cursor-pointer"
             >
               <img
-                src={template.ImgUrl}
+                src={template.ImgUrl || defaultImageHouseTemplateUrl}
                 alt={template.Name}
                 className="w-full h-48 object-cover"
               />

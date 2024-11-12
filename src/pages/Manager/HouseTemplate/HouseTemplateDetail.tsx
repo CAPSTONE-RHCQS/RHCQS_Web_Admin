@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import PackageHouseList from './components/PackageHouseList';
 import ExteriorImageList from './components/ExteriorImageList';
+import { defaultImageHouseTemplateUrl } from '../../../utils/constants';
 
 const HouseTemplateDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,10 +33,11 @@ const HouseTemplateDetail: React.FC = () => {
       try {
         if (id) {
           const data = await fetchHouseTemplateDetail(id);
+          console.log('Fetched data:', data);
           setHouseTemplate(data);
-          console.log(data.Id);
         }
       } catch (err) {
+        console.error('Error fetching house template detail:', err);
         setError('Failed to fetch house template detail');
       } finally {
         setLoading(false);
@@ -116,9 +118,11 @@ const HouseTemplateDetail: React.FC = () => {
                     <img
                       src={
                         selectedDrawingIndex === -1
-                          ? houseTemplate.SubTemplates[selectedTabIndex]?.Url
+                          ? houseTemplate.SubTemplates[selectedTabIndex]?.Url ||
+                            defaultImageHouseTemplateUrl
                           : houseTemplate.SubTemplates[selectedTabIndex]
-                              ?.Designdrawings[selectedDrawingIndex]?.Url
+                              ?.Designdrawings[selectedDrawingIndex]?.Url ||
+                            defaultImageHouseTemplateUrl
                       }
                       alt={houseTemplate.Name}
                       className={`object-cover ${isZoomed ? 'zoomed' : ''}`}
@@ -155,7 +159,7 @@ const HouseTemplateDetail: React.FC = () => {
                 <div className="flex flex-col md:flex-row">
                   <div className="w-full md:w-1/2">
                     <img
-                      src={houseTemplate.ImgUrl}
+                      src={houseTemplate.ImgUrl || defaultImageHouseTemplateUrl}
                       alt={houseTemplate.Name}
                       className="w-full h-full object-cover rounded-lg shadow-md"
                     />
@@ -252,7 +256,10 @@ const HouseTemplateDetail: React.FC = () => {
               }`}
             >
               <img
-                src={houseTemplate.SubTemplates[selectedTabIndex]?.Url}
+                src={
+                  houseTemplate.SubTemplates[selectedTabIndex]?.Url ||
+                  defaultImageHouseTemplateUrl
+                }
                 alt={houseTemplate.Name}
                 className="w-full h-full object-cover"
               />
@@ -269,7 +276,7 @@ const HouseTemplateDetail: React.FC = () => {
                   }`}
                 >
                   <img
-                    src={drawing.Url}
+                    src={drawing.Url || defaultImageHouseTemplateUrl}
                     alt={drawing.Name}
                     className="w-full h-full object-cover"
                   />
