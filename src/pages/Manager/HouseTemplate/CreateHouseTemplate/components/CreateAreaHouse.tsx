@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   ConstructionSearchResponse,
   getConstructionByName,
 } from '../../../../../api/Construction/ConstructionApi';
 import { PackageTypeSearchResponse } from '../../../../../api/Package/PackageApi';
+import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 
 interface HouseAreaComponentProps {
   searchPackageResults: PackageTypeSearchResponse[];
@@ -16,6 +17,7 @@ export interface AreaData {
   buildingArea: string;
   floorArea: string;
   size: string;
+  totalRough: number;
   searchContruction: string;
   searchResults: ConstructionSearchResponse[];
   addedItems: {
@@ -43,6 +45,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
       buildingArea: '',
       floorArea: '',
       size: '',
+      totalRough: 0,
       searchContruction: '',
       searchResults: [],
       addedItems: [],
@@ -50,14 +53,20 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     },
   ]);
 
+  const previousAreasRef = useRef<AreaData[]>(areas);
+
   useEffect(() => {
-    onAreaDataChange(areas);
+    const previousAreas = previousAreasRef.current;
+    if (JSON.stringify(previousAreas) !== JSON.stringify(areas)) {
+      onAreaDataChange(areas);
+      previousAreasRef.current = areas;
+    }
   }, [areas, onAreaDataChange]);
 
   const [selectedItems, setSelectedItems] = useState<
     { Id: string; SubConstructionId: string; Name: string }[]
   >([]);
-  console.log(selectedItems);
+  console.log('selectedItems:', selectedItems);
 
   const handleAreaInputChange = (
     index: number,
@@ -65,7 +74,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     value: string,
   ) => {
     const newAreas = [...areas];
-    newAreas[index][field] = value as any;
+    newAreas[index][field] = value as never;
     setAreas(newAreas);
   };
 
@@ -100,17 +109,13 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
 
   const handleAddItemForArea = (index: number, item: any) => {
     const newAreas = [...areas];
-    newAreas[index].addedItems.push({ 
-      ...item, 
-      area: 0,
-      SubConstructionId: item.SubConstructionId || '00000000-0000-0000-0000-000000000000'
-    });
+    newAreas[index].addedItems.push({ ...item, area: 0 });
     newAreas[index].searchResults = [];
     setAreas(newAreas);
 
     const selectedItem = {
       Id: item.Id,
-      SubConstructionId: item.SubConstructionId || '00000000-0000-0000-0000-000000000000',
+      SubConstructionId: item.SubConstructionId,
       Name: item.Name,
       area: 0,
     };
@@ -134,6 +139,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     newAreas[areaIndex].selectedItems[itemIndex].area = areaValue;
 
     setAreas(newAreas);
+    updateTotalRoughForArea(areaIndex);
   };
 
   const calculateTotalCostForArea = (index: number) => {
@@ -150,6 +156,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
         buildingArea: '',
         floorArea: '',
         size: '',
+        totalRough: 0,
         searchContruction: '',
         searchResults: [],
         addedItems: [],
@@ -158,19 +165,70 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     ]);
   };
 
+  const updateTotalRoughForArea = useCallback(
+    (index: number) => {
+      const newAreas = [...areas];
+      const newTotalRough = calculateTotalCostForArea(index);
+      if (newAreas[index].totalRough !== newTotalRough) {
+        newAreas[index].totalRough = newTotalRough;
+        setAreas(newAreas);
+      }
+    },
+    [areas],
+  );
+
+  useEffect(() => {
+    areas.forEach((_, index) => updateTotalRoughForArea(index));
+  }, [areas, updateTotalRoughForArea]);
+
+  const handleRemoveArea = (index: number) => {
+    const newAreas = areas.filter((_, areaIndex) => areaIndex !== index);
+    setAreas(newAreas);
+  };
+
+  const handleSizeInputChange = (
+    index: number,
+    width: string,
+    length: string,
+  ) => {
+    const newAreas = [...areas];
+    newAreas[index].size = `R${width}xD${length}`;
+    setAreas(newAreas);
+  };
+
   return (
     <div>
-      <h3 className="text-2xl font-bold mb-4 mt-8 text-black">
-        Bước 2 - Tạo diện tích nhà mẫu
-      </h3>
+      <div className="flex justify-between items-center mb-4 mt-8">
+        <h3 className="text-2xl font-bold text-black">
+          Bước 2 - Tạo diện tích nhà mẫu
+        </h3>
+        {areas.length < 3 && (
+          <span
+            onClick={addNewArea}
+            className="text-primary cursor-pointer font-bold"
+          >
+            + Thêm diện tích
+          </span>
+        )}
+      </div>
       {areas.map((areaData, index) => (
         <div
           key={index}
-          className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6"
+          className="relative rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6"
         >
-          <h3 className="text-2xl font-bold mb-4 mt-1 text-black">
-            Diện tích {index + 1}
-          </h3>
+          {areas.length > 1 && (
+            <button
+              onClick={() => handleRemoveArea(index)}
+              className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-8 h-6 flex items-center justify-center"
+            >
+              -
+            </button>
+          )}
+          <div className="flex justify-between items-center">
+            <h3 className="text-2xl font-bold mb-4 mt-1 text-black">
+              Diện tích mẫu {index + 1}
+            </h3>
+          </div>
           <div className="flex">
             <div className="w-1/3 pr-2">
               <div className="mb-3">
@@ -199,18 +257,39 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                   className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 />
               </div>
-              <div className="mb-3">
-                <label className="block text-lg font-medium mb-1">
-                  Diện tích lầu:
-                </label>
-                <input
-                  type="text"
-                  value={areaData.size}
-                  onChange={(e) =>
-                    handleAreaInputChange(index, 'size', e.target.value)
-                  }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
+              <div className="mb-3 flex space-x-2">
+                <div className="flex-1">
+                  <label className="block text-lg font-medium mb-1">
+                    Chiều rộng (R):
+                  </label>
+                  <input
+                    type="text"
+                    onChange={(e) =>
+                      handleSizeInputChange(
+                        index,
+                        e.target.value,
+                        areaData.size.split('xD')[1] || '',
+                      )
+                    }
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-lg font-medium mb-1">
+                    Chiều dài (D):
+                  </label>
+                  <input
+                    type="text"
+                    onChange={(e) =>
+                      handleSizeInputChange(
+                        index,
+                        areaData.size.split('xD')[0].replace('R', '') || '',
+                        e.target.value,
+                      )
+                    }
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  />
+                </div>
               </div>
               <div className="mb-3">
                 <label className="block text-lg font-medium mb-1">
@@ -305,12 +384,14 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                             newAreas[index].addedItems = newAreas[
                               index
                             ].addedItems.filter((_, i) => i !== itemIndex);
-                            newAreas[index].selectedItems = newAreas[index].selectedItems.filter((_, i) => i !== itemIndex);
+                            newAreas[index].selectedItems = newAreas[
+                              index
+                            ].selectedItems.filter((_, i) => i !== itemIndex);
                             setAreas(newAreas);
                             setSelectedItems(newAreas[index].selectedItems);
                           }}
                         >
-                          Xóa
+                          <DeleteButton onClick={() => {}} />
                         </button>
                       </td>
                     </tr>
@@ -321,12 +402,6 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
           </div>
         </div>
       ))}
-      <button
-        onClick={addNewArea}
-        className="mt-4 bg-primary text-white py-2 px-4 rounded"
-      >
-        Thêm diện tích mới
-      </button>
     </div>
   );
 };
