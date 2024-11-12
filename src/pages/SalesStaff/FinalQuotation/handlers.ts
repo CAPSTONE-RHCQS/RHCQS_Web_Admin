@@ -7,6 +7,7 @@ import axios from 'axios';
 export const handleSave = async (
   quotationDetail: FinalQuotationDetailType | null,
   setIsEditing: (value: boolean) => void,
+  setIsSaving: (value: boolean) => void,
 ) => {
   if (quotationDetail) {
     const requestData: FinalQuotationRequest = {
@@ -47,6 +48,7 @@ export const handleSave = async (
     };
 
     try {
+      setIsSaving(true);
       await updateFinalQuotation(requestData);
       setIsEditing(false);
       toast.success('Cập nhật báo giá thành công!');
@@ -65,6 +67,8 @@ export const handleSave = async (
       } else {
         toast.error('Đã xảy ra lỗi không xác định.');
       }
+    } finally {
+      setIsSaving(false);
     }
   }
 };

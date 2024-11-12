@@ -29,6 +29,7 @@ import { handleSave, handleEditToggle } from './handlers';
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
@@ -180,7 +181,6 @@ const FinalQuotationDetailStaff = () => {
         Type: '',
         InsDate: new Date().toISOString(),
         QuotationItems: [],
-        // Thêm các thuộc tính khác nếu cần
       };
       const updatedItems = [
         ...quotationDetail.FinalQuotationItems,
@@ -199,7 +199,8 @@ const FinalQuotationDetailStaff = () => {
 
       <ButtonGroup
         isEditing={isEditing}
-        handleSave={() => handleSave(quotationDetail, setIsEditing)}
+        isSaving={isSaving}
+        handleSave={() => handleSave(quotationDetail, setIsEditing, setIsSaving)}
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
         handleShare={handleShare}

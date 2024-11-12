@@ -21,6 +21,7 @@ const InitialQuotationDetailStaff = () => {
     useState<InitialQuotationResponse | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [batchPayment, setBatchPayment] = useState<any[]>([]);
@@ -104,18 +105,9 @@ const InitialQuotationDetailStaff = () => {
       </div>
       <ActionButtons
         isEditing={isEditing}
+        isSaving={isSaving}
         handleEditToggle={handleEditToggle}
-        handleSave={() =>
-          handleSave(
-            quotationData,
-            tableData,
-            version,
-            batchPayment,
-            utilityInfos,
-            promotionInfo,
-            navigate,
-          )
-        }
+        handleSave={() => handleSave(quotationData, tableData, version, batchPayment, utilityInfos, promotionInfo, navigate, setIsSaving)}
       />
       <QuotationSummary
         quotationData={quotationData}
