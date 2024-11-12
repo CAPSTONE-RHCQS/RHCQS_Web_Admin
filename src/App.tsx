@@ -42,16 +42,11 @@ import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDe
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
-
-// ... existing imports ...
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -63,6 +58,7 @@ function App() {
     <Loader />
   ) : (
     <>
+      <ScrollToTop />
       {isAuthPage ? (
         <Routes>
           <Route
