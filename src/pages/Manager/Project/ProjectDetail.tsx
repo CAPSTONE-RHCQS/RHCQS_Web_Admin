@@ -376,28 +376,30 @@ const ProjectDetail = () => {
         >
           Thiết kế bản vẽ
           {projectDetail.HouseDesignDrawingInfo &&
+            projectDetail.HouseDesignDrawingInfo.length > 0 &&
             (showDesignDrawing ? (
               <FaChevronUp className="ml-2" />
             ) : (
               <FaChevronDown className="ml-2" />
             ))}
         </h3>
-        {showDesignDrawing && (
-          <>
-            {projectDetail.HouseDesignDrawingInfo &&
-            projectDetail.HouseDesignDrawingInfo.length === 0 ? (
-              <button
-                onClick={() => setIsAssignModalOpen(true)}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                Phân công
-              </button>
-            ) : (
-              <HouseDesignDrawingInfoTable
-                designData={projectDetail.HouseDesignDrawingInfo}
-              />
-            )}
-          </>
+        {projectDetail.HouseDesignDrawingInfo &&
+        projectDetail.HouseDesignDrawingInfo.length === 0 &&
+        projectDetail.StaffName ? (
+          <button
+            onClick={() => setIsAssignModalOpen(true)}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Phân công
+          </button>
+        ) : (
+          projectDetail.HouseDesignDrawingInfo &&
+          projectDetail.HouseDesignDrawingInfo.length > 0 &&
+          showDesignDrawing && (
+            <HouseDesignDrawingInfoTable
+              designData={projectDetail.HouseDesignDrawingInfo}
+            />
+          )
         )}
 
         {isAssignModalOpen && (
