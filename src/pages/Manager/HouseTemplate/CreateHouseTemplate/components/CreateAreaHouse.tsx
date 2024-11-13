@@ -11,6 +11,7 @@ interface HouseAreaComponentProps {
   selectedPackagePrice: number;
   formatCurrency: (value: number) => string;
   onAreaDataChange: (areas: AreaData[]) => void;
+  areas: AreaData[];
 }
 
 export interface AreaData {
@@ -20,18 +21,19 @@ export interface AreaData {
   totalRough: number;
   searchContruction: string;
   searchResults: ConstructionSearchResponse[];
-  addedItems: {
-    Id: string;
-    SubConstructionId: string;
-    Name: string;
-    Coefficient: number;
-    area: number;
-  }[];
   selectedItems: {
     Id: string;
-    SubConstructionId: string;
+    SubConstructionId: string | null;
     Name: string;
     area: number;
+    Coefficient: number;
+  }[];
+  TemplateItems: {
+    Id: string;
+    Name: string;
+    Coefficient: number;
+    Area: number;
+    Unit: string;
   }[];
 }
 
@@ -39,20 +41,8 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   selectedPackagePrice,
   formatCurrency,
   onAreaDataChange,
+  areas,
 }) => {
-  const [areas, setAreas] = useState<AreaData[]>([
-    {
-      buildingArea: '',
-      floorArea: '',
-      size: '',
-      totalRough: 0,
-      searchContruction: '',
-      searchResults: [],
-      addedItems: [],
-      selectedItems: [],
-    },
-  ]);
-
   const previousAreasRef = useRef<AreaData[]>(areas);
 
   useEffect(() => {
@@ -75,7 +65,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   ) => {
     const newAreas = [...areas];
     newAreas[index][field] = value as never;
-    setAreas(newAreas);
+    onAreaDataChange(newAreas);
   };
 
   const handleSearchChangeForArea = async (
@@ -85,45 +75,55 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     const searchValue = e.target.value;
     const newAreas = [...areas];
     newAreas[index].searchContruction = searchValue;
-    setAreas(newAreas);
+    onAreaDataChange(newAreas);
 
     if (searchValue) {
       try {
         const results = await getConstructionByName(searchValue);
         const filteredResults = results.filter(
           (result) =>
-            !newAreas[index].addedItems.some(
+            !newAreas[index].TemplateItems.some(
               (item) => item.Name === result.Name,
             ),
         );
         newAreas[index].searchResults = filteredResults;
-        setAreas(newAreas);
+        onAreaDataChange(newAreas);
       } catch (error) {
         console.error('Error fetching search results:', error);
       }
     } else {
       newAreas[index].searchResults = [];
-      setAreas(newAreas);
+      onAreaDataChange(newAreas);
     }
   };
 
   const handleAddItemForArea = (index: number, item: any) => {
     const newAreas = [...areas];
-    newAreas[index].addedItems.push({ ...item, area: 0 });
-    newAreas[index].searchResults = [];
-    setAreas(newAreas);
+    const newItem = {
+      Id: item.Id,
+      Name: item.Name,
+      Coefficient: item.Coefficient || 1,
+      Area: 0,
+      Unit: 'm²',
+    };
 
-    const selectedItem = {
+    newAreas[index].TemplateItems.push(newItem);
+
+    const updatedSelectedItems = [...newAreas[index].selectedItems, {
       Id: item.Id,
       SubConstructionId: item.SubConstructionId,
       Name: item.Name,
       area: 0,
-    };
-    newAreas[index].selectedItems.push(selectedItem);
-    setAreas(newAreas);
-    setSelectedItems(newAreas[index].selectedItems);
+      Coefficient: item.Coefficient || 1,
+    }];
+    newAreas[index].selectedItems = updatedSelectedItems;
 
-    console.log('Hạng mục được thêm:', selectedItem);
+    setSelectedItems(updatedSelectedItems);
+
+    newAreas[index].searchResults = [];
+    onAreaDataChange(newAreas);
+
+    console.log('Hạng mục được thêm:', newItem);
   };
 
   const handleItemAreaChange = (
@@ -133,36 +133,34 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   ) => {
     const newAreas = [...areas];
     const areaValue = parseFloat(value) || 0;
-    newAreas[areaIndex].addedItems[itemIndex].area = areaValue;
+    newAreas[areaIndex].TemplateItems[itemIndex].Area = areaValue;
 
-    // Cập nhật giá trị area trong selectedItems
+    // Cập nhật giá trị area trong selectedItems nếu cần
     newAreas[areaIndex].selectedItems[itemIndex].area = areaValue;
 
-    setAreas(newAreas);
+    onAreaDataChange(newAreas);
     updateTotalRoughForArea(areaIndex);
   };
 
   const calculateTotalCostForArea = (index: number) => {
     const areaData = areas[index];
-    return areaData.addedItems.reduce((total, item) => {
+    return areaData.selectedItems.reduce((total, item) => {
       return total + item.area * (selectedPackagePrice || 0) * item.Coefficient;
     }, 0);
   };
 
   const addNewArea = () => {
-    setAreas([
-      ...areas,
-      {
-        buildingArea: '',
-        floorArea: '',
-        size: '',
-        totalRough: 0,
-        searchContruction: '',
-        searchResults: [],
-        addedItems: [],
-        selectedItems: [],
-      },
-    ]);
+    const newArea: AreaData = {
+      buildingArea: '',
+      floorArea: '',
+      size: '',
+      totalRough: 0,
+      searchContruction: '',
+      searchResults: [],
+      selectedItems: [],
+      TemplateItems: [],
+    };
+    onAreaDataChange([...areas, newArea]);
   };
 
   const updateTotalRoughForArea = useCallback(
@@ -171,7 +169,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
       const newTotalRough = calculateTotalCostForArea(index);
       if (newAreas[index].totalRough !== newTotalRough) {
         newAreas[index].totalRough = newTotalRough;
-        setAreas(newAreas);
+        onAreaDataChange(newAreas);
       }
     },
     [areas],
@@ -183,7 +181,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
 
   const handleRemoveArea = (index: number) => {
     const newAreas = areas.filter((_, areaIndex) => areaIndex !== index);
-    setAreas(newAreas);
+    onAreaDataChange(newAreas);
   };
 
   const handleSizeInputChange = (
@@ -193,7 +191,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   ) => {
     const newAreas = [...areas];
     newAreas[index].size = `R${width}xD${length}`;
-    setAreas(newAreas);
+    onAreaDataChange(newAreas);
   };
 
   return (
@@ -264,6 +262,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                   </label>
                   <input
                     type="text"
+                    value={areaData.size.split('xD')[0].replace('R', '')}
                     onChange={(e) =>
                       handleSizeInputChange(
                         index,
@@ -280,6 +279,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                   </label>
                   <input
                     type="text"
+                    value={areaData.size.split('xD')[1]}
                     onChange={(e) =>
                       handleSizeInputChange(
                         index,
@@ -338,7 +338,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                   </tr>
                 </thead>
                 <tbody>
-                  {areaData.addedItems.map((item, itemIndex) => (
+                  {areaData.TemplateItems.map((item, itemIndex) => (
                     <tr key={itemIndex}>
                       <td className="border border-primary py-2 text-center">
                         {item.Name}
@@ -352,12 +352,12 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                           : ''}
                       </td>
                       <td className="border border-primary py-2 text-center">
-                        m²
+                        {item.Unit}
                       </td>
                       <td className="border border-primary py-2 text-center">
                         <input
                           type="text"
-                          value={item.area}
+                          value={item.Area}
                           onChange={(e) =>
                             handleItemAreaChange(
                               index,
@@ -371,7 +371,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                       </td>
                       <td className="border border-primary py-2 text-center">
                         {formatCurrency(
-                          item.area *
+                          item.Area *
                             (selectedPackagePrice || 0) *
                             item.Coefficient,
                         )}
@@ -381,14 +381,10 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                           className="text-red-500"
                           onClick={() => {
                             const newAreas = [...areas];
-                            newAreas[index].addedItems = newAreas[
+                            newAreas[index].TemplateItems = newAreas[
                               index
-                            ].addedItems.filter((_, i) => i !== itemIndex);
-                            newAreas[index].selectedItems = newAreas[
-                              index
-                            ].selectedItems.filter((_, i) => i !== itemIndex);
-                            setAreas(newAreas);
-                            setSelectedItems(newAreas[index].selectedItems);
+                            ].TemplateItems.filter((_, i) => i !== itemIndex);
+                            onAreaDataChange(newAreas);
                           }}
                         >
                           <DeleteButton onClick={() => {}} />

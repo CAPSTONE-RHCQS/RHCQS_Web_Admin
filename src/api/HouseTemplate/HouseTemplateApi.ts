@@ -84,3 +84,25 @@ export const addImageHouseTemplate = async (
     throw error;
   }
 };
+
+export const uploadSubHouseTemplate = async (
+  subTempateId: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/upload-sub-template?subTempateId=${subTempateId}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading sub house template:', error);
+    throw error;
+  }
+};

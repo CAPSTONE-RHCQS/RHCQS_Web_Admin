@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   PackageTypeSearchResponse,
   searchPackagesByName,
 } from '../../../../api/Package/PackageApi';
 import CreateAreaHouse, { AreaData } from './components/CreateAreaHouse';
-import { createHouseTemplate } from '../../../../api/HouseTemplate/HouseTemplateApi';
-import { CreateHouseTemplateRequest } from '../../../../types/HouseTemplateTypes';
+import {
+  createHouseTemplate,
+  fetchHouseTemplateDetail,
+} from '../../../../api/HouseTemplate/HouseTemplateApi';
+import {
+  CreateHouseTemplateRequest,
+  HouseTemplateDetail,
+} from '../../../../types/HouseTemplateTypes';
 import Alert from '../../../../components/Alert';
 
 const CreateHouseModel: React.FC = () => {
@@ -30,6 +36,8 @@ const CreateHouseModel: React.FC = () => {
   } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = location.state || {};
 
   useEffect(() => {
     const fetchPackageTypes = async () => {
@@ -40,14 +48,46 @@ const CreateHouseModel: React.FC = () => {
           'hoàn thiện',
         );
         setCompletedPackage(responseCompletedPackage.data);
-        console.log(responseCompletedPackage.data);
       } catch (error) {
         console.error('Error fetching package types:', error);
       }
     };
 
+    const fetchHouseTemplate = async () => {
+      if (id) {
+        try {
+          const data: HouseTemplateDetail = await fetchHouseTemplateDetail(id);
+          setName(data.Name);
+          setFloors(data.NumberOfFloor.toString());
+          setRooms(data.NumberOfBed.toString());
+          setDescription(data.Description);
+          setAreas(
+            data.SubTemplates.map((subTemplate) => ({
+              buildingArea: subTemplate.BuildingArea.toString(),
+              floorArea: subTemplate.FloorArea.toString(),
+              size: subTemplate.Size,
+              totalRough: 0,
+              searchContruction: '',
+              searchResults: [],
+              selectedItems: subTemplate.TemplateItems.map((item) => ({
+                Id: item.Id,
+                SubConstructionId: item.SubConstructionId,
+                Name: item.Name,
+                area: item.Area,
+                Coefficient: item.Coefficient,
+              })),
+              TemplateItems: subTemplate.TemplateItems,
+            })),
+          );
+        } catch (error) {
+          console.error('Error fetching house template detail:', error);
+        }
+      }
+    };
+
     fetchPackageTypes();
-  }, []);
+    fetchHouseTemplate();
+  }, [id]);
 
   const handlePackageTypeChange = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -105,7 +145,10 @@ const CreateHouseModel: React.FC = () => {
       setAlert({ message: 'Tạo mẫu nhà thành công!', type: 'success' });
       setTimeout(() => {
         navigate('/add-image-house', {
-          state: { responseData: response, packageFinished: data.packageFinished },
+          state: {
+            responseData: response,
+            packageFinished: data.packageFinished,
+          },
         });
       }, 5000);
     } catch (error) {
@@ -133,7 +176,7 @@ const CreateHouseModel: React.FC = () => {
       {/* Tạo mẫu nhà */}
       <div>
         <h1 className="text-2xl font-bold mb-4 text-black">
-          Bước 1 - Tạo mẫu nhà
+          {id ? 'Chỉnh sửa mẫu nhà' : 'Tạo mẫu nhà'}
         </h1>
         <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-5">
           <h3 className="text-2xl font-bold mb-4">Thông tin nhà mẫu</h3>
@@ -210,6 +253,7 @@ const CreateHouseModel: React.FC = () => {
           selectedPackagePrice={selectedPackagePrice}
           formatCurrency={formatCurrency}
           onAreaDataChange={handleAreaDataChange}
+          areas={areas}
         />
       </div>
 
@@ -258,6 +302,8 @@ const CreateHouseModel: React.FC = () => {
                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
               ></path>
             </svg>
+          ) : id ? (
+            'Cập nhật'
           ) : (
             'Gửi dữ liệu'
           )}

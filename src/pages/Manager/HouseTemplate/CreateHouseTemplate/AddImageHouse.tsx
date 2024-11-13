@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import {
   addImageHouseTemplate,
   fetchHouseTemplateDetail,
+  uploadSubHouseTemplate,
 } from '../../../../api/HouseTemplate/HouseTemplateApi';
 import {
   CreatePackageFinished,
@@ -42,6 +43,12 @@ const AddImageHouse: React.FC = () => {
     message: string;
     type: 'success' | 'error';
   } | null>(null);
+  const [subTemplateImages, setSubTemplateImages] = useState<{
+    [key: string]: File | null;
+  }>({});
+  const [previewSubTemplateImages, setPreviewSubTemplateImages] = useState<{
+    [key: string]: string | null;
+  }>({});
 
   useEffect(() => {
     const loadHouseTemplateDetail = async () => {
@@ -110,6 +117,20 @@ const AddImageHouse: React.FC = () => {
     }
   };
 
+  const handleSubTemplateImageChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    subTemplateId: string,
+  ) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setSubTemplateImages((prev) => ({ ...prev, [subTemplateId]: file }));
+      setPreviewSubTemplateImages((prev) => ({
+        ...prev,
+        [subTemplateId]: URL.createObjectURL(file),
+      }));
+    }
+  };
+
   const handleSubmit = async () => {
     if (responseData && overallImage) {
       setIsLoading(true);
@@ -144,7 +165,35 @@ const AddImageHouse: React.FC = () => {
           console.log('Package JSON string:', packageJsonString);
         }
 
+        // Kiểm tra tất cả các SubTemplate đã có ảnh
+        const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
+          (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
+        );
+
+        // Kiểm tra tất cả các packageFinished đã có ảnh
+        const allPackageImagesSelected =
+          packageFinishedImages.length === packageFinished.length;
+
+        if (!allSubTemplateImagesSelected || !allPackageImagesSelected) {
+          setAlert({
+            message: 'Vui lòng chọn ảnh cho tất cả các diện tích và gói.',
+            type: 'error',
+          });
+          return;
+        }
+
+        // Gửi ảnh cho từng SubTemplate
+        for (const subTemplate of houseTemplate?.SubTemplates || []) {
+          const image = subTemplateImages[subTemplate.Id];
+          const subFormData = new FormData();
+          if (image) {
+            subFormData.append('request', image, image.name);
+          }
+          await uploadSubHouseTemplate(subTemplate.Id, subFormData);
+        }
+
         const result = await addImageHouseTemplate(responseData, formData);
+        console.log('Package finished images:', packageFinishedImages);
         console.log('Image uploaded successfully:', result, formData);
         setAlert({
           message: 'Hình ảnh đã được gửi thành công!',
@@ -313,6 +362,62 @@ const AddImageHouse: React.FC = () => {
       </div>
 
       <div>
+        <h2 className="text-2xl font-bold mb-4 mt-4">Kích thước mẫu nhà</h2>
+        <div className="flex space-x-4">
+          {houseTemplate?.SubTemplates.map((subTemplate) => (
+            <div
+              key={subTemplate.Id}
+              className="flex flex-col items-center justify-between border border-stroke rounded-lg p-4 w-1/3 bg-white"
+            >
+              <h3 className="text-lg font-bold mb-2">
+                Diện tích: {subTemplate.Size}
+              </h3>
+              {previewSubTemplateImages[subTemplate.Id] ? (
+                <div className="relative">
+                  <img
+                    src={previewSubTemplateImages[subTemplate.Id] as string}
+                    alt={`SubTemplate Preview ${subTemplate.Id}`}
+                    style={{
+                      width: '150px',
+                      height: '100px',
+                      marginBottom: '10px',
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      setSubTemplateImages((prev) => ({
+                        ...prev,
+                        [subTemplate.Id]: null,
+                      }));
+                      setPreviewSubTemplateImages((prev) => ({
+                        ...prev,
+                        [subTemplate.Id]: null,
+                      }));
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    -
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer flex items-center justify-center w-36 h-24 border-2 border-dashed rounded-md mt-2">
+                  <span className="text-3xl">+</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) =>
+                      handleSubTemplateImageChange(e, subTemplate.Id)
+                    }
+                    style={{ display: 'none' }}
+                  />
+                </label>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
         <h2 className="text-2xl font-bold mb-4 mt-4">Ảnh gói hoàn thiện</h2>
         <div className="flex space-x-4">
           {packageFinished.map((pkg: CreatePackageFinished, index: number) => (
@@ -361,7 +466,7 @@ const AddImageHouse: React.FC = () => {
         <button
           onClick={handleSubmit}
           className="mt-4 bg-primary text-white py-2 px-4 rounded flex items-center justify-center"
-          disabled={isLoading || packageFinishedImages.length < 4}
+          disabled={isLoading}
         >
           {isLoading ? (
             <svg

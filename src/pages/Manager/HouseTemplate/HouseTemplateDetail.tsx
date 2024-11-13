@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchHouseTemplateDetail } from '../../../api/HouseTemplate/HouseTemplateApi';
 import { HouseTemplateDetail as HouseTemplateDetailType } from '../../../types/HouseTemplateTypes';
 import { Typography, Alert } from '@material-tailwind/react';
-import { Tab } from '@headlessui/react';
+import { Tab, TabList } from '@headlessui/react';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import ClipLoader from 'react-spinners/ClipLoader';
@@ -19,6 +19,7 @@ import ExteriorImageList from './components/ExteriorImageList';
 
 const HouseTemplateDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [houseTemplate, setHouseTemplate] =
     useState<HouseTemplateDetailType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -73,6 +74,12 @@ const HouseTemplateDetail: React.FC = () => {
     }
   };
 
+  const handleEdit = () => {
+    if (id) {
+      navigate('/create-house-template', { state: { id } });
+    }
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -86,7 +93,14 @@ const HouseTemplateDetail: React.FC = () => {
       <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
       {houseTemplate && (
         <>
-          <div className="flex mb-6 justify-between"></div>
+          <div className="flex mb-6 justify-between">
+            <button
+              onClick={handleEdit}
+              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+            >
+              Chỉnh sửa mẫu nhà
+            </button>
+          </div>
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/2">
               <Zoom>
@@ -184,8 +198,8 @@ const HouseTemplateDetail: React.FC = () => {
                     </div>
                   </div>
                   <div className="w-full md:w-1/2 pl-6">
-                    <Tab.List className="flex flex-col space-y-2 mt-4">
-                      {houseTemplate.SubTemplates.map((subTemplate, index) => (
+                    <TabList className="flex flex-col space-y-2 mt-4">
+                      {houseTemplate.SubTemplates.map((subTemplate) => (
                         <Tab
                           key={subTemplate.Id}
                           className={({ selected }) =>
@@ -200,7 +214,7 @@ const HouseTemplateDetail: React.FC = () => {
                           Diện tích: {subTemplate.Size}
                         </Tab>
                       ))}
-                    </Tab.List>
+                    </TabList>
                   </div>
                 </div>
                 <Tab.Panels className="mt-2">
