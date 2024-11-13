@@ -53,10 +53,25 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     }
   }, [areas, onAreaDataChange]);
 
+  useEffect(() => {
+    if (areas.length === 0) {
+      const defaultArea: AreaData = {
+        buildingArea: '',
+        floorArea: '',
+        size: '',
+        totalRough: 0,
+        searchContruction: '',
+        searchResults: [],
+        selectedItems: [],
+        TemplateItems: [],
+      };
+      onAreaDataChange([defaultArea]);
+    }
+  }, [areas, onAreaDataChange]);
+
   const [selectedItems, setSelectedItems] = useState<
     { Id: string; SubConstructionId: string; Name: string }[]
   >([]);
-  console.log('selectedItems:', selectedItems);
 
   const handleAreaInputChange = (
     index: number,
@@ -109,21 +124,22 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
 
     newAreas[index].TemplateItems.push(newItem);
 
-    const updatedSelectedItems = [...newAreas[index].selectedItems, {
-      Id: item.Id,
-      SubConstructionId: item.SubConstructionId,
-      Name: item.Name,
-      area: 0,
-      Coefficient: item.Coefficient || 1,
-    }];
+    const updatedSelectedItems = [
+      ...newAreas[index].selectedItems,
+      {
+        Id: item.Id,
+        SubConstructionId: item.SubConstructionId,
+        Name: item.Name,
+        area: 0,
+        Coefficient: item.Coefficient || 1,
+      },
+    ];
     newAreas[index].selectedItems = updatedSelectedItems;
 
     setSelectedItems(updatedSelectedItems);
 
     newAreas[index].searchResults = [];
     onAreaDataChange(newAreas);
-
-    console.log('Hạng mục được thêm:', newItem);
   };
 
   const handleItemAreaChange = (
@@ -139,7 +155,6 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     newAreas[areaIndex].selectedItems[itemIndex].area = areaValue;
 
     onAreaDataChange(newAreas);
-    updateTotalRoughForArea(areaIndex);
   };
 
   const calculateTotalCostForArea = (index: number) => {
@@ -162,22 +177,6 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     };
     onAreaDataChange([...areas, newArea]);
   };
-
-  const updateTotalRoughForArea = useCallback(
-    (index: number) => {
-      const newAreas = [...areas];
-      const newTotalRough = calculateTotalCostForArea(index);
-      if (newAreas[index].totalRough !== newTotalRough) {
-        newAreas[index].totalRough = newTotalRough;
-        onAreaDataChange(newAreas);
-      }
-    },
-    [areas],
-  );
-
-  useEffect(() => {
-    areas.forEach((_, index) => updateTotalRoughForArea(index));
-  }, [areas, updateTotalRoughForArea]);
 
   const handleRemoveArea = (index: number) => {
     const newAreas = areas.filter((_, areaIndex) => areaIndex !== index);
@@ -209,195 +208,202 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
           </span>
         )}
       </div>
-      {areas.map((areaData, index) => (
-        <div
-          key={index}
-          className="relative rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6"
-        >
-          {areas.length > 1 && (
-            <button
-              onClick={() => handleRemoveArea(index)}
-              className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-8 h-6 flex items-center justify-center"
-            >
-              -
-            </button>
-          )}
-          <div className="flex justify-between items-center">
-            <h3 className="text-2xl font-bold mb-4 mt-1 text-black">
-              Diện tích mẫu {index + 1}
-            </h3>
-          </div>
-          <div className="flex">
-            <div className="w-1/3 pr-2">
-              <div className="mb-3">
-                <label className="block text-lg font-medium mb-1 mt-8">
-                  Diện tích:
-                </label>
-                <input
-                  type="text"
-                  value={areaData.buildingArea}
-                  onChange={(e) =>
-                    handleAreaInputChange(index, 'buildingArea', e.target.value)
-                  }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
-              </div>
-              <div className="mb-3">
-                <label className="block text-lg font-medium mb-1">
-                  Diện tích xây dựng:
-                </label>
-                <input
-                  type="text"
-                  value={areaData.floorArea}
-                  onChange={(e) =>
-                    handleAreaInputChange(index, 'floorArea', e.target.value)
-                  }
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
-              </div>
-              <div className="mb-3 flex space-x-2">
-                <div className="flex-1">
-                  <label className="block text-lg font-medium mb-1">
-                    Chiều rộng (R):
-                  </label>
-                  <input
-                    type="text"
-                    value={areaData.size.split('xD')[0].replace('R', '')}
-                    onChange={(e) =>
-                      handleSizeInputChange(
-                        index,
-                        e.target.value,
-                        areaData.size.split('xD')[1] || '',
-                      )
-                    }
-                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="block text-lg font-medium mb-1">
-                    Chiều dài (D):
-                  </label>
-                  <input
-                    type="text"
-                    value={areaData.size.split('xD')[1]}
-                    onChange={(e) =>
-                      handleSizeInputChange(
-                        index,
-                        areaData.size.split('xD')[0].replace('R', '') || '',
-                        e.target.value,
-                      )
-                    }
-                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                  />
-                </div>
-              </div>
-              <div className="mb-3">
-                <label className="block text-lg font-medium mb-1">
-                  Tổng tiền hạng mục:{' '}
-                  {formatCurrency(calculateTotalCostForArea(index))}
-                </label>
-              </div>
+      {areas.map((areaData, index) => {
+        console.log('areaData:', areaData.totalRough);
+        return (
+          <div
+            key={index}
+            className="relative rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-6"
+          >
+            {areas.length > 1 && (
+              <button
+                onClick={() => handleRemoveArea(index)}
+                className="absolute top-[-10px] right-[-10px] bg-red-500 text-white rounded-full w-8 h-6 flex items-center justify-center"
+              >
+                -
+              </button>
+            )}
+            <div className="flex justify-between items-center">
+              <h3 className="text-2xl font-bold mb-4 mt-1 text-black">
+                Diện tích mẫu {index + 1}
+              </h3>
             </div>
-            <div className="w-2/3 pl-2">
-              <div className="flex mb-4">
-                <input
-                  type="search"
-                  value={areaData.searchContruction}
-                  onChange={(e) => handleSearchChangeForArea(index, e)}
-                  placeholder="Tìm kiếm hạng mục..."
-                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                />
-              </div>
-              <div>
-                {areaData.searchResults.length > 0 && (
-                  <div className="absolute bg-white border border-primary w-full z-10 max-h-60 overflow-y-auto">
-                    {areaData.searchResults.map((result) => (
-                      <div
-                        key={result.Id}
-                        className="p-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => handleAddItemForArea(index, result)}
-                      >
-                        <p>{result.Name}</p>
-                      </div>
-                    ))}
+            <div className="flex">
+              <div className="w-1/3 pr-2">
+                <div className="mb-3">
+                  <label className="block text-lg font-medium mb-1 mt-8">
+                    Diện tích:
+                  </label>
+                  <input
+                    type="text"
+                    value={areaData.buildingArea}
+                    onChange={(e) =>
+                      handleAreaInputChange(index, 'buildingArea', e.target.value)
+                    }
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  />
+                </div>
+                <div className="mb-3">
+                  <label className="block text-lg font-medium mb-1">
+                    Diện tích xây dựng:
+                  </label>
+                  <input
+                    type="text"
+                    value={areaData.floorArea}
+                    onChange={(e) =>
+                      handleAreaInputChange(index, 'floorArea', e.target.value)
+                    }
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  />
+                </div>
+                <div className="mb-3 flex space-x-2">
+                  <div className="flex-1">
+                    <label className="block text-lg font-medium mb-1">
+                      Chiều rộng (R):
+                    </label>
+                    <input
+                      type="text"
+                      value={areaData.size.split('xD')[0].replace('R', '')}
+                      onChange={(e) =>
+                        handleSizeInputChange(
+                          index,
+                          e.target.value,
+                          areaData.size.split('xD')[1] || '',
+                        )
+                      }
+                      className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    />
                   </div>
-                )}
+                  <div className="flex-1">
+                    <label className="block text-lg font-medium mb-1">
+                      Chiều dài (D):
+                    </label>
+                    <input
+                      type="text"
+                      value={areaData.size.split('xD')[1]}
+                      onChange={(e) =>
+                        handleSizeInputChange(
+                          index,
+                          areaData.size.split('xD')[0].replace('R', '') || '',
+                          e.target.value,
+                        )
+                      }
+                      className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    />
+                  </div>
+                </div>
+                <div className="mb-3">
+                  <label className="block text-lg font-medium mb-1">
+                    Tổng tiền hạng mục:{' '}
+                    {formatCurrency(
+                      areaData.totalRough !== 0
+                        ? areaData.totalRough
+                        : calculateTotalCostForArea(index),
+                    )}
+                  </label>
+                </div>
               </div>
-              <table className="w-full border border-collapse border-primary">
-                <thead>
-                  <tr>
-                    <th className="border border-primary py-2">Tên hạng mục</th>
-                    <th className="border border-primary py-2">Hệ số</th>
-                    <th className="border border-primary py-2">
-                      Gói thi công thô
-                    </th>
-                    <th className="border border-primary py-2">ĐVT</th>
-                    <th className="border border-primary py-2">Diện tích</th>
-                    <th className="border border-primary py-2">Tổng tiền</th>
-                    <th className="border border-primary py-2">Hành động</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {areaData.TemplateItems.map((item, itemIndex) => (
-                    <tr key={itemIndex}>
-                      <td className="border border-primary py-2 text-center">
-                        {item.Name}
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        {item.Coefficient}
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        {selectedPackagePrice !== null
-                          ? formatCurrency(selectedPackagePrice)
-                          : ''}
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        {item.Unit}
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        <input
-                          type="text"
-                          value={item.Area}
-                          onChange={(e) =>
-                            handleItemAreaChange(
-                              index,
-                              itemIndex,
-                              e.target.value,
-                            )
-                          }
-                          className="w-full text-center"
-                          placeholder="Nhập diện tích"
-                        />
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        {formatCurrency(
-                          item.Area *
-                            (selectedPackagePrice || 0) *
-                            item.Coefficient,
-                        )}
-                      </td>
-                      <td className="border border-primary py-2 text-center">
-                        <button
-                          className="text-red-500"
-                          onClick={() => {
-                            const newAreas = [...areas];
-                            newAreas[index].TemplateItems = newAreas[
-                              index
-                            ].TemplateItems.filter((_, i) => i !== itemIndex);
-                            onAreaDataChange(newAreas);
-                          }}
+              <div className="w-2/3 pl-2">
+                <div className="flex mb-4">
+                  <input
+                    type="search"
+                    value={areaData.searchContruction}
+                    onChange={(e) => handleSearchChangeForArea(index, e)}
+                    placeholder="Tìm kiếm hạng mục..."
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  />
+                </div>
+                <div>
+                  {areaData.searchResults.length > 0 && (
+                    <div className="absolute bg-white border border-primary w-full z-10 max-h-60 overflow-y-auto">
+                      {areaData.searchResults.map((result) => (
+                        <div
+                          key={result.Id}
+                          className="p-2 hover:bg-gray-100 cursor-pointer"
+                          onClick={() => handleAddItemForArea(index, result)}
                         >
-                          <DeleteButton onClick={() => {}} />
-                        </button>
-                      </td>
+                          <p>{result.Name}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <table className="w-full border border-collapse border-primary">
+                  <thead>
+                    <tr>
+                      <th className="border border-primary py-2">Tên hạng mục</th>
+                      <th className="border border-primary py-2">Hệ số</th>
+                      <th className="border border-primary py-2">
+                        Gói thi công thô
+                      </th>
+                      <th className="border border-primary py-2">ĐVT</th>
+                      <th className="border border-primary py-2">Diện tích</th>
+                      <th className="border border-primary py-2">Tổng tiền</th>
+                      <th className="border border-primary py-2">Hành động</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {areaData.TemplateItems.map((item, itemIndex) => (
+                      <tr key={itemIndex}>
+                        <td className="border border-primary py-2 text-center">
+                          {item.Name}
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          {item.Coefficient}
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          {selectedPackagePrice !== null
+                            ? formatCurrency(selectedPackagePrice)
+                            : ''}
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          {item.Unit}
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          <input
+                            type="text"
+                            value={item.Area}
+                            onChange={(e) =>
+                              handleItemAreaChange(
+                                index,
+                                itemIndex,
+                                e.target.value,
+                              )
+                            }
+                            className="w-full text-center"
+                            placeholder="Nhập diện tích"
+                          />
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          {formatCurrency(
+                            item.Area *
+                              (selectedPackagePrice || 0) *
+                              item.Coefficient,
+                          )}
+                        </td>
+                        <td className="border border-primary py-2 text-center">
+                          <button
+                            className="text-red-500"
+                            onClick={() => {
+                              const newAreas = [...areas];
+                              newAreas[index].TemplateItems = newAreas[
+                                index
+                              ].TemplateItems.filter((_, i) => i !== itemIndex);
+                              onAreaDataChange(newAreas);
+                            }}
+                          >
+                            <DeleteButton onClick={() => {}} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 };

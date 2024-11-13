@@ -66,7 +66,7 @@ const CreateHouseModel: React.FC = () => {
               buildingArea: subTemplate.BuildingArea.toString(),
               floorArea: subTemplate.FloorArea.toString(),
               size: subTemplate.Size,
-              totalRough: 0,
+              totalRough: subTemplate.TotalRough,
               searchContruction: '',
               searchResults: [],
               selectedItems: subTemplate.TemplateItems.map((item) => ({
@@ -125,7 +125,7 @@ const CreateHouseModel: React.FC = () => {
         buildingArea: parseFloat(area.buildingArea) || 0,
         floorArea: parseFloat(area.floorArea) || 0,
         size: area.size,
-        totalRough: area.totalRough,
+        totalRough: area.totalRough || 0,
         templateItems: area.selectedItems.map((item) => ({
           constructionItemId: item.Id,
           subConstructionItemId: item.SubConstructionId,

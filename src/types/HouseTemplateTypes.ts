@@ -6,6 +6,7 @@ export interface TemplateItem {
   Coefficient: number;
   Area: number;
   Unit: string;
+  Price: number;
   InsDate: string | null;
 }
 
@@ -23,6 +24,7 @@ export interface SubTemplate {
   FloorArea: number;
   InsDate: string | null;
   Size: string;
+  TotalRough: number;
   Url: string;
   TemplateItems: TemplateItem[];
   Designdrawings: DesignDrawing[];

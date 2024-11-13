@@ -90,17 +90,17 @@ const HouseTemplateDetail: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
+        <button
+          onClick={handleEdit}
+          className="text-primary cursor-pointer font-bold"
+        >
+          Chỉnh sửa mẫu nhà
+        </button>
+      </div>
       {houseTemplate && (
         <>
-          <div className="flex mb-6 justify-between">
-            <button
-              onClick={handleEdit}
-              className="bg-blue-500 text-white px-4 py-2 rounded-lg"
-            >
-              Chỉnh sửa mẫu nhà
-            </button>
-          </div>
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/2">
               <Zoom>
