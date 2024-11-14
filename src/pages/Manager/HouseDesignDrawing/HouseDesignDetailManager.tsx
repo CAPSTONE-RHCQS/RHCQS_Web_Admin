@@ -132,7 +132,9 @@ const HouseDesignDetailManager: React.FC = () => {
                       if (selectedVersionId) {
                         setModalVisible(true);
                       } else {
-                        toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
+                        toast.error(
+                          'Vui lòng chọn một phiên bản trước khi phê duyệt.',
+                        );
                       }
                     }}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
@@ -174,13 +176,10 @@ const HouseDesignDetailManager: React.FC = () => {
             </div>
           </div>
           <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
-            <h3 className="text-xl font-bold">Versions</h3>
+            <h3 className="text-xl font-bold">Phiên bản</h3>
             <table className="w-full table-auto mt-4">
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Chọn
-                  </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
                     STT
                   </th>
@@ -223,7 +222,7 @@ const HouseDesignDetailManager: React.FC = () => {
                       {new Date(version.InsDate).toLocaleDateString()}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {version.Note || 'N/A'}
+                      {version.Note || ''}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a

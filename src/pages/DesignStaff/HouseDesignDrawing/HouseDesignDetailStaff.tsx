@@ -65,6 +65,7 @@ const HouseDesignDetailStaff: React.FC = () => {
 
     try {
       const response = await getHouseDesignById(id);
+      console.log('ds', response.data);
       setDesignDetail(response.data);
     } catch (error) {
       console.error('Error fetching design detail:', error);
@@ -164,7 +165,7 @@ const HouseDesignDetailStaff: React.FC = () => {
             </div>
           </div>
           <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
-            <h3 className="text-xl font-bold">Versions</h3>
+            <h3 className="text-xl font-bold">Phiên bản</h3>
             <table className="w-full table-auto mt-4">
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
@@ -202,7 +203,7 @@ const HouseDesignDetailStaff: React.FC = () => {
                       {new Date(version.InsDate).toLocaleDateString()}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {version.Note || 'N/A'}
+                      {version.Note || ''}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a
