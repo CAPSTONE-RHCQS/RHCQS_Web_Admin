@@ -130,7 +130,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                     )
                   }
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
@@ -145,7 +145,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                     )
                   }
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               {isEditing && (

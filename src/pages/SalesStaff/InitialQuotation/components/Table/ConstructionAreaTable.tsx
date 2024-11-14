@@ -129,7 +129,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={item.heSo}
                   onChange={(e) => handleInputChange(e, index, 'heSo')}
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
@@ -138,7 +138,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={item.dienTich}
                   onChange={(e) => handleInputChange(e, index, 'dienTich')}
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               <td className="px-4 py-2 border text-center">{item.donVi}</td>

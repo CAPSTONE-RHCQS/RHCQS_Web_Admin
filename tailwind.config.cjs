@@ -27,7 +27,7 @@ module.exports = withMT({
         bodydark1: '#F8F8F8',
         bodydark2: '#FFFFFF',
         primary: '#5BABAC',
-        secondary: '#80CAEE',
+        secondary: '#47AEE1',
         stroke: '#E2E8F0',
         gray: '#EFF4FB',
         graydark: '#333A48',
