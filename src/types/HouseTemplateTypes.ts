@@ -120,3 +120,20 @@ export interface AddImageHouseTemplateRequest {
   id: string;
   imgUrl: string;
 }
+
+export interface UpdateSubTemplateHouseRequest {
+  buildingArea: number;
+  floorArea: number;
+  size: string;
+  totalRough: number;
+  templateItems: UpdateTemplateItem[];
+}
+
+export interface UpdateTemplateItem {
+  constructionItemId: string;
+  subConstructionItemId: string | null;
+  name: string;
+  area: number;
+  unit: string;
+  price: number;
+}

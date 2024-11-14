@@ -4,6 +4,7 @@ import {
   AddImageHouseTemplateRequest,
   HouseTemplateDetail,
   HouseTemplateResponse,
+  UpdateSubTemplateHouseRequest,
 } from '../../types/HouseTemplateTypes';
 import { CreateHouseTemplateRequest } from '../../types/HouseTemplateTypes';
 
@@ -103,6 +104,22 @@ export const uploadSubHouseTemplate = async (
     return response.data;
   } catch (error) {
     console.error('Error uploading sub house template:', error);
+    throw error;
+  }
+};
+
+export const updateSubTemplateHouse = async (
+  subTemplateId: string,
+  data: UpdateSubTemplateHouseRequest,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/sub-template/id?subTemplateId=${subTemplateId}`,
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating sub template house:', error);
     throw error;
   }
 };

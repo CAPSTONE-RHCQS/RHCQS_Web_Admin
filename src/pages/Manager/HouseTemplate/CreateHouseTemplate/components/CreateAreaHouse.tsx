@@ -15,6 +15,7 @@ interface HouseAreaComponentProps {
 }
 
 export interface AreaData {
+  Id?: string;
   buildingArea: string;
   floorArea: string;
   size: string;
@@ -27,6 +28,7 @@ export interface AreaData {
     Name: string;
     area: number;
     Coefficient: number;
+    Price: number;
   }[];
   TemplateItems: {
     Id: string;
@@ -34,6 +36,7 @@ export interface AreaData {
     Coefficient: number;
     Area: number;
     Unit: string;
+    Price: number;
   }[];
 }
 
@@ -120,6 +123,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
       Coefficient: item.Coefficient || 1,
       Area: 0,
       Unit: 'm²',
+      Price: item.Price || 0,
     };
 
     newAreas[index].TemplateItems.push(newItem);
@@ -132,6 +136,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
         Name: item.Name,
         area: 0,
         Coefficient: item.Coefficient || 1,
+        Price: item.Price || 0,
       },
     ];
     newAreas[index].selectedItems = updatedSelectedItems;
@@ -151,10 +156,19 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     const areaValue = parseFloat(value) || 0;
     newAreas[areaIndex].TemplateItems[itemIndex].Area = areaValue;
 
-    // Cập nhật giá trị area trong selectedItems nếu cần
-    newAreas[areaIndex].selectedItems[itemIndex].area = areaValue;
+    // Cập nhật giá trị area và Price trong TemplateItems
+    const item = newAreas[areaIndex].TemplateItems[itemIndex];
+    item.Price = calculateItemTotal(areaValue, selectedPackagePrice || 0, item.Coefficient);
 
     onAreaDataChange(newAreas);
+  };
+
+  const calculateItemTotal = (
+    area: number,
+    price: number,
+    coefficient: number,
+  ) => {
+    return area * price * coefficient;
   };
 
   const calculateTotalCostForArea = (index: number) => {
@@ -209,7 +223,6 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
         )}
       </div>
       {areas.map((areaData, index) => {
-        console.log('areaData:', areaData.totalRough);
         return (
           <div
             key={index}
@@ -238,7 +251,11 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                     type="text"
                     value={areaData.buildingArea}
                     onChange={(e) =>
-                      handleAreaInputChange(index, 'buildingArea', e.target.value)
+                      handleAreaInputChange(
+                        index,
+                        'buildingArea',
+                        e.target.value,
+                      )
                     }
                     className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-2 px-4 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                   />
@@ -331,7 +348,9 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                 <table className="w-full border border-collapse border-primary">
                   <thead>
                     <tr>
-                      <th className="border border-primary py-2">Tên hạng mục</th>
+                      <th className="border border-primary py-2">
+                        Tên hạng mục
+                      </th>
                       <th className="border border-primary py-2">Hệ số</th>
                       <th className="border border-primary py-2">
                         Gói thi công thô
@@ -375,11 +394,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                           />
                         </td>
                         <td className="border border-primary py-2 text-center">
-                          {formatCurrency(
-                            item.Area *
-                              (selectedPackagePrice || 0) *
-                              item.Coefficient,
-                          )}
+                          {formatCurrency(item.Price)}
                         </td>
                         <td className="border border-primary py-2 text-center">
                           <button

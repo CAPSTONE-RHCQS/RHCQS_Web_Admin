@@ -8,10 +8,12 @@ import CreateAreaHouse, { AreaData } from './components/CreateAreaHouse';
 import {
   createHouseTemplate,
   fetchHouseTemplateDetail,
+  updateSubTemplateHouse,
 } from '../../../../api/HouseTemplate/HouseTemplateApi';
 import {
   CreateHouseTemplateRequest,
   HouseTemplateDetail,
+  UpdateSubTemplateHouseRequest,
 } from '../../../../types/HouseTemplateTypes';
 import Alert from '../../../../components/Alert';
 
@@ -63,6 +65,7 @@ const CreateHouseModel: React.FC = () => {
           setDescription(data.Description);
           setAreas(
             data.SubTemplates.map((subTemplate) => ({
+              Id: subTemplate.Id,
               buildingArea: subTemplate.BuildingArea.toString(),
               floorArea: subTemplate.FloorArea.toString(),
               size: subTemplate.Size,
@@ -75,6 +78,7 @@ const CreateHouseModel: React.FC = () => {
                 Name: item.Name,
                 area: item.Area,
                 Coefficient: item.Coefficient,
+                Price: item.Price,
               })),
               TemplateItems: subTemplate.TemplateItems,
             })),
@@ -115,8 +119,8 @@ const CreateHouseModel: React.FC = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     const data: CreateHouseTemplateRequest = {
-      name,
-      description,
+      name: name || '',
+      description: description || '',
       numberOfFloor: parseInt(floors, 10),
       numberOfBed: parseInt(rooms, 10),
       packageRoughId: packageType,
@@ -152,7 +156,6 @@ const CreateHouseModel: React.FC = () => {
         });
       }, 5000);
     } catch (error) {
-      console.error('Error submitting data:', error);
       setAlert({ message: 'Tạo mẫu nhà thất bại!', type: 'error' });
     } finally {
       setIsLoading(false);
@@ -162,6 +165,40 @@ const CreateHouseModel: React.FC = () => {
   const handleAreaDataChange = useCallback((updatedAreas: AreaData[]) => {
     setAreas(updatedAreas);
   }, []);
+
+  const handleUpdateSubTemplate = async (
+    subTemplateId: string,
+    areaData: AreaData,
+  ) => {
+    const data: UpdateSubTemplateHouseRequest = {
+      buildingArea: parseFloat(areaData.buildingArea) || 0,
+      floorArea: parseFloat(areaData.floorArea) || 0,
+      size: areaData.size,
+      totalRough: areaData.totalRough || 0,
+      templateItems: areaData.selectedItems.map((item) => ({
+        constructionItemId: item.Id,
+        subConstructionItemId: item.SubConstructionId,
+        name: item.Name,
+        area: item.area,
+        unit: 'm²',
+        price: item.Price || 0,
+      })),
+    };
+
+    try {
+      const response = await updateSubTemplateHouse(subTemplateId, data);
+      console.log('data subTemplate:', data);
+      console.log('SubTemplate updated successfully:', response);
+      setAlert({
+        message: 'Cập nhật subTemplate thành công!',
+        type: 'success',
+      });
+    } catch (error) {
+      console.log(data);
+      console.error('Error updating subTemplate:', error);
+      setAlert({ message: 'Cập nhật subTemplate thất bại!', type: 'error' });
+    }
+  };
 
   return (
     <>
@@ -277,7 +314,21 @@ const CreateHouseModel: React.FC = () => {
       {/* Button */}
       <div className="flex justify-end">
         <button
-          onClick={handleSubmit}
+          onClick={() => {
+            if (id) {
+              // Gọi hàm handleUpdateSubTemplate khi có id
+              areas.forEach((areaData) => {
+                if (areaData.Id) {
+                  console.log(areaData.Id);
+                  handleUpdateSubTemplate(areaData.Id, areaData);
+                }
+              });
+              
+            } else {
+              // Gọi hàm handleSubmit khi không có id
+              handleSubmit();
+            }
+          }}
           className="mt-4 bg-primary text-white py-2 px-4 rounded flex items-center justify-center"
           disabled={isLoading}
         >
