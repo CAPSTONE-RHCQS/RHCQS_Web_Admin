@@ -120,8 +120,8 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center">
                 <input
-                  type="number"
-                  value={utility.coefficient}
+                  type="text"
+                  value={utility.coefficient.toString()}
                   onChange={(e) =>
                     handleEditUtility(
                       index,
@@ -138,11 +138,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                   type="number"
                   value={utility.price}
                   onChange={(e) =>
-                    handleEditUtility(
-                      index,
-                      'price',
-                      parseFloat(e.target.value),
-                    )
+                    handleEditUtility(index, 'price', e.target.value)
                   }
                   className="w-full text-center"
                   disabled={true}
@@ -150,12 +146,14 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
-                  <button
-                    onClick={() => handleDeleteRow(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                  </button>
+                  <div className="flex justify-center items-center">
+                    <button
+                      onClick={() => handleDeleteRow(index)}
+                      className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
                 </td>
               )}
             </tr>

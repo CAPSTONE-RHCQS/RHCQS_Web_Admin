@@ -18,6 +18,7 @@ import UtilityTable from './components/Table/UtilityTable';
 import ConstructionPrice from './components/Table/ConstructionPrice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { FaPlus } from 'react-icons/fa';
 
 const convertToQuotationUtility = (
   utilityInfo: UtilityInfo,
@@ -63,11 +64,19 @@ const CreateInitialQuote = () => {
 
   const convertToTableRow = (item: any, index: number) => ({
     stt: index + 1,
-    hangMuc: item.Name,
+    hangMuc: item.SubConstruction || item.Name,
     dTich: item.Area.toString(),
-    heSo: item.SubCoefficient ? item.SubCoefficient.toString() : '0',
-    dienTich: (item.Area * (item.SubCoefficient || 1)).toString(),
-    donVi: item.UnitPrice,
+    heSo:
+      item.Coefficient !== 0
+        ? item.Coefficient.toString()
+        : item.SubCoefficient
+        ? item.SubCoefficient.toString()
+        : '0',
+    dienTich: (
+      item.Area *
+      (item.Coefficient !== 0 ? item.Coefficient : item.SubCoefficient || 1)
+    ).toString(),
+    donVi: 'm²',
     price: item.Price,
     constructionItemId: item.ConstructionItemId,
     subConstructionId: item.SubConstructionId,
@@ -254,7 +263,7 @@ const CreateInitialQuote = () => {
       <h2 className="text-2xl font-bold mb-4 text-primary">
         Khởi tạo báo giá sơ bộ
       </h2>
-      <div className="flex items-center mb-4">
+      <div className="flex items-center">
         <div className="mb-4">
           <p className="text-lg font-bold mb-2 text-secondary">
             1. ĐƠN GIÁ THI CÔNG:
@@ -274,20 +283,21 @@ const CreateInitialQuote = () => {
       {tableData.length > 0 && (
         <>
           <div className="flex items-center mb-4">
-            <div className="mb-4">
+            <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
-                <p className="mt-4 mb-4 text-lg inline-block text-secondary">
-                  <strong>Diện tích xây dựng theo phương án thiết kế:</strong>
-                </p>
-                <button
-                  onClick={addTableRow}
-                  className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-                >
-                  +
-                </button>
+                <strong className="mt-4 mb-4 text-lg inline-block text-secondary">
+                  Diện tích xây dựng theo phương án thiết kế:
+                </strong>
               </div>
+              <button
+                onClick={addTableRow}
+                className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+              >
+                <FaPlus />
+              </button>
             </div>
           </div>
+
           <ConstructionAreaTable
             tableData={tableData}
             isEditing={true}
@@ -307,9 +317,12 @@ const CreateInitialQuote = () => {
             setTableData={setTableData}
           />
           <div className="mt-4">
-            <h3 className="text-lg font-bold text-secondary">
-              2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG TRƯỚC THUẾ:
-            </h3>
+            <div className="mb-4">
+              <strong className="text-xl text-secondary">
+                2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG TRƯỚC THUẾ:
+              </strong>
+            </div>
+
             <div className="overflow-x-auto mb-4">
               <table className="min-w-full bg-white border border-gray-200 rounded-lg">
                 <thead className="bg-gray-100">
@@ -334,7 +347,7 @@ const CreateInitialQuote = () => {
                     </td>
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
-                      {thanhTien.toLocaleString()} đồng
+                      <strong>{thanhTien.toLocaleString()} đồng</strong>
                     </td>
                   </tr>
                 </tbody>
@@ -344,26 +357,34 @@ const CreateInitialQuote = () => {
         </>
       )}
 
-      <div className="flex items-center">
-        <p className="mt-4 mb-4 text-lg inline-block text-secondary">
-          <strong>{sectionNumber}. TÙY CHỌN & TIỆN ÍCH:</strong>
-        </p>
-        <button
-          onClick={addUtilityRow}
-          className="bg-primaryGreenButton text-white w-10 h-10 flex items-center justify-center ml-4 rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-        >
-          +
-        </button>
+      <div className="flex items-center mb-4">
+        <div className="flex items-center justify-between w-full">
+          <div className="flex items-center">
+            <strong className="text-xl font-bold text-secondary">
+              {sectionNumber}. TÙY CHỌN & TIỆN ÍCH:
+            </strong>
+          </div>
+          <button
+            onClick={addUtilityRow}
+            className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
+          >
+            <FaPlus />
+          </button>
+        </div>
       </div>
+
       <UtilityTable
         utilityInfos={utilityInfos}
         setUtilityInfos={setUtilityInfos}
         isEditing={true}
       />
+
       <div className="mt-4">
-        <h3 className="text-lg font-bold text-secondary">
-          {sectionNumber + 1}. KHUYẾN MÃI:
-        </h3>
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 1}. KHUYẾN MÃI:
+          </strong>
+        </div>
         <input
           type="text"
           placeholder="Tên khuyến mãi"
@@ -379,10 +400,13 @@ const CreateInitialQuote = () => {
           className="w-full p-2 border rounded mt-2"
         />
       </div>
+
       <div className="mt-4">
-        <h3 className="text-lg font-bold text-secondary">
-          {sectionNumber + 2}. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:
-        </h3>
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 2}. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:
+          </strong>
+        </div>
         <div className="overflow-x-auto mb-4">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg">
             <thead className="bg-gray-100">
@@ -439,10 +463,13 @@ const CreateInitialQuote = () => {
           </table>
         </div>
       </div>
+
       <div className="mt-4">
-        <h3 className="text-lg font-bold text-secondary">
-          {sectionNumber + 3}. CÁC THỎA THUẬN KHÁC:
-        </h3>
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 3}. CÁC THỎA THUẬN KHÁC:
+          </strong>
+        </div>
         <textarea
           value={othersAgreement}
           onChange={(e) => setOthersAgreement(e.target.value)}
@@ -450,10 +477,13 @@ const CreateInitialQuote = () => {
           placeholder="Nhập nội dung thỏa thuận khác..."
         />
       </div>
+
       <div className="mt-4">
-        <h3 className="text-lg font-bold text-secondary">
-          {sectionNumber + 4}. CÁC ĐỢT THANH TOÁN:
-        </h3>
+        <div className="flex items-center mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 4}. CÁC ĐỢT THANH TOÁN:
+          </strong>
+        </div>
         <div className="overflow-x-auto mb-4">
           {paymentSchedule.length === 0 ? (
             <button

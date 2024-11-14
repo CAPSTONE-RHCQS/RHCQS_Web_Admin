@@ -29,6 +29,9 @@ const InitialQuotationDetailStaff = () => {
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
+  const [othersAgreement, setOthersAgreement] = useState<string>(
+    quotationData?.OthersAgreement || ''
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -107,7 +110,18 @@ const InitialQuotationDetailStaff = () => {
         isEditing={isEditing}
         isSaving={isSaving}
         handleEditToggle={handleEditToggle}
-        handleSave={() => handleSave(quotationData, tableData, version, batchPayment, utilityInfos, promotionInfo, navigate, setIsSaving)}
+        handleSave={() =>
+          handleSave(
+            quotationData,
+            tableData,
+            version,
+            batchPayment,
+            utilityInfos,
+            promotionInfo,
+            navigate,
+            setIsSaving,
+          )
+        }
       />
       <QuotationSummary
         quotationData={quotationData}
@@ -122,12 +136,15 @@ const InitialQuotationDetailStaff = () => {
         setUtilityInfos={setUtilityInfos}
         totalUtilityCost={totalUtilityCost}
         promotionInfo={promotionInfo}
+        setPromotionInfo={setPromotionInfo}
         giaTriHopDong={giaTriHopDong}
         setGiaTriHopDong={setGiaTriHopDong}
         batchPayment={batchPayment}
         setBatchPayment={setBatchPayment}
         totalPercentage={totalPercentage}
         totalAmount={totalAmount}
+        othersAgreement={othersAgreement}
+        setOthersAgreement={setOthersAgreement}
       />
     </>
   );
