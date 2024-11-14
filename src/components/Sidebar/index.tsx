@@ -302,28 +302,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       Quản lý tài khoản
                     </NavLink>
                   </li>
-                  {/* <!-- Menu Item BlogList --> */}
-                  <li>
-                    <NavLink
-                      to="/blog-list-manager"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                        pathname.includes('blog-list-manager') &&
-                        'bg-teal-300 dark:bg-meta-4'
-                      }`}
-                    >
-                      <svg
-                        className="fill-current"
-                        xmlns="http://www.w3.org/2000/svg"
-                        height="20px"
-                        viewBox="0 0 24 24"
-                        width="20px"
-                        fill="#5f6368"
-                      >
-                        <path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2zm0 4h16v2H4v-2z" />
-                      </svg>
-                      Danh sách bài đăng
-                    </NavLink>
-                  </li>
                 </>
               )}
 
@@ -448,12 +426,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
-                  {/* <!-- Menu Item CreateBlog --> */}
+                  {/* <!-- Menu Item BlogList --> */}
                   <li>
                     <NavLink
-                      to="/createpost"
+                      to="/blog-list-staff"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                        pathname.includes('createpost') &&
+                        pathname.includes('blog-list-staff') &&
                         'bg-teal-300 dark:bg-meta-4'
                       }`}
                     >
@@ -461,13 +439,13 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         className="fill-current"
                         xmlns="http://www.w3.org/2000/svg"
                         height="20px"
-                        viewBox="0 -960 960 960"
+                        viewBox="0 0 24 24"
                         width="20px"
                         fill="#5f6368"
                       >
-                        <path d="M215.79-144Q186-144 165-165.21t-21-51Q144-246 165.21-267t51-21Q246-288 267-266.79t21 51Q288-186 266.79-165t-51 21ZM720-144q0-120-45.26-224.48-45.25-104.48-123.43-182.71-78.17-78.23-182.57-123.52Q264.34-720 144-720v-96q140 0 261.63 52.38 121.63 52.37 213.59 144.28 91.96 91.9 144.37 213.46Q816-284.33 816-144h-96Zm-240 0q0-70-26-131t-72-107q-46-46-107-72t-131-26v-96q90.52 0 168.74 33.7Q390.96-508.6 450-450q58.6 59.04 92.3 137.26Q576-234.52 576-144h-96Z" />
+                        <path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2zm0 4h16v2H4v-2z" />
                       </svg>
-                      Tạo bài đăng
+                      Danh sách bài đăng
                     </NavLink>
                   </li>
                 </>
