@@ -6,6 +6,7 @@ export interface TemplateItem {
   Coefficient: number;
   Area: number;
   Unit: string;
+  Price: number;
   InsDate: string | null;
 }
 
@@ -23,6 +24,7 @@ export interface SubTemplate {
   FloorArea: number;
   InsDate: string | null;
   Size: string;
+  TotalRough: number;
   Url: string;
   TemplateItems: TemplateItem[];
   Designdrawings: DesignDrawing[];
@@ -117,4 +119,21 @@ export interface CreatePackageFinished {
 export interface AddImageHouseTemplateRequest {
   id: string;
   imgUrl: string;
+}
+
+export interface UpdateSubTemplateHouseRequest {
+  buildingArea: number;
+  floorArea: number;
+  size: string;
+  totalRough: number;
+  templateItems: UpdateTemplateItem[];
+}
+
+export interface UpdateTemplateItem {
+  constructionItemId: string;
+  subConstructionItemId: string | null;
+  name: string;
+  area: number;
+  unit: string;
+  price: number;
 }
