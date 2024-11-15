@@ -231,7 +231,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               className="px-4 py-2 border text-center"
               style={{ maxWidth: '75px' }}
             >
-              Khối lượng
+              Số lượng
             </th>
             <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
             <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
