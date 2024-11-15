@@ -64,6 +64,23 @@ export const createHouseTemplate = async (
   }
 };
 
+export const updateSubTemplateHouse = async (
+  subTemplateId: string,
+  data: UpdateSubTemplateHouseRequest,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/sub-template/id?subTemplateId=${subTemplateId}`,
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating sub template house:', error);
+    throw error;
+  }
+};
+
+// Image
 export const addImageHouseTemplate = async (
   designTemplateId: string,
   request: FormData,
@@ -107,18 +124,48 @@ export const uploadSubHouseTemplate = async (
   }
 };
 
-export const updateSubTemplateHouse = async (
-  subTemplateId: string,
-  data: UpdateSubTemplateHouseRequest,
+export const uploadOutsideImage = async (
+  designTemplateId: string,
+  request: FormData,
 ): Promise<HouseTemplateDetail> => {
   try {
-    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
-      `/sub-template/id?subTemplateId=${subTemplateId}`,
-      data,
+    request.append('designTemplateId', designTemplateId);
+
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.patch(
+      `/upload-out-side`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
     );
     return response.data;
   } catch (error) {
-    console.error('Error updating sub template house:', error);
+    console.error('Error uploading outside image:', error);
+    throw error;
+  }
+};
+
+export const updateHouseTemplate = async (
+  id: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/housetemplate/${id}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating house template:', error);
     throw error;
   }
 };

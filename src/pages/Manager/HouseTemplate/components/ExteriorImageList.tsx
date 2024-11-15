@@ -16,7 +16,7 @@ const ExteriorImageList: React.FC<ExteriorImageListProps> = ({ exteriors }) => {
         {exteriors.map((exterior) => (
           <div key={exterior.Id} className="border p-4 rounded-lg shadow-md">
             <img
-              src={exterior.Url}
+              src={`${exterior.Url}?${new Date().getTime()}`}
               alt={exterior.Name}
               className="w-full h-32 object-cover rounded-md mb-2"
             />

@@ -201,6 +201,10 @@ const CreateHouseModel: React.FC = () => {
       navigate('/add-image-house', {
         state: {
           id: id,
+          packageFinished: completedPackage.map((pkg) => ({
+            packageId: pkg.PackageId,
+            description: pkg.PackageName,
+          })),
         },
       });
     } catch (error) {

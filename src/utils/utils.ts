@@ -26,6 +26,10 @@ export const getUserInfo = (): string | null => {
   return getLocalStorage('USER_INFO');
 };
 
+export const getCacheBustedUrl = (url: string): string => {
+  return `${url}?${new Date().getTime()}`;
+};
+
 export const getStatusLabelInitalQuoteDetail = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
     Pending: 'Chờ xử lý',
