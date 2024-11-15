@@ -9,7 +9,6 @@ import {
   FaEye,
 } from 'react-icons/fa';
 import RejectionModal from '../../../../../components/Modals/RejectionModal';
-import CheckboxTwo from '../../../../../components/Checkboxes/CheckboxTwo';
 import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
@@ -29,9 +28,6 @@ type SortKey = keyof Project;
 interface ProjectTableManagerProps {
   data: Project[];
   columns: { key: SortKey; label: string }[];
-  isAllChecked: boolean;
-  handleSelectAll: () => void;
-  handleCheckboxChange: (index: number) => void;
   handleSort: (key: SortKey) => void;
   handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
@@ -72,9 +68,6 @@ const getStatusLabel = (status: string) => {
 const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   data,
   columns,
-  isAllChecked,
-  handleSelectAll,
-  handleCheckboxChange,
   handleSort,
   handleViewDetails,
   isLoading,
@@ -96,13 +89,6 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-200 text-left dark:bg-meta-4">
-              <th className="min-w-[50px] py-4 px-4 font-medium text-black dark:text-white">
-                <CheckboxTwo
-                  id="select-all"
-                  isChecked={isAllChecked}
-                  onChange={handleSelectAll}
-                />
-              </th>
               {columns.map((column) => (
                 <th
                   key={column.key}
@@ -121,13 +107,6 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                 key={item.id}
                 className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
-                <td className="py-5 px-4">
-                  <CheckboxTwo
-                    id={`select-${item.id}`}
-                    isChecked={item.isChecked}
-                    onChange={() => handleCheckboxChange(index)}
-                  />
-                </td>
                 {columns.map((column) => (
                   <td
                     key={column.key}

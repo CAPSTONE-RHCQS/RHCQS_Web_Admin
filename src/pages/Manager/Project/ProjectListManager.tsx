@@ -15,6 +15,7 @@ import ProjectTableManager from './components/Table/ProjectTableManager';
 import {
   getProjectsList,
   getProjectsListWithType,
+  getProjectsListByName,
 } from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -46,7 +47,6 @@ type SortKey = keyof Project;
 
 const ProjectListManager = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [isAllChecked, setIsAllChecked] = useState(false);
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: 'ascending' | 'descending';
@@ -56,15 +56,19 @@ const ProjectListManager = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalProjects, setTotalProjects] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const navigate = useNavigate();
 
   const fetchProjects = async (page: number) => {
     setLoading(true);
+    setError(null);
     try {
       let data;
-      if (activeTab === 'Tất cả') {
-        data = await getProjectsList(page, 10);
+      if (searchTerm) {
+        data = await getProjectsListByName(searchTerm, page, 5);
+      } else if (activeTab === 'Tất cả') {
+        data = await getProjectsList(page, 5);
       } else {
         const statusMap: { [key: string]: string } = {
           'Đang xử lý': 'Processing',
@@ -75,7 +79,7 @@ const ProjectListManager = () => {
           'Đã chấm dứt': 'Ended',
         };
         const type = statusMap[activeTab];
-        data = await getProjectsListWithType(page, 10, type);
+        data = await getProjectsListWithType(page, 5, type);
       }
 
       const formattedData = data.Items.map((item: any) => ({
@@ -90,8 +94,14 @@ const ProjectListManager = () => {
       }));
       setProjects(formattedData);
       setTotalPages(data.TotalPages);
-    } catch (err) {
-      setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
+      setTotalProjects(data.Total);
+    } catch (err: any) {
+      setProjects([]);
+      if (err.response && err.response.data && err.response.data.Error) {
+        setError(err.response.data.Error);
+      } else {
+        setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
+      }
     } finally {
       setLoading(false);
     }
@@ -99,7 +109,7 @@ const ProjectListManager = () => {
 
   useEffect(() => {
     fetchProjects(currentPage);
-  }, [currentPage, activeTab]);
+  }, [currentPage, activeTab, searchTerm]);
 
   const handleRefresh = () => {
     setLoading(true);
@@ -107,21 +117,6 @@ const ProjectListManager = () => {
     fetchProjects(currentPage).finally(() => {
       setLoading(false);
     });
-  };
-
-  const handleSelectAll = () => {
-    const newIsAllChecked = !isAllChecked;
-    setIsAllChecked(newIsAllChecked);
-    setProjects(
-      projects.map((project) => ({ ...project, isChecked: newIsAllChecked })),
-    );
-  };
-
-  const handleCheckboxChange = (index: number) => {
-    const newProjects = [...projects];
-    newProjects[index].isChecked = !newProjects[index].isChecked;
-    setProjects(newProjects);
-    setIsAllChecked(newProjects.every((project) => project.isChecked));
   };
 
   const handleSort = (key: SortKey) => {
@@ -166,21 +161,10 @@ const ProjectListManager = () => {
     setProjects(projects.filter((project) => project.id !== id));
   };
 
-  const handleDeleteSelected = () => {
-    setProjects(projects.filter((project) => !project.isChecked));
-  };
-
   const handleViewDetails = (id: string) => {
     navigate(`/project-detail/${id}`);
     window.scrollTo(0, 0);
   };
-
-  const filteredProjects = projects.filter((project) =>
-    activeTab === 'Tất cả'
-      ? project.projectName.toLowerCase().includes(searchTerm.toLowerCase())
-      : getStatusLabel(project.status) === activeTab &&
-        project.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
 
   const columns: { key: SortKey; label: string }[] = [
     { key: 'projectId', label: 'Mã Dự Án' },
@@ -243,17 +227,16 @@ const ProjectListManager = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <button
-              onClick={handleDeleteSelected}
-              className="h-14 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-            >
-              Xóa đã chọn
-            </button>
           </div>
+          {error && (
+            <div className="text-red-500 mb-5">
+              {error}
+            </div>
+          )}
           <div className="flex justify-between items-center mb-5">
             <div className="flex items-center">
               <span className="text-lg text-black dark:text-white">
-                Tổng số Dự án: {projects.length}
+                Tổng số Dự án: {totalProjects}
               </span>
             </div>
             <ArrowPathIcon
@@ -266,13 +249,10 @@ const ProjectListManager = () => {
               <div className="flex justify-center items-center h-64">
                 <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
               </div>
-            ) : filteredProjects.length > 0 ? (
+            ) : projects.length > 0 ? (
               <ProjectTableManager
-                data={filteredProjects}
+                data={projects}
                 columns={columns}
-                isAllChecked={isAllChecked}
-                handleSelectAll={handleSelectAll}
-                handleCheckboxChange={handleCheckboxChange}
                 handleSort={handleSort}
                 handleDelete={handleDelete}
                 handleViewDetails={handleViewDetails}
