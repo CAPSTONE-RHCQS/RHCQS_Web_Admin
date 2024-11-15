@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   addImageHouseTemplate,
   fetchHouseTemplateDetail,
+  uploadOutsideImage,
   uploadSubHouseTemplate,
 } from '../../../../api/HouseTemplate/HouseTemplateApi';
 import {
@@ -10,13 +11,15 @@ import {
   HouseTemplateDetail as HouseTemplateDetailType,
 } from '../../../../types/HouseTemplateTypes';
 import Alert from '../../../../components/Alert';
+import { getCacheBustedUrl } from '../../../../utils/utils';
 
 const AddImageHouse: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { id } = location.state || {};
+  console.log('ID:', id);
   const responseData = location.state?.responseData;
-  console.log('Response data:', responseData);
   const packageFinished = location.state?.packageFinished;
-  console.log('Package finished:', packageFinished);
   const [overallImage, setOverallImage] = useState<File | null>(null);
   const [outsideImages, setOutsideImages] = useState<File[]>([]);
   const [houseTemplate, setHouseTemplate] =
@@ -56,6 +59,55 @@ const AddImageHouse: React.FC = () => {
         if (responseData) {
           const data = await fetchHouseTemplateDetail(responseData);
           setHouseTemplate(data);
+        } else if (id) {
+          const data = await fetchHouseTemplateDetail(id);
+          console.log('Data:', data);
+          setHouseTemplate(data);
+          // set overall image
+          setOverallImage(new File([], data.ImgUrl));
+          setPreviewOverallImage(data.ImgUrl);
+          // set outside images
+          setOutsideImages(
+            data.ExteriorsUrls.map((url) => new File([], url.Url)),
+          );
+          setPreviewOutsideImages(data.ExteriorsUrls.map((url) => url.Url));
+          // set design drawing images
+          const flatDesignDrawingImages = data.SubTemplates.flatMap(
+            (subTemplate) =>
+              subTemplate.Designdrawings.map((url) => new File([], url.Url)),
+          );
+          setDesignDrawingImages(flatDesignDrawingImages);
+          setPreviewDesignDrawingImages(
+            data.SubTemplates.flatMap((subTemplate) =>
+              subTemplate.Designdrawings.map((url) => url.Url),
+            ),
+          );
+
+          // set package finished images
+          setPackageFinishedImages(
+            data.PackageHouses.map((pkg) => new File([], pkg.ImgUrl || '')),
+          );
+          setPreviewPackageFinishedImages(
+            data.PackageHouses.map((pkg) => pkg.ImgUrl || ''),
+          );
+          // set sub template images
+          const subTemplateImages = data.SubTemplates.reduce(
+            (acc: { [key: string]: File | null }, subTemplate) => {
+              acc[subTemplate.Id] = new File([], subTemplate.Url);
+              return acc;
+            },
+            {},
+          );
+          setSubTemplateImages(subTemplateImages);
+
+          const previewSubTemplateImages = data.SubTemplates.reduce(
+            (acc: { [key: string]: string | null }, subTemplate) => {
+              acc[subTemplate.Id] = subTemplate.Url;
+              return acc;
+            },
+            {},
+          );
+          setPreviewSubTemplateImages(previewSubTemplateImages);
         }
       } catch (err) {
         setError('Failed to fetch house template detail');
@@ -165,7 +217,7 @@ const AddImageHouse: React.FC = () => {
           console.log('Package JSON string:', packageJsonString);
         }
 
-        // Kiểm tra tất cả các SubTemplate đã có ảnh
+        // Kiểm tra tất cả các SubTemplate đ�� c�� ảnh
         const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
           (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
         );
@@ -181,7 +233,6 @@ const AddImageHouse: React.FC = () => {
           });
           return;
         }
-
         // Gửi ảnh cho từng SubTemplate
         for (const subTemplate of houseTemplate?.SubTemplates || []) {
           const image = subTemplateImages[subTemplate.Id];
@@ -199,9 +250,76 @@ const AddImageHouse: React.FC = () => {
           message: 'Hình ảnh đã được gửi thành công!',
           type: 'success',
         });
+        navigate(`/house-template/${responseData}`);
       } catch (error) {
         console.error('Error uploading image:', error);
         console.log('Package finished data:', packageFinished);
+        setAlert({ message: 'Có lỗi xảy ra khi gửi hình ảnh.', type: 'error' });
+      } finally {
+        setIsLoading(false);
+      }
+    } else {
+      setAlert({
+        message: 'Vui lòng chọn ít nhất một hình ảnh để gửi.',
+        type: 'error',
+      });
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (id && overallImage) {
+      setIsLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append('image', overallImage, overallImage.name);
+
+        if (packageFinished) {
+          const packageJsonString = JSON.stringify(
+            packageFinished.map((pkg: CreatePackageFinished) => ({
+              packageId: pkg.packageId,
+              description: pkg.description,
+            })),
+          );
+          formData.append('packageJson', packageJsonString);
+        }
+
+        const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
+          (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
+        );
+
+        const allPackageImagesSelected =
+          packageFinishedImages.length === packageFinished.length;
+
+        if (!allSubTemplateImagesSelected || !allPackageImagesSelected) {
+          setAlert({
+            message: 'Vui lòng chọn ảnh cho tất cả các diện tích và gói.',
+            type: 'error',
+          });
+          return;
+        }
+
+        for (const subTemplate of houseTemplate?.SubTemplates || []) {
+          const image = subTemplateImages[subTemplate.Id];
+          const subFormData = new FormData();
+          if (image) {
+            subFormData.append('request', image, image.name);
+          }
+          await uploadSubHouseTemplate(subTemplate.Id, subFormData);
+        }
+
+        const outsideResult = await uploadOutsideImage(
+          id,
+          formData,
+        );
+        console.log('Outside Image Upload Result:', outsideResult);
+
+        setAlert({
+          message: 'Hình ảnh đã được gửi thành công!',
+          type: 'success',
+        });
+        navigate(`/house-template/${id}`);
+      } catch (error) {
+        console.error('Error uploading image:', error);
         setAlert({ message: 'Có lỗi xảy ra khi gửi hình ảnh.', type: 'error' });
       } finally {
         setIsLoading(false);
@@ -464,7 +582,7 @@ const AddImageHouse: React.FC = () => {
 
       <div className="flex justify-end">
         <button
-          onClick={handleSubmit}
+          onClick={id ? handleUpdate : handleSubmit}
           className="mt-4 bg-primary text-white py-2 px-4 rounded flex items-center justify-center"
           disabled={isLoading}
         >
@@ -489,8 +607,10 @@ const AddImageHouse: React.FC = () => {
                 d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
               ></path>
             </svg>
-          ) : (
+          ) : id ? (
             'Cập nhật hình ảnh'
+          ) : (
+            'Gửi hình ảnh'
           )}
         </button>
       </div>

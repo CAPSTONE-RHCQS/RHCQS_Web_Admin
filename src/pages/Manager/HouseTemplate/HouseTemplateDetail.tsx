@@ -16,6 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import PackageHouseList from './components/PackageHouseList';
 import ExteriorImageList from './components/ExteriorImageList';
+import { getCacheBustedUrl } from '../../../utils/utils';
 import { defaultImageHouseTemplateUrl } from '../../../utils/constants';
 
 const HouseTemplateDetail: React.FC = () => {
