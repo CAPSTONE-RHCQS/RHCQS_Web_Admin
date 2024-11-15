@@ -1,7 +1,6 @@
 import { AxiosResponse } from 'axios';
 import requestWebRHCQS from '../../utils/axios';
 import {
-  AddImageHouseTemplateRequest,
   HouseTemplateDetail,
   HouseTemplateResponse,
   UpdateSubTemplateHouseRequest,
@@ -91,7 +90,7 @@ export const uploadSubHouseTemplate = async (
   request: FormData,
 ): Promise<HouseTemplateDetail> => {
   try {
-    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.patch(
       `/upload-sub-template?subTempateId=${subTempateId}`,
       request,
       {

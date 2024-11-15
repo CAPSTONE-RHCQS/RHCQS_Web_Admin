@@ -78,6 +78,9 @@ export interface HouseTemplateDetail {
   NumberOfFront: number | null;
   ImgUrl: string;
   InsDate: string | null;
+  PackageRoughId: string;
+  PackageRoughPrice: number;
+  PackageRoughName: string;
   SubTemplates: SubTemplate[];
   PackageHouses: PackageHouse[];
   ExteriorsUrls: ExteriorUrl[];

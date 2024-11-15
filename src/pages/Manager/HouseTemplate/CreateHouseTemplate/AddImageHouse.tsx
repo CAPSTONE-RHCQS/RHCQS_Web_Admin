@@ -13,6 +13,7 @@ import Alert from '../../../../components/Alert';
 
 const AddImageHouse: React.FC = () => {
   const location = useLocation();
+  const { id } = location.state || {};
   const responseData = location.state?.responseData;
   console.log('Response data:', responseData);
   const packageFinished = location.state?.packageFinished;
@@ -55,6 +56,9 @@ const AddImageHouse: React.FC = () => {
       try {
         if (responseData) {
           const data = await fetchHouseTemplateDetail(responseData);
+          setHouseTemplate(data);
+        } else if (id) {
+          const data = await fetchHouseTemplateDetail(id);
           setHouseTemplate(data);
         }
       } catch (err) {

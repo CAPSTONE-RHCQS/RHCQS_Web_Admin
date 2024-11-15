@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ConstructionSearchResponse,
   getConstructionByName,
@@ -32,6 +32,7 @@ export interface AreaData {
   }[];
   TemplateItems: {
     Id: string;
+    SubConstructionId: string | null;
     Name: string;
     Coefficient: number;
     Area: number;
@@ -73,7 +74,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   }, [areas, onAreaDataChange]);
 
   const [selectedItems, setSelectedItems] = useState<
-    { Id: string; SubConstructionId: string; Name: string }[]
+    { Id: string; SubConstructionId: string | null; Name: string }[]
   >([]);
 
   const handleAreaInputChange = (
@@ -100,7 +101,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
         const results = await getConstructionByName(searchValue);
         const filteredResults = results.filter(
           (result) =>
-            !newAreas[index].TemplateItems.some(
+            !newAreas[index].selectedItems.some(
               (item) => item.Name === result.Name,
             ),
         );
@@ -119,29 +120,17 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     const newAreas = [...areas];
     const newItem = {
       Id: item.Id,
+      SubConstructionId: item.SubConstructionId || null,
       Name: item.Name,
       Coefficient: item.Coefficient || 1,
-      Area: 0,
+      area: 0,
       Unit: 'm²',
       Price: item.Price || 0,
     };
 
-    newAreas[index].TemplateItems.push(newItem);
+    newAreas[index].selectedItems.push(newItem);
 
-    const updatedSelectedItems = [
-      ...newAreas[index].selectedItems,
-      {
-        Id: item.Id,
-        SubConstructionId: item.SubConstructionId,
-        Name: item.Name,
-        area: 0,
-        Coefficient: item.Coefficient || 1,
-        Price: item.Price || 0,
-      },
-    ];
-    newAreas[index].selectedItems = updatedSelectedItems;
-
-    setSelectedItems(updatedSelectedItems);
+    setSelectedItems(newAreas[index].selectedItems );
 
     newAreas[index].searchResults = [];
     onAreaDataChange(newAreas);
@@ -154,11 +143,12 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
   ) => {
     const newAreas = [...areas];
     const areaValue = parseFloat(value) || 0;
-    newAreas[areaIndex].TemplateItems[itemIndex].Area = areaValue;
-
-    // Cập nhật giá trị area và Price trong TemplateItems
-    const item = newAreas[areaIndex].TemplateItems[itemIndex];
+    
+    const item = newAreas[areaIndex].selectedItems[itemIndex];
+    item.area = areaValue;
     item.Price = calculateItemTotal(areaValue, selectedPackagePrice || 0, item.Coefficient);
+
+    newAreas[areaIndex].totalRough = calculateTotalCostForArea(areaIndex);
 
     onAreaDataChange(newAreas);
   };
@@ -362,7 +352,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {areaData.TemplateItems.map((item, itemIndex) => (
+                    {areaData.selectedItems.map((item, itemIndex) => (
                       <tr key={itemIndex}>
                         <td className="border border-primary py-2 text-center">
                           {item.Name}
@@ -376,12 +366,12 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                             : ''}
                         </td>
                         <td className="border border-primary py-2 text-center">
-                          {item.Unit}
+                          m²
                         </td>
                         <td className="border border-primary py-2 text-center">
                           <input
                             type="text"
-                            value={item.Area}
+                            value={item.area}
                             onChange={(e) =>
                               handleItemAreaChange(
                                 index,
@@ -401,9 +391,9 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                             className="text-red-500"
                             onClick={() => {
                               const newAreas = [...areas];
-                              newAreas[index].TemplateItems = newAreas[
+                              newAreas[index].selectedItems = newAreas[
                                 index
-                              ].TemplateItems.filter((_, i) => i !== itemIndex);
+                              ].selectedItems.filter((_, i) => i !== itemIndex);
                               onAreaDataChange(newAreas);
                             }}
                           >
