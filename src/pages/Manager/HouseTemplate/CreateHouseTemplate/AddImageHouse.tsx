@@ -17,10 +17,9 @@ const AddImageHouse: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
+  console.log('ID:', id);
   const responseData = location.state?.responseData;
-  console.log('Response data:', responseData);
   const packageFinished = location.state?.packageFinished;
-  console.log('Package finished:', packageFinished);
   const [overallImage, setOverallImage] = useState<File | null>(null);
   const [outsideImages, setOutsideImages] = useState<File[]>([]);
   const [houseTemplate, setHouseTemplate] =
@@ -62,6 +61,7 @@ const AddImageHouse: React.FC = () => {
           setHouseTemplate(data);
         } else if (id) {
           const data = await fetchHouseTemplateDetail(id);
+          console.log('Data:', data);
           setHouseTemplate(data);
           // set overall image
           setOverallImage(new File([], data.ImgUrl));
@@ -217,7 +217,7 @@ const AddImageHouse: React.FC = () => {
           console.log('Package JSON string:', packageJsonString);
         }
 
-        // Kiểm tra tất cả các SubTemplate đã có ảnh
+        // Kiểm tra tất cả các SubTemplate đ�� c�� ảnh
         const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
           (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
         );
@@ -233,9 +233,6 @@ const AddImageHouse: React.FC = () => {
           });
           return;
         }
-
-        navigate(`/house-template/${responseData}`);
-
         // Gửi ảnh cho từng SubTemplate
         for (const subTemplate of houseTemplate?.SubTemplates || []) {
           const image = subTemplateImages[subTemplate.Id];
@@ -253,6 +250,7 @@ const AddImageHouse: React.FC = () => {
           message: 'Hình ảnh đã được gửi thành công!',
           type: 'success',
         });
+        navigate(`/house-template/${responseData}`);
       } catch (error) {
         console.error('Error uploading image:', error);
         console.log('Package finished data:', packageFinished);
@@ -269,27 +267,11 @@ const AddImageHouse: React.FC = () => {
   };
 
   const handleUpdate = async () => {
-    if (responseData && overallImage) {
+    if (id && overallImage) {
       setIsLoading(true);
       try {
         const formData = new FormData();
-
-        // Thêm OverallImage
-        formData.append('OverallImage', overallImage, overallImage.name);
-
-        // Thêm OutSideImage dưới dạng mảng
-        outsideImages.forEach((image) => {
-          formData.append('OutSideImage', image, image.name);
-        });
-
-        // Thêm DesignDrawingImage dưới dạng mảng
-        designDrawingImages.forEach((image) => {
-          formData.append('DesignDrawingImage', image, image.name);
-        });
-
-        packageFinishedImages.forEach((image) => {
-          formData.append('PackageFinishedImage', image, image.name);
-        });
+        formData.append('image', overallImage, overallImage.name);
 
         if (packageFinished) {
           const packageJsonString = JSON.stringify(
@@ -299,15 +281,12 @@ const AddImageHouse: React.FC = () => {
             })),
           );
           formData.append('packageJson', packageJsonString);
-          console.log('Package JSON string:', packageJsonString);
         }
 
-        // Kiểm tra tất cả các SubTemplate đã có ảnh
         const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
           (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
         );
 
-        // Kiểm tra tất cả các packageFinished đã có ảnh
         const allPackageImagesSelected =
           packageFinishedImages.length === packageFinished.length;
 
@@ -319,7 +298,6 @@ const AddImageHouse: React.FC = () => {
           return;
         }
 
-        // Gửi ảnh cho từng SubTemplate
         for (const subTemplate of houseTemplate?.SubTemplates || []) {
           const image = subTemplateImages[subTemplate.Id];
           const subFormData = new FormData();
@@ -329,28 +307,19 @@ const AddImageHouse: React.FC = () => {
           await uploadSubHouseTemplate(subTemplate.Id, subFormData);
         }
 
-        navigate(`/house-template/${id}`);
-
-        const overallImageFormData = new FormData();
-        overallImageFormData.append(
-          'OverallImage',
-          overallImage,
-          overallImage.name,
-        );
-
         const outsideResult = await uploadOutsideImage(
           id,
-          overallImageFormData,
+          formData,
         );
+        console.log('Outside Image Upload Result:', outsideResult);
 
-        console.log('Package finished images:', packageFinishedImages);
         setAlert({
           message: 'Hình ảnh đã được gửi thành công!',
           type: 'success',
         });
+        navigate(`/house-template/${id}`);
       } catch (error) {
         console.error('Error uploading image:', error);
-        console.log('Package finished data:', packageFinished);
         setAlert({ message: 'Có lỗi xảy ra khi gửi hình ảnh.', type: 'error' });
       } finally {
         setIsLoading(false);
@@ -405,7 +374,7 @@ const AddImageHouse: React.FC = () => {
           {previewOverallImage ? (
             <div className="relative group">
               <img
-                src={getCacheBustedUrl(previewOverallImage)}
+                src={previewOverallImage}
                 alt="Overall Preview"
                 style={{
                   width: '150px',
@@ -444,7 +413,7 @@ const AddImageHouse: React.FC = () => {
           {previewOutsideImages.map((src, index) => (
             <div key={index} className="relative">
               <img
-                src={getCacheBustedUrl(src)}
+                src={src}
                 alt={`Outside Preview ${index}`}
                 style={{
                   width: '150px',
@@ -480,7 +449,7 @@ const AddImageHouse: React.FC = () => {
           {previewDesignDrawingImages.map((src, index) => (
             <div key={index} className="relative">
               <img
-                src={getCacheBustedUrl(src)}
+                src={src}
                 alt={`Design Drawing Preview ${index}`}
                 style={{
                   width: '150px',
@@ -524,9 +493,7 @@ const AddImageHouse: React.FC = () => {
               {previewSubTemplateImages[subTemplate.Id] ? (
                 <div className="relative">
                   <img
-                    src={getCacheBustedUrl(
-                      previewSubTemplateImages[subTemplate.Id] as string,
-                    )}
+                    src={previewSubTemplateImages[subTemplate.Id] as string}
                     alt={`SubTemplate Preview ${subTemplate.Id}`}
                     style={{
                       width: '150px',
@@ -580,9 +547,7 @@ const AddImageHouse: React.FC = () => {
               {previewPackageFinishedImages[index] ? (
                 <div className="relative">
                   <img
-                    src={getCacheBustedUrl(
-                      previewPackageFinishedImages[index],
-                    )}
+                    src={previewPackageFinishedImages[index]}
                     alt={`Package Finished Preview ${index}`}
                     style={{
                       width: '150px',
