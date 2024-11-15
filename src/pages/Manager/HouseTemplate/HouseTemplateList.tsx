@@ -17,13 +17,16 @@ const HouseTemplateList: React.FC = () => {
   const [houseTemplates, setHouseTemplates] = useState<HouseTemplateItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadHouseTemplates = async () => {
       try {
-        const data = await fetchHouseTemplates(1, 10);
+        const data = await fetchHouseTemplates(currentPage, 10);
         setHouseTemplates(data.Items);
+        setTotalPages(data.TotalPages);
       } catch (err) {
         setError('Failed to fetch house templates');
       } finally {
@@ -32,7 +35,7 @@ const HouseTemplateList: React.FC = () => {
     };
 
     loadHouseTemplates();
-  }, []);
+  }, [currentPage]);
 
   const handleTemplateClick = (id: string) => {
     navigate(`/house-template/${id}`);
@@ -40,6 +43,12 @@ const HouseTemplateList: React.FC = () => {
 
   const handleCreateTemplateClick = () => {
     navigate('/create-house-template');
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   if (loading)
@@ -55,10 +64,10 @@ const HouseTemplateList: React.FC = () => {
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-2xl font-bold">Danh sách mẫu nhà</h1>
         <h6
-          className="text-blue-500 cursor-pointer font-bold"
+          className="text-primary cursor-pointer font-bold"
           onClick={handleCreateTemplateClick}
         >
-          Thêm mẫu nhà mới +
+          + Thêm mẫu nhà mới
         </h6>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -106,6 +115,25 @@ const HouseTemplateList: React.FC = () => {
             </CardFooter>
           </Card>
         ))}
+      </div>
+      <div className="flex justify-between items-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+        >
+          Trang trước
+        </button>
+        <span>
+          Trang {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-300 rounded"
+        >
+          Trang sau
+        </button>
       </div>
     </div>
   );
