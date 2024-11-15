@@ -78,9 +78,9 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
           <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
-        <table className="w-full table-auto">
+        <table className="w-full table-auto border-collapse">
           <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
+            <tr className="bg-gray-200 text-left dark:bg-meta-4">
               {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo', ''].map((header) => (
                 <th
                   key={header}
@@ -96,27 +96,27 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
               <React.Fragment key={index}>
                 <tr
                   onClick={() => toggleOpenItem(index)}
-                  className="cursor-pointer"
+                  className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center">
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark flex items-center">
                     {item.Name}
                     {item.SubConstructionItems &&
                       item.SubConstructionItems.length > 0 && (
                         <ChevronDownIcon className="w-4 h-4 ml-2 text-gray-500" />
                       )}
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                     {item.Coefficient}
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                     {item.Unit}
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                     {new Date(item.InsDate).toLocaleDateString()}
                   </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                     <PencilIcon
-                      className="w-4 h-4 text-blue-500 cursor-pointer"
+                      className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition"
                       onClick={() => openEditModal(item.Id)}
                     />
                   </td>
@@ -127,7 +127,7 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                     <tr>
                       <td
                         colSpan={4}
-                        className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                        className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
                       >
                         <table className="w-full table-auto">
                           <thead>
@@ -159,22 +159,22 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                                       subItem.Coefficient,
                                     )
                                   }
-                                  className={`cursor-pointer ${
+                                  className={`cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
                                     selectedSubItems[index] === subIndex
                                       ? 'bg-blue-100'
                                       : ''
                                   }`}
                                 >
-                                  <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
                                     {subItem.Name}
                                   </td>
-                                  <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
                                     {subItem.Coefficient}
                                   </td>
-                                  <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
                                     {subItem.Unit}
                                   </td>
-                                  <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
                                     {new Date(
                                       subItem.InsDate,
                                     ).toLocaleDateString()}
