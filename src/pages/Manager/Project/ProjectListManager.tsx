@@ -211,10 +211,10 @@ const ProjectListManager = () => {
     <>
       <Breadcrumb pageName="Danh sách dự án" />
 
-      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
+      <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <>
-          <div className="mb-4">
-            <ul className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          <div className="mb-5">
+            <ul className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {tabs.map((tab) => (
                 <li
                   key={tab.label}
@@ -225,7 +225,7 @@ const ProjectListManager = () => {
                   } transition-colors duration-300`}
                 >
                   <button
-                    className="inline-block py-2 px-4 font-semibold flex items-center transition-transform duration-300 transform hover:scale-105"
+                    className="inline-block py-2 px-5 font-semibold flex items-center transition-transform duration-300 transform hover:scale-105"
                     onClick={() => setActiveTab(tab.label)}
                   >
                     {tab.icon}
@@ -235,22 +235,22 @@ const ProjectListManager = () => {
               ))}
             </ul>
           </div>
-          <div className="flex flex-col md:flex-row md:items-center mb-4">
+          <div className="flex flex-col md:flex-row md:items-center mb-5">
             <input
               type="text"
-              className="h-14 w-full md:w-96 pr-8 pl-5 rounded z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
+              className="h-14 w-full md:w-96 pr-8 pl-5 rounded-lg z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
               placeholder="Tìm kiếm..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button
               onClick={handleDeleteSelected}
-              className="h-14 p-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
+              className="h-14 p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
             >
               Xóa đã chọn
             </button>
           </div>
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center mb-5">
             <div className="flex items-center">
               <span className="text-lg text-black dark:text-white">
                 Tổng số Dự án: {projects.length}
@@ -285,11 +285,11 @@ const ProjectListManager = () => {
               </div>
             )}
           </div>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-5">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
             >
               Trang trước
             </button>
@@ -299,7 +299,7 @@ const ProjectListManager = () => {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400 disabled:opacity-50"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
             >
               Trang sau
             </button>

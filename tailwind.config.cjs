@@ -58,6 +58,7 @@ module.exports = withMT({
         thirdGreen: '#5BABAC',
         customRed: '#FF0000',
         customGray: '#D1D5DB',
+        'gray-200': '#E5E7EB',
       },
       fontSize: {
         'title-xxl': ['44px', '55px'],
