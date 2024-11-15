@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
+import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 
 interface VersionProps {
   Id: string;
@@ -47,7 +48,7 @@ const HouseDesignDetailManager: React.FC = () => {
     useState<HouseDesignDetailProps | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [approvalType, setApprovalType] = useState<string>('Approved');
   const [reason, setReason] = useState<string>('');
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
@@ -87,7 +88,7 @@ const HouseDesignDetailManager: React.FC = () => {
         reason,
       });
       toast.success('Design approved successfully!');
-      setModalVisible(false);
+      setIsModalOpen(false);
       fetchDesignDetail();
     } catch (error) {
       console.error('Error approving design:', error);
@@ -130,7 +131,7 @@ const HouseDesignDetailManager: React.FC = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       if (selectedVersionId) {
-                        setModalVisible(true);
+                        setIsModalOpen(true);
                       } else {
                         toast.error(
                           'Vui lòng chọn một phiên bản trước khi phê duyệt.',
@@ -163,14 +164,9 @@ const HouseDesignDetailManager: React.FC = () => {
                 <FiType className="mr-2" />
                 <strong className="mr-2">Loại:</strong> {designDetail.Type}
               </p>
-              {/* <p className="flex items-center">
-                <FiBriefcase className="mr-2" />
-                <strong className="mr-2">Is Company:</strong>{' '}
-                {designDetail.IsCompany ? 'Yes' : 'No'}
-              </p> */}
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />
-                <strong className="mr-2">Ngày tạo:</strong>{' '}
+                <strong className="mr-2">Ngày tạo:</strong>
                 {new Date(designDetail.InsDate).toLocaleDateString()}
               </p>
             </div>
@@ -242,44 +238,15 @@ const HouseDesignDetailManager: React.FC = () => {
         </div>
       </div>
 
-      {modalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-semibold mb-6 text-center">
-              Phê duyệt bản vẽ
-            </h2>
-            <select
-              value={approvalType}
-              onChange={(e) => setApprovalType(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Approved">Approved</option>
-              <option value="Updated">Updated</option>
-            </select>
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Nhập lý do"
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-            />
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleApproveDesign}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Gửi
-              </button>
-              <button
-                onClick={() => setModalVisible(false)}
-                className="bg-gray-300 text-black px-5 py-2 rounded-lg hover:bg-gray-400 transition-colors duration-200"
-              >
-                Hủy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApprovalDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        approvalType={approvalType}
+        setApprovalType={setApprovalType}
+        reason={reason}
+        setReason={setReason}
+        onSubmit={handleApproveDesign}
+      />
     </>
   );
 };

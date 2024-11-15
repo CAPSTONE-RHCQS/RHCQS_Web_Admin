@@ -13,6 +13,7 @@ import {
   approveInitialQuotation,
 } from '../../../api/InitialQuotation/InitialQuotationApi';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
+import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 
 interface TableRow {
   stt: number;
@@ -514,44 +515,15 @@ const InitialQuotationDetailManager = () => {
         </div>
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-semibold mb-6 text-center">
-              Xác nhận hoặc từ chối báo giá
-            </h2>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Approved">Xác nhận</option>
-              <option value="Rejected">Từ chối</option>
-            </select>
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Nhập lý do"
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-            />
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleSubmit}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Gửi
-              </button>
-              <button
-                onClick={handleCloseModal}
-                className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
-              >
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApprovalDialog
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        approvalType={type}
+        setApprovalType={setType}
+        reason={reason}
+        setReason={setReason}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 };

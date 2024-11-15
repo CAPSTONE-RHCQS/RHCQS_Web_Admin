@@ -21,8 +21,8 @@ import {
   FaCheck,
 } from 'react-icons/fa';
 import UtilityInfoTable from './components/Table/UtilityInfoTable';
-import { Dialog } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const FinalQuotationDetailManager = () => {
@@ -131,51 +131,15 @@ const FinalQuotationDetailManager = () => {
         )}
       </div>
 
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-        <div className="fixed inset-0 flex items-center justify-center">
-          <Dialog.Panel className="bg-white p-8 rounded shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl">
-            <Dialog.Title className="text-2xl font-bold">
-              Phê duyệt báo giá
-            </Dialog.Title>
-            <div className="mt-6">
-              <select
-                value={approvalType}
-                onChange={(e) => setApprovalType(e.target.value)}
-                className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm text-lg"
-              >
-                <option value="Approved">Approved</option>
-                <option value="Reject">Reject</option>
-              </select>
-            </div>
-            <div className="mt-6">
-              <label className="block text-lg font-medium text-gray-700">
-                Lý do
-              </label>
-              <textarea
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm text-lg"
-                rows={4}
-              />
-            </div>
-            <div className="mt-8 flex justify-end space-x-4">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-200 hover:bg-gray-300 px-5 py-3 rounded text-lg transition-colors duration-200"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleApprove}
-                className="bg-primary hover:bg-primary-dark text-white px-5 py-3 rounded text-lg transition-colors duration-200"
-              >
-                Xác nhận
-              </button>
-            </div>
-          </Dialog.Panel>
-        </div>
-      </Dialog>
+      <ApprovalDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        approvalType={approvalType}
+        setApprovalType={setApprovalType}
+        reason={reason}
+        setReason={setReason}
+        onSubmit={handleApprove}
+      />
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
