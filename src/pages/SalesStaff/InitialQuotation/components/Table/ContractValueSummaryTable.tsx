@@ -13,7 +13,9 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
   promotionInfo,
   updateGiaTriHopDong,
 }) => {
-  const discount = promotionInfo ? (thanhTien + totalUtilityCost) * (promotionInfo.Value / 100) : 0;
+  const discount = promotionInfo
+    ? (thanhTien + totalUtilityCost) * (promotionInfo.Value / 100)
+    : 0;
   const giaTriHopDong = thanhTien + totalUtilityCost - discount;
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
-          {promotionInfo && (
+          {promotionInfo && promotionInfo.Value > 0 && (
             <tr>
               <td className="px-4 py-2 border text-left">
                 Khuyến mãi ({promotionInfo.Name})
@@ -56,12 +58,16 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
               <td className="px-4 py-2 border text-center">VNĐ</td>
             </tr>
           )}
-          <tr>
-            <td className="px-4 py-2 border text-left">Tổng giá trị hợp đồng</td>
+          <tr className="bg-gray-100">
             <td className="px-4 py-2 border text-center">
-              {giaTriHopDong.toLocaleString()} VNĐ
+              <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
             </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
+            <td className="px-4 py-2 border text-center">
+              <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
+            </td>
+            <td className="px-4 py-2 border text-center">
+              <strong>VNĐ</strong>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -69,4 +75,4 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
   );
 };
 
-export default ContractValueSummaryTable; 
+export default ContractValueSummaryTable;

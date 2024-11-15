@@ -131,7 +131,7 @@ const ProjectDetailSalesStaff = () => {
     <>
       <div className="mb-6 flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+          <h2 className="text-3xl font-bold text-primary dark:text-white">
             Chi tiết dự án
           </h2>
           <div
@@ -139,7 +139,7 @@ const ProjectDetailSalesStaff = () => {
             onMouseLeave={hideMenu}
             className="relative"
           >
-            <FiMoreVertical className="text-xl text-black dark:text-white" />
+            <FiMoreVertical className="text-2xl text-primary dark:text-white cursor-pointer" />
             {menuVisible && (
               <div
                 className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
@@ -249,41 +249,41 @@ const ProjectDetailSalesStaff = () => {
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Thông tin dự án</h2>
+          <h2 className="text-2xl font-bold text-primary">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
             Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2" />
+          <FaUser className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
           <span className="text-gray-700 ml-2">
             {projectDetail.AccountName}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2" />
+          <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
           <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaRulerCombined className="mr-2" />
+          <FaRulerCombined className="mr-2 text-secondary" />
           <span className="font-semibold">Diện tích:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
           {projectDetail.InitialInfo &&
             projectDetail.InitialInfo.length > 0 &&
             (showInitialInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.InitialInfo &&
@@ -303,16 +303,16 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
           {projectDetail.HouseDesignDrawingInfo &&
             projectDetail.HouseDesignDrawingInfo.length > 0 &&
             (showDesignDrawing ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.HouseDesignDrawingInfo &&
@@ -325,16 +325,16 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
           {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length > 0 &&
             (showFinalInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.FinalInfo &&
@@ -354,16 +354,16 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
           {projectDetail.ContractInfo &&
             projectDetail.ContractInfo.length > 0 &&
             (showContract ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.ContractInfo &&

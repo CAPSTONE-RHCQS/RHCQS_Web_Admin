@@ -2,7 +2,6 @@ import React from 'react';
 import { Typography } from '@material-tailwind/react';
 import { PackageHouse } from '../../../../types/HouseTemplateTypes';
 import { defaultImageHouseTemplateUrl } from '../../../../utils/constants';
-import { getCacheBustedUrl } from '../../../../utils/utils';
 
 interface PackageHouseListProps {
   packageHouses: PackageHouse[];
@@ -23,9 +22,7 @@ const PackageHouseList: React.FC<PackageHouseListProps> = ({
             className="border p-4 rounded-lg shadow-md"
           >
             <img
-              src={getCacheBustedUrl(
-                packageHouse.ImgUrl || defaultImageHouseTemplateUrl,
-              )}
+              src={packageHouse.ImgUrl || defaultImageHouseTemplateUrl}
               alt={packageHouse.PackageName}
               className="w-full h-32 object-cover rounded-md mb-2"
             />

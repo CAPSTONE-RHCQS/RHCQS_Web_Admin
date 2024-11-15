@@ -25,7 +25,7 @@ const TableHeader: React.FC<{
   handleSort: (key: SortKey) => void;
 }> = ({ columns, handleSort }) => (
   <thead>
-    <tr className="bg-gray-2 text-left dark:bg-meta-4">
+    <tr className="bg-gray-200 text-left dark:bg-meta-4">
       {columns.map((column) => (
         <th
           key={column.key}
@@ -64,11 +64,14 @@ const TableRow: React.FC<{
   roleClassMapping,
   roleIconMapping,
 }) => (
-  <tr key={index}>
+  <tr
+    key={index}
+    className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+  >
     {columns.map((column) => (
       <td
         key={column.key}
-        className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark ${
+        className={`border-b border-gray-300 py-5 px-4 dark:border-strokedark ${
           ['role'].includes(column.key) ? 'text-center' : ''
         }`}
         style={{ width: column.key === 'role' ? '170px' : column.width }}
@@ -101,7 +104,7 @@ const TableRow: React.FC<{
         )}
       </td>
     ))}
-    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+    <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
       <div className="flex items-center space-x-3.5">
         <DetailButton onClick={() => handleDetailClick(item.id)} />
       </div>
@@ -141,7 +144,7 @@ const AccountTable: React.FC<AccountTableProps> = ({
           <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
-        <table className="w-full table-auto">
+        <table className="w-full table-auto border-collapse">
           <TableHeader columns={columns} handleSort={handleSort} />
           <tbody>
             {data.map((item, index) => (

@@ -83,9 +83,9 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
           <span>Hiện tại chưa có dự án nào...</span>
         </div>
       ) : (
-        <table className="w-full table-auto">
+        <table className="w-full table-auto border-collapse">
           <thead>
-            <tr className="bg-gray-2 text-left dark:bg-meta-4">
+            <tr className="bg-gray-200 text-left dark:bg-meta-4">
               {columns.map((column) => (
                 <th
                   key={column.key}
@@ -102,12 +102,12 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
             {data.map((item) => (
               <tr
                 key={item.id}
-                className="border-b border-[#eee] dark:border-strokedark"
+                className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               >
                 {columns.map((column) => (
                   <td
                     key={column.key}
-                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
+                    className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
                   >
                     {column.key === 'status' ? (
                       <span
@@ -132,7 +132,7 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                     )}
                   </td>
                 ))}
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                   <button
                     onClick={() => handleViewDetails(item.id)}
                     className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"

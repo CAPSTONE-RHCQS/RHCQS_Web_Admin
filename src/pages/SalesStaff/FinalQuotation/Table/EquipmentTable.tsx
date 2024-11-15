@@ -40,6 +40,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
       UnitOfMaterial: 0,
       TotalOfMaterial: 0,
       Note: '',
+      Type: '',
     };
     setEditableItems([...editableItems, newItem]);
     onItemsChange([...editableItems, newItem]);

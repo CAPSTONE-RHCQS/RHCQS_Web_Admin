@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography } from '@material-tailwind/react';
 import { ExteriorUrl } from '../../../../types/HouseTemplateTypes'; // Import đúng kiểu từ file types
+import { defaultImageHouseTemplateUrl } from '../../../../utils/constants';
 
 interface ExteriorImageListProps {
   exteriors: ExteriorUrl[];
@@ -16,7 +17,7 @@ const ExteriorImageList: React.FC<ExteriorImageListProps> = ({ exteriors }) => {
         {exteriors.map((exterior) => (
           <div key={exterior.Id} className="border p-4 rounded-lg shadow-md">
             <img
-              src={`${exterior.Url}?${new Date().getTime()}`}
+              src={exterior.Url || defaultImageHouseTemplateUrl}
               alt={exterior.Name}
               className="w-full h-32 object-cover rounded-md mb-2"
             />

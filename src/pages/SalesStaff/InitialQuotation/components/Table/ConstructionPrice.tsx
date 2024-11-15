@@ -65,13 +65,24 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
     type: 'ROUGH' | 'FINISHED',
   ) => {
     const newQuotationData = { ...quotationData };
+    const value = e.target.value;
+
     if (type === 'ROUGH') {
-      newQuotationData.PackageQuotationList.PackageRough = e.target.value;
+      newQuotationData.PackageQuotationList.PackageRough = value;
+      if (value === '') {
+        newQuotationData.PackageQuotationList.UnitPackageRough = 0;
+        newQuotationData.PackageQuotationList.IdPackageRough = null;
+      }
     } else if (type === 'FINISHED') {
-      newQuotationData.PackageQuotationList.PackageFinished = e.target.value;
+      newQuotationData.PackageQuotationList.PackageFinished = value;
+      if (value === '') {
+        newQuotationData.PackageQuotationList.UnitPackageFinished = 0;
+        newQuotationData.PackageQuotationList.IdPackageFinished = null;
+      }
     }
+
     setQuotationData(newQuotationData);
-    handleSearchPackage(e.target.value, type);
+    handleSearchPackage(value, type);
   };
 
   return (
@@ -129,12 +140,15 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
         </>
       ) : (
         <>
-          <p className="mb-2">
-            {quotationData.PackageQuotationList.PackageRough} -{' '}
-            {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-            đồng/m²
-          </p>
-          {quotationData.PackageQuotationList.PackageFinished &&
+          {quotationData.PackageQuotationList.IdPackageRough !== null &&
+            quotationData.PackageQuotationList.UnitPackageRough !== 0 && (
+              <p className="mb-2">
+                {quotationData.PackageQuotationList.PackageRough} -{' '}
+                {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+                đồng/m²
+              </p>
+            )}
+          {quotationData.PackageQuotationList.IdPackageFinished !== null &&
             quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
               <p className="mb-2">
                 {quotationData.PackageQuotationList.PackageFinished} -{' '}

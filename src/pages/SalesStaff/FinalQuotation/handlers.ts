@@ -7,16 +7,16 @@ import axios from 'axios';
 export const handleSave = async (
   quotationDetail: FinalQuotationDetailType | null,
   setIsEditing: (value: boolean) => void,
+  setIsSaving: (value: boolean) => void,
 ) => {
   if (quotationDetail) {
     const requestData: FinalQuotationRequest = {
       projectId: quotationDetail.ProjectId,
       promotionId: quotationDetail.PromotionInfo?.Id || null,
-      totalPrice: quotationDetail.TotalPrice,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
         initIntitialQuotationId: quotationDetail.InitailQuotationId,
-        paymentTypeId: '2DB967C9-5928-4A1E-A9EC-5130EB179D6E',
+        paymentTypeId: payment.PaymentTypeId,
         contractId: payment.ContractId,
         price: payment.Price,
         percents: payment.Percents,
@@ -28,44 +28,27 @@ export const handleSave = async (
         unit: item.Unit,
         quantity: item.Quantity,
         unitOfMaterial: item.UnitOfMaterial,
-        totalOfMaterial: item.TotalOfMaterial,
         note: item.Note || '',
+        type: item.Type,
       })),
       utilities: quotationDetail.UtilityInfos.map((util) => ({
         utilitiesItemId: util.utilitiesItemId || util.utilitiesSectionId,
-        coefficient: util.Coefficient,
         price: util.Price,
       })),
       finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
-        constructionItemId: item.ContructionId,
+        constructionId: item.ConstructionId,
+        subconstructionId: item.SubConstructionId ?? null,
         quotationItems: item.QuotationItems.map((qItem) => ({
-          unit: qItem.Unit,
+          laborId: qItem.LaborId ?? null,
+          materialId: qItem.MaterialId ?? null,
           weight: qItem.Weight,
-          unitPriceLabor: qItem.UnitPriceLabor || 0,
-          unitPriceRough: qItem.UnitPriceRough || 0,
-          unitPriceFinished: qItem.UnitPriceFinished || 0,
-          totalPriceLabor: qItem.TotalPriceLabor || 0,
-          totalPriceRough: qItem.TotalPriceRough || 0,
-          totalPriceFinished: qItem.TotalPriceFinished || 0,
           note: qItem.Note || '',
-          quotationLabors: qItem.QuotationLabors.length > 0
-            ? {
-                laborId: qItem.QuotationLabors[0].LaborId,
-                laborPrice: qItem.QuotationLabors[0].LaborPrice,
-              }
-            : null,
-          quotationMaterials: qItem.QuotationMaterials.length > 0
-            ? {
-                materialId: qItem.QuotationMaterials[0].MaterialId,
-                unit: qItem.QuotationMaterials[0].Unit,
-                materialPrice: qItem.QuotationMaterials[0].MaterialPrice,
-              }
-            : null,
         })),
       })),
     };
 
     try {
+      setIsSaving(true);
       await updateFinalQuotation(requestData);
       setIsEditing(false);
       toast.success('Cập nhật báo giá thành công!');
@@ -84,6 +67,8 @@ export const handleSave = async (
       } else {
         toast.error('Đã xảy ra lỗi không xác định.');
       }
+    } finally {
+      setIsSaving(false);
     }
   }
 };

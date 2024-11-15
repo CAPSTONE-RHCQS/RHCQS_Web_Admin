@@ -105,34 +105,10 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="number"
-                  value={util.Coefficient}
-                  onChange={(e) =>
-                    handleInputChange(
-                      index,
-                      'Coefficient',
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="w-full text-center"
-                  disabled={!isEditing}
-                />
+                <span>{util.Coefficient}</span>
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="number"
-                  value={util.Price}
-                  onChange={(e) =>
-                    handleInputChange(
-                      index,
-                      'UnitPrice',
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="w-full text-center"
-                  disabled={!isEditing}
-                />
+                <span>{util.Price}</span>
               </td>
 
               {isEditing && (
