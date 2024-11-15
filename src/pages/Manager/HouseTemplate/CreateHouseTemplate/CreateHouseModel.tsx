@@ -40,6 +40,7 @@ const CreateHouseModel: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = location.state || {};
+  console.log(id);
 
   useEffect(() => {
     const fetchPackageTypes = async () => {
@@ -62,6 +63,9 @@ const CreateHouseModel: React.FC = () => {
           setName(data.Name);
           setFloors(data.NumberOfFloor.toString());
           setRooms(data.NumberOfBed.toString());
+          setPackageType(data.PackageRoughId);
+          setSelectedPackagePrice(data.PackageRoughPrice);
+          setSelectedPackageName(data.PackageRoughName);
           setDescription(data.Description);
           setAreas(
             data.SubTemplates.map((subTemplate) => ({
@@ -73,7 +77,7 @@ const CreateHouseModel: React.FC = () => {
               searchContruction: '',
               searchResults: [],
               selectedItems: subTemplate.TemplateItems.map((item) => ({
-                Id: item.Id,
+                Id: item.ConstructionId,
                 SubConstructionId: item.SubConstructionId,
                 Name: item.Name,
                 area: item.Area,
@@ -136,6 +140,7 @@ const CreateHouseModel: React.FC = () => {
           name: item.Name,
           area: item.area,
           unit: 'm²',
+          price: item.Price,
         })),
       })),
       packageFinished: completedPackage.map((pkg) => ({
@@ -170,6 +175,7 @@ const CreateHouseModel: React.FC = () => {
     subTemplateId: string,
     areaData: AreaData,
   ) => {
+    setIsLoading(true);
     const data: UpdateSubTemplateHouseRequest = {
       buildingArea: parseFloat(areaData.buildingArea) || 0,
       floorArea: parseFloat(areaData.floorArea) || 0,
@@ -186,15 +192,22 @@ const CreateHouseModel: React.FC = () => {
     };
 
     try {
-      const response = await updateSubTemplateHouse(subTemplateId, data);
-      console.log('data subTemplate:', data);
-      console.log('SubTemplate updated successfully:', response);
+      await updateSubTemplateHouse(subTemplateId, data);
       setAlert({
         message: 'Cập nhật subTemplate thành công!',
         type: 'success',
       });
+
+      navigate('/add-image-house', {
+        state: {
+          id: id,
+          packageFinished: completedPackage.map((pkg) => ({
+            packageId: pkg.PackageId,
+            description: pkg.PackageName,
+          })),
+        },
+      });
     } catch (error) {
-      console.log(data);
       console.error('Error updating subTemplate:', error);
       setAlert({ message: 'Cập nhật subTemplate thất bại!', type: 'error' });
     }
@@ -319,11 +332,9 @@ const CreateHouseModel: React.FC = () => {
               // Gọi hàm handleUpdateSubTemplate khi có id
               areas.forEach((areaData) => {
                 if (areaData.Id) {
-                  console.log(areaData.Id);
                   handleUpdateSubTemplate(areaData.Id, areaData);
                 }
               });
-              
             } else {
               // Gọi hàm handleSubmit khi không có id
               handleSubmit();
