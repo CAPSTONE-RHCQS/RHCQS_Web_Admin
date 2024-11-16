@@ -1,60 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import {
-  getMaterialList,
-  getMaterialSectionList,
-  createMaterialSection,
-} from '../../../api/Material/Material';
-import { MaterialItem, MaterialSectionItem } from '../../../types/Material';
-import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import MaterialTable from './components/Table/MaterialTable';
-import Alert from '../../../components/Alert';
-import CreateMaterialSection from './components/Create/CreateMateraiSection';
+import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import SupplierTable from './component/Table/SupplierTable';
+import Alert from '../../components/Alert';
+import { getSupplierList, createSupplier } from '../../api/Supplier/Supplier';
+import { SupplierItem, UpdateSupplierRequest } from '../../types/Supplier';
+import CreateSupplier from './component/Create/CreateSupplier';
 
-const MaterialSectionList: React.FC = () => {
+const SupplierList: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
-  const [dataMaterialSection, setDataMaterialSection] = useState<
-    MaterialSectionItem[]
-  >([]);
-  const [dataMaterial, setDataMaterial] = useState<MaterialItem[]>([]);
+  const [dataSupplier, setDataSupplier] = useState<SupplierItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalMaterialSection, setTotalMaterialSection] = useState(0);
+  const [totalSupplier, setTotalSupplier] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
+    name: '',
+    email: '',
+    constractPhone: '',
+    imgUrl: '',
+    deflag: false,
+    shortDescription: '',
+    description: '',
+  });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
 
   useEffect(() => {
     setIsLoading(true);
-    getMaterialList(page, 10).then((dataMaterial) => {
-      setDataMaterial(dataMaterial.Items);
-    });
-    getMaterialSectionList(page, 10).then((data) => {
-      setDataMaterialSection(data.Items);
+    getSupplierList(page, 10).then((data: any) => {
+      setDataSupplier(data.Items);
       setTotalPages(data.TotalPages);
-      setTotalMaterialSection(data.Total);
+      setTotalSupplier(data.Total);
       console.log(data.Items);
       setIsLoading(false);
     });
   }, [page, refreshKey]);
-
-  const toggleOpenItem = (index: number) => {
-    setOpenItems((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(index)) {
-        newSet.delete(index);
-      } else {
-        newSet.add(index);
-      }
-      return newSet;
-    });
-  };
 
   const openEditModal = (id: string) => {
     setCurrentEditId(id);
@@ -72,41 +58,37 @@ const MaterialSectionList: React.FC = () => {
     }
   };
 
+  const handleInputChange = (field: string, value: string) => {
+    setInputValue((prev) => ({ ...prev, [field]: value }));
+  };
+
   const handleSave = async () => {
     try {
-      await createMaterialSection({ name: inputValue });
-      setAlertMessage('Tạo hạng mục vật tư thành công');
+      await createSupplier(inputValue);
+      setAlertMessage('Tạo nhà cung cấp thành công');
       setAlertType('success');
       handleRefresh();
-    } catch (error) {
-      setAlertMessage('Tạo hạng mục vật tư thất bại');
+  } catch (error) {
+      setAlertMessage('Tạo nhà cung cấp thất bại');
       setAlertType('error');
-      console.error('Error creating material section:', error);
+      console.error('Error creating supplier:', error);
     }
   };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND',
-    }).format(price);
-  };
-
   return (
     <>
       <div>
-        <Breadcrumb pageName="Quản lý vật tư" />
+        <Breadcrumb pageName="Quản lý nhà cung cấp" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <span className="text-lg text-black dark:text-white">
-              Tổng số vật tư: {totalMaterialSection}
+              Tổng số nhà cung cấp: {totalSupplier}
             </span>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
               >
-                + Thêm vật tư
+                + Thêm nhà cung cấp
               </button>
               <ArrowPathIcon
                 onClick={handleRefresh}
@@ -119,13 +101,10 @@ const MaterialSectionList: React.FC = () => {
               <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
             </div>
           ) : (
-            <MaterialTable
-              dataMaterialSection={dataMaterialSection}
-              dataMaterial={dataMaterial}
+            <SupplierTable
+              dataSupplier={dataSupplier}
               openItems={openItems}
               editModalOpen={editModalOpen}
-              toggleOpenItem={toggleOpenItem}
-              formatPrice={formatPrice}
               openEditModal={openEditModal}
               currentEditId={currentEditId}
               refreshData={handleRefresh}
@@ -154,10 +133,10 @@ const MaterialSectionList: React.FC = () => {
       </div>
 
       {isCreateModalOpen && (
-        <CreateMaterialSection
+        <CreateSupplier
           isOpen={isCreateModalOpen}
           inputValue={inputValue}
-          onInputChange={setInputValue}
+          onInputChange={handleInputChange}
           onSave={handleSave}
           onCancel={() => setIsCreateModalOpen(false)}
         />
@@ -173,4 +152,4 @@ const MaterialSectionList: React.FC = () => {
   );
 };
 
-export default MaterialSectionList;
+export default SupplierList;

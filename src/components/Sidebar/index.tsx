@@ -284,6 +284,32 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       Quản lý vật tư
                     </NavLink>
                   </li>
+
+                  {/* <!-- Menu Item SupplierManager --> */}
+                  <li>
+                    <NavLink
+                      to="/supplier-list-manager"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname.includes('/supplier-list-manager') &&
+                        'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4zm6-1h4v6h-4v-6z"
+                          fill="white"
+                        />
+                      </svg>
+                      Quản lý nhà cung cấp
+                    </NavLink>
+                  </li>
+
                   {/* <!-- Menu Item DetailedQuoteManager --> */}
                   {/* <li>
                   <NavLink

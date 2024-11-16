@@ -6,6 +6,7 @@ import {
 import { FaEye, FaEdit, FaPlus } from 'react-icons/fa';
 import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
 import EditMaterialSection from '../Edit/EditMaterialSection';
+import EditMaterial from '../Edit/EditMaterial';
 import { updateMaterialSection } from '../../../../../api/Material/Material';
 import Alert from '../../../../../components/Alert';
 
@@ -37,6 +38,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
   const [inputValue, setInputValue] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+  const [selectedMaterialId, setSelectedMaterialId] = useState<string | null>(null);
   const editRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -52,6 +54,10 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     setInputValue(name);
     setIsModalOpen(true);
     openEditModal(id);
+  };
+
+  const handleViewDetail = (id: string) => {
+    setSelectedMaterialId(id);
   };
 
   const handleSave = async () => {
@@ -196,6 +202,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                                 <FaEye
                                   className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6"
                                   title="Xem chi tiết"
+                                  onClick={() => handleViewDetail(material.Id.toString())}
                                 />
                               </td>
                             </tr>
@@ -238,6 +245,14 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           message={alertMessage}
           type={alertType}
           onClose={() => setAlertMessage(null)}
+        />
+      )}
+
+      {selectedMaterialId && (
+        <EditMaterial
+          id={selectedMaterialId}
+          
+          onClose={() => setSelectedMaterialId(null)}
         />
       )}
     </>

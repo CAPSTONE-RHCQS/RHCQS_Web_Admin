@@ -55,6 +55,16 @@ export async function getMaterialList(
   }
 }
 
+export async function getMaterialById(id: string) {
+  try {
+    const response = await requestWebRHCQS.get(`/material/id?id=${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching material by id:', error);
+    throw new Error('Failed to fetch material by id');
+  }
+}
+
 export async function createMaterialSection(data: any) {
   try {
     const response = await requestWebRHCQS.post('/materialsection', data);

@@ -46,6 +46,7 @@ import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.ts
 
 // ... existing imports ...
 import ScrollToTop from './components/ScrollToTop';
+import SupplierList from './pages/Supplier/SupplierList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -185,6 +186,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
                   <MaterialSectionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/supplier-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
+                  <SupplierList />
                 </PrivateRoute>
               }
             />
