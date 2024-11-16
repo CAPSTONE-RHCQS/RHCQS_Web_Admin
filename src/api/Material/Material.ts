@@ -54,3 +54,16 @@ export async function getMaterialList(
     throw new Error('Failed to fetch material list');
   }
 }
+
+export async function updateMaterialSection(id: string, name: string) {
+  try {
+    const response = await requestWebRHCQS.put(
+      `/materialsection?id=${id}`,
+      { name },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating material section ${id}:`, error);
+    throw new Error('Failed to update material section');
+  }
+}
