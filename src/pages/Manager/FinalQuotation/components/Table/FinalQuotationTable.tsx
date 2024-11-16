@@ -15,7 +15,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <th className="px-4 py-2 border text-center">Loại</th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
             <th className="px-4 py-2 border text-center">Đơn vị</th>
-            <th className="px-4 py-2 border text-center">Khối lượng</th>
+            <th className="px-4 py-2 border text-center">Số lượng</th>
             <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
             <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>

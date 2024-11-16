@@ -4,12 +4,14 @@ import { toast } from 'react-toastify';
 
 interface ActionButtonsProps {  
   isEditing: boolean;
+  isSaving: boolean;
   handleEditToggle: () => void;
   handleSave: () => void;
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   isEditing,
+  isSaving,
   handleEditToggle,
   handleSave,
 }) => {
@@ -23,11 +25,21 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   return (
     <div className="flex justify-end space-x-2">
+      {isEditing && (
+        <button
+          onClick={handleEditToggle}
+          disabled={isSaving}
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+        >
+          Hủy
+        </button>
+      )}
       <button
         onClick={isEditing ? handleSave : handleEditToggle}
+        disabled={isSaving}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
       >
-        {isEditing ? 'Lưu' : 'Chỉnh sửa'}
+        {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
       </button>
       <button
         onClick={handleDownload}
@@ -35,7 +47,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
       >
         <FaDownload className="text-lg" />
       </button>
-
       <button
         onClick={handleShare}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"

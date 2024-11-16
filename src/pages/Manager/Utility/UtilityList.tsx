@@ -30,8 +30,8 @@ const UtilityList: React.FC = () => {
     <>
       <Breadcrumb pageName="Quản lý Tùy chọn và Tiện ích" />
 
-      <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
-        <div className="flex justify-between items-center mb-4">
+      <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
+        <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
             <span className="text-lg text-black dark:text-white">
               Tổng số Tùy chọn và Tiện ích: {totalUtilities}
@@ -40,7 +40,7 @@ const UtilityList: React.FC = () => {
           <div className="flex items-center">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mr-4 p-2 bg-blue-500 text-white rounded"
+              className="mr-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
             >
               Thêm mới
             </button>
@@ -57,11 +57,11 @@ const UtilityList: React.FC = () => {
             onEditSuccess={handleRefresh}
           />
         </div>
-        <div className="flex justify-between mt-4">
+        <div className="flex justify-between mt-5">
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 disabled:opacity-50"
           >
             Trang trước
           </button>
@@ -71,7 +71,7 @@ const UtilityList: React.FC = () => {
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+            className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 disabled:opacity-50"
           >
             Trang sau
           </button>

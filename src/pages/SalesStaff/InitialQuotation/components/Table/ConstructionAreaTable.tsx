@@ -129,7 +129,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={item.heSo}
                   onChange={(e) => handleInputChange(e, index, 'heSo')}
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
@@ -138,18 +138,20 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   value={item.dienTich}
                   onChange={(e) => handleInputChange(e, index, 'dienTich')}
                   className="w-full text-center"
-                  disabled={!isEditing}
+                  disabled={true}
                 />
               </td>
               <td className="px-4 py-2 border text-center">{item.donVi}</td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
-                  <button
-                    onClick={() => handleDeleteRow(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                  </button>
+                  <div className="flex justify-center items-center">
+                    <button
+                      onClick={() => handleDeleteRow(index)}
+                      className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
                 </td>
               )}
             </tr>

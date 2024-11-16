@@ -27,7 +27,7 @@ import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSal
 import BlogList from './components/BlogList.tsx';
 import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
-import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
+import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
 import FinalQuotationDetailManager from './pages/Manager/FinalQuotation/FinalQuotationDetailManager.tsx';
@@ -45,14 +45,11 @@ import Settings from './pages/Settings.tsx';
 import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.tsx';
 
 // ... existing imports ...
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -64,6 +61,7 @@ function App() {
     <Loader />
   ) : (
     <>
+      <ScrollToTop />
       {isAuthPage ? (
         <Routes>
           <Route
@@ -100,15 +98,6 @@ function App() {
               }
             />
             // Manager
-            <Route
-              path="/blog-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Blog Manager | RHCQS - Residential Housing Construction Quotation System" />
-                  <BlogList />
-                </PrivateRoute>
-              }
-            />
             <Route
               path="/project-list-manager"
               element={
@@ -350,6 +339,15 @@ function App() {
                 <PrivateRoute allowedRoles={['DesignStaff']}>
                   <PageTitle title="Edit Quote | RHCQS - Residential Housing Construction Quotation System" />
                   <EditQuote />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/blog-list-staff"
+              element={
+                <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PageTitle title="Blog List Staff | RHCQS - Residential Housing Construction Quotation System" />
+                  <BlogList />
                 </PrivateRoute>
               }
             />

@@ -21,6 +21,7 @@ const InitialQuotationDetailStaff = () => {
     useState<InitialQuotationResponse | null>(null);
   const [showChat, setShowChat] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [batchPayment, setBatchPayment] = useState<any[]>([]);
@@ -28,6 +29,9 @@ const InitialQuotationDetailStaff = () => {
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
+  const [othersAgreement, setOthersAgreement] = useState<string>(
+    quotationData?.OthersAgreement || ''
+  );
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -104,6 +108,7 @@ const InitialQuotationDetailStaff = () => {
       </div>
       <ActionButtons
         isEditing={isEditing}
+        isSaving={isSaving}
         handleEditToggle={handleEditToggle}
         handleSave={() =>
           handleSave(
@@ -114,6 +119,7 @@ const InitialQuotationDetailStaff = () => {
             utilityInfos,
             promotionInfo,
             navigate,
+            setIsSaving,
           )
         }
       />
@@ -130,12 +136,15 @@ const InitialQuotationDetailStaff = () => {
         setUtilityInfos={setUtilityInfos}
         totalUtilityCost={totalUtilityCost}
         promotionInfo={promotionInfo}
+        setPromotionInfo={setPromotionInfo}
         giaTriHopDong={giaTriHopDong}
         setGiaTriHopDong={setGiaTriHopDong}
         batchPayment={batchPayment}
         setBatchPayment={setBatchPayment}
         totalPercentage={totalPercentage}
         totalAmount={totalAmount}
+        othersAgreement={othersAgreement}
+        setOthersAgreement={setOthersAgreement}
       />
     </>
   );
