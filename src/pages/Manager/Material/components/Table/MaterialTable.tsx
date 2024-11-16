@@ -66,7 +66,9 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
       setAlertMessage('Sửa vật liệu thất bại');
       setAlertType('error');
     } finally {
-      setIsModalOpen(false);
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 1000);
     }
   };
 
@@ -143,7 +145,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                         }}
                         title="Chỉnh sửa"
                       >
-                        <PencilIcon className="w-4 h-4 text-blue-500" />
+                        <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
                       </button>
                     )}
                   </div>

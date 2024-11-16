@@ -55,6 +55,16 @@ export async function getMaterialList(
   }
 }
 
+export async function createMaterialSection(data: any) {
+  try {
+    const response = await requestWebRHCQS.post('/materialsection', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating material section:', error);
+    throw new Error('Failed to create material section');
+  }
+}
+
 export async function updateMaterialSection(id: string, name: string) {
   try {
     const response = await requestWebRHCQS.put(

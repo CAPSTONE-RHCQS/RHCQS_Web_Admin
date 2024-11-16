@@ -4,10 +4,12 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import {
   getMaterialList,
   getMaterialSectionList,
+  createMaterialSection,
 } from '../../../api/Material/Material';
 import { MaterialItem, MaterialSectionItem } from '../../../types/Material';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import MaterialTable from './components/Table/MaterialTable';
+import Alert from '../../../components/Alert';
 import CreateMaterialSection from './components/Create/CreateMateraiSection';
 
 const MaterialSectionList: React.FC = () => {
@@ -25,7 +27,9 @@ const MaterialSectionList: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const [refreshData, setRefreshData] = useState(0);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+
   useEffect(() => {
     setIsLoading(true);
     getMaterialList(page, 10).then((dataMaterial) => {
@@ -68,8 +72,17 @@ const MaterialSectionList: React.FC = () => {
     }
   };
 
-  const handleSave = () => {
-    console.log(inputValue);
+  const handleSave = async () => {
+    try {
+      await createMaterialSection({ name: inputValue });
+      setAlertMessage('Tạo hạng mục vật tư thành công');
+      setAlertType('success');
+      handleRefresh();
+    } catch (error) {
+      setAlertMessage('Tạo hạng mục vật tư thất bại');
+      setAlertType('error');
+      console.error('Error creating material section:', error);
+    }
   };
 
   const formatPrice = (price: number) => {
@@ -91,9 +104,9 @@ const MaterialSectionList: React.FC = () => {
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
-                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition "
+                className="px-4 py-2 text-primary font-bold"
               >
-                Thêm vật tư
+                + Thêm vật tư
               </button>
               <ArrowPathIcon
                 onClick={handleRefresh}
@@ -149,6 +162,11 @@ const MaterialSectionList: React.FC = () => {
           onCancel={() => setIsCreateModalOpen(false)}
         />
       )}
+      <Alert
+        message={alertMessage}
+        type={alertType}
+        onClose={() => setAlertMessage('')}
+      />
     </>
   );
 };
