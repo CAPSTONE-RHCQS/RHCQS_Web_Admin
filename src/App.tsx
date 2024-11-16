@@ -42,6 +42,7 @@ import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDe
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
+import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.tsx';
 
 // ... existing imports ...
 
@@ -186,6 +187,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Promotion List | RHCQS - Residential Housing Construction Quotation System" />
                   <PromotionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/material-section-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
+                  <MaterialSectionList />
                 </PrivateRoute>
               }
             />
