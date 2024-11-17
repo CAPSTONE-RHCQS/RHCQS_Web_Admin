@@ -115,6 +115,10 @@ const ProjectDetail = () => {
     if (item === 'history') {
       setShowHistory(true);
     } else if (item === 'assign') {
+      if (projectDetail.Status === 'Ended') {
+        toast.error('Dự án đã chấm dứt, không thể phân công nhân viên.');
+        return;
+      }
       if (projectDetail.StaffName) {
         toast.error('Dự án đã có nhân viên đảm nhận.');
       } else {

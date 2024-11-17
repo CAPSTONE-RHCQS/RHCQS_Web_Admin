@@ -44,11 +44,18 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
   );
 
   let filteredStatuses = statuses.filter((status) => {
-    if (currentStatus === 'Đã chấm dứt') {
-      return status.label !== 'Hoàn thành';
+    if (status.label === 'Đã chấm dứt') {
+      return status.label === currentStatus;
     }
-    return status.label !== 'Đã chấm dứt';
+    return status.label !== 'Hoàn thành';
   });
+
+  if (currentStatus !== 'Đã chấm dứt') {
+    const completedStatus = statuses.find(status => status.label === 'Hoàn thành');
+    if (completedStatus) {
+      filteredStatuses.push(completedStatus);
+    }
+  }
 
   return (
     <div className="py-3 flex items-center justify-center w-full">
@@ -64,14 +71,10 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
                 <div
                   className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
                     index <= currentIndex
-                      ? `${
-                          statusColors[status.label as StatusLabel].bg
-                        } text-white`
+                      ? `${statusColors[status.label as StatusLabel].bg} text-white`
                       : 'bg-customGray text-gray-700'
                   } ${
-                    index === currentIndex
-                      ? 'ring-4 ring-offset-2 ring-blue-300'
-                      : ''
+                    index === currentIndex ? 'ring-4 ring-offset-2 ring-blue-300' : ''
                   }`}
                   title={status.label}
                 >
