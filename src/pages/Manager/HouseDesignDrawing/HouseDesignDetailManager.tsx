@@ -18,34 +18,12 @@ import {
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
-
-interface VersionProps {
-  Id: string;
-  Name: string;
-  Version: number;
-  FileUrl: string;
-  InsDate: string;
-  PreviousDrawingId: string | null;
-  NamePrevious: string | null;
-  Note: string;
-}
-
-interface HouseDesignDetailProps {
-  Id: string;
-  ProjectId: string;
-  Name: string;
-  Step: number;
-  Status: string;
-  Type: string;
-  IsCompany: boolean;
-  InsDate: string;
-  Versions: VersionProps[];
-}
+import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
 
 const HouseDesignDetailManager: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
-    useState<HouseDesignDetailProps | null>(null);
+    useState<HouseDesignDetailResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -64,7 +42,16 @@ const HouseDesignDetailManager: React.FC = () => {
 
     try {
       const response = await getHouseDesignById(id);
-      setDesignDetail(response.data);
+      const designData = response.data;
+      setDesignDetail(designData);
+
+      // Set the default selected version based on VersionPresent
+      const defaultVersion = designData.Versions.find(
+        (version) => version.Version === designData.VersionPresent
+      );
+      if (defaultVersion) {
+        setSelectedVersionId(defaultVersion.Id);
+      }
     } catch (error) {
       console.error('Error fetching design detail:', error);
     } finally {
@@ -107,6 +94,9 @@ const HouseDesignDetailManager: React.FC = () => {
     return <div>Không tìm thấy chi tiết bản vẽ thiết kế.</div>;
   }
 
+  const isSelectable =
+    designDetail.Status === 'Reviewing' || designDetail.Status === 'Updated';
+
   return (
     <>
       <div className="p-4 mx-auto">
@@ -114,7 +104,7 @@ const HouseDesignDetailManager: React.FC = () => {
           <h2 className="text-3xl font-bold text-center">
             Chi tiết bản vẽ thiết kế
           </h2>
-          {(designDetail.Status === 'Reviewing' || designDetail.Status === 'Updated') && (
+          {isSelectable && (
             <div
               onMouseEnter={showMenu}
               onMouseLeave={hideMenu}
@@ -152,8 +142,8 @@ const HouseDesignDetailManager: React.FC = () => {
         </div>
         <WorkDetailStatusTracker currentStatus={designDetail.Status} />
         <div className="flex items-start">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 flex-none">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/5 flex-none">
+            <div className="flex flex-col gap-4">
               <p className="flex items-center">
                 <FiPenTool className="mr-2" />
                 {designDetail.Name}
@@ -173,7 +163,7 @@ const HouseDesignDetailManager: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
+          <div className="p-6 rounded-lg bg-white shadow-lg w-4/5 ml-4 flex-grow">
             <h3 className="text-xl font-bold">Phiên bản</h3>
             <table className="w-full table-auto mt-4">
               <thead>
@@ -191,7 +181,10 @@ const HouseDesignDetailManager: React.FC = () => {
                     Ngày tạo
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Ghi chú
+                    Ghi chú khách hàng
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Lý do
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
                 </tr>
@@ -200,7 +193,11 @@ const HouseDesignDetailManager: React.FC = () => {
                 {designDetail.Versions.map((version, index) => (
                   <tr
                     key={version.Id}
-                    onClick={() => setSelectedVersionId(version.Id)}
+                    onClick={() => {
+                      if (isSelectable) {
+                        setSelectedVersionId(version.Id);
+                      }
+                    }}
                     className={`cursor-pointer ${
                       selectedVersionId === version.Id
                         ? 'bg-primary text-white'
@@ -221,6 +218,9 @@ const HouseDesignDetailManager: React.FC = () => {
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       {version.Note || ''}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Reason || ''}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a
