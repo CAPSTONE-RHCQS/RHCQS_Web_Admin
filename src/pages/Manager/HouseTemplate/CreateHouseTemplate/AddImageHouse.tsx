@@ -11,7 +11,6 @@ import {
   HouseTemplateDetail as HouseTemplateDetailType,
 } from '../../../../types/HouseTemplateTypes';
 import Alert from '../../../../components/Alert';
-import { getCacheBustedUrl } from '../../../../utils/utils';
 
 const AddImageHouse: React.FC = () => {
   const location = useLocation();
