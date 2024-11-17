@@ -109,25 +109,11 @@ const ProjectDetailSalesStaff = () => {
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
 
-  const handleInitializeFinalQuotation = async () => {
-    try {
-      if (id) {
-        await postFinalQuotationByProjectId(id);
-        await fetchProjectDetail();
-        toast.success('Khởi tạo báo giá thành công!');
-      }
-    } catch (error) {
-      console.error('Error initializing final quotation:', error);
-      if (axios.isAxiosError(error) && error.response) {
-        const { StatusCode, Error } = error.response.data;
-        if (StatusCode === 404) {
-          toast.error(`Lỗi: ${Error}`);
-        } else {
-          toast.error('Đã xảy ra lỗi khi khởi tạo báo giá.');
-        }
-      } else {
-        toast.error('Đã xảy ra lỗi không xác định.');
-      }
+  const handleInitializeFinalQuotation = () => {
+    if (id) {
+      navigate(`/create-new-final-quotation-staff/${id}`);
+    } else {
+      toast.error('Không tìm thấy ID dự án.');
     }
   };
 

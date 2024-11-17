@@ -43,6 +43,7 @@ import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
 import ScrollToTop from './components/ScrollToTop';
+import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -273,6 +274,15 @@ function App() {
                 <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
                   <FinalQuotationDetailStaff />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-new-final-quotation-staff/:id"
+              element={
+                <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+                  <CreateNewFinalQuotationStaff />
                 </PrivateRoute>
               }
             />

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { FinalQuotationItem } from '../../../../types/FinalQuotationTypes';
-import { getConstructionByName } from '../../../../api/Construction/ConstructionApi';
-import { getLaborByName } from '../../../../api/Labor/Labor';
-import { getMaterialByName } from '../../../../api/Material/Material';
+import { FinalQuotationItem } from '../../../../../types/FinalQuotationTypes';
+import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
+import { getLaborByName } from '../../../../../api/Labor/Labor';
+import { getMaterialByName } from '../../../../../api/Material/Material';
 import {
   Construction,
   Labor,
   Material,
-} from '../../../../types/SearchContainNameTypes';
+} from '../../../../../types/SearchContainNameTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrash,

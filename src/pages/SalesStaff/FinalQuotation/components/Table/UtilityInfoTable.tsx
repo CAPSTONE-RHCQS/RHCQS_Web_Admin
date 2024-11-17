@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { UtilityInfo } from '../../../../types/FinalQuotationTypes';
-import { getUtilityByName } from '../../../../api/Utility/UtilityApi';
-import { Utility } from '../../../../types/SearchContainNameTypes';
+import { UtilityInfo } from '../../../../../types/FinalQuotationTypes';
+import { getUtilityByName } from '../../../../../api/Utility/UtilityApi';
+import { Utility } from '../../../../../types/SearchContainNameTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
