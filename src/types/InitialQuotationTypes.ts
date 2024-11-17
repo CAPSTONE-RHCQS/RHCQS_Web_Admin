@@ -30,16 +30,20 @@ export interface UtilityInfo {
 
 export interface PromotionInfo {
   Id: string;
-  Name: string;
-  Value: number;
+  Name: string | null;
+  Value: number | null;
 }
 
 export interface BatchPaymentInfo {
-  Id: string;
+  PaymentId: string;
+  Status: string;
   Description: string;
   Percents: string;
   Price: number;
   Unit: string;
+  InsDate: string | null;
+  PaymentDate: string | null;
+  PaymentPhase: string | null;
 }
 
 export interface InitialQuotationResponse {
@@ -47,12 +51,10 @@ export interface InitialQuotationResponse {
   AccountName: string;
   Address: string;
   ProjectId: string;
-  PromotionId: string;
-  PackageId: string;
   Area: number;
-  TimeProcessing: string | null;
-  TimeOthers: string | null;
-  OthersAgreement: string | null;
+  TimeProcessing: number;
+  TimeOthers: number;
+  OthersAgreement: string;
   InsDate: string;
   Status: string;
   Version: number;

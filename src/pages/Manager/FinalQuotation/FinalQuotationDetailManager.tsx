@@ -19,11 +19,13 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaCheck,
+  FaCommentDots,
 } from 'react-icons/fa';
 import UtilityInfoTable from './components/Table/UtilityInfoTable';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChatBox from '../../../components/ChatBox';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +36,7 @@ const FinalQuotationDetailManager = () => {
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [approvalType, setApprovalType] = useState('Approved');
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(true);
@@ -85,6 +88,10 @@ const FinalQuotationDetailManager = () => {
     }
   };
 
+  const toggleChat = () => {
+    setShowChat(!showChat);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -103,6 +110,23 @@ const FinalQuotationDetailManager = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      {!showChat && (
+        <button
+          onClick={toggleChat}
+          className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+        >
+          <FaCommentDots className="text-2xl" />
+        </button>
+      )}
+
+      {showChat && quotationDetail && (
+        <ChatBox
+          onClose={toggleChat}
+          accountName={quotationDetail.AccountName}
+          note={quotationDetail.Note}
+        />
+      )}
+
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
 
       <div className="flex justify-end space-x-2 mb-4">

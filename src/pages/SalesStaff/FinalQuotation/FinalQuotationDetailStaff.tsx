@@ -21,10 +21,12 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaPlus,
+  FaCommentDots,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
 import { handleSave, handleEditToggle } from './components/handlers';
+import ChatBox from '../../../components/ChatBox';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -32,6 +34,7 @@ const FinalQuotationDetailStaff = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
+  const [showChat, setShowChat] = useState(false);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
@@ -133,6 +136,10 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
+  const toggleChat = () => {
+    setShowChat(!showChat);
+  };
+
   if (!quotationDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -195,6 +202,22 @@ const FinalQuotationDetailStaff = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
+      {!showChat && (
+        <button
+          onClick={toggleChat}
+          className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+        >
+          <FaCommentDots className="text-2xl" />
+        </button>
+      )}
+
+      {showChat && quotationDetail && (
+        <ChatBox
+          onClose={toggleChat}
+          accountName={quotationDetail.AccountName}
+          note={quotationDetail.Note}
+        />
+      )}
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
 
       <ButtonGroup

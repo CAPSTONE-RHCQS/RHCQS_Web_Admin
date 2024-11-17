@@ -14,6 +14,7 @@ import {
 } from '../../../api/InitialQuotation/InitialQuotationApi';
 import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
+import ChatBox from '../../../components/ChatBox';
 
 interface TableRow {
   stt: number;
@@ -83,7 +84,7 @@ const InitialQuotationDetailManager = () => {
 
         let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
 
-        if (data.PromotionInfo) {
+        if (data.PromotionInfo && data.PromotionInfo.Value !== null) {
           const discountValue =
             giaTriHopDong * (data.PromotionInfo.Value / 100);
           giaTriHopDong -= discountValue;
@@ -214,6 +215,14 @@ const InitialQuotationDetailManager = () => {
           >
             <FaCommentDots className="text-2xl" />
           </button>
+        )}
+
+        {showChat && quotationData && (
+          <ChatBox
+            onClose={toggleChat}
+            accountName={quotationData.AccountName}
+            note={quotationData.Note}
+          />
         )}
 
         <InitialQuotationStatusTracker
