@@ -274,6 +274,7 @@ const ProjectDetail = () => {
         <Dialog open={showHistory} handler={handleCloseHistory}>
           <ContractHistoryTimeline onClose={handleCloseHistory} />
         </Dialog>
+
         {showChat && <ChatBox onClose={toggleChat} />}
         {!showChat && (
           <button
