@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
@@ -47,6 +46,7 @@ import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.ts
 // ... existing imports ...
 import ScrollToTop from './components/ScrollToTop';
 import SupplierList from './pages/Supplier/SupplierList.tsx';
+import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -98,7 +98,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Manager
+            {/* Manager Routes */}
             <Route
               path="/project-list-manager"
               element={
@@ -243,7 +243,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Sale Staff
+            {/* Sales Staff Routes */}
             <Route
               path="/project-list-staff"
               element={
@@ -295,6 +295,15 @@ function App() {
                 <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
                   <FinalQuotationDetailStaff />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/create-new-final-quotation-staff/:id"
+              element={
+                <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+                  <CreateNewFinalQuotationStaff />
                 </PrivateRoute>
               }
             />
@@ -361,7 +370,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Design staff
+            {/* Design Staff Routes */}
             <Route
               path="/house-design-list"
               element={

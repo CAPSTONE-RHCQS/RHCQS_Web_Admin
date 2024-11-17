@@ -12,25 +12,9 @@ import {
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from './components/Table/ProjectTableManager';
-import {
-  getProjectsList,
-  getProjectsListWithType,
-  getProjectsListByName,
-} from '../../../api/Project/ProjectApi';
+import { getProjectsByMultiFilter } from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
-
-const getStatusLabel = (status: string) => {
-  const statusLabelMap: { [key: string]: string } = {
-    Processing: 'Đang xử lý',
-    Designed: 'Đã thiết kế',
-    Reviewing: 'Chờ xác nhận',
-    'Signed Contract': 'Đã ký hợp đồng',
-    Finalized: 'Hoàn thành',
-    Ended: 'Đã chấm dứt',
-  };
-  return statusLabelMap[status] || 'Không xác định';
-};
 
 type Project = {
   id: string;
@@ -47,40 +31,45 @@ type SortKey = keyof Project;
 
 const ProjectListManager = () => {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [sortConfig, setSortConfig] = useState<{
-    key: SortKey;
-    direction: 'ascending' | 'descending';
-  } | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState('Tất cả');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProjects, setTotalProjects] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
+  const [status, setStatus] = useState('');
+  const [type, setType] = useState('');
+  const [code, setCode] = useState('');
+  const [phone, setPhone] = useState('');
+  const [sortConfig, setSortConfig] = useState<{
+    key: SortKey;
+    direction: 'ascending' | 'descending';
+  } | null>(null);
   const navigate = useNavigate();
 
-  const fetchProjects = async (page: number) => {
+  const columns: { key: SortKey; label: string }[] = [
+    { key: 'projectId', label: 'Mã Dự Án' },
+    { key: 'projectName', label: 'Tên Dự Án' },
+    { key: 'customerName', label: 'Khách Hàng' },
+    { key: 'category', label: 'Thể loại' },
+    { key: 'date', label: 'Ngày' },
+    { key: 'status', label: 'Trạng thái' },
+  ];
+
+  const fetchProjects = async () => {
     setLoading(true);
     setError(null);
     try {
-      let data;
-      if (searchTerm) {
-        data = await getProjectsListByName(searchTerm, page, 5);
-      } else if (activeTab === 'Tất cả') {
-        data = await getProjectsList(page, 5);
-      } else {
-        const statusMap: { [key: string]: string } = {
-          'Đang xử lý': 'Processing',
-          'Đã thiết kế': 'Designed',
-          'Chờ xác nhận': 'Reviewing',
-          'Đã ký hợp đồng': 'Signed Contract',
-          'Hoàn thành': 'Finalized',
-          'Đã chấm dứt': 'Ended',
-        };
-        const type = statusMap[activeTab];
-        data = await getProjectsListWithType(page, 5, type);
-      }
+      const data = await getProjectsByMultiFilter(
+        currentPage,
+        5,
+        startTime,
+        status,
+        type,
+        code,
+        phone,
+      );
 
       const formattedData = data.Items.map((item: any) => ({
         id: item.Id,
@@ -108,15 +97,12 @@ const ProjectListManager = () => {
   };
 
   useEffect(() => {
-    fetchProjects(currentPage);
-  }, [currentPage, activeTab, searchTerm]);
+    fetchProjects();
+  }, [currentPage]);
 
-  const handleRefresh = () => {
-    setLoading(true);
-    setProjects([]);
-    fetchProjects(currentPage).finally(() => {
-      setLoading(false);
-    });
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    fetchProjects();
   };
 
   const handleSort = (key: SortKey) => {
@@ -129,61 +115,23 @@ const ProjectListManager = () => {
       direction = 'descending';
     }
     setSortConfig({ key, direction });
-
-    const sortedProjects = [...projects].sort((a, b) => {
-      const aValue = a[key];
-      const bValue = b[key];
-
-      if (
-        key === 'date' &&
-        typeof aValue === 'string' &&
-        typeof bValue === 'string'
-      ) {
-        const dateA = new Date(aValue.split('.').reverse().join('-'));
-        const dateB = new Date(bValue.split('.').reverse().join('-'));
-        return direction === 'ascending'
-          ? dateA.getTime() - dateB.getTime()
-          : dateB.getTime() - dateA.getTime();
-      } else if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return direction === 'ascending'
-          ? aValue.localeCompare(bValue)
-          : bValue.localeCompare(aValue);
-      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return direction === 'ascending' ? aValue - bValue : bValue - aValue;
-      }
-      return 0;
-    });
-
-    setProjects(sortedProjects);
+    setProjects((prevProjects) =>
+      [...prevProjects].sort((a, b) => {
+        if (a[key] < b[key]) {
+          return direction === 'ascending' ? -1 : 1;
+        }
+        if (a[key] > b[key]) {
+          return direction === 'ascending' ? 1 : -1;
+        }
+        return 0;
+      }),
+    );
   };
 
-  const handleDelete = (id: string) => {
-    setProjects(projects.filter((project) => project.id !== id));
+  const handleViewDetails = (projectId: string) => {
+    console.log(`Viewing details for project with ID: ${projectId}`);
+    navigate(`/project-detail/${projectId}`);
   };
-
-  const handleViewDetails = (id: string) => {
-    navigate(`/project-detail/${id}`);
-    window.scrollTo(0, 0);
-  };
-
-  const columns: { key: SortKey; label: string }[] = [
-    { key: 'projectId', label: 'Mã Dự Án' },
-    { key: 'projectName', label: 'Tên Dự Án' },
-    { key: 'customerName', label: 'Khách Hàng' },
-    { key: 'category', label: 'Thể loại' },
-    { key: 'date', label: 'Ngày' },
-    { key: 'status', label: 'Trạng thái' },
-  ];
-
-  const tabs = [
-    { label: 'Tất cả', icon: <FaList /> },
-    { label: 'Đang xử lý', icon: <FaSpinner /> },
-    { label: 'Đã thiết kế', icon: <FaFileContract /> },
-    { label: 'Chờ xác nhận', icon: <FaHourglassHalf /> },
-    { label: 'Đã ký hợp đồng', icon: <FaClipboardCheck /> },
-    { label: 'Hoàn thành', icon: <FaCheck /> },
-    { label: 'Đã chấm dứt', icon: <FaBan /> },
-  ];
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -196,95 +144,116 @@ const ProjectListManager = () => {
       <Breadcrumb pageName="Danh sách dự án" />
 
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
-        <>
-          <div className="mb-5">
-            <ul className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {tabs.map((tab) => (
-                <li
-                  key={tab.label}
-                  className={`mr-1 ${
-                    activeTab === tab.label
-                      ? 'border-primary text-primary'
-                      : 'border-transparent text-gray-500'
-                  } transition-colors duration-300`}
-                >
-                  <button
-                    className="inline-block py-2 px-5 font-semibold flex items-center transition-transform duration-300 transform hover:scale-105"
-                    onClick={() => setActiveTab(tab.label)}
-                  >
-                    {tab.icon}
-                    <span className="ml-2">{tab.label}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
+        <div className="mb-5 flex flex-wrap items-end gap-4">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Từ ngày</label>
+            <input
+              type="date"
+              value={startTime}
+              onChange={(e) => setStartTime(e.target.value)}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+              placeholder="Chọn ngày"
+            />
           </div>
-          <div className="flex flex-col md:flex-row md:items-center mb-5">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Số điện thoại</label>
             <input
               type="text"
-              className="h-14 w-full md:w-96 pr-8 pl-5 rounded-lg z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
-              placeholder="Tìm kiếm..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+              placeholder="Nhập số điện thoại"
             />
           </div>
-          {error && (
-            <div className="text-red-500 mb-5">
-              {error}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Mã dự án</label>
+            <input
+              type="text"
+              value={code}
+              onChange={(e) => setCode(e.target.value)}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+              placeholder="Nhập mã dự án"
+            />
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Dịch vụ</label>
+            <select
+              value={type}
+              onChange={(e) => setType(e.target.value)}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+            >
+              <option value="">Tất cả</option>
+              <option value="TEMPLATE">Mẫu nhà</option>
+              <option value="FINISHED">Hoàn thiện</option>
+              <option value="ROUGH">Thô</option>
+              <option value="ALL">Thô & Hoàn thiện</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium">Trạng thái</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+            >
+              <option value="">Tất cả</option>
+              <option value="Processing">Đang xử lý</option>
+              <option value="Designed">Đã thiết kế</option>
+              <option value="Reviewing">Chờ xác nhận</option>
+              <option value="Signed Contract">Đã ký hợp đồng</option>
+              <option value="Finalized">Hoàn thành</option>
+              <option value="Ended">Đã chấm dứt</option>
+            </select>
+          </div>
+          <div className="flex">
+            <button
+              onClick={handleApplyFilters}
+              className="bg-primary text-white px-4 py-2 rounded-lg shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+            >
+              Tìm kiếm
+            </button>
+          </div>
+        </div>
+
+        <div className="max-w-full overflow-x-auto">
+          {loading ? (
+            <div className="flex justify-center items-center h-64">
+              <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
+            </div>
+          ) : projects.length > 0 ? (
+            <ProjectTableManager
+              data={projects}
+              columns={columns}
+              handleSort={handleSort}
+              handleViewDetails={handleViewDetails}
+              isLoading={loading}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+              <FaBoxOpen className="mx-auto mb-4 text-4xl text-primary" />
+              Không có dữ liệu để hiển thị.
             </div>
           )}
-          <div className="flex justify-between items-center mb-5">
-            <div className="flex items-center">
-              <span className="text-lg text-black dark:text-white">
-                Tổng số Dự án: {totalProjects}
-              </span>
-            </div>
-            <ArrowPathIcon
-              onClick={handleRefresh}
-              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
-            />
-          </div>
-          <div className="max-w-full overflow-x-auto">
-            {loading ? (
-              <div className="flex justify-center items-center h-64">
-                <ClipLoader size={50} color={'#5BABAC'} loading={loading} />
-              </div>
-            ) : projects.length > 0 ? (
-              <ProjectTableManager
-                data={projects}
-                columns={columns}
-                handleSort={handleSort}
-                handleDelete={handleDelete}
-                handleViewDetails={handleViewDetails}
-                isLoading={loading}
-              />
-            ) : (
-              <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-                <FaBoxOpen className="mx-auto mb-4 text-4xl text-primary" />
-                Không có dữ liệu để hiển thị.
-              </div>
-            )}
-          </div>
-          <div className="flex justify-between mt-5">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
-            >
-              Trang trước
-            </button>
-            <span>
-              Trang {currentPage} / {totalPages}
-            </span>
-            <button
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
-            >
-              Trang sau
-            </button>
-          </div>
-        </>
+        </div>
+        <div className="flex justify-between mt-5">
+          <button
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Trang trước
+          </button>
+          <span>
+            Trang {currentPage} / {totalPages}
+          </span>
+          <button
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
+          >
+            Trang sau
+          </button>
+        </div>
       </div>
     </>
   );

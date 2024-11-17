@@ -31,3 +31,25 @@ export const getContractDesignById = async (contractId: string) => {
     throw error;
   }
 };
+
+export const signContractCompletion = async (contractId: string, file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append('files', file, file.name);
+
+    const response = await requestWebRHCQS.put(
+      `/contract/construction/sign/completed?contractId=${contractId}`,
+      formData,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error signing contract completion:', error);
+    throw error;
+  }
+};

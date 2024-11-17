@@ -61,7 +61,7 @@ export async function approveFinalQuotation(
 
 export const postFinalQuotationByProjectId = async (
   projectId: string,
-): Promise<void> => {
+): Promise<FinalQuotationResponse> => {
   try {
     const response = await requestWebRHCQS.post(
       `/quotation/final/projectid`,
@@ -73,7 +73,7 @@ export const postFinalQuotationByProjectId = async (
         },
       },
     );
-    console.log('Response:', response.data);
+    return response.data;
   } catch (error) {
     console.error('Error posting final quotation by project ID:', error);
     throw error;

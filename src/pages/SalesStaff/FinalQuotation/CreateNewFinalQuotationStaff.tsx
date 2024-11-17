@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { getFinalQuotation } from '../../../api/FinalQuotation/FinalQuotationApi';
+import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
 import {
   FinalQuotationDetail as FinalQuotationDetailType,
   UtilityInfo,
@@ -23,27 +23,27 @@ import {
   FaPlus,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
-import ButtonGroup from './components/Button/ButtonGroup';
-import { handleSave, handleEditToggle } from './components/handlers';
-import ChatBox from '../../../components/ChatBox';
+import CreateNewButtonGroup from './components/Button/CreateNewButtonGroup';
+import { hanldCreateNew, handleEditToggle } from './components/handlers';
 
-const FinalQuotationDetailStaff = () => {
+const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
+  const projectId = id || '';
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
-  const [showChat, setShowChat] = useState(false);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
       if (id) {
         try {
-          const data = await getFinalQuotation(id);
+          const data = await postFinalQuotationByProjectId(id);
           setQuotationDetail(data);
         } catch (error) {
           console.error('Error fetching quotation detail:', error);
@@ -133,10 +133,6 @@ const FinalQuotationDetailStaff = () => {
       setShowDetailedItems(true);
       setShowUtilities(true);
     }
-  };
-
-  const toggleChat = () => {
-    setShowChat(!showChat);
   };
 
   if (!quotationDetail) {
@@ -235,20 +231,11 @@ const FinalQuotationDetailStaff = () => {
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {showChat && quotationDetail && (
-        <ChatBox
-          onClose={toggleChat}
-          accountName={quotationDetail.AccountName}
-          note={quotationDetail.Note}
-        />
-      )}
-      <FinalQuotationStatus currentStatus={quotationDetail.Status} />
-
-      <ButtonGroup
+      <CreateNewButtonGroup
         isEditing={isEditing}
         isSaving={isSaving}
-        handleSave={() =>
-          handleSave(quotationDetail, setIsEditing, setIsSaving)
+        hanldCreateNew={() =>
+          hanldCreateNew(quotationDetail, setIsEditing, setIsSaving, navigate)
         }
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
@@ -456,7 +443,7 @@ const FinalQuotationDetailStaff = () => {
           <BatchPaymentTable
             payments={quotationDetail.BatchPaymentInfos}
             isEditing={isEditing}
-            totalPrice={quotationDetail.TotalPrice}
+            totalPrice={calculateTotalPrice()}
             onPaymentsChange={handleBatchPaymentsChange}
           />
         )}
@@ -465,4 +452,4 @@ const FinalQuotationDetailStaff = () => {
   );
 };
 
-export default FinalQuotationDetailStaff;
+export default CreateNewFinalQuotationStaff;

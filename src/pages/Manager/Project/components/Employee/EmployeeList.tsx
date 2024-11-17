@@ -149,7 +149,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           <FaArrowLeft />
         </button>
         <span className="text-gray-700">
-          Page {page} of {totalPages}
+          {page} / {totalPages}
         </span>
         <button
           className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
