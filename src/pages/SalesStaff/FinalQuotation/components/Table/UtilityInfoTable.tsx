@@ -66,20 +66,24 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
     }
   };
 
+  const calculateTotalPrice = () => {
+    return editableUtilities.reduce((total, util) => total + (util.Price || 0), 0);
+  };
+
   return (
     <div className="overflow-x-auto mb-4">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
+      <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+        <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center">Tên</th>
-            <th className="px-4 py-2 border text-center">Hệ số</th>
-            <th className="px-4 py-2 border text-center">Giá</th>
+            <th className="px-4 py-2 border text-center font-semibold">Tên</th>
+            <th className="px-4 py-2 border text-center font-semibold">Hệ số</th>
+            <th className="px-4 py-2 border text-center font-semibold">Giá</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
           {editableUtilities.map((util, index) => (
-            <tr key={util.Id}>
+            <tr key={util.Id} className="hover:bg-gray-50">
               <td className="px-4 py-2 border text-left">
                 <input
                   type="text"
@@ -87,11 +91,11 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Name', e.target.value)
                   }
-                  className="w-full text-left"
+                  className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
                 {selectedUtilityIndex === index && searchResults.length > 0 && (
-                  <ul className="bg-white border border-gray-300 mt-1">
+                  <ul className="bg-white border border-gray-300 mt-1 rounded-md shadow-lg">
                     {searchResults.map((result, idx) => (
                       <li
                         key={`${result.UtilityItemId}-${idx}`}
@@ -129,6 +133,13 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
               )}
             </tr>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={2} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateTotalPrice().toLocaleString()} VNĐ
+            </td>
+            {isEditing && <td className="px-4 py-2 border text-center"></td>}
+          </tr>
         </tbody>
       </table>
     </div>

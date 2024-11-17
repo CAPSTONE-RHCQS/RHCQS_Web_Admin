@@ -21,7 +21,6 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaPlus,
-  FaCommentDots,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
@@ -200,17 +199,42 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
+  const calculateTotalPrice = () => {
+    const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
+      (total, item) => {
+        return (
+          total +
+          item.QuotationItems.reduce((subTotal, qItem) => {
+            return (
+              subTotal +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0)
+            );
+          }, 0)
+        );
+      },
+      0,
+    );
+
+    const totalUtilities = quotationDetail.UtilityInfos.reduce(
+      (total, util) => {
+        return total + (util.Price || 0);
+      },
+      0,
+    );
+
+    const totalEquipment = quotationDetail.EquipmentItems.reduce(
+      (total, item) => {
+        return total + (item.Quantity * item.UnitOfMaterial || 0);
+      },
+      0,
+    );
+
+    return totalFinalQuotation + totalUtilities + totalEquipment;
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {!showChat && (
-        <button
-          onClick={toggleChat}
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-        >
-          <FaCommentDots className="text-2xl" />
-        </button>
-      )}
-
       {showChat && quotationDetail && (
         <ChatBox
           onClose={toggleChat}
@@ -264,7 +288,7 @@ const FinalQuotationDetailStaff = () => {
           <FaMoneyBillWave className="mr-2 text-secondary" />
           <span className="font-semibold">Tổng chi phí:</span>
           <span className="text-gray-700 ml-2">
-            {quotationDetail.TotalPrice.toLocaleString()} VNĐ
+            {calculateTotalPrice().toLocaleString()} VNĐ
           </span>
         </div>
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
 import {
@@ -28,6 +28,7 @@ import { hanldCreateNew, handleEditToggle } from './components/handlers';
 
 const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
+  const projectId = id || '';
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [quotationDetail, setQuotationDetail] =
@@ -36,6 +37,7 @@ const CreateNewFinalQuotationStaff = () => {
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -193,13 +195,47 @@ const CreateNewFinalQuotationStaff = () => {
     }
   };
 
+  const calculateTotalPrice = () => {
+    const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
+      (total, item) => {
+        return (
+          total +
+          item.QuotationItems.reduce((subTotal, qItem) => {
+            return (
+              subTotal +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0)
+            );
+          }, 0)
+        );
+      },
+      0,
+    );
+
+    const totalUtilities = quotationDetail.UtilityInfos.reduce(
+      (total, util) => {
+        return total + (util.Price || 0);
+      },
+      0,
+    );
+
+    const totalEquipment = quotationDetail.EquipmentItems.reduce(
+      (total, item) => {
+        return total + (item.Quantity * item.UnitOfMaterial || 0);
+      },
+      0,
+    );
+
+    return totalFinalQuotation + totalUtilities + totalEquipment;
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <CreateNewButtonGroup
         isEditing={isEditing}
         isSaving={isSaving}
         hanldCreateNew={() =>
-          hanldCreateNew(quotationDetail, setIsEditing, setIsSaving)
+          hanldCreateNew(quotationDetail, setIsEditing, setIsSaving, navigate)
         }
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
@@ -239,7 +275,7 @@ const CreateNewFinalQuotationStaff = () => {
           <FaMoneyBillWave className="mr-2 text-secondary" />
           <span className="font-semibold">Tổng chi phí:</span>
           <span className="text-gray-700 ml-2">
-            {quotationDetail.TotalPrice.toLocaleString()} VNĐ
+            {calculateTotalPrice().toLocaleString()} VNĐ
           </span>
         </div>
 
@@ -407,7 +443,7 @@ const CreateNewFinalQuotationStaff = () => {
           <BatchPaymentTable
             payments={quotationDetail.BatchPaymentInfos}
             isEditing={isEditing}
-            totalPrice={quotationDetail.TotalPrice}
+            totalPrice={calculateTotalPrice()}
             onPaymentsChange={handleBatchPaymentsChange}
           />
         )}

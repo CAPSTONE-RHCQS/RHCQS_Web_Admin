@@ -36,25 +36,31 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
     onPaymentsChange(updatedPayments);
   };
 
+  const calculateTotalPercents = () => {
+    return editedPayments.reduce((total, payment) => total + parseFloat(payment.Percents), 0);
+  };
+
+  const calculateTotalPrice = () => {
+    return editedPayments.reduce((total, payment) => total + ((parseFloat(payment.Percents) / 100) * totalPrice), 0);
+  };
+
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
+      <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+        <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center">Mô tả</th>
-            <th className="px-4 py-2 border text-center">Phần trăm</th>
-            <th className="px-4 py-2 border text-center">Giá</th>
-            <th className="px-4 py-2 border text-center">Đơn vị</th>
-            <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">
-              Giai đoạn thanh toán
-            </th>
+            <th className="px-4 py-2 border text-center font-semibold">Mô tả</th>
+            <th className="px-4 py-2 border text-center font-semibold">Phần trăm</th>
+            <th className="px-4 py-2 border text-center font-semibold">Giá</th>
+            <th className="px-4 py-2 border text-center font-semibold">Đơn vị</th>
+            <th className="px-4 py-2 border text-center font-semibold">Ngày thanh toán</th>
+            <th className="px-4 py-2 border text-center font-semibold">Giai đoạn thanh toán</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
           {editedPayments.map((payment, index) => (
-            <tr key={payment.PaymentId}>
+            <tr key={payment.PaymentId} className="hover:bg-gray-50">
               <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
@@ -66,7 +72,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       setEditedPayments(updatedPayments);
                       onPaymentsChange(updatedPayments);
                     }}
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
                   payment.Description
@@ -80,14 +86,14 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     onChange={(e) =>
                       handlePercentChange(index, parseFloat(e.target.value))
                     }
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
                   `${payment.Percents}%`
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
-                {payment.Price.toLocaleString()} {payment.Unit}
+                {((parseFloat(payment.Percents) / 100) * totalPrice).toLocaleString()} {payment.Unit}
               </td>
               <td className="px-4 py-2 border text-center">{payment.Unit}</td>
               <td className="px-4 py-2 border text-center">
@@ -105,7 +111,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       setEditedPayments(updatedPayments);
                       onPaymentsChange(updatedPayments);
                     }}
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
                   new Date(payment.PaymentDate).toLocaleDateString()
@@ -126,7 +132,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       setEditedPayments(updatedPayments);
                       onPaymentsChange(updatedPayments);
                     }}
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
                   new Date(payment.PaymentPhase).toLocaleDateString()
@@ -144,6 +150,16 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               )}
             </tr>
           ))}
+          <tr className="bg-gray-200">
+            <td className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateTotalPercents()}%
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateTotalPrice().toLocaleString()} {editedPayments[0]?.Unit || ''}
+            </td>
+            <td colSpan={4} className="px-4 py-2 border text-center"></td>
+          </tr>
         </tbody>
       </table>
     </div>

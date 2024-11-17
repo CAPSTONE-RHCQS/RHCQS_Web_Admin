@@ -77,7 +77,8 @@ export const hanldCreateNew = async (
   quotationDetail: FinalQuotationDetailType | null,
   setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
-) => {
+  navigate: (path: string) => void,
+): Promise<boolean> => {
   if (quotationDetail) {
     const requestData: FinalQuotationRequest = {
       projectId: quotationDetail.ProjectId,
@@ -119,7 +120,9 @@ export const hanldCreateNew = async (
     try {
       setIsSaving(true);
       await updateFinalQuotation(requestData);
-      setIsEditing(false);
+      toast.success('Khởi tạo báo giá thành công!');
+      navigate(`/project-detail-staff/${quotationDetail.ProjectId}`);
+      return true;
     } catch (error) {
       console.error('Lỗi khi khi khởi tạo báo giá:', error);
       if (axios.isAxiosError(error)) {
@@ -135,10 +138,12 @@ export const hanldCreateNew = async (
       } else {
         toast.error('Đã xảy ra lỗi không xác định.');
       }
+      return false;
     } finally {
       setIsSaving(false);
     }
   }
+  return false;
 };
 
 export const handleEditToggle = (

@@ -1,7 +1,4 @@
 import React from 'react';
-import { FaDownload, FaShareAlt } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 interface CreateNewButtonGroupProps {
   isEditing: boolean;
@@ -17,17 +14,7 @@ const CreateNewButtonGroup: React.FC<CreateNewButtonGroupProps> = ({
   isSaving,
   hanldCreateNew,
   handleEditToggle,
-  handleDownload,
-  handleShare,
 }) => {
-  const navigate = useNavigate();
-
-  const handleSaveAndNavigate = () => {
-    hanldCreateNew();
-    toast.success('Khởi tạo báo giá thành công');
-    navigate(-1);
-  };
-
   return (
     <div className="flex justify-end space-x-2">
       <button
@@ -39,7 +26,7 @@ const CreateNewButtonGroup: React.FC<CreateNewButtonGroupProps> = ({
       </button>
       {isEditing && (
         <button
-          onClick={handleSaveAndNavigate}
+          onClick={hanldCreateNew}
           disabled={isSaving}
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
         >
