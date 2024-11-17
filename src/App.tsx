@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
@@ -42,7 +41,11 @@ import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDe
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
+import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.tsx';
+
+// ... existing imports ...
 import ScrollToTop from './components/ScrollToTop';
+import SupplierList from './pages/Supplier/SupplierList.tsx';
 import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
 
 function App() {
@@ -95,7 +98,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Manager
+            {/* Manager Routes */}
             <Route
               path="/project-list-manager"
               element={
@@ -178,6 +181,24 @@ function App() {
               }
             />
             <Route
+              path="/material-section-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
+                  <MaterialSectionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/supplier-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
+                  <SupplierList />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/account-list-manager"
               element={
                 <PrivateRoute allowedRoles={['Manager']}>
@@ -222,7 +243,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Sale Staff
+            {/* Sales Staff Routes */}
             <Route
               path="/project-list-staff"
               element={
@@ -349,7 +370,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Design staff
+            {/* Design Staff Routes */}
             <Route
               path="/house-design-list"
               element={
