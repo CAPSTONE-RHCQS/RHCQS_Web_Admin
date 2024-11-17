@@ -60,7 +60,7 @@ const ProjectDetail = () => {
     [key: string]: any;
   }>({});
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
-  const [showEmployeeListModal, setShowEmployeeListModal] = useState(false); // Thêm trạng thái mới
+  const [showEmployeeListModal, setShowEmployeeListModal] = useState(false);
 
   const fetchProjectDetail = async () => {
     if (projectId) {
@@ -115,7 +115,11 @@ const ProjectDetail = () => {
     if (item === 'history') {
       setShowHistory(true);
     } else if (item === 'assign') {
-      setShowEmployeeListModal(true);
+      if (projectDetail.StaffName) {
+        toast.error('Dự án đã có nhân viên đảm nhận.');
+      } else {
+        setShowEmployeeListModal(true);
+      }
     }
   };
 
@@ -200,6 +204,14 @@ const ProjectDetail = () => {
     console.log('Refreshing project detail...');
   };
 
+  const isInitialInfoFinalized = projectDetail.InitialInfo?.some(
+    (info) => info.Status === 'Finalized',
+  );
+  const hasDesignContract = projectDetail.ContractInfo?.some(
+    (contract) =>
+      contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
+  );
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -227,13 +239,13 @@ const ProjectDetail = () => {
                     <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
                   </a>
-                  <Link
-                    to={`/editquote`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaEdit className="mr-2" />
-                    Chỉnh sửa hợp đồng
-                  </Link>
+                  {/* <Link
+                      to={`/editquote`}
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      <FaEdit className="mr-2" />
+                      Chỉnh sửa hợp đồng
+                    </Link> */}
                   <a
                     href="#"
                     onClick={() => handleMenuItemClick('assign')}
@@ -383,12 +395,14 @@ const ProjectDetail = () => {
         </h3>
         {projectDetail.HouseDesignDrawingInfo &&
         projectDetail.HouseDesignDrawingInfo.length === 0 &&
-        projectDetail.StaffName ? (
+        projectDetail.StaffName &&
+        isInitialInfoFinalized &&
+        hasDesignContract ? (
           <button
             onClick={() => setIsAssignModalOpen(true)}
-            className="bg-blue-500 text-white p-2 rounded"
+            className="bg-primaryGreenButton text-white p-2 rounded"
           >
-            Phân công
+            Phân công nhân viên
           </button>
         ) : (
           projectDetail.HouseDesignDrawingInfo &&

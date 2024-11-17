@@ -89,6 +89,13 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
     }
   };
 
+  const roleMapping: { [key: string]: { name: string; color: string } } = {
+    '9959ce96-de26-40a7-b8a7-28a704062e89': { name: 'Sales Staff', color: 'bg-blue-500' },
+    '7af0d75e-1157-48b4-899d-3196deed5fad': { name: 'Design Staff', color: 'bg-pink-500' },
+    'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': { name: 'Manager', color: 'bg-green-500' },
+    '789dd57d-0f75-40d1-8366-ef6ab582efc8': { name: 'Customer', color: 'bg-yellow-500' },
+  };
+
   return (
     <>
       <div
@@ -98,7 +105,7 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
         <div className="relative bg-white p-6 rounded-lg shadow-lg w-1/2">
           <button
             onClick={onClose}
-            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -115,41 +122,11 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
               />
             </svg>
           </button>
-          <h2 className="text-xl font-bold mb-4">Thông tin chi tiết</h2>
+          <h2 className="text-xl font-bold mb-4">Chi tiết Hồ sơ</h2>
           {isEditing ? (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label>
-                  <strong>ID:</strong>
-                  <input
-                    type="text"
-                    name="Id"
-                    value={editedAccount.Id}
-                    onChange={handleInputChange}
-                    className="w-full border rounded p-2"
-                    readOnly
-                  />
-                </label>
-                <label>
-                  <strong>Role ID:</strong>
-                  <input
-                    type="text"
-                    name="RoleId"
-                    value={editedAccount.RoleId}
-                    onChange={handleInputChange}
-                    className="w-full border rounded p-2"
-                  />
-                </label>
-                <label>
-                  <strong>Email:</strong>
-                  <input
-                    type="text"
-                    name="Email"
-                    value={editedAccount.Email}
-                    onChange={handleInputChange}
-                    className="w-full border rounded p-2"
-                  />
-                </label>
+                <h3 className="font-semibold mb-2">Thông tin cá nhân</h3>
                 <label>
                   <strong>Username:</strong>
                   <input
@@ -157,48 +134,59 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                     name="Username"
                     value={editedAccount.Username}
                     onChange={handleInputChange}
+                    placeholder="Nhập tên người dùng"
                     className="w-full border rounded p-2"
                   />
                 </label>
-              </div>
-              <div>
                 <label>
-                  <strong>Image URL:</strong>
+                  <strong>Ảnh đại diện:</strong>
                   <input
                     type="text"
                     name="ImageUrl"
                     value={editedAccount.ImageUrl}
                     onChange={handleInputChange}
+                    placeholder="Nhập URL ảnh đại diện"
                     className="w-full border rounded p-2"
                   />
                 </label>
                 <label>
-                  <strong>Phone Number:</strong>
-                  <input
-                    type="text"
-                    name="PhoneNumber"
-                    value={editedAccount.PhoneNumber || ''}
-                    onChange={handleInputChange}
-                    className="w-full border rounded p-2"
-                  />
+                  <strong>Vai trò:</strong>
+                  <div className={`p-2 rounded ${roleMapping[editedAccount.RoleId]?.color || 'bg-gray-500'}`}>
+                    {roleMapping[editedAccount.RoleId]?.name || 'Unknown Role'}
+                  </div>
                 </label>
                 <label>
-                  <strong>Date of Birth:</strong>
+                  <strong>Ngày sinh:</strong>
                   <input
-                    type="text"
+                    type="date"
                     name="DateOfBirth"
                     value={editedAccount.DateOfBirth || ''}
                     onChange={handleInputChange}
                     className="w-full border rounded p-2"
                   />
                 </label>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Thông tin liên hệ</h3>
                 <label>
-                  <strong>Password:</strong>
+                  <strong>Email:</strong>
                   <input
-                    type="password"
-                    name="PasswordHash"
-                    value={editedAccount.PasswordHash}
+                    type="text"
+                    name="Email"
+                    value={editedAccount.Email}
                     onChange={handleInputChange}
+                    placeholder="Nhập email"
+                    className="w-full border rounded p-2"
+                  />
+                </label>
+                <label>
+                  <strong>Số điện thoại:</strong>
+                  <input
+                    type="text"
+                    name="PhoneNumber"
+                    value={editedAccount.PhoneNumber || ''}
+                    onChange={handleInputChange}
+                    placeholder="Nhập số điện thoại"
                     className="w-full border rounded p-2"
                   />
                 </label>
@@ -207,22 +195,12 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
           ) : (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <p>
-                  <strong>ID:</strong> {account.Id}
-                </p>
-                <p>
-                  <strong>Role ID:</strong> {account.RoleId}
-                </p>
-                <p>
-                  <strong>Email:</strong> {account.Email}
-                </p>
+                <h3 className="font-semibold mb-2">Thông tin cá nhân</h3>
                 <p>
                   <strong>Username:</strong> {account.Username}
                 </p>
-              </div>
-              <div>
                 <p>
-                  <strong>Image URL:</strong>
+                  <strong>Ảnh đại diện:</strong>
                 </p>
                 <img
                   src={account.ImageUrl}
@@ -230,21 +208,34 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                   className="w-20 h-20 rounded-full"
                 />
                 <p>
-                  <strong>Phone Number:</strong> {account.PhoneNumber || 'N/A'}
+                  <strong>Vai trò:</strong>
+                  <span className={`p-2 rounded ${roleMapping[account.RoleId]?.color || 'bg-gray-500'}`}>
+                    {roleMapping[account.RoleId]?.name || 'Unknown Role'}
+                  </span>
                 </p>
                 <p>
-                  <strong>Date of Birth:</strong> {account.DateOfBirth || 'N/A'}
+                  <strong>Ngày sinh:</strong> {account.DateOfBirth || 'N/A'}
+                </p>
+              </div>
+              <div>
+                <h3 className="font-semibold mb-2">Thông tin liên hệ</h3>
+                <p>
+                  <strong>Email:</strong> {account.Email}
+                </p>
+                <p>
+                  <strong>Số điện thoại:</strong> {account.PhoneNumber || 'N/A'}
                 </p>
               </div>
             </div>
           )}
           {error && <p className="text-red-500">{error}</p>}
           <div className="mt-4">
+            <h3 className="font-semibold mb-2">Thông tin tài khoản</h3>
             <p>
-              <strong>Insert Date:</strong> {account.InsDate}
+              <strong>Ngày tạo:</strong> {account.InsDate}
             </p>
             <p>
-              <strong>Update Date:</strong> {account.UpsDate}
+              <strong>Ngày cập nhật:</strong> {account.UpsDate}
             </p>
           </div>
           {isEditing ? (
@@ -252,13 +243,13 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
               <button
                 onClick={handleSave}
                 disabled={isSaving}
-                className="px-4 py-2 bg-blue-500 text-white rounded"
+                className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
               >
                 {isSaving ? 'Đang lưu...' : 'Lưu'}
               </button>
               <button
                 onClick={() => setIsEditing(false)}
-                className="px-4 py-2 bg-gray-500 text-white rounded"
+                className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
               >
                 Hủy
               </button>
@@ -267,13 +258,13 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
             <div className="mt-4 flex justify-end space-x-2">
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-green-500 text-white rounded"
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
               >
                 Chỉnh sửa
               </button>
               <button
                 onClick={() => setShowRejectionModal(true)}
-                className="px-4 py-2 bg-red-500 text-white rounded"
+                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
               >
                 Khóa tài khoản
               </button>

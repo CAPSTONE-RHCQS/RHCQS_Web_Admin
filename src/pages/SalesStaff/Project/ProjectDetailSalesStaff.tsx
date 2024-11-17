@@ -32,6 +32,10 @@ import ContractTable from './components/Table/ContractTable';
 import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import {
+  isAnyInitialInfoFinalized,
+  isAnyFinalInfoFinalized,
+} from '../../../utils/projectUtils';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -127,6 +131,29 @@ const ProjectDetailSalesStaff = () => {
     }
   };
 
+  const handleCreateContractDesign = () => {
+    if (isAnyInitialInfoFinalized(projectDetail.InitialInfo)) {
+      navigate(`/create-contract-design/${id}`);
+    } else {
+      toast.error(
+        'Chưa hoàn thành báo giá sơ bộ. Không thể tạo hợp đồng thiết kế.',
+      );
+      setShowInitialInfo(true);
+    }
+  };
+
+  const handleCreateConstructionContract = () => {
+    if (isAnyFinalInfoFinalized(projectDetail.FinalInfo)) {
+      navigate(`/create-construction-contract/${id}`);
+    } else {
+      toast.error(
+        'Chưa hoàn thành báo giá chi tiết. Không thể tạo hợp đồng thi công.',
+      );
+    }
+  };
+
+  const isFinalized = isAnyInitialInfoFinalized(projectDetail.InitialInfo);
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -161,20 +188,20 @@ const ProjectDetailSalesStaff = () => {
                     <FaEdit className="mr-2" />
                     Chỉnh sửa hợp đồng
                   </Link>
-                  <Link
-                    to={`/create-contract-design/${id}`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  <div
+                    onClick={handleCreateContractDesign}
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
                   >
                     <FaFileContract className="mr-2" />
                     Tạo hợp đồng thiết kế
-                  </Link>
-                  <Link
-                    to={`/create-construction-contract/${id}`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  </div>
+                  <div
+                    onClick={handleCreateConstructionContract}
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
                   >
                     <FaBuilding className="mr-2" />
-                    Tạo hợp đồng xây dựng
-                  </Link>
+                    Tạo hợp đồng thi công
+                  </div>
                 </div>
               </div>
             )}
@@ -292,7 +319,7 @@ const ProjectDetailSalesStaff = () => {
               className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 mb-4"
               onClick={() => navigate(`/create-initial-quote/${id}`)}
             >
-              Khởi tạo
+              Khởi tạo báo giá
             </button>
           )}
         {projectDetail.InitialInfo &&
@@ -338,12 +365,13 @@ const ProjectDetailSalesStaff = () => {
             ))}
         </h3>
         {projectDetail.FinalInfo &&
-          projectDetail.FinalInfo.length === 0 && (
+          projectDetail.FinalInfo.length === 0 &&
+          isFinalized && (
             <button
               className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 mb-4"
               onClick={handleInitializeFinalQuotation}
             >
-              Khởi tạo
+              Khởi tạo báo giá
             </button>
           )}
         {projectDetail.FinalInfo &&
