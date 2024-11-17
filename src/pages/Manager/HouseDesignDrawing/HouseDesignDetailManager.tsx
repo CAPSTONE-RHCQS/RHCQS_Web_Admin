@@ -114,7 +114,7 @@ const HouseDesignDetailManager: React.FC = () => {
           <h2 className="text-3xl font-bold text-center">
             Chi tiết bản vẽ thiết kế
           </h2>
-          {designDetail.Status === 'Reviewing' && (
+          {(designDetail.Status === 'Reviewing' || designDetail.Status === 'Updated') && (
             <div
               onMouseEnter={showMenu}
               onMouseLeave={hideMenu}

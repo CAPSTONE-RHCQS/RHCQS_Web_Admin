@@ -262,7 +262,11 @@ const ProjectDetail = () => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      setIsModalOpen(true);
+                      if (projectDetail.Status === 'Ended') {
+                        toast.error('Dự án đã được chấm dứt.');
+                      } else {
+                        setIsModalOpen(true);
+                      }
                     }}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
