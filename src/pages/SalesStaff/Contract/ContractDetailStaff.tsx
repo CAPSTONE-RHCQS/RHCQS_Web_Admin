@@ -20,7 +20,7 @@ import {
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 
-const ContractDetail = () => {
+const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
   const [contractDetail, setContractDetail] = useState<any | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -207,4 +207,4 @@ const ContractDetail = () => {
   );
 };
 
-export default ContractDetail;
+export default ContractDetailStaff;

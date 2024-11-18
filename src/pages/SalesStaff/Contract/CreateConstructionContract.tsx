@@ -38,18 +38,19 @@ const CreateConstructionContract = () => {
     try {
       const response = await postConstructionContract(requestBody);
       console.log('Contract created successfully:', response);
-      toast.success('Tạo hợp đồng xây dựng thành công!');
+      toast.success('Tạo hợp đồng thi công thành công!');
       navigate(`/project-detail-staff/${projectId}`);
     } catch (error: any) {
       console.error('Error creating contract:', error);
-      const errorMessage = error.response?.data?.Error || 'Có lỗi xảy ra khi tạo hợp đồng.';
+      const errorMessage =
+        error.response?.data?.Error || 'Có lỗi xảy ra khi tạo hợp đồng.';
       toast.error(`Lỗi: ${errorMessage}`);
     }
   };
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-4">Tạo hợp đồng xây dựng</h2>
+      <h2 className="text-2xl font-bold mb-4">Tạo hợp đồng thi công</h2>
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
