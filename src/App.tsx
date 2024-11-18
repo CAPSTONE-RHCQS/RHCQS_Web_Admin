@@ -15,7 +15,7 @@ import PostList from './pages/BlogPost/PostList';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
 import AccountList from './pages/Manager/Account/AccountList.tsx';
-import ProjectDetail from './pages/Manager/Project/ProjectDetail';
+import ProjectDetailManager from './pages/Manager/Project/ProjectDetailManager.tsx';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
@@ -210,11 +210,11 @@ function App() {
               }
             />
             <Route
-              path="/project-detail/:id"
+              path="/project-detail-manager/:id"
               element={
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectDetail />
+                  <ProjectDetailManager />
                 </PrivateRoute>
               }
             />

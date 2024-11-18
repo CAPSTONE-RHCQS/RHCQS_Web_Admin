@@ -161,6 +161,7 @@ export const getProjectDetail = async (id: string) => {
 
 export const assignProject = async (accountId: string, projectId: string) => {
   try {
+    console.log('Assigning project', accountId, projectId);
     const response = await requestWebRHCQS.put(
       '/project/assign',
       {
@@ -208,7 +209,7 @@ export const getProjectsByMultiFilter = async (
   status: string,
   type: string,
   code: string,
-  phone: string
+  phone: string,
 ): Promise<ProjectListResponse> => {
   try {
     const response = await requestWebRHCQS.get('/project/multi-filter', {

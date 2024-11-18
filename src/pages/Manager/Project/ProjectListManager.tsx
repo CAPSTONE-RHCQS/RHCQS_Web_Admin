@@ -129,8 +129,7 @@ const ProjectListManager = () => {
   };
 
   const handleViewDetails = (projectId: string) => {
-    console.log(`Viewing details for project with ID: ${projectId}`);
-    navigate(`/project-detail/${projectId}`);
+    navigate(`/project-detail-manager/${projectId}`);
   };
 
   const handlePageChange = (newPage: number) => {
