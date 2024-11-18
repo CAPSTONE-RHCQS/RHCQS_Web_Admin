@@ -4,7 +4,10 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SupplierTable from './component/Table/SupplierTable';
 import Alert from '../../../components/Alert';
-import { getSupplierList, createSupplier } from '../../../api/Supplier/Supplier';
+import {
+  getSupplierList,
+  createSupplier,
+} from '../../../api/Supplier/Supplier';
 import { SupplierItem, UpdateSupplierRequest } from '../../../types/Supplier';
 import CreateSupplier from './component/Create/CreateSupplier';
 
@@ -139,13 +142,15 @@ const SupplierList: React.FC = () => {
               Trang trước
             </button>
             <span>
-              Trang 
+              Trang
               <input
-                type="text"
+                type="number"
                 value={pageInput}
                 onChange={handlePageInputChange}
                 onKeyDown={handlePageInputKeyDown}
-                className="w-12 text-center border rounded mx-2"
+                className="w-12 text-center border rounded mx-2 no-spin"
+                min={1}
+                max={totalPages}
               />
               / {totalPages}
             </span>
