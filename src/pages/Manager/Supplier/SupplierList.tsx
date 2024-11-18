@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SupplierTable from './component/Table/SupplierTable';
-import Alert from '../../components/Alert';
-import { getSupplierList, createSupplier } from '../../api/Supplier/Supplier';
-import { SupplierItem, UpdateSupplierRequest } from '../../types/Supplier';
+import Alert from '../../../components/Alert';
+import { getSupplierList, createSupplier } from '../../../api/Supplier/Supplier';
+import { SupplierItem, UpdateSupplierRequest } from '../../../types/Supplier';
 import CreateSupplier from './component/Create/CreateSupplier';
 
 const SupplierList: React.FC = () => {
@@ -30,6 +30,11 @@ const SupplierList: React.FC = () => {
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+  const [pageInput, setPageInput] = useState<string>(page.toString());
+
+  useEffect(() => {
+    setPageInput(page.toString());
+  }, [page]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -68,12 +73,27 @@ const SupplierList: React.FC = () => {
       setAlertMessage('Tạo nhà cung cấp thành công');
       setAlertType('success');
       handleRefresh();
-  } catch (error) {
+    } catch (error) {
       setAlertMessage('Tạo nhà cung cấp thất bại');
       setAlertType('error');
       console.error('Error creating supplier:', error);
     }
   };
+
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPage = e.target.value;
+    setPageInput(newPage);
+  };
+
+  const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const newPage = parseInt(pageInput, 10);
+      if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -119,7 +139,15 @@ const SupplierList: React.FC = () => {
               Trang trước
             </button>
             <span>
-              Trang {page} / {totalPages}
+              Trang 
+              <input
+                type="text"
+                value={pageInput}
+                onChange={handlePageInputChange}
+                onKeyDown={handlePageInputKeyDown}
+                className="w-12 text-center border rounded mx-2"
+              />
+              / {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(page + 1)}

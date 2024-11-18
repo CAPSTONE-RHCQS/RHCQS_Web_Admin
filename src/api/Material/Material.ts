@@ -75,11 +75,11 @@ export async function createMaterialSection(data: any) {
   }
 }
 
-export async function updateMaterialSection(id: string, name: string) {
+export async function updateMaterialSection(id: string, data: any) {
   try {
     const response = await requestWebRHCQS.put(
       `/materialsection?id=${id}`,
-      { name },
+      data,
     );
     return response.data;
   } catch (error) {

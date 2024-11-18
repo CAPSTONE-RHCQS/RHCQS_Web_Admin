@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface EditModalProps {
   isOpen: boolean;
@@ -23,6 +23,19 @@ const EditSupplier: React.FC<EditModalProps> = ({
   onSave,
   onCancel,
 }) => {
+  const [newImageUrl, setNewImageUrl] = useState<string | null>(null);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewImageUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -54,11 +67,20 @@ const EditSupplier: React.FC<EditModalProps> = ({
           placeholder="Nhập số điện thoại"
         />
         <strong className="font-bold">Hình ảnh:</strong>
-        <div className="mb-4">
+        <div className="mb-4 relative group">
           <img
-            src={inputValue.imgUrl}
+            src={newImageUrl || inputValue.imgUrl}
             alt="Supplier"
             className="h-48 object-cover rounded"
+          />
+          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="text-white text-2xl">+</span>
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="absolute inset-0 opacity-0 cursor-pointer"
           />
         </div>
         <strong className="font-bold">Trạng thái:</strong>

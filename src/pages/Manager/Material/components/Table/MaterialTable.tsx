@@ -35,10 +35,13 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
 }) => {
   const [activeEditIndex, setActiveEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
-  const [inputValue, setInputValue] = useState<string>('');
+  const [inputNameValue, setInputNameValue] = useState<string>('');
+  const [inputCodeValue, setInputCodeValue] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
-  const [selectedMaterialId, setSelectedMaterialId] = useState<string | null>(null);
+  const [selectedMaterialId, setSelectedMaterialId] = useState<string | null>(
+    null,
+  );
   const editRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -49,9 +52,12 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     event: React.MouseEvent,
     id: string,
     name: string,
+    code: string,
+    
   ) => {
     event.stopPropagation();
-    setInputValue(name);
+    setInputNameValue(name);
+    setInputCodeValue(code);
     setIsModalOpen(true);
     openEditModal(id);
   };
@@ -63,7 +69,10 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
   const handleSave = async () => {
     try {
       if (currentEditId) {
-        await updateMaterialSection(currentEditId, inputValue);
+        await updateMaterialSection(currentEditId, {
+          name: inputNameValue,
+          code: inputCodeValue,
+        });
         setAlertMessage('Sửa vật liệu thành công');
         setAlertType('success');
         refreshData();
@@ -125,6 +134,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                               event,
                               item.Id.toString(),
                               item.Name,
+                              item.Code,
                             )
                           }
                           title="Chỉnh sửa vật tư"
@@ -202,7 +212,9 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                                 <FaEye
                                   className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6"
                                   title="Xem chi tiết"
-                                  onClick={() => handleViewDetail(material.Id.toString())}
+                                  onClick={() =>
+                                    handleViewDetail(material.Id.toString())
+                                  }
                                 />
                               </td>
                             </tr>
@@ -233,8 +245,10 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
       {isModalOpen && (
         <EditMaterialSection
           isOpen={isModalOpen}
-          inputValue={inputValue}
-          onInputChange={setInputValue}
+          inputNameValue={inputNameValue}
+          inputCodeValue={inputCodeValue}
+          onInputNameChange={setInputNameValue}
+          onInputCodeChange={setInputCodeValue}
           onSave={handleSave}
           onCancel={handleCancel}
         />
@@ -251,7 +265,6 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
       {selectedMaterialId && (
         <EditMaterial
           id={selectedMaterialId}
-          
           onClose={() => setSelectedMaterialId(null)}
         />
       )}

@@ -2,16 +2,20 @@ import React from 'react';
 
 interface EditModalProps {
   isOpen: boolean;
-  inputValue: string;
-  onInputChange: (value: string) => void;
+  inputNameValue: string;
+  inputCodeValue: string;
+  onInputNameChange: (value: string) => void;
+  onInputCodeChange: (value: string) => void;
   onSave: () => void;
   onCancel: () => void;
 }
 
 const EditMaterialSection: React.FC<EditModalProps> = ({
   isOpen,
-  inputValue,
-  onInputChange,
+  inputNameValue,
+  inputCodeValue,
+  onInputNameChange,
+  onInputCodeChange,
   onSave,
   onCancel,
 }) => {
@@ -23,10 +27,17 @@ const EditMaterialSection: React.FC<EditModalProps> = ({
         <h2 className="text-lg font-bold mb-4">Chỉnh sửa vật tư</h2>
         <input
           type="text"
-          value={inputValue}
-          onChange={(e) => onInputChange(e.target.value)}
+          value={inputNameValue}
+          onChange={(e) => onInputNameChange(e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập thông tin vật tư"
+          placeholder="Nhập tên vật tư"
+        />
+        <input
+          type="text"
+          value={inputCodeValue}
+          onChange={(e) => onInputCodeChange(e.target.value)}
+          className="border p-2 mb-4 w-full rounded font-regular"
+          placeholder="Nhập mã code vật tư"
         />
         <div className="flex justify-end space-x-2">
           <button

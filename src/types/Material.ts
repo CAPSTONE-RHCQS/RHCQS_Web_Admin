@@ -9,6 +9,7 @@ export interface MaterialSectionListResponse {
 export interface MaterialSectionItem {
     Id: string
     Name: string
+    Code: string
     InsDate: string
 }
 

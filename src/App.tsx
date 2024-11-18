@@ -43,10 +43,8 @@ import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
 import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.tsx';
-
-// ... existing imports ...
 import ScrollToTop from './components/ScrollToTop';
-import SupplierList from './pages/Supplier/SupplierList.tsx';
+import SupplierList from './pages/Manager/Supplier/SupplierList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
