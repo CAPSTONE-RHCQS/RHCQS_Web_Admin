@@ -23,13 +23,15 @@ const SupplierList: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
-    name: '',
-    email: '',
-    constractPhone: '',
-    imgUrl: '',
-    deflag: false,
-    shortDescription: '',
-    description: '',
+    Name: '',
+    Email: '',
+    ConstractPhone: '',
+    ImgUrl: null,
+    Deflag: false,
+    ShortDescription: '',
+    Description: '',
+    Code: '',
+    Image: '',
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
@@ -66,15 +68,17 @@ const SupplierList: React.FC = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: any) => {
     setInputValue((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
     try {
-      await createSupplier(inputValue);
+      const supplierData = { ...inputValue };
+      await createSupplier(supplierData);
       setAlertMessage('Tạo nhà cung cấp thành công');
       setAlertType('success');
+      setIsCreateModalOpen(false);
       handleRefresh();
     } catch (error) {
       setAlertMessage('Tạo nhà cung cấp thất bại');

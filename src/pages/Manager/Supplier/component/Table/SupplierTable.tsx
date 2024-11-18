@@ -3,7 +3,7 @@ import { FaEdit, FaPlus } from 'react-icons/fa';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import EditSupplier from '../Edit/EditSuplier';
-import { SupplierItem } from '../../../../../types/Supplier';
+import { SupplierItem, UpdateSupplierRequest } from '../../../../../types/Supplier';
 import { updateSupplier } from '../../../../../api/Supplier/Supplier';
 
 interface SupplierTableProps {
@@ -24,14 +24,16 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
 }) => {
   const [activeEditIndex, setActiveEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
-  const [inputValue, setInputValue] = useState({
-    name: '',
-    email: '',
-    constractPhone: '',
-    imgUrl: '',
-    deflag: false,
-    shortDescription: '',
-    description: '',
+  const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
+    Name: '',
+    Email: '',
+    ConstractPhone: '',
+    ImgUrl: '',
+    Code: '',
+    Deflag: true,
+    ShortDescription: '',
+    Description: '',
+    Image: '',
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
@@ -48,20 +50,24 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     email: string,
     constractPhone: string,
     imgUrl: string,
+    code: string,
     deflag: boolean,
     shortDescription: string,
     description: string,
+    image: string,
   ) => {
     console.log('id', id);
     event.stopPropagation();
     setInputValue({
-      name: name,
-      email: email,
-      constractPhone: constractPhone,
-      imgUrl: imgUrl,
-      deflag: deflag,
-      shortDescription: shortDescription,
-      description: description,
+      Name: name || '',
+      Email: email || '',
+      ConstractPhone: constractPhone || '',
+      ImgUrl: imgUrl || '',
+      Code: code || '',
+      Deflag: deflag,
+      ShortDescription: shortDescription || '',
+      Description: description || '',
+      Image: image || '',
     });
     setIsModalOpen(true);
     openEditModal(id);
@@ -75,6 +81,8 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     try {
       if (currentEditId) {
         await updateSupplier(currentEditId, inputValue);
+        console.log('inputValue', inputValue);
+        console.log('thành công');
         setAlertMessage('Sửa thành công');
         setAlertType('success');
         refreshData();
@@ -120,50 +128,27 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
                   <div className="flex justify-center relative" ref={editRef}>
-                    {activeEditIndex === index ? (
-                      <div className="absolute flex space-x-2 mt-[-6px]">
-                        <button
-                          className="cursor-pointer text-blue-500 mr-10"
-                          onClick={(event) =>
-                            handleEditClick(
-                              event,
-                              item.Id,
-                              item.Name,
-                              item.Email || '',
-                              item.ConstractPhone || '',
-                              item.ImgUrl || '',
-                              item.Deflag,
-                              item.ShortDescription || '',
-                              item.Description || '',
-                            )
-                          }
-                          title="Chỉnh sửa"
-                        >
-                          <FaEdit className="w-4 h-4" />
-                        </button>
-                        <button
-                          className="cursor-pointer text-green-500"
-                          onClick={() => {
-                            console.log('Thêm mới');
-                            setActiveEditIndex(null);
-                          }}
-                          title="Thêm mới"
-                        >
-                          <FaPlus className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        className="cursor-pointer"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setActiveEditIndex(index);
-                        }}
-                        title="Chỉnh sửa"
-                      >
-                        <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
-                      </button>
-                    )}
+                    <button
+                      className="cursor-pointer"
+                      onClick={(event) => {
+                        handleEditClick(
+                          event,
+                          item.Id,
+                          item.Name,
+                          item.Email || '',
+                          item.ConstractPhone || '',
+                          item.ImgUrl || '',
+                          item.Code || '',
+                          item.Deflag,
+                          item.ShortDescription || '',
+                          item.Description || '',
+                          item.Image || '',
+                        );
+                      }}
+                      title="Chỉnh sửa"
+                    >
+                      <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
+                    </button>
                   </div>
                 </td>
               </tr>

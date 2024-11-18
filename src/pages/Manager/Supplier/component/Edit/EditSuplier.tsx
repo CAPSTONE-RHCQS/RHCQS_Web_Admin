@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
+import { UpdateSupplierRequest } from '../../../../../types/Supplier';
 
 interface EditModalProps {
   isOpen: boolean;
-  inputValue: {
-    name: string;
-    email: string;
-    constractPhone: string;
-    imgUrl: string;
-    deflag: boolean;
-    shortDescription: string;
-    description: string;
-  };
+  inputValue: UpdateSupplierRequest;
   onInputChange: (field: string, value: any) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -45,31 +38,31 @@ const EditSupplier: React.FC<EditModalProps> = ({
         <strong className="font-bold">Tên nhà cung cấp:</strong>
         <input
           type="text"
-          value={inputValue.name}
-          onChange={(e) => onInputChange('name', e.target.value)}
+          value={inputValue.Name}
+          onChange={(e) => onInputChange('Name', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập tên nhà cung cấp"
         />
         <strong className="font-bold">Email:</strong>
         <input
           type="email"
-          value={inputValue.email}
-          onChange={(e) => onInputChange('email', e.target.value)}
+          value={inputValue.Email}
+          onChange={(e) => onInputChange('Email', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập email"
         />
         <strong className="font-bold">Số điện thoại:</strong>
         <input
           type="text"
-          value={inputValue.constractPhone}
-          onChange={(e) => onInputChange('constractPhone', e.target.value)}
+          value={inputValue.ConstractPhone}
+          onChange={(e) => onInputChange('ConstractPhone', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập số điện thoại"
         />
         <strong className="font-bold">Hình ảnh:</strong>
         <div className="mb-4 relative group">
           <img
-            src={newImageUrl || inputValue.imgUrl}
+            src={newImageUrl || inputValue.ImgUrl || ''}
             alt="Supplier"
             className="h-48 object-cover rounded"
           />
@@ -85,8 +78,8 @@ const EditSupplier: React.FC<EditModalProps> = ({
         </div>
         <strong className="font-bold">Trạng thái:</strong>
         <select
-          value={inputValue.deflag.toString()}
-          onChange={(e) => onInputChange('deflag', e.target.value === 'true')}
+          value={inputValue.Deflag.toString()}
+          onChange={(e) => onInputChange('Deflag', e.target.value === 'true')}
           className="border p-2 mb-4 w-full rounded font-regular"
         >
           <option value="true">Hoạt động</option>
@@ -95,17 +88,26 @@ const EditSupplier: React.FC<EditModalProps> = ({
         <strong className="font-bold">Mô tả ngắn:</strong>
         <input
           type="text"
-          value={inputValue.shortDescription}
-          onChange={(e) => onInputChange('shortDescription', e.target.value)}
+          value={inputValue.ShortDescription}
+          onChange={(e) => onInputChange('ShortDescription', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập mô tả ngắn"
         />
         <strong className="font-bold">Mô tả:</strong>
         <textarea
-          value={inputValue.description}
-          onChange={(e) => onInputChange('description', e.target.value)}
+          value={inputValue.Description}
+          onChange={(e) => onInputChange('Description', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập mô tả"
+        />
+        <strong className="font-bold">Mã nhà cung cấp:</strong>
+        <input
+          type="text"
+          value={inputValue.Code}
+          className="border p-2 mb-4 w-full rounded font-regular"
+          onChange={(e) => onInputChange('Code', e.target.value)}
+          placeholder="Nhập mã nhà cung cấp"
+          minLength={5}
         />
         <div className="flex justify-end space-x-2">
           <button
