@@ -3,6 +3,7 @@ import requestWebRHCQS from '../../utils/axios';
 import {
   HouseTemplateDetail,
   HouseTemplateResponse,
+  UpdateSubTemplateHouseRequest,
 } from '../../types/HouseTemplateTypes';
 import { CreateHouseTemplateRequest } from '../../types/HouseTemplateTypes';
 
@@ -59,6 +60,112 @@ export const createHouseTemplate = async (
     return response.data;
   } catch (error) {
     console.error('Error creating house template:', error);
+    throw error;
+  }
+};
+
+export const updateSubTemplateHouse = async (
+  subTemplateId: string,
+  data: UpdateSubTemplateHouseRequest,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/sub-template/id?subTemplateId=${subTemplateId}`,
+      data,
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating sub template house:', error);
+    throw error;
+  }
+};
+
+// Image
+export const addImageHouseTemplate = async (
+  designTemplateId: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.post(
+      `/upload-design-images?designTemplateId=${designTemplateId}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error adding image house template:', error);
+    throw error;
+  }
+};
+
+export const uploadSubHouseTemplate = async (
+  subTempateId: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.patch(
+      `/upload-sub-template?subTempateId=${subTempateId}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading sub house template:', error);
+    throw error;
+  }
+};
+
+export const uploadOutsideImage = async (
+  designTemplateId: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    request.append('designTemplateId', designTemplateId);
+
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.patch(
+      `/upload-out-side`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading outside image:', error);
+    throw error;
+  }
+};
+
+export const updateHouseTemplate = async (
+  id: string,
+  request: FormData,
+): Promise<HouseTemplateDetail> => {
+  try {
+    const response: AxiosResponse<HouseTemplateDetail> = await requestWebRHCQS.put(
+      `/housetemplate/${id}`,
+      request,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error updating house template:', error);
     throw error;
   }
 };

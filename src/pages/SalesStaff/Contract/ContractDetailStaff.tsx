@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getContractDesignById } from '../../../api/Contract/ContractApi';
+import { getContractDesignById, signContractCompletion } from '../../../api/Contract/ContractApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
   FaFileDownload,
@@ -16,12 +16,14 @@ import {
   FaFileContract,
   FaPaperclip,
   FaStickyNote,
+  FaUpload,
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 
-const ContractDetail = () => {
+const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
   const [contractDetail, setContractDetail] = useState<any | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
     const fetchContractDetail = async () => {
@@ -39,6 +41,24 @@ const ContractDetail = () => {
 
     fetchContractDetail();
   }, [contractId]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      setSelectedFile(event.target.files[0]);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (contractId && selectedFile) {
+      try {
+        await signContractCompletion(contractId, selectedFile);
+        alert('Tải lên thành công!');
+      } catch (error) {
+        console.error('Error uploading signed contract:', error);
+        alert('Tải lên thất bại!');
+      }
+    }
+  };
 
   if (!contractDetail) {
     return (
@@ -166,10 +186,25 @@ const ContractDetail = () => {
               {contractDetail.Note || 'Không có ghi chú'}
             </span>
           </div>
+          <div className="mb-4 text-lg flex items-center">
+            <FaUpload className="mr-2" />
+            <span className="font-semibold">Tải lên Hợp đồng đã ký:</span>
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="ml-2"
+            />
+            <button
+              onClick={handleUpload}
+              className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+            >
+              Tải lên
+            </button>
+          </div>
         </div>
       </div>
     </>
   );
 };
 
-export default ContractDetail;
+export default ContractDetailStaff;

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { fetchHouseTemplateDetail } from '../../../api/HouseTemplate/HouseTemplateApi';
 import { HouseTemplateDetail as HouseTemplateDetailType } from '../../../types/HouseTemplateTypes';
 import { Typography, Alert } from '@material-tailwind/react';
-import { Tab } from '@headlessui/react';
+import { Tab, TabList } from '@headlessui/react';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
 import ClipLoader from 'react-spinners/ClipLoader';
@@ -16,9 +16,12 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import PackageHouseList from './components/PackageHouseList';
 import ExteriorImageList from './components/ExteriorImageList';
+import { getCacheBustedUrl } from '../../../utils/utils';
+import { defaultImageHouseTemplateUrl } from '../../../utils/constants';
 
 const HouseTemplateDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [houseTemplate, setHouseTemplate] =
     useState<HouseTemplateDetailType | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -32,9 +35,11 @@ const HouseTemplateDetail: React.FC = () => {
       try {
         if (id) {
           const data = await fetchHouseTemplateDetail(id);
+          console.log('Fetched data:', data);
           setHouseTemplate(data);
         }
       } catch (err) {
+        console.error('Error fetching house template detail:', err);
         setError('Failed to fetch house template detail');
       } finally {
         setLoading(false);
@@ -72,6 +77,12 @@ const HouseTemplateDetail: React.FC = () => {
     }
   };
 
+  const handleEdit = () => {
+    if (id) {
+      navigate('/create-house-template', { state: { id } });
+    }
+  };
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -82,10 +93,17 @@ const HouseTemplateDetail: React.FC = () => {
 
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
+        <button
+          onClick={handleEdit}
+          className="text-primary cursor-pointer font-bold"
+        >
+          Chỉnh sửa mẫu nhà
+        </button>
+      </div>
       {houseTemplate && (
         <>
-          <div className="flex mb-6 justify-between"></div>
           <div className="flex flex-col md:flex-row">
             <div className="w-full md:w-1/2">
               <Zoom>
@@ -115,9 +133,11 @@ const HouseTemplateDetail: React.FC = () => {
                     <img
                       src={
                         selectedDrawingIndex === -1
-                          ? houseTemplate.SubTemplates[selectedTabIndex]?.Url
+                          ? houseTemplate.SubTemplates[selectedTabIndex]?.Url ||
+                            defaultImageHouseTemplateUrl
                           : houseTemplate.SubTemplates[selectedTabIndex]
-                              ?.Designdrawings[selectedDrawingIndex]?.Url
+                              ?.Designdrawings[selectedDrawingIndex]?.Url ||
+                            defaultImageHouseTemplateUrl
                       }
                       alt={houseTemplate.Name}
                       className={`object-cover ${isZoomed ? 'zoomed' : ''}`}
@@ -154,7 +174,7 @@ const HouseTemplateDetail: React.FC = () => {
                 <div className="flex flex-col md:flex-row">
                   <div className="w-full md:w-1/2">
                     <img
-                      src={houseTemplate.ImgUrl}
+                      src={houseTemplate.ImgUrl || defaultImageHouseTemplateUrl}
                       alt={houseTemplate.Name}
                       className="w-full h-full object-cover rounded-lg shadow-md"
                     />
@@ -183,8 +203,8 @@ const HouseTemplateDetail: React.FC = () => {
                     </div>
                   </div>
                   <div className="w-full md:w-1/2 pl-6">
-                    <Tab.List className="flex flex-col space-y-2 mt-4">
-                      {houseTemplate.SubTemplates.map((subTemplate, index) => (
+                    <TabList className="flex flex-col space-y-2 mt-4">
+                      {houseTemplate.SubTemplates.map((subTemplate) => (
                         <Tab
                           key={subTemplate.Id}
                           className={({ selected }) =>
@@ -199,7 +219,7 @@ const HouseTemplateDetail: React.FC = () => {
                           Diện tích: {subTemplate.Size}
                         </Tab>
                       ))}
-                    </Tab.List>
+                    </TabList>
                   </div>
                 </div>
                 <Tab.Panels className="mt-2">
@@ -251,7 +271,10 @@ const HouseTemplateDetail: React.FC = () => {
               }`}
             >
               <img
-                src={houseTemplate.SubTemplates[selectedTabIndex]?.Url}
+                src={
+                  houseTemplate.SubTemplates[selectedTabIndex]?.Url ||
+                  defaultImageHouseTemplateUrl
+                }
                 alt={houseTemplate.Name}
                 className="w-full h-full object-cover"
               />
@@ -268,7 +291,7 @@ const HouseTemplateDetail: React.FC = () => {
                   }`}
                 >
                   <img
-                    src={drawing.Url}
+                    src={drawing.Url || defaultImageHouseTemplateUrl}
                     alt={drawing.Name}
                     className="w-full h-full object-cover"
                   />

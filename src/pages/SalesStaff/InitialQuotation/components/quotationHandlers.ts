@@ -87,6 +87,7 @@ export const handleSave = async (
   utilityInfos: QuotationUtility[],
   promotionInfo: any,
   navigate: (path: string) => void,
+  setIsSaving: (value: boolean) => void,
 ) => {
   if (!quotationData) return;
 
@@ -157,6 +158,7 @@ export const handleSave = async (
   };
 
   try {
+    setIsSaving(true);
     await updateInitialQuotation(requestData);
     toast.success('Dữ liệu đã được lưu thành công!');
     navigate(`/project-detail-staff/${quotationData.ProjectId}`);
@@ -166,5 +168,7 @@ export const handleSave = async (
     const errorMessage =
       error instanceof Error ? error.message : 'Có lỗi xảy ra khi lưu dữ liệu.';
     toast.error(errorMessage);
+  } finally {
+    setIsSaving(false);
   }
 };

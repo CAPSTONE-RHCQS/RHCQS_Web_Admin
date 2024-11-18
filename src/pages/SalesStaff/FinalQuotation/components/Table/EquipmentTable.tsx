@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { EquipmentItem } from '../../../../types/FinalQuotationTypes';
+import { EquipmentItem } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
@@ -40,6 +40,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
       UnitOfMaterial: 0,
       TotalOfMaterial: 0,
       Note: '',
+      Type: '',
     };
     setEditableItems([...editableItems, newItem]);
     onItemsChange([...editableItems, newItem]);
@@ -51,23 +52,29 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
     onItemsChange(updatedItems);
   };
 
+  const calculateTotalPrice = () => {
+    return editableItems.reduce((total, item) => {
+      return total + (item.Quantity * item.UnitOfMaterial || 0);
+    }, 0);
+  };
+
   return (
     <div className="overflow-x-auto mb-4">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
+      <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
+        <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center">Tên thiết bị</th>
-            <th className="px-4 py-2 border text-center">Đơn vị</th>
-            <th className="px-4 py-2 border text-center">Số lượng</th>
-            <th className="px-4 py-2 border text-center">Đơn giá</th>
-            <th className="px-4 py-2 border text-center">Tổng giá</th>
-            <th className="px-4 py-2 border text-center">Ghi chú</th>
+            <th className="px-4 py-2 border text-center font-semibold">Tên thiết bị</th>
+            <th className="px-4 py-2 border text-center font-semibold">Đơn vị</th>
+            <th className="px-4 py-2 border text-center font-semibold">Số lượng</th>
+            <th className="px-4 py-2 border text-center font-semibold">Đơn giá</th>
+            <th className="px-4 py-2 border text-center font-semibold">Tổng giá</th>
+            <th className="px-4 py-2 border text-center font-semibold">Ghi chú</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
           {editableItems.map((item, index) => (
-            <tr key={index}>
+            <tr key={index} className="hover:bg-gray-50">
               <td className="px-4 py-2 border text-center">
                 <input
                   type="text"
@@ -75,7 +82,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Name', e.target.value)
                   }
-                  className="w-full text-center"
+                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
               </td>
@@ -86,7 +93,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Unit', e.target.value)
                   }
-                  className="w-full text-center"
+                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
               </td>
@@ -97,7 +104,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Quantity', Number(e.target.value))
                   }
-                  className="w-full text-center"
+                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
               </td>
@@ -112,24 +119,14 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                       Number(e.target.value),
                     )
                   }
-                  className="w-full text-center"
+                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="number"
-                  value={item.TotalOfMaterial}
-                  onChange={(e) =>
-                    handleInputChange(
-                      index,
-                      'TotalOfMaterial',
-                      Number(e.target.value),
-                    )
-                  }
-                  className="w-full text-center"
-                  disabled={!isEditing}
-                />
+                <span>
+                  {(item.Quantity * item.UnitOfMaterial).toLocaleString()} VNĐ
+                </span>
               </td>
               <td className="px-4 py-2 border text-center">
                 <input
@@ -138,7 +135,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Note', e.target.value)
                   }
-                  className="w-full text-center"
+                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   disabled={!isEditing}
                 />
               </td>
@@ -154,12 +151,20 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
               )}
             </tr>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={4} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateTotalPrice().toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center"></td>
+            {isEditing && <td className="px-4 py-2 border text-center"></td>}
+          </tr>
         </tbody>
       </table>
       {isEditing && (
         <button
           onClick={handleAddItem}
-          className="mt-2 bg-primary text-white px-4 py-2 rounded"
+          className="mt-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
         >
           Thêm thiết bị
         </button>

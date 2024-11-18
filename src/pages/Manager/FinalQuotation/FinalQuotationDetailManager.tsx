@@ -19,11 +19,13 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaCheck,
+  FaCommentDots,
 } from 'react-icons/fa';
 import UtilityInfoTable from './components/Table/UtilityInfoTable';
-import { Dialog } from '@headlessui/react';
-import { ToastContainer, toast } from 'react-toastify';
+import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import ChatBox from '../../../components/ChatBox';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +36,7 @@ const FinalQuotationDetailManager = () => {
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showChat, setShowChat] = useState(false);
   const [approvalType, setApprovalType] = useState('Approved');
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(true);
@@ -85,6 +88,10 @@ const FinalQuotationDetailManager = () => {
     }
   };
 
+  const toggleChat = () => {
+    setShowChat(!showChat);
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -102,20 +109,37 @@ const FinalQuotationDetailManager = () => {
   const handleShare = () => {};
 
   return (
-    <div>
+    <div className="p-6 bg-gray-100 min-h-screen">
+      {!showChat && (
+        <button
+          onClick={toggleChat}
+          className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+        >
+          <FaCommentDots className="text-2xl" />
+        </button>
+      )}
+
+      {showChat && quotationDetail && (
+        <ChatBox
+          onClose={toggleChat}
+          accountName={quotationDetail.AccountName}
+          note={quotationDetail.Note}
+        />
+      )}
+
       <FinalQuotationStatus currentStatus={quotationDetail.Status} />
 
-      <div className="flex justify-end space-x-2">
+      <div className="flex justify-end space-x-2 mb-4">
         <button
           onClick={handleDownload}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
           <FaDownload className="text-lg" />
         </button>
 
         <button
           onClick={handleShare}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
           <FaShareAlt className="text-lg" />
         </button>
@@ -123,7 +147,7 @@ const FinalQuotationDetailManager = () => {
         {quotationDetail.Status === 'Reviewing' && (
           <button
             onClick={() => setIsModalOpen(true)}
-            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
           >
             <FaCheck className="text-lg" />
             <span className="ml-2">Phê duyệt</span>
@@ -131,55 +155,21 @@ const FinalQuotationDetailManager = () => {
         )}
       </div>
 
-      <Dialog open={isModalOpen} onClose={() => setIsModalOpen(false)}>
-        <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-        <div className="fixed inset-0 flex items-center justify-center">
-          <Dialog.Panel className="bg-white p-8 rounded shadow-lg w-full max-w-md md:max-w-lg lg:max-w-xl">
-            <Dialog.Title className="text-2xl font-bold">
-              Phê duyệt báo giá
-            </Dialog.Title>
-            <div className="mt-6">
-              <select
-                value={approvalType}
-                onChange={(e) => setApprovalType(e.target.value)}
-                className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm text-lg"
-              >
-                <option value="Approved">Approved</option>
-                <option value="Reject">Reject</option>
-              </select>
-            </div>
-            <div className="mt-6">
-              <label className="block text-lg font-medium text-gray-700">
-                Lý do
-              </label>
-              <textarea
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm text-lg"
-                rows={4}
-              />
-            </div>
-            <div className="mt-8 flex justify-end space-x-4">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="bg-gray-200 hover:bg-gray-300 px-5 py-3 rounded text-lg"
-              >
-                Hủy
-              </button>
-              <button
-                onClick={handleApprove}
-                className="bg-primary hover:bg-primary-dark text-white px-5 py-3 rounded text-lg"
-              >
-                Xác nhận
-              </button>
-            </div>
-          </Dialog.Panel>
-        </div>
-      </Dialog>
+      <ApprovalDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        approvalType={approvalType}
+        setApprovalType={setApprovalType}
+        reason={reason}
+        setReason={setReason}
+        onSubmit={handleApprove}
+      />
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Thông tin báo giá chi tiết</h2>
+          <h2 className="text-2xl font-bold text-primary">
+            Thông tin báo giá chi tiết
+          </h2>
           <div className="text-right">
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
@@ -192,36 +182,26 @@ const FinalQuotationDetailManager = () => {
         </div>
 
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2" />
+          <FaUser className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
           <span className="text-gray-700 ml-2">
             {quotationDetail.AccountName}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2" />
+          <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
           <span className="text-gray-700 ml-2">
             {quotationDetail.ProjectAddress}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaMoneyBillWave className="mr-2" />
+          <FaMoneyBillWave className="mr-2 text-secondary" />
           <span className="font-semibold">Tổng chi phí:</span>
           <span className="text-gray-700 ml-2">
             {quotationDetail.TotalPrice.toLocaleString()} VNĐ
           </span>
         </div>
-        {/* Thêm thông tin PromotionInfo */}
-        {/* {quotationDetail.PromotionInfo && (
-          <div className="mb-2 text-lg flex items-center">
-            <span className="font-semibold">Khuyến mãi:</span>
-            <span className="text-gray-700 ml-2">
-              {quotationDetail.PromotionInfo.Name} -{' '}
-              {quotationDetail.PromotionInfo.Percents}%
-            </span>
-          </div>
-        )} */}
 
         {/* Thêm thông tin ConstructionRough và ConstructionFinished */}
         <div className="mb-2 text-lg">
@@ -258,14 +238,14 @@ const FinalQuotationDetailManager = () => {
         <hr className="my-4 border-gray-300" />
 
         <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowDetailedItems(!showDetailedItems)}
         >
           1. Các hạng mục báo giá chi tiết:
           {showDetailedItems ? (
-            <FaChevronUp className="ml-2" />
+            <FaChevronUp className="ml-2 text-secondary" />
           ) : (
-            <FaChevronDown className="ml-2" />
+            <FaChevronDown className="ml-2 text-secondary" />
           )}
         </h3>
         {showDetailedItems && (
@@ -273,23 +253,18 @@ const FinalQuotationDetailManager = () => {
         )}
 
         <hr className="my-4 border-gray-300" />
-        <div className="flex items-center mb-4">
-          <div className="flex items-center justify-between w-full">
-            <div
-              className="flex items-center cursor-pointer"
-              onClick={() => setShowUtilities(!showUtilities)}
-            >
-              <strong className="text-xl font-bold">
-                2. Tùy chọn & Tiện ích:
-              </strong>
-              {showUtilities ? (
-                <FaChevronUp className="ml-2" />
-              ) : (
-                <FaChevronDown className="ml-2" />
-              )}
-            </div>
-          </div>
-        </div>
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
+          onClick={() => setShowUtilities(!showUtilities)}
+        >
+          2. Tùy chọn & Tiện ích:
+          {showUtilities ? (
+            <FaChevronUp className="ml-2 text-secondary" />
+          ) : (
+            <FaChevronDown className="ml-2 text-secondary" />
+          )}
+        </h3>
         {showUtilities && (
           <UtilityInfoTable utilities={quotationDetail.UtilityInfos} />
         )}
@@ -297,14 +272,14 @@ const FinalQuotationDetailManager = () => {
         <hr className="my-4 border-gray-300" />
 
         <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
         >
           3. Chi Phí Thiết bị:
           {showEquipmentCosts ? (
-            <FaChevronUp className="ml-2" />
+            <FaChevronUp className="ml-2 text-secondary" />
           ) : (
-            <FaChevronDown className="ml-2" />
+            <FaChevronDown className="ml-2 text-secondary" />
           )}
         </h3>
         {showEquipmentCosts && (
@@ -314,14 +289,14 @@ const FinalQuotationDetailManager = () => {
         <hr className="my-4 border-gray-300" />
 
         <h3
-          className="text-xl font-bold mb-4 flex items-center cursor-pointer"
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
           4. Các đợt thanh toán:
           {showBatchPayments ? (
-            <FaChevronUp className="ml-2" />
+            <FaChevronUp className="ml-2 text-secondary" />
           ) : (
-            <FaChevronDown className="ml-2" />
+            <FaChevronDown className="ml-2 text-secondary" />
           )}
         </h3>
         {showBatchPayments && (

@@ -32,6 +32,10 @@ import ContractTable from './components/Table/ContractTable';
 import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import {
+  isAnyInitialInfoFinalized,
+  isAnyFinalInfoFinalized,
+} from '../../../utils/projectUtils';
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -105,33 +109,42 @@ const ProjectDetailSalesStaff = () => {
 
   const mappedStatus = statusMap[projectDetail.Status] || 'Đang Xử Lý';
 
-  const handleInitializeFinalQuotation = async () => {
-    try {
-      if (id) {
-        await postFinalQuotationByProjectId(id);
-        await fetchProjectDetail();
-        toast.success('Khởi tạo báo giá thành công!');
-      }
-    } catch (error) {
-      console.error('Error initializing final quotation:', error);
-      if (axios.isAxiosError(error) && error.response) {
-        const { StatusCode, Error } = error.response.data;
-        if (StatusCode === 404) {
-          toast.error(`Lỗi: ${Error}`);
-        } else {
-          toast.error('Đã xảy ra lỗi khi khởi tạo báo giá.');
-        }
-      } else {
-        toast.error('Đã xảy ra lỗi không xác định.');
-      }
+  const handleInitializeFinalQuotation = () => {
+    if (id) {
+      navigate(`/create-new-final-quotation-staff/${id}`);
+    } else {
+      toast.error('Không tìm thấy ID dự án.');
     }
   };
+
+  const handleCreateContractDesign = () => {
+    if (isAnyInitialInfoFinalized(projectDetail.InitialInfo)) {
+      navigate(`/create-contract-design/${id}`);
+    } else {
+      toast.error(
+        'Chưa hoàn thành báo giá sơ bộ. Không thể tạo hợp đồng thiết kế.',
+      );
+      setShowInitialInfo(true);
+    }
+  };
+
+  const handleCreateConstructionContract = () => {
+    if (isAnyFinalInfoFinalized(projectDetail.FinalInfo)) {
+      navigate(`/create-construction-contract/${id}`);
+    } else {
+      toast.error(
+        'Chưa hoàn thành báo giá chi tiết. Không thể tạo hợp đồng thi công.',
+      );
+    }
+  };
+
+  const isFinalized = isAnyInitialInfoFinalized(projectDetail.InitialInfo);
 
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+          <h2 className="text-3xl font-bold text-primary dark:text-white">
             Chi tiết dự án
           </h2>
           <div
@@ -139,7 +152,7 @@ const ProjectDetailSalesStaff = () => {
             onMouseLeave={hideMenu}
             className="relative"
           >
-            <FiMoreVertical className="text-xl text-black dark:text-white" />
+            <FiMoreVertical className="text-2xl text-primary dark:text-white cursor-pointer" />
             {menuVisible && (
               <div
                 className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
@@ -161,20 +174,20 @@ const ProjectDetailSalesStaff = () => {
                     <FaEdit className="mr-2" />
                     Chỉnh sửa hợp đồng
                   </Link>
-                  <Link
-                    to={`/create-contract-design/${id}`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  <div
+                    onClick={handleCreateContractDesign}
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
                   >
                     <FaFileContract className="mr-2" />
                     Tạo hợp đồng thiết kế
-                  </Link>
-                  <Link
-                    to={`/create-construction-contract/${id}`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                  </div>
+                  <div
+                    onClick={handleCreateConstructionContract}
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
                   >
                     <FaBuilding className="mr-2" />
-                    Tạo hợp đồng xây dựng
-                  </Link>
+                    Tạo hợp đồng thi công
+                  </div>
                 </div>
               </div>
             )}
@@ -184,15 +197,6 @@ const ProjectDetailSalesStaff = () => {
         <Dialog open={showHistory} handler={handleCloseHistory}>
           <ContractHistoryTimeline onClose={handleCloseHistory} />
         </Dialog>
-        {showChat && <ChatBox onClose={toggleChat} />}
-        {!showChat && (
-          <button
-            onClick={toggleChat}
-            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-          >
-            <FaCommentDots className="text-2xl" />
-          </button>
-        )}
 
         <div className="flex flex-row gap-3 justify-between">
           <ContactCard
@@ -249,41 +253,41 @@ const ProjectDetailSalesStaff = () => {
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Thông tin dự án</h2>
+          <h2 className="text-2xl font-bold text-primary">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
             Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2" />
+          <FaUser className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
           <span className="text-gray-700 ml-2">
             {projectDetail.AccountName}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2" />
+          <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
           <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaRulerCombined className="mr-2" />
+          <FaRulerCombined className="mr-2 text-secondary" />
           <span className="font-semibold">Diện tích:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
           {projectDetail.InitialInfo &&
             projectDetail.InitialInfo.length > 0 &&
             (showInitialInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.InitialInfo &&
@@ -292,7 +296,7 @@ const ProjectDetailSalesStaff = () => {
               className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 mb-4"
               onClick={() => navigate(`/create-initial-quote/${id}`)}
             >
-              Khởi tạo
+              Khởi tạo báo giá
             </button>
           )}
         {projectDetail.InitialInfo &&
@@ -303,16 +307,16 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
           {projectDetail.HouseDesignDrawingInfo &&
             projectDetail.HouseDesignDrawingInfo.length > 0 &&
             (showDesignDrawing ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.HouseDesignDrawingInfo &&
@@ -325,25 +329,26 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
           {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length > 0 &&
             (showFinalInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.FinalInfo &&
-          projectDetail.FinalInfo.length === 0 && (
+          projectDetail.FinalInfo.length === 0 &&
+          isFinalized && (
             <button
               className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 mb-4"
               onClick={handleInitializeFinalQuotation}
             >
-              Khởi tạo
+              Khởi tạo báo giá
             </button>
           )}
         {projectDetail.FinalInfo &&
@@ -354,16 +359,16 @@ const ProjectDetailSalesStaff = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
           {projectDetail.ContractInfo &&
             projectDetail.ContractInfo.length > 0 &&
             (showContract ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.ContractInfo &&

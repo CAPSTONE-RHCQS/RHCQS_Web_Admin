@@ -17,37 +17,16 @@ import {
 } from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
-
-interface VersionProps {
-  Id: string;
-  Name: string;
-  Version: number;
-  FileUrl: string;
-  InsDate: string;
-  PreviousDrawingId: string | null;
-  NamePrevious: string | null;
-  Note: string;
-}
-
-interface HouseDesignDetailProps {
-  Id: string;
-  ProjectId: string;
-  Name: string;
-  Step: number;
-  Status: string;
-  Type: string;
-  IsCompany: boolean;
-  InsDate: string;
-  Versions: VersionProps[];
-}
+import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
+import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
 
 const HouseDesignDetailManager: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
-    useState<HouseDesignDetailProps | null>(null);
+    useState<HouseDesignDetailResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [approvalType, setApprovalType] = useState<string>('Approved');
   const [reason, setReason] = useState<string>('');
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
@@ -63,7 +42,16 @@ const HouseDesignDetailManager: React.FC = () => {
 
     try {
       const response = await getHouseDesignById(id);
-      setDesignDetail(response.data);
+      const designData = response.data;
+      setDesignDetail(designData);
+
+      // Set the default selected version based on VersionPresent
+      const defaultVersion = designData.Versions.find(
+        (version) => version.Version === designData.VersionPresent
+      );
+      if (defaultVersion) {
+        setSelectedVersionId(defaultVersion.Id);
+      }
     } catch (error) {
       console.error('Error fetching design detail:', error);
     } finally {
@@ -87,7 +75,7 @@ const HouseDesignDetailManager: React.FC = () => {
         reason,
       });
       toast.success('Design approved successfully!');
-      setModalVisible(false);
+      setIsModalOpen(false);
       fetchDesignDetail();
     } catch (error) {
       console.error('Error approving design:', error);
@@ -106,49 +94,56 @@ const HouseDesignDetailManager: React.FC = () => {
     return <div>Không tìm thấy chi tiết bản vẽ thiết kế.</div>;
   }
 
+  const isSelectable =
+    designDetail.Status === 'Reviewing' || designDetail.Status === 'Updated';
+
   return (
     <>
-      <div className="p-4  mx-auto">
+      <div className="p-4 mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-3xl font-bold text-center">
             Chi tiết bản vẽ thiết kế
           </h2>
-          <div
-            onMouseEnter={showMenu}
-            onMouseLeave={hideMenu}
-            className="relative"
-          >
-            <FiMoreVertical className="text-xl text-black dark:text-white cursor-pointer" />
-            {menuVisible && (
-              <div
-                className="absolute right-2 top-2 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
-                style={{ opacity: menuVisible ? 1 : 0 }}
-              >
-                <div className="py-2">
-                  <a
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      if (selectedVersionId) {
-                        setModalVisible(true);
-                      } else {
-                        toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
-                      }
-                    }}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
-                  >
-                    <FaCheck className="mr-2" />
-                    Phê duyệt bản vẽ
-                  </a>
+          {isSelectable && (
+            <div
+              onMouseEnter={showMenu}
+              onMouseLeave={hideMenu}
+              className="relative"
+            >
+              <FiMoreVertical className="text-xl text-black dark:text-white cursor-pointer" />
+              {menuVisible && (
+                <div
+                  className="absolute right-2 top-2 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
+                  style={{ opacity: menuVisible ? 1 : 0 }}
+                >
+                  <div className="py-2">
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        if (selectedVersionId) {
+                          setIsModalOpen(true);
+                        } else {
+                          toast.error(
+                            'Vui lòng chọn một phiên bản trước khi phê duyệt.',
+                          );
+                        }
+                      }}
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
+                    >
+                      <FaCheck className="mr-2" />
+                      Phê duyệt bản vẽ
+                    </a>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
+          )}
         </div>
         <WorkDetailStatusTracker currentStatus={designDetail.Status} />
         <div className="flex items-start">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 flex-none">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/5 flex-none">
+            <div className="flex flex-col gap-4">
               <p className="flex items-center">
                 <FiPenTool className="mr-2" />
                 {designDetail.Name}
@@ -161,26 +156,18 @@ const HouseDesignDetailManager: React.FC = () => {
                 <FiType className="mr-2" />
                 <strong className="mr-2">Loại:</strong> {designDetail.Type}
               </p>
-              {/* <p className="flex items-center">
-                <FiBriefcase className="mr-2" />
-                <strong className="mr-2">Is Company:</strong>{' '}
-                {designDetail.IsCompany ? 'Yes' : 'No'}
-              </p> */}
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />
-                <strong className="mr-2">Ngày tạo:</strong>{' '}
+                <strong className="mr-2">Ngày tạo:</strong>
                 {new Date(designDetail.InsDate).toLocaleDateString()}
               </p>
             </div>
           </div>
-          <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
-            <h3 className="text-xl font-bold">Versions</h3>
+          <div className="p-6 rounded-lg bg-white shadow-lg w-4/5 ml-4 flex-grow">
+            <h3 className="text-xl font-bold">Phiên bản</h3>
             <table className="w-full table-auto mt-4">
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Chọn
-                  </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
                     STT
                   </th>
@@ -194,7 +181,10 @@ const HouseDesignDetailManager: React.FC = () => {
                     Ngày tạo
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Ghi chú
+                    Ghi chú khách hàng
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Lý do
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
                 </tr>
@@ -203,7 +193,11 @@ const HouseDesignDetailManager: React.FC = () => {
                 {designDetail.Versions.map((version, index) => (
                   <tr
                     key={version.Id}
-                    onClick={() => setSelectedVersionId(version.Id)}
+                    onClick={() => {
+                      if (isSelectable) {
+                        setSelectedVersionId(version.Id);
+                      }
+                    }}
                     className={`cursor-pointer ${
                       selectedVersionId === version.Id
                         ? 'bg-primary text-white'
@@ -223,7 +217,10 @@ const HouseDesignDetailManager: React.FC = () => {
                       {new Date(version.InsDate).toLocaleDateString()}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {version.Note || 'N/A'}
+                      {version.Note || ''}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Reason || ''}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a
@@ -243,44 +240,15 @@ const HouseDesignDetailManager: React.FC = () => {
         </div>
       </div>
 
-      {modalVisible && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-8 rounded-lg shadow-xl max-w-md w-full">
-            <h2 className="text-2xl font-semibold mb-6 text-center">
-              Phê duyệt bản vẽ
-            </h2>
-            <select
-              value={approvalType}
-              onChange={(e) => setApprovalType(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="Approved">Approved</option>
-              <option value="Updated">Updated</option>
-            </select>
-            <textarea
-              value={reason}
-              onChange={(e) => setReason(e.target.value)}
-              placeholder="Nhập lý do"
-              className="w-full p-3 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-            />
-            <div className="flex justify-end space-x-3">
-              <button
-                onClick={handleApproveDesign}
-                className="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
-              >
-                Gửi
-              </button>
-              <button
-                onClick={() => setModalVisible(false)}
-                className="bg-gray-300 text-black px-5 py-2 rounded-lg hover:bg-gray-400 transition-colors duration-200"
-              >
-                Hủy
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ApprovalDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        approvalType={approvalType}
+        setApprovalType={setApprovalType}
+        reason={reason}
+        setReason={setReason}
+        onSubmit={handleApproveDesign}
+      />
     </>
   );
 };

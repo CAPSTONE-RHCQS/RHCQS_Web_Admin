@@ -60,7 +60,7 @@ const ProjectDetail = () => {
     [key: string]: any;
   }>({});
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
-  const [showEmployeeListModal, setShowEmployeeListModal] = useState(false); // Thêm trạng thái mới
+  const [showEmployeeListModal, setShowEmployeeListModal] = useState(false);
 
   const fetchProjectDetail = async () => {
     if (projectId) {
@@ -115,7 +115,15 @@ const ProjectDetail = () => {
     if (item === 'history') {
       setShowHistory(true);
     } else if (item === 'assign') {
-      setShowEmployeeListModal(true);
+      if (projectDetail.Status === 'Ended') {
+        toast.error('Dự án đã chấm dứt, không thể phân công nhân viên.');
+        return;
+      }
+      if (projectDetail.StaffName) {
+        toast.error('Dự án đã có nhân viên đảm nhận.');
+      } else {
+        setShowEmployeeListModal(true);
+      }
     }
   };
 
@@ -200,11 +208,19 @@ const ProjectDetail = () => {
     console.log('Refreshing project detail...');
   };
 
+  const isInitialInfoFinalized = projectDetail.InitialInfo?.some(
+    (info) => info.Status === 'Finalized',
+  );
+  const hasDesignContract = projectDetail.ContractInfo?.some(
+    (contract) =>
+      contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
+  );
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
         <div className="flex justify-between items-center">
-          <h2 className="text-title-md2 font-semibold text-black dark:text-white">
+          <h2 className="text-3xl font-bold text-primary dark:text-white">
             Chi tiết dự án
           </h2>
           <div
@@ -212,7 +228,7 @@ const ProjectDetail = () => {
             onMouseLeave={hideMenu}
             className="relative"
           >
-            <FiMoreVertical className="text-xl text-black dark:text-white" />
+            <FiMoreVertical className="text-2xl text-primary dark:text-white cursor-pointer" />
             {menuVisible && (
               <div
                 className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
@@ -227,13 +243,13 @@ const ProjectDetail = () => {
                     <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
                   </a>
-                  <Link
-                    to={`/editquote`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaEdit className="mr-2" />
-                    Chỉnh sửa hợp đồng
-                  </Link>
+                  {/* <Link
+                      to={`/editquote`}
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      <FaEdit className="mr-2" />
+                      Chỉnh sửa hợp đồng
+                    </Link> */}
                   <a
                     href="#"
                     onClick={() => handleMenuItemClick('assign')}
@@ -246,7 +262,11 @@ const ProjectDetail = () => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      setIsModalOpen(true);
+                      if (projectDetail.Status === 'Ended') {
+                        toast.error('Dự án đã được chấm dứt.');
+                      } else {
+                        setIsModalOpen(true);
+                      }
                     }}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
@@ -262,15 +282,6 @@ const ProjectDetail = () => {
         <Dialog open={showHistory} handler={handleCloseHistory}>
           <ContractHistoryTimeline onClose={handleCloseHistory} />
         </Dialog>
-        {showChat && <ChatBox onClose={toggleChat} />}
-        {!showChat && (
-          <button
-            onClick={toggleChat}
-            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-          >
-            <FaCommentDots className="text-2xl" />
-          </button>
-        )}
 
         <div className="flex flex-row gap-3 justify-between">
           <ContactCard
@@ -287,8 +298,6 @@ const ProjectDetail = () => {
           <ContactCard
             data={{
               fullName: projectDetail.AccountName || 'N/A',
-              // phoneNumber: '0965486940',
-              // emailAddress: 'email@fpt.edu.vn',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
@@ -326,41 +335,41 @@ const ProjectDetail = () => {
       </div>
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-bold">Thông tin dự án</h2>
+          <h2 className="text-2xl font-bold text-primary">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
             Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2" />
+          <FaUser className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
           <span className="text-gray-700 ml-2">
             {projectDetail.AccountName}
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2" />
+          <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
           <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaRulerCombined className="mr-2" />
+          <FaRulerCombined className="mr-2 text-secondary" />
           <span className="font-semibold">Diện tích:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowInitialInfo(!showInitialInfo)}
         >
           Báo giá sơ bộ
           {projectDetail.InitialInfo &&
             projectDetail.InitialInfo.length > 0 &&
             (showInitialInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.InitialInfo &&
@@ -371,33 +380,37 @@ const ProjectDetail = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowDesignDrawing(!showDesignDrawing)}
         >
           Thiết kế bản vẽ
           {projectDetail.HouseDesignDrawingInfo &&
+            projectDetail.HouseDesignDrawingInfo.length > 0 &&
             (showDesignDrawing ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
-        {showDesignDrawing && (
-          <>
-            {projectDetail.HouseDesignDrawingInfo &&
-            projectDetail.HouseDesignDrawingInfo.length === 0 ? (
-              <button
-                onClick={() => setIsAssignModalOpen(true)}
-                className="bg-blue-500 text-white p-2 rounded"
-              >
-                Phân công
-              </button>
-            ) : (
-              <HouseDesignDrawingInfoTable
-                designData={projectDetail.HouseDesignDrawingInfo}
-              />
-            )}
-          </>
+        {projectDetail.HouseDesignDrawingInfo &&
+        projectDetail.HouseDesignDrawingInfo.length === 0 &&
+        projectDetail.StaffName &&
+        isInitialInfoFinalized &&
+        hasDesignContract ? (
+          <button
+            onClick={() => setIsAssignModalOpen(true)}
+            className="bg-primaryGreenButton text-white p-2 rounded"
+          >
+            Phân công nhân viên
+          </button>
+        ) : (
+          projectDetail.HouseDesignDrawingInfo &&
+          projectDetail.HouseDesignDrawingInfo.length > 0 &&
+          showDesignDrawing && (
+            <HouseDesignDrawingInfoTable
+              designData={projectDetail.HouseDesignDrawingInfo}
+            />
+          )
         )}
 
         {isAssignModalOpen && (
@@ -422,16 +435,16 @@ const ProjectDetail = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowFinalInfo(!showFinalInfo)}
         >
           Báo giá chi tiết
           {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length > 0 &&
             (showFinalInfo ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.FinalInfo &&
@@ -442,16 +455,16 @@ const ProjectDetail = () => {
 
         <hr className="my-4 border-gray-300" />
         <h3
-          className="text-xl font-semibold mb-4 flex items-center"
+          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowContract(!showContract)}
         >
           Hợp đồng
           {projectDetail.ContractInfo &&
             projectDetail.ContractInfo.length > 0 &&
             (showContract ? (
-              <FaChevronUp className="ml-2" />
+              <FaChevronUp className="ml-2 text-secondary" />
             ) : (
-              <FaChevronDown className="ml-2" />
+              <FaChevronDown className="ml-2 text-secondary" />
             ))}
         </h3>
         {projectDetail.ContractInfo &&

@@ -1,3 +1,4 @@
+import { MaterialListResponse, MaterialSectionListResponse } from '../../types/Material';
 import { GetMaterialByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 
@@ -15,5 +16,74 @@ export async function getMaterialByName(
   } catch (error) {
     console.error(`Error fetching material by name ${name}:`, error);
     throw new Error('Failed to fetch material by name');
+  }
+}
+
+export async function getMaterialSectionList(
+  page: number,
+  size: number
+): Promise<MaterialSectionListResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/materialsection', {
+      params: { page, size },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching material section list:', error);
+    throw new Error('Failed to fetch material section list');
+  }
+}
+
+export async function getMaterialList(
+  page: number,
+  size: number
+): Promise<MaterialListResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/material', {
+      params: { page, size },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching material list:', error);
+    throw new Error('Failed to fetch material list');
+  }
+}
+
+export async function getMaterialById(id: string) {
+  try {
+    const response = await requestWebRHCQS.get(`/material/id?id=${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching material by id:', error);
+    throw new Error('Failed to fetch material by id');
+  }
+}
+
+export async function createMaterialSection(data: any) {
+  try {
+    const response = await requestWebRHCQS.post('/materialsection', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating material section:', error);
+    throw new Error('Failed to create material section');
+  }
+}
+
+export async function updateMaterialSection(id: string, name: string) {
+  try {
+    const response = await requestWebRHCQS.put(
+      `/materialsection?id=${id}`,
+      { name },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating material section ${id}:`, error);
+    throw new Error('Failed to update material section');
   }
 }

@@ -5,6 +5,7 @@ import { uploadFile } from '../../../api/Upload/UploadApi';
 import { createDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
 import { CreateDesignRequest } from '../../../types/HouseDesignVersionTypes';
+import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
 import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
@@ -23,36 +24,16 @@ import {
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
-interface VersionProps {
-  Id: string;
-  Name: string;
-  Version: number;
-  FileUrl: string;
-  InsDate: string;
-  PreviousDrawingId: string | null;
-  NamePrevious: string | null;
-  Note: string;
-}
-
-interface HouseDesignDetailProps {
-  Id: string;
-  ProjectId: string;
-  Name: string;
-  Step: number;
-  Status: string;
-  Type: string;
-  IsCompany: boolean;
-  InsDate: string;
-  Versions: VersionProps[];
-}
-
 const HouseDesignDetailStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
-    useState<HouseDesignDetailProps | null>(null);
+    useState<HouseDesignDetailResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [uploading, setUploading] = useState<boolean>(false);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
+    null,
+  );
 
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
@@ -65,7 +46,16 @@ const HouseDesignDetailStaff: React.FC = () => {
 
     try {
       const response = await getHouseDesignById(id);
-      setDesignDetail(response.data);
+      const designData = response.data;
+      console.log('ds', designData);
+      setDesignDetail(designData);
+
+      const defaultVersion = designData.Versions.find(
+        (version) => version.Version === designData.VersionPresent,
+      );
+      if (defaultVersion) {
+        setSelectedVersionId(defaultVersion.Id);
+      }
     } catch (error) {
       console.error('Error fetching design detail:', error);
     } finally {
@@ -137,8 +127,8 @@ const HouseDesignDetailStaff: React.FC = () => {
         </h2>
         <WorkDetailStatusTracker currentStatus={designDetail.Status} />
         <div className="flex items-start">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/2 flex-none">
-            <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-1/5 flex-none">
+            <div className="flex flex-col gap-4">
               <p className="flex items-center">
                 <FiPenTool className="mr-2" />
                 {designDetail.Name}
@@ -151,20 +141,15 @@ const HouseDesignDetailStaff: React.FC = () => {
                 <FiType className="mr-2" />
                 <strong className="mr-2">Loại:</strong> {designDetail.Type}
               </p>
-              {/* <p className="flex items-center">
-                <FiBriefcase className="mr-2" />
-                <strong className="mr-2">Is Company:</strong>{' '}
-                {designDetail.IsCompany ? 'Yes' : 'No'}
-              </p> */}
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />
-                <strong className="mr-2">Ngày tạo:</strong>{' '}
+                <strong className="mr-2">Ngày tạo:</strong>
                 {new Date(designDetail.InsDate).toLocaleDateString()}
               </p>
             </div>
           </div>
-          <div className="p-6 rounded-lg bg-white shadow-lg w-1/2 ml-4 flex-grow">
-            <h3 className="text-xl font-bold">Versions</h3>
+          <div className="p-6 rounded-lg bg-white shadow-lg w-4/5 ml-4 flex-grow">
+            <h3 className="text-xl font-bold">Phiên bản</h3>
             <table className="w-full table-auto mt-4">
               <thead>
                 <tr className="bg-gray-2 text-left dark:bg-meta-4">
@@ -181,14 +166,24 @@ const HouseDesignDetailStaff: React.FC = () => {
                     Ngày tạo
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Ghi chú
+                    Ghi chú khách hàng
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Lý do
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
                 </tr>
               </thead>
               <tbody>
                 {designDetail.Versions.map((version, index) => (
-                  <tr key={version.Id}>
+                  <tr
+                    key={version.Id}
+                    className={`cursor-pointer ${
+                      selectedVersionId === version.Id
+                        ? 'bg-primary text-white'
+                        : ''
+                    }`}
+                  >
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       {index + 1}
                     </td>
@@ -202,7 +197,10 @@ const HouseDesignDetailStaff: React.FC = () => {
                       {new Date(version.InsDate).toLocaleDateString()}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {version.Note || 'N/A'}
+                      {version.Note || ''}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {version.Reason || ''}
                     </td>
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a

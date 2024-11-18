@@ -1,5 +1,6 @@
 import { AxiosResponse } from 'axios';
 import requestWebRHCQS from '../../utils/axios';
+import { HouseDesignDetailResponse } from '../../types/HouseDesignTypes';
 
 export const createHouseDesign = async (data: {
   projectId: string;
@@ -46,16 +47,19 @@ export const getHouseDesigns = async (
 
 export const getHouseDesignById = async (
   id: string,
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponse<HouseDesignDetailResponse>> => {
   try {
-    const response = await requestWebRHCQS.get(`/housedesign/id`, {
-      params: {
-        id,
+    const response = await requestWebRHCQS.get<HouseDesignDetailResponse>(
+      `/housedesign/id`,
+      {
+        params: {
+          id,
+        },
+        headers: {
+          accept: 'text/plain',
+        },
       },
-      headers: {
-        accept: 'text/plain',
-      },
-    });
+    );
     return response;
   } catch (error) {
     console.error('Error fetching house design by id:', error);

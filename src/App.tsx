@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
@@ -25,9 +24,9 @@ import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx'
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import BlogList from './components/BlogList.tsx';
-import ContractDetail from './pages/SalesStaff/Contract/ContractDetail.tsx';
+import ContractDetail from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
-import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuote.tsx';
+import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
 import FinalQuotationDetailManager from './pages/Manager/FinalQuotation/FinalQuotationDetailManager.tsx';
@@ -42,16 +41,18 @@ import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDe
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
 import Settings from './pages/Settings.tsx';
+import MaterialSectionList from './pages/Manager/Material/MaterialSectionList.tsx';
 
 // ... existing imports ...
+import ScrollToTop from './components/ScrollToTop';
+import SupplierList from './pages/Supplier/SupplierList.tsx';
+import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
+import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
+import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
@@ -63,6 +64,7 @@ function App() {
     <Loader />
   ) : (
     <>
+      <ScrollToTop />
       {isAuthPage ? (
         <Routes>
           <Route
@@ -98,16 +100,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Manager
-            <Route
-              path="/blog-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Blog Manager | RHCQS - Residential Housing Construction Quotation System" />
-                  <BlogList />
-                </PrivateRoute>
-              }
-            />
+            {/* Manager Routes */}
             <Route
               path="/project-list-manager"
               element={
@@ -190,6 +183,24 @@ function App() {
               }
             />
             <Route
+              path="/material-section-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
+                  <MaterialSectionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/supplier-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
+                  <SupplierList />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/account-list-manager"
               element={
                 <PrivateRoute allowedRoles={['Manager']}>
@@ -226,6 +237,15 @@ function App() {
               }
             />
             <Route
+              path="/contract-detail-manager/:contractId"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
+                  <ContractDetailManager />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/house-design-detail-manager/:id"
               element={
                 <PrivateRoute allowedRoles={['Manager']}>
@@ -234,7 +254,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Sale Staff
+            {/* Sales Staff Routes */}
             <Route
               path="/project-list-staff"
               element={
@@ -290,6 +310,15 @@ function App() {
               }
             />
             <Route
+              path="/create-new-final-quotation-staff/:id"
+              element={
+                <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+                  <CreateNewFinalQuotationStaff />
+                </PrivateRoute>
+              }
+            />
+            <Route
               path="/create-initial-quote/:projectId"
               element={
                 <PrivateRoute allowedRoles={['SalesStaff']}>
@@ -326,11 +355,11 @@ function App() {
               }
             />
             <Route
-              path="/contract-detail/:contractId"
+              path="/contract-detail-staff/:contractId"
               element={
-                <PrivateRoute allowedRoles={['SalesStaff', 'Manager']}>
+                <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ContractDetail />
+                  <ContractDetailStaff />
                 </PrivateRoute>
               }
             />
@@ -343,7 +372,16 @@ function App() {
                 </PrivateRoute>
               }
             />
-            // Design staff
+            <Route
+              path="/blog-list-staff"
+              element={
+                <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PageTitle title="Blog List Staff | RHCQS - Residential Housing Construction Quotation System" />
+                  <BlogList />
+                </PrivateRoute>
+              }
+            />
+            {/* Design Staff Routes */}
             <Route
               path="/house-design-list"
               element={
