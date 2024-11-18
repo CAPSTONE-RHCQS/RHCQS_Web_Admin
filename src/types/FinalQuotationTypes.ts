@@ -73,7 +73,7 @@ export interface UtilityInfo {
 }
 
 export interface ConstructionDetail {
-  Type: string;
+  Type: string | null;
   TotalPriceRough: number;
   TotalPriceLabor: number;
 }

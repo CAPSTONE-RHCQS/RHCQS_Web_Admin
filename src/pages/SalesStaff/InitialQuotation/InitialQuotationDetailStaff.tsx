@@ -14,6 +14,7 @@ import {
   QuotationUtility,
 } from '../../../types/InitialQuotationTypes';
 import { FaCommentDots } from 'react-icons/fa';
+import ChatBox from '../../../components/ChatBox';
 
 const InitialQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +31,7 @@ const InitialQuotationDetailStaff = () => {
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
   const [othersAgreement, setOthersAgreement] = useState<string>(
-    quotationData?.OthersAgreement || ''
+    quotationData?.OthersAgreement || '',
   );
   const navigate = useNavigate();
 
@@ -100,6 +101,14 @@ const InitialQuotationDetailStaff = () => {
           >
             <FaCommentDots className="text-2xl" />
           </button>
+        )}
+
+        {showChat && quotationData && (
+          <ChatBox
+            onClose={toggleChat}
+            accountName={quotationData.AccountName}
+            note={quotationData.Note}
+          />
         )}
 
         <InitialQuotationStatusTracker

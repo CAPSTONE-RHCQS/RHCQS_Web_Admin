@@ -19,6 +19,7 @@ const statusMapping: Record<string, string> = {
   Rejected: 'Bị từ chối',
   Approved: 'Đã xác nhận',
   Updating: 'Đang chỉnh sửa',
+  Updated: 'Đã cập nhật',
   Accepted: 'Chấp nhận bản vẽ',
   Finalized: 'Hoàn thành',
   Canceled: 'Bị đóng',
@@ -30,6 +31,7 @@ const statuses = [
   { label: 'Bị từ chối', icon: <FaTimes /> },
   { label: 'Đã xác nhận', icon: <FaCheck /> },
   { label: 'Đang chỉnh sửa', icon: <FaEdit /> },
+  { label: 'Đã cập nhật', icon: <FaEdit /> },
   { label: 'Chấp nhận bản vẽ', icon: <FaCheck /> },
   { label: 'Hoàn thành', icon: <FaClipboard /> },
   { label: 'Bị đóng', icon: <FaBan /> },
@@ -45,21 +47,22 @@ const WorkDetailStatusTracker: React.FC<WorkDetailStatusTrackerProps> = ({
 
   return (
     <div className="py-3 flex items-center justify-center w-full">
-      <div className="w-full max-w-4xl flex items-center justify-between px-4">
+      <div className="flex items-center justify-between px-4 space-x-4">
         {statuses.map((status, index) => (
           <React.Fragment key={index}>
             <div className="flex flex-col items-center">
               <div
-                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
+                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                   index <= currentIndex
-                    ? 'bg-primary text-white'
+                    ? 'bg-primary text-white scale-110'
                     : 'bg-customGray text-gray-700'
                 }`}
+                title={status.label}
               >
                 {status.icon}
               </div>
               <span
-                className={`mt-2 text-xs md:text-sm ${
+                className={`mt-2 text-xs md:text-sm transition-all duration-300 ${
                   index <= currentIndex
                     ? 'text-primary font-semibold'
                     : 'text-gray-700'
@@ -70,18 +73,18 @@ const WorkDetailStatusTracker: React.FC<WorkDetailStatusTrackerProps> = ({
             </div>
             {index < statuses.length - 1 && (
               <div
-                className="flex-1 h-1 flex items-center"
+                className="flex-1 h-2 flex items-center"
                 style={{ marginTop: '-20px' }}
               >
                 <div
-                  className="w-full h-1"
+                  className="w-full h-2 transition-all duration-300"
                   style={{
                     background:
                       index < currentIndex
-                        ? '#1F7F81'
+                        ? '#007BFF'
                         : index === currentIndex
-                        ? `linear-gradient(to right, #1F7F81 50%, #E5E5E5 50%)`
-                        : '#E5E5E5',
+                        ? `linear-gradient(to right, #007BFF 50%, #FF5733 50%)`
+                        : '#FF5733',
                   }}
                 />
               </div>

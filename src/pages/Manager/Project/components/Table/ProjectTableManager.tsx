@@ -29,7 +29,6 @@ interface ProjectTableManagerProps {
   data: Project[];
   columns: { key: SortKey; label: string }[];
   handleSort: (key: SortKey) => void;
-  handleDelete: (id: string) => void;
   handleViewDetails: (id: string) => void;
   isLoading: boolean;
 }

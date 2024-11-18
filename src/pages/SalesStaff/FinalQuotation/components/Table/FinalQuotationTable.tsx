@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { FinalQuotationItem } from '../../../../types/FinalQuotationTypes';
-import { getConstructionByName } from '../../../../api/Construction/ConstructionApi';
-import { getLaborByName } from '../../../../api/Labor/Labor';
-import { getMaterialByName } from '../../../../api/Material/Material';
+import { FinalQuotationItem } from '../../../../../types/FinalQuotationTypes';
+import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
+import { getLaborByName } from '../../../../../api/Labor/Labor';
+import { getMaterialByName } from '../../../../../api/Material/Material';
 import {
   Construction,
   Labor,
   Material,
-} from '../../../../types/SearchContainNameTypes';
+} from '../../../../../types/SearchContainNameTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTrash,
@@ -112,7 +112,6 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         ConstructionId: construction.Id,
         SubConstructionId: construction.SubConstructionId || null,
         ContructionName: construction.Name,
-        Coefficient: construction.Coefficient,
       };
       onItemsChange(updatedItems);
       setSearchResults((prev) => ({
@@ -207,19 +206,26 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     textarea.style.height = `${textarea.scrollHeight}px`;
   };
 
+  const calculateColumnTotals = () => {
+    let totalLabor = 0;
+    let totalRough = 0;
+
+    items.forEach(item => {
+      item.QuotationItems.forEach(quotationItem => {
+        totalLabor += quotationItem.TotalPriceLabor || 0;
+        totalRough += quotationItem.TotalPriceRough || 0;
+      });
+    });
+
+    return { totalLabor, totalRough };
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
             <th className="px-4 py-2 border text-center">Tên công trình</th>
-            <th className="px-4 py-2 border text-center">Loại</th>
-            <th
-              className="px-4 py-2 border text-center"
-              style={{ maxWidth: '110px' }}
-            >
-              Hệ số
-            </th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
             <th
               className="px-4 py-2 border text-center"
@@ -310,33 +316,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     item.ContructionName
                   )}
                 </td>
-                <td
-                  className="px-4 py-2 border text-center"
-                  style={{ maxWidth: '150px', verticalAlign: 'middle' }}
-                  rowSpan={item.QuotationItems.length + 1}
-                >
-                  {isEditing ? (
-                    <input
-                      type="text"
-                      value={item.Type}
-                      onChange={(e) => {
-                        const updatedItems = [...items];
-                        updatedItems[index].Type = e.target.value;
-                        onItemsChange(updatedItems);
-                      }}
-                      className="w-full text-center"
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    />
-                  ) : (
-                    item.Type
-                  )}
-                </td>
-                <td
-                  className="px-4 py-2 border text-center"
-                  rowSpan={item.QuotationItems.length + 1}
-                >
-                  {item.Coefficient}
-                </td>
+
                 {isEditing && (
                   <td colSpan={7} className="px-4 py-2 border text-center">
                     <button
@@ -369,8 +349,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                           }
                           className="mb-2"
                         >
-                          <option value="Labor">Labor</option>
-                          <option value="Material">Material</option>
+                          <option value="Labor">Nhân công</option>
+                          <option value="Material">Vật tư</option>
                         </select>
                         <textarea
                           value={quotationItem.Name}
@@ -493,6 +473,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               ))}
             </React.Fragment>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={6} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateColumnTotals().totalLabor.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {calculateColumnTotals().totalRough.toLocaleString()} VNĐ
+            </td>
+            {isEditing && <td className="px-4 py-2 border text-center"></td>}
+          </tr>
         </tbody>
       </table>
     </div>

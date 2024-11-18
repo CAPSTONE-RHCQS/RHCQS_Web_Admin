@@ -21,19 +21,19 @@ const Modal: React.FC<ModalProps> = ({
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
         <h2 className="text-xl font-bold mb-4">{title}</h2>
         <p className="mb-4">{message}</p>
-        {children && <div className="mb-4">{children}</div>} {/* Hiển thị children nếu có */}
+        {children && <div className="mb-4">{children}</div>}
         <div className="flex justify-end">
           <button
             onClick={onCancel}
             className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded mr-2"
           >
-            No
+            Hủy
           </button>
           <button
             onClick={onConfirm}
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
           >
-            Yes
+            Có
           </button>
         </div>
       </div>

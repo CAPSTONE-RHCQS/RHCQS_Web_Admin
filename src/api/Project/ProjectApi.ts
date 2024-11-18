@@ -200,3 +200,34 @@ export const cancelProject = async (projectId: string) => {
     }
   }
 };
+
+export const getProjectsByMultiFilter = async (
+  page: number,
+  size: number,
+  startTime: string,
+  status: string,
+  type: string,
+  code: string,
+  phone: string
+): Promise<ProjectListResponse> => {
+  try {
+    const response = await requestWebRHCQS.get('/project/multi-filter', {
+      params: {
+        page,
+        size,
+        startTime,
+        status,
+        type,
+        code,
+        phone,
+      },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching projects by multi-filter:', error);
+    throw error;
+  }
+};
