@@ -53,16 +53,20 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
         }
         setIsHovered(false);
       }}
-      className={`absolute left-0 top-0 z-9999 flex h-screen ${
+      className={`absolute left-0 top-0 z-9999 flex h-screen transition-all duration-500 ease-in-out ${
         isHovered || sidebarOpen || isPinned ? 'w-72.5' : 'w-25'
       } flex-col overflow-y-hidden bg-linear-gradient duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 ${
         sidebarOpen || isPinned ? 'translate-x-0' : '-translate-x-full'
-      }`}
+      } shadow-xl`}
     >
       {/* <!-- SIDEBAR HEADER --> */}
-      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
+      <div className="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5 bg-gradient-to-tr from-[#2a8b8d] to-[#74b0b2] shadow-md">
         <NavLink to="/">
-          <img src={Logo} alt="Logo" />
+          <img
+            src={Logo}
+            alt="Logo"
+            className="transition-transform duration-300 hover:scale-110"
+          />
         </NavLink>
 
         <div className="flex items-center">
@@ -72,7 +76,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 setIsPinned(false);
                 setSidebarOpen(false);
               }}
-              className="ml-2 text-white"
+              className="ml-2 text-white transition-colors duration-300 hover:text-[#314e34]"
               aria-label="Unpin Sidebar"
             >
               <FontAwesomeIcon icon={faTimes} />
@@ -80,7 +84,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           ) : (
             <button
               onClick={() => setIsPinned(true)}
-              className={`ml-2 text-white ${
+              className={`ml-2 text-white transition-colors duration-300 hover:text-[#314e34] ${
                 !isHovered && !sidebarOpen ? 'hidden' : ''
               }`}
               aria-label="Pin Sidebar"
@@ -101,7 +105,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
             }}
             aria-controls="sidebar"
             aria-expanded={sidebarOpen}
-            className="block lg:hidden"
+            className="block lg:hidden transition-transform duration-300 hover:rotate-180"
           >
             <ArrowIcon />
           </button>
@@ -118,7 +122,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li>
                 <NavLink
                   to="/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white transition-colors duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
                     pathname === '/' && 'bg-teal-300 dark:bg-meta-4'
                   }`}
                 >
@@ -133,6 +137,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {userRole === 'Manager' && (
                 <>
+                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                    Danh sách
+                  </h3>
+
                   {/* <!-- Menu Item ProjectListManager --> */}
                   <li>
                     <NavLink
@@ -173,6 +181,29 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
+                  {/* <!-- Menu Item StaffList --> */}
+                  <li>
+                    <NavLink
+                      to="/account-list-manager"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname.includes('account-list-manager') &&
+                        'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <StaffListManagerIcon />
+                      <span
+                        className={`${
+                          !isHovered && !sidebarOpen ? 'hidden' : ''
+                        }`}
+                      >
+                        Danh sách tài khoản
+                      </span>
+                    </NavLink>
+                  </li>
+
+                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                    Thi công
+                  </h3>
                   {/* <!-- Menu Item PackageManager --> */}
                   <li>
                     <NavLink
@@ -228,30 +259,14 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           !isHovered && !sidebarOpen ? 'hidden' : ''
                         }`}
                       >
-                        Quản lý Dịch vụ và tiện ích
+                        Dịch vụ và Tiện ích
                       </span>
                     </NavLink>
                   </li>
 
-                  {/* <!-- Menu Item PromotionManager --> */}
-                  <li>
-                    <NavLink
-                      to="/promotion-list-manager"
-                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                        pathname.includes('/promotion-list-manager') &&
-                        'bg-teal-300 dark:bg-meta-4'
-                      }`}
-                    >
-                      <PromotionManagerIcon />
-                      <span
-                        className={`${
-                          !isHovered && !sidebarOpen ? 'hidden' : ''
-                        }`}
-                      >
-                        Quản lý khuyến mãi
-                      </span>
-                    </NavLink>
-                  </li>
+                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                    Khác
+                  </h3>
 
                   {/* <!-- Menu Item MaterialSectionManager --> */}
                   <li>
@@ -288,27 +303,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           !isHovered && !sidebarOpen ? 'hidden' : ''
                         }`}
                       >
-                        Quản lý nhà cung cấp
+                        Các nhà cung cấp
                       </span>
                     </NavLink>
                   </li>
 
-                  {/* <!-- Menu Item StaffList --> */}
+                  {/* <!-- Menu Item PromotionManager --> */}
                   <li>
                     <NavLink
-                      to="/account-list-manager"
+                      to="/promotion-list-manager"
                       className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                        pathname.includes('account-list-manager') &&
+                        pathname.includes('/promotion-list-manager') &&
                         'bg-teal-300 dark:bg-meta-4'
                       }`}
                     >
-                      <StaffListManagerIcon />
+                      <PromotionManagerIcon />
                       <span
                         className={`${
                           !isHovered && !sidebarOpen ? 'hidden' : ''
                         }`}
                       >
-                        Quản lý tài khoản
+                        Quản lý khuyến mãi
                       </span>
                     </NavLink>
                   </li>
