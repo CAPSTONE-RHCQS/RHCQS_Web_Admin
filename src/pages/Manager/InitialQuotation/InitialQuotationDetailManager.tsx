@@ -5,7 +5,7 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
-import ConstructionAreaTable from '../../Quote/components/Table/ConstructionAreaTable';
+import ConstructionAreaTable from './Table/ConstructionAreaTable';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import { formatCurrencyShort } from '../../../utils/format';
 import {
