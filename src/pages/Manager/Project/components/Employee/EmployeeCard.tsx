@@ -8,6 +8,7 @@ import {
   FaDollarSign,
 } from 'react-icons/fa';
 import { IconType } from 'react-icons';
+import Fee from '../../../../../images/fee.jpg';
 
 interface EmployeeCardProps {
   avatar: string | null;
@@ -55,9 +56,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
     >
       <div className="relative w-20 h-20 mb-4">
         <img
-          src={
-            avatar || 'https://png.pngtree.com/png-clipart/20240316/original/pngtree-avatar-cartoon-in-flat-style-png-image_14608459.png'
-          }
+          src={avatar || Fee}
           alt={name}
           className="w-full h-full rounded-full border-2 border-customerCard500"
         />
