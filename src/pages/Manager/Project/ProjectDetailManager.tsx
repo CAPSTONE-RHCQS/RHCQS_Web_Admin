@@ -210,6 +210,10 @@ const ProjectDetailManager = () => {
       contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
   );
 
+  const resetSelectedEmployees = () => {
+    setSelectedEmployees({});
+  };
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -236,14 +240,6 @@ const ProjectDetailManager = () => {
                   >
                     <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
-                  </a>
-                  <a
-                    href="#"
-                    onClick={() => handleMenuItemClick('assign')}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaUserPlus className="mr-2" />
-                    Phân công nhân viên
                   </a>
                   <a
                     href="#"
@@ -309,13 +305,14 @@ const ProjectDetailManager = () => {
 
           <ContactCard
             data={{
-              staffName: projectDetail.StaffName || 'Chờ phân công...',
+              staffName: projectDetail.StaffName || 'Phân công nhân viên',
               staffPhone: projectDetail.StaffPhone || '',
             }}
             fields={[
               { key: 'staffName', label: 'Name' },
               { key: 'staffPhone', label: 'Phone' },
             ]}
+            onClick={() => handleMenuItemClick('assign')}
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
@@ -410,6 +407,7 @@ const ProjectDetailManager = () => {
               Thiết kế bản vẽ
             </AccordionHeader>
             {projectDetail.HouseDesignDrawingInfo &&
+            projectDetail.HouseDesignDrawingInfo.length < 0 &&
             projectDetail.StaffName &&
             isInitialInfoFinalized &&
             hasDesignContract ? (
@@ -432,24 +430,22 @@ const ProjectDetailManager = () => {
           </Accordion>
           {isAssignModalOpen && (
             <AssignModal
-              onClose={() => setIsAssignModalOpen(false)}
+              onClose={() => {
+                setIsAssignModalOpen(false);
+                resetSelectedEmployees();
+              }}
               onAssign={handleAssignDesigners}
               setCurrentCategory={setCurrentCategory}
               setShowEmployeeDialog={setShowEmployeeDialog}
               selectedEmployees={selectedEmployees}
+              resetSelectedEmployees={resetSelectedEmployees}
             />
           )}
           {showEmployeeDialog && (
-            <Dialog
-              open={showEmployeeDialog}
-              handler={handleCloseEmployeeDialog}
-            >
-              <div className="p-4">
-                <HouseDesignDrawingEmployeeList
-                  onSelectEmployee={handleSelectEmployee}
-                />
-              </div>
-            </Dialog>
+            <HouseDesignDrawingEmployeeList
+              onSelectEmployee={handleSelectEmployee}
+              onClose={handleCloseEmployeeDialog}
+            />
           )}
           {/* <!-- Thiết kế bản vẽ --> */}
 
