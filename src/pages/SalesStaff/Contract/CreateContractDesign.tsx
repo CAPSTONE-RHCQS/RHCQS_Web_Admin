@@ -37,6 +37,8 @@ const CreateContractDesign = () => {
     },
   ]);
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChangeContractDetails = (
     field: keyof CreateContractDesignRequest,
     value: string | number,
@@ -83,6 +85,8 @@ const CreateContractDesign = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const requestBody: CreateContractDesignRequest = {
       ...contractDetails,
       batchPaymentRequests: batchPayments.map((payment) => ({
@@ -91,7 +95,6 @@ const CreateContractDesign = () => {
       })),
     };
 
-    console.log('Request Body:', requestBody);
 
     try {
       const response = await createContractDesign(requestBody);
@@ -101,6 +104,8 @@ const CreateContractDesign = () => {
     } catch (error) {
       console.error('Error creating contract:', error);
       toast.error('Có lỗi xảy ra khi tạo hợp đồng.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -349,6 +354,7 @@ const CreateContractDesign = () => {
           <button
             type="submit"
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+            disabled={isSubmitting}
           >
             Lưu
           </button>
