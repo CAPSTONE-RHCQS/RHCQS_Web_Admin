@@ -234,7 +234,7 @@ const FinalQuotationDetailStaff = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen">
       {showChat && quotationDetail && (
         <ChatBox
           onClose={toggleChat}
@@ -456,7 +456,7 @@ const FinalQuotationDetailStaff = () => {
           <BatchPaymentTable
             payments={quotationDetail.BatchPaymentInfos}
             isEditing={isEditing}
-            totalPrice={quotationDetail.TotalPrice}
+            totalPrice={calculateTotalPrice()}
             onPaymentsChange={handleBatchPaymentsChange}
           />
         )}

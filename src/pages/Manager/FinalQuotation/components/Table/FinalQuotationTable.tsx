@@ -6,13 +6,32 @@ interface FinalQuotationTableProps {
 }
 
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
+  const totalLaborCost = items.reduce((total, item) => {
+    return (
+      total +
+      item.QuotationItems.reduce(
+        (subTotal, qItem) => subTotal + (qItem.TotalPriceLabor || 0),
+        0
+      )
+    );
+  }, 0);
+
+  const totalRoughCost = items.reduce((total, item) => {
+    return (
+      total +
+      item.QuotationItems.reduce(
+        (subTotal, qItem) => subTotal + (qItem.TotalPriceRough || 0),
+        0
+      )
+    );
+  }, 0);
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
             <th className="px-4 py-2 border text-center">Tên công trình</th>
-            <th className="px-4 py-2 border text-center">Loại</th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
             <th className="px-4 py-2 border text-center">Đơn vị</th>
             <th className="px-4 py-2 border text-center">Số lượng</th>
@@ -34,12 +53,6 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                 >
                   {item.ContructionName}
                 </td>
-                <td
-                  className="px-4 py-2 border text-center"
-                  rowSpan={item.QuotationItems.length + 1}
-                >
-                  {item.Type}
-                </td>
               </tr>
               {item.QuotationItems.map((quotationItem) => (
                 <tr key={quotationItem.Id}>
@@ -53,25 +66,40 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                     {quotationItem.Weight}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceLabor?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.UnitPriceLabor
+                      ? `${quotationItem.UnitPriceLabor.toLocaleString()} VNĐ`
+                      : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.UnitPriceRough?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.UnitPriceRough
+                      ? `${quotationItem.UnitPriceRough.toLocaleString()} VNĐ`
+                      : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceLabor?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.TotalPriceLabor
+                      ? `${quotationItem.TotalPriceLabor.toLocaleString()} VNĐ`
+                      : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {quotationItem.TotalPriceRough?.toLocaleString() || 'null'}{' '}
-                    VNĐ
+                    {quotationItem.TotalPriceRough
+                      ? `${quotationItem.TotalPriceRough.toLocaleString()} VNĐ`
+                      : ''}
                   </td>
                 </tr>
               ))}
             </React.Fragment>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={6} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalLaborCost.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalRoughCost.toLocaleString()} VNĐ
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

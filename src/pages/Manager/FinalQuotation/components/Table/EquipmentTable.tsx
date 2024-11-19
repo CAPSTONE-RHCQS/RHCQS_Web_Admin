@@ -6,6 +6,11 @@ interface EquipmentTableProps {
 }
 
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ items }) => {
+  const totalMaterialCost = items.reduce(
+    (total, item) => total + item.TotalOfMaterial,
+    0
+  );
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
@@ -32,10 +37,19 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ items }) => {
                 {item.TotalOfMaterial.toLocaleString()} VNĐ
               </td>
               <td className="px-4 py-2 border text-center">
-                {item.Note || 'N/A'}
+                {item.Note || ''}
               </td>
             </tr>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={4} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalMaterialCost.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center"></td>
+          </tr>
         </tbody>
       </table>
     </div>

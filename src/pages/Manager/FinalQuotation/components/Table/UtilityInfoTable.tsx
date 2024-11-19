@@ -6,6 +6,8 @@ interface UtilityInfoTableProps {
 }
 
 const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({ utilities }) => {
+  const totalPrice = utilities.reduce((total, util) => total + util.Price, 0);
+
   return (
     <div className="overflow-x-auto mb-4">
       <table className="min-w-full bg-white border border-gray-200">
@@ -26,6 +28,14 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({ utilities }) => {
               <td className="px-4 py-2 border text-center">{util.Price}</td>
             </tr>
           ))}
+          <tr className="bg-gray-200">
+            <td colSpan={2} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalPrice.toLocaleString()}
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
