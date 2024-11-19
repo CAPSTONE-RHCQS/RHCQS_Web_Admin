@@ -107,7 +107,7 @@ const EditSupplier: React.FC<EditModalProps> = ({
           className="border p-2 mb-4 w-full rounded font-regular"
           onChange={(e) => onInputChange('Code', e.target.value)}
           placeholder="Nhập mã nhà cung cấp"
-          minLength={5}
+          maxLength={5}
         />
         <div className="flex justify-end space-x-2">
           <button

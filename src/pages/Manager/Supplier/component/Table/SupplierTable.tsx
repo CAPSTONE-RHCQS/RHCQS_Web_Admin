@@ -3,7 +3,10 @@ import { FaEdit, FaPlus } from 'react-icons/fa';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import EditSupplier from '../Edit/EditSuplier';
-import { SupplierItem, UpdateSupplierRequest } from '../../../../../types/Supplier';
+import {
+  SupplierItem,
+  UpdateSupplierRequest,
+} from '../../../../../types/Supplier';
 import { updateSupplier } from '../../../../../api/Supplier/Supplier';
 
 interface SupplierTableProps {
@@ -22,7 +25,6 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
   currentEditId,
   refreshData,
 }) => {
-  const [activeEditIndex, setActiveEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
   const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
     Name: '',
@@ -81,8 +83,6 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     try {
       if (currentEditId) {
         await updateSupplier(currentEditId, inputValue);
-        console.log('inputValue', inputValue);
-        console.log('thành công');
         setAlertMessage('Sửa thành công');
         setAlertType('success');
         refreshData();
@@ -90,10 +90,6 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     } catch (error) {
       setAlertMessage('Sửa thất bại');
       setAlertType('error');
-    } finally {
-      setTimeout(() => {
-        setIsModalOpen(false);
-      }, 1000);
     }
   };
 

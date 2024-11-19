@@ -1,14 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   MaterialItem,
+  MaterialRequest,
   MaterialSectionItem,
 } from '../../../../../types/Material';
 import { FaEye, FaEdit, FaPlus } from 'react-icons/fa';
 import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
 import EditMaterialSection from '../Edit/EditMaterialSection';
 import EditMaterial from '../Edit/EditMaterial';
-import { updateMaterialSection } from '../../../../../api/Material/Material';
+import {
+  updateMaterialSection,
+  updateMaterial,
+} from '../../../../../api/Material/Material';
 import Alert from '../../../../../components/Alert';
+import CreateMaterial from '../Create/CreateMaterial';
 
 interface MaterialTableProps {
   dataMaterialSection: MaterialSectionItem[];
@@ -43,17 +48,34 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     null,
   );
   const editRef = useRef<HTMLDivElement | null>(null);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+  const [currentSectionId, setCurrentSectionId] = useState<string | null>(null);
 
   useEffect(() => {
     setIsModalOpen(editModalOpen);
   }, [editModalOpen]);
+
+  const handleCreateClick = (sectionId: string) => {
+    setCurrentSectionId(sectionId);
+    setIsCreateModalOpen(true);
+  };
+
+  const handleEditSuccess = async (
+    id: string,
+    materialDetail: MaterialRequest,
+  ) => {
+    await updateMaterial(id, materialDetail);
+    setAlertMessage('Sửa vật liệu thành công');
+    setAlertType('success');
+    refreshData();
+    setSelectedMaterialId(null);
+  };
 
   const handleEditClick = (
     event: React.MouseEvent,
     id: string,
     name: string,
     code: string,
-    
   ) => {
     event.stopPropagation();
     setInputNameValue(name);
@@ -89,6 +111,12 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const handleCreateSuccess = (message: string) => {
+    setAlertMessage(message);
+    setAlertType('success');
+    refreshData();
   };
 
   return (
@@ -143,10 +171,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                         </button>
                         <button
                           className="cursor-pointer text-green-500"
-                          onClick={() => {
-                            console.log('Thêm mới vật tư');
-                            setActiveEditIndex(null);
-                          }}
+                          onClick={() => handleCreateClick(item.Id.toString())}
                           title="Thêm mới vật tư"
                         >
                           <FaPlus className="w-4 h-4" />
@@ -192,7 +217,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                         {dataMaterial
                           .filter(
                             (material) =>
-                              material.MaterialSectionName === item.Name,
+                              material.MaterialSectionId === item.Id,
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
@@ -221,7 +246,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           ))}
                         {dataMaterial.filter(
                           (material) =>
-                            material.MaterialSectionName === item.Name,
+                            material.MaterialSectionId === item.Id,
                         ).length === 0 && (
                           <tr>
                             <td
@@ -254,6 +279,14 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
         />
       )}
 
+      {isCreateModalOpen && (
+        <CreateMaterial
+          id={currentSectionId ?? ''}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={handleCreateSuccess}
+        />
+      )}
+
       {alertMessage && (
         <Alert
           message={alertMessage}
@@ -266,6 +299,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
         <EditMaterial
           id={selectedMaterialId}
           onClose={() => setSelectedMaterialId(null)}
+          onSuccess={handleEditSuccess}
         />
       )}
     </>

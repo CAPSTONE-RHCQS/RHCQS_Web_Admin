@@ -52,3 +52,12 @@ export async function updateSupplier(id: string, data: UpdateSupplierRequest) {
     }
 }
 
+export async function searchSupplier(name: string) {
+    try {
+        const response = await requestWebRHCQS.get(`/supplier/name?name=${name}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error searching supplier:', error);
+        throw new Error('Failed to search supplier');
+    }
+}

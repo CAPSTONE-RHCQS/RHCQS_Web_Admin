@@ -38,7 +38,7 @@ const MaterialSectionList: React.FC = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getMaterialList(page, 10).then((dataMaterial) => {
+    getMaterialList(1, 1000).then((dataMaterial) => {
       setDataMaterial(dataMaterial.Items);
     });
     getMaterialSectionList(page, 10).then((data) => {

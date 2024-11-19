@@ -109,6 +109,7 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
           onChange={(e) => onInputChange('Code', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập mã nhà cung cấp"
+          maxLength={5}
         />
         <div className="flex justify-end space-x-2">
           <button
