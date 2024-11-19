@@ -24,7 +24,6 @@ import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx'
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import BlogList from './components/BlogList.tsx';
-import ContractDetail from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
@@ -432,7 +431,7 @@ function App() {
           </Routes>
         </DefaultLayout>
       )}
-      <ToastContainer position="bottom-right" autoClose={5000} />
+      <ToastContainer position="top-right" autoClose={5000} />
     </>
   );
 }
