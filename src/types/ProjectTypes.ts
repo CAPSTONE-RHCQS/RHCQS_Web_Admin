@@ -13,6 +13,7 @@ export interface HouseDesignDrawingInfo {
   Type: string;
   InsDate: string;
   Status: string;
+  DesignName: string;
 }
 
 export interface FinalInfo {
@@ -33,6 +34,8 @@ export interface ContractInfo {
 export interface ProjectDetail {
   Id: string;
   Name: string;
+  Phone: string;
+  Avatar: string;
   AccountName: string;
   Address: string;
   Area: number;

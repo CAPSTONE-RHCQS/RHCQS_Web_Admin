@@ -1,4 +1,5 @@
 import requestWebRHCQS from '../../utils/axios';
+import { ProjectDetail } from '../../types/ProjectTypes';
 
 interface ProjectItem {
   Id: string;
@@ -110,9 +111,9 @@ export const getProjectsListSalesStaff = async (
   }
 };
 
-export const getProjectDetail = async (id: string) => {
+export const getProjectDetail = async (id: string): Promise<ProjectDetail> => {
   try {
-    const response = await requestWebRHCQS.get(`/project/id`, {
+    const response = await requestWebRHCQS.get<ProjectDetail>(`/project/id`, {
       params: {
         id,
       },

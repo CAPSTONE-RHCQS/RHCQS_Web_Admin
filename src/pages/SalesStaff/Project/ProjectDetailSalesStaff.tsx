@@ -195,15 +195,13 @@ const ProjectDetailSalesStaff = () => {
           <ContactCard
             data={{
               fullName: projectDetail.AccountName || '',
-              // phoneNumber: '0965486940',
-              // emailAddress: 'email@fpt.edu.vn',
+              phoneNumber: projectDetail.Phone || '',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
               { key: 'phoneNumber', label: 'Phone' },
-              { key: 'emailAddress', label: 'Email' },
             ]}
-            avatarUrl={Avatar}
+            avatarUrl={projectDetail.Avatar}
           />
           <ContactCard
             data={{
