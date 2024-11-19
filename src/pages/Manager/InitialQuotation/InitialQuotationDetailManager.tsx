@@ -57,8 +57,6 @@ const InitialQuotationDetailManager = () => {
         setQuotationData(data);
         setVersion(data.Version || null);
 
-        const comboDonGia = data.PackageQuotationList.UnitPackageFinished || 0;
-
         const updatedTableData = data.ItemInitial.map((item, index) => {
           const coefficient =
             item.Coefficient !== 0
@@ -82,7 +80,7 @@ const InitialQuotationDetailManager = () => {
           0,
         );
 
-        let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
+        let giaTriHopDong = totalRough + totalUtilities;
 
         if (data.PromotionInfo && data.PromotionInfo.Value !== null) {
           const discountValue =
@@ -228,7 +226,9 @@ const InitialQuotationDetailManager = () => {
         )}
 
         <InitialQuotationStatusTracker
-          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status || '')}
+          currentStatus={getStatusLabelInitalQuoteDetail(
+            quotationData.Status || '',
+          )}
         />
       </div>
       <div className="flex justify-end space-x-2">
@@ -262,9 +262,14 @@ const InitialQuotationDetailManager = () => {
           </h2>
           <div className="text-right">
             <span className="font-semibold">Phiên bản:</span>
-            <span className="text-gray-700 ml-2">{quotationData.Version || ''}</span>
+            <span className="text-gray-700 ml-2">
+              {quotationData.Version || ''}
+            </span>
             <div className="text-gray-500 text-sm">
-              Tạo lúc {quotationData.InsDate ? new Date(quotationData.InsDate).toLocaleString() : ''}
+              Tạo lúc{' '}
+              {quotationData.InsDate
+                ? new Date(quotationData.InsDate).toLocaleString()
+                : ''}
             </div>
           </div>
         </div>
@@ -276,14 +281,16 @@ const InitialQuotationDetailManager = () => {
             </p>
             <p className="mb-2">
               {quotationData.PackageQuotationList.PackageRough || ''} -{' '}
-              {quotationData.PackageQuotationList.UnitPackageRough?.toLocaleString() || ''}{' '}
+              {quotationData.PackageQuotationList.UnitPackageRough?.toLocaleString() ||
+                ''}{' '}
               đồng/m²
             </p>
             {quotationData.PackageQuotationList.PackageFinished &&
               quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
                 <p className="mb-2">
                   {quotationData.PackageQuotationList.PackageFinished} -{' '}
-                  {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() || ''}{' '}
+                  {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() ||
+                    ''}{' '}
                   đồng/m²
                 </p>
               )}

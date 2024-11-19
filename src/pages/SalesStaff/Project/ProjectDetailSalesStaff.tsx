@@ -364,6 +364,7 @@ const ProjectDetailSalesStaff = () => {
             </AccordionHeader>
             {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length === 0 &&
+            
             isFinalized ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"

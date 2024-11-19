@@ -211,6 +211,7 @@ const ProjectDetailManager = () => {
       contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
   );
 
+  console.log('isInitialInfoFinalized', isInitialInfoFinalized);
   const resetSelectedEmployees = () => {
     setSelectedEmployees({});
   };
@@ -406,7 +407,7 @@ const ProjectDetailManager = () => {
               Thiết kế bản vẽ
             </AccordionHeader>
             {projectDetail.HouseDesignDrawingInfo &&
-            projectDetail.HouseDesignDrawingInfo.length < 0 &&
+            projectDetail.HouseDesignDrawingInfo.length === 0 &&
             projectDetail.StaffName &&
             isInitialInfoFinalized &&
             hasDesignContract ? (
