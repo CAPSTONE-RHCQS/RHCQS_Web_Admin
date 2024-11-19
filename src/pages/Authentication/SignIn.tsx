@@ -44,6 +44,7 @@ const SignIn: React.FC = () => {
           decodedToken[
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ],
+        ImgUrl: decodedToken.ImgUrl,
       };
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', data.Token);
