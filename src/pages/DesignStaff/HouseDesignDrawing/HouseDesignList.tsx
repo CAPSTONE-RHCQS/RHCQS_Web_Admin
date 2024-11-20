@@ -17,6 +17,17 @@ interface HouseDesign {
   Versions: any[];
 }
 
+const statusMap: { [key: string]: string } = {
+  Processing: 'Đang xử lý',
+  Rejected: 'Bị từ chối',
+  Updating: 'Đang chỉnh sửa',
+  Reviewing: 'Chờ xác nhận từ quản lý',
+  Approved: 'Quản lý đã xác nhận',
+  Accepted: 'Đã xác nhận',
+  Canceled: 'Đã đóng',
+  Finalized: 'Đã hoàn thành',
+};
+
 const HouseDesignList: React.FC = () => {
   const [designs, setDesigns] = useState<HouseDesign[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -71,7 +82,10 @@ const HouseDesignList: React.FC = () => {
         </div>
         <div className="max-w-full overflow-x-auto">
           <HouseDesignTable
-            data={designs}
+            data={designs.map(design => ({
+              ...design,
+              Status: statusMap[design.Status] || design.Status,
+            }))}
             isLoading={loading}
             onEditSuccess={handleRefresh}
           />

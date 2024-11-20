@@ -87,7 +87,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
               </span>
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Note ?? 'N/A'}
+              {item.Note ?? ''}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical
@@ -101,7 +101,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
                 >
                   <div className="py-2">
                     <Link
-                      to={`/contract-detail/${item.Id}`}
+                      to={`/contract-detail-manager/${item.Id}`}
                       className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                     >
                       Xem chi tiết

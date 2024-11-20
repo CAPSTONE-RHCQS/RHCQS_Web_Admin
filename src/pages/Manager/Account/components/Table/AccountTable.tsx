@@ -5,6 +5,7 @@ import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import AccountDetailModal from '../../../../../components/Account/AccountDetailModal';
 import { ClipLoader } from 'react-spinners';
 import { Account } from '../../../../../types/Account';
+import UserOne from '../../../../../images/user/user-01.png';
 
 type SortKey = string;
 
@@ -79,7 +80,7 @@ const TableRow: React.FC<{
         {column.key === 'avatar' ? (
           <div className="relative w-20 h-20">
             <img
-              src={item.avatar}
+              src={item.avatar || UserOne}
               alt="Avatar"
               className="w-full h-full rounded-full border-2 border-gray-300 shadow-lg"
             />

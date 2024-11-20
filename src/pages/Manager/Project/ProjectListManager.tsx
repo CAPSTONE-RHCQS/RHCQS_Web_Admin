@@ -1,15 +1,5 @@
 import { useState, useEffect } from 'react';
-import {
-  FaSpinner,
-  FaClipboardCheck,
-  FaFileContract,
-  FaHourglassHalf,
-  FaCheck,
-  FaBan,
-  FaList,
-  FaBoxOpen,
-} from 'react-icons/fa';
-import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import { FaBoxOpen } from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from './components/Table/ProjectTableManager';
 import { getProjectsByMultiFilter } from '../../../api/Project/ProjectApi';
@@ -29,19 +19,22 @@ type Project = {
 
 type SortKey = keyof Project;
 
+const PAGE_SIZE = 5;
+
 const ProjectListManager = () => {
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalProjects, setTotalProjects] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [status, setStatus] = useState('');
-  const [type, setType] = useState('');
-  const [code, setCode] = useState('');
-  const [phone, setPhone] = useState('');
+  const [filters, setFilters] = useState({
+    startTime: '',
+    endTime: '',
+    status: '',
+    type: '',
+    code: '',
+    phone: '',
+  });
   const [sortConfig, setSortConfig] = useState<{
     key: SortKey;
     direction: 'ascending' | 'descending';
@@ -63,12 +56,12 @@ const ProjectListManager = () => {
     try {
       const data = await getProjectsByMultiFilter(
         currentPage,
-        5,
-        startTime,
-        status,
-        type,
-        code,
-        phone,
+        PAGE_SIZE,
+        filters.startTime,
+        filters.status,
+        filters.type,
+        filters.code,
+        filters.phone,
       );
 
       const formattedData = data.Items.map((item: any) => ({
@@ -83,14 +76,9 @@ const ProjectListManager = () => {
       }));
       setProjects(formattedData);
       setTotalPages(data.TotalPages);
-      setTotalProjects(data.Total);
     } catch (err: any) {
       setProjects([]);
-      if (err.response && err.response.data && err.response.data.Error) {
-        setError(err.response.data.Error);
-      } else {
-        setError('Có lỗi xảy ra khi lấy dữ liệu dự án');
-      }
+      setError(err.response?.data?.Error || 'Có lỗi xảy ra khi lấy dữ liệu dự án');
     } finally {
       setLoading(false);
     }
@@ -98,39 +86,24 @@ const ProjectListManager = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, [currentPage]);
-
-  const handleApplyFilters = () => {
-    setCurrentPage(1);
-    fetchProjects();
-  };
+  }, [currentPage, filters]);
 
   const handleSort = (key: SortKey) => {
-    let direction: 'ascending' | 'descending' = 'ascending';
-    if (
-      sortConfig &&
-      sortConfig.key === key &&
-      sortConfig.direction === 'ascending'
-    ) {
-      direction = 'descending';
-    }
+    const direction = sortConfig?.key === key && sortConfig.direction === 'ascending'
+      ? 'descending'
+      : 'ascending';
     setSortConfig({ key, direction });
     setProjects((prevProjects) =>
       [...prevProjects].sort((a, b) => {
-        if (a[key] < b[key]) {
-          return direction === 'ascending' ? -1 : 1;
-        }
-        if (a[key] > b[key]) {
-          return direction === 'ascending' ? 1 : -1;
-        }
+        if (a[key] < b[key]) return direction === 'ascending' ? -1 : 1;
+        if (a[key] > b[key]) return direction === 'ascending' ? 1 : -1;
         return 0;
       }),
     );
   };
 
   const handleViewDetails = (projectId: string) => {
-    console.log(`Viewing details for project with ID: ${projectId}`);
-    navigate(`/project-detail/${projectId}`);
+    navigate(`/project-detail-manager/${projectId}`);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -139,80 +112,60 @@ const ProjectListManager = () => {
     }
   };
 
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+  };
+
   return (
     <>
       <Breadcrumb pageName="Danh sách dự án" />
 
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <div className="mb-5 flex flex-wrap items-end gap-4">
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Từ ngày</label>
-            <input
-              type="date"
-              value={startTime}
-              onChange={(e) => setStartTime(e.target.value)}
-              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-              placeholder="Chọn ngày"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Số điện thoại</label>
-            <input
-              type="text"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-              placeholder="Nhập số điện thoại"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Mã dự án</label>
-            <input
-              type="text"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-              placeholder="Nhập mã dự án"
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Dịch vụ</label>
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-            >
-              <option value="">Tất cả</option>
-              <option value="TEMPLATE">Mẫu nhà</option>
-              <option value="FINISHED">Hoàn thiện</option>
-              <option value="ROUGH">Thô</option>
-              <option value="ALL">Thô & Hoàn thiện</option>
-            </select>
-          </div>
-          <div className="flex flex-col">
-            <label className="mb-1 text-sm font-medium">Trạng thái</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-            >
-              <option value="">Tất cả</option>
-              <option value="Processing">Đang xử lý</option>
-              <option value="Designed">Đã thiết kế</option>
-              <option value="Reviewing">Chờ xác nhận</option>
-              <option value="Signed Contract">Đã ký hợp đồng</option>
-              <option value="Finalized">Hoàn thành</option>
-              <option value="Ended">Đã chấm dứt</option>
-            </select>
-          </div>
-          <div className="flex">
-            <button
-              onClick={handleApplyFilters}
-              className="bg-primary text-white px-4 py-2 rounded-lg shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-            >
-              Tìm kiếm
-            </button>
-          </div>
+          {['startTime', 'phone', 'code'].map((field) => (
+            <div key={field} className="flex flex-col">
+              <label className="mb-1 text-sm font-medium">{field === 'startTime' ? 'Từ ngày' : field === 'phone' ? 'Số điện thoại' : 'Mã dự án'}</label>
+              <input
+                type={field === 'startTime' ? 'date' : 'text'}
+                name={field}
+                value={filters[field as keyof typeof filters]}
+                onChange={handleFilterChange}
+                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+                placeholder={field === 'startTime' ? 'Chọn ngày' : `Nhập ${field === 'phone' ? 'số điện thoại' : 'mã dự án'}`}
+              />
+            </div>
+          ))}
+          {['type', 'status'].map((field) => (
+            <div key={field} className="flex flex-col">
+              <label className="mb-1 text-sm font-medium">{field === 'type' ? 'Dịch vụ' : 'Trạng thái'}</label>
+              <select
+                name={field}
+                value={filters[field as keyof typeof filters]}
+                onChange={handleFilterChange}
+                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+              >
+                <option value="">{field === 'type' ? 'Tất cả' : 'Tất cả'}</option>
+                {field === 'type' ? (
+                  <>
+                    <option value="TEMPLATE">Mẫu nhà</option>
+                    <option value="FINISHED">Hoàn thiện</option>
+                    <option value="ROUGH">Thô</option>
+                    <option value="ALL">Thô & Hoàn thiện</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="Processing">Đang xử lý</option>
+                    <option value="Designed">Đã thiết kế</option>
+                    <option value="Reviewing">Chờ xác nhận</option>
+                    <option value="Signed Contract">Đã ký hợp đồng</option>
+                    <option value="Finalized">Hoàn thành</option>
+                    <option value="Ended">Đã chấm dứt</option>
+                  </>
+                )}
+              </select>
+            </div>
+          ))}
         </div>
 
         <div className="max-w-full overflow-x-auto">
@@ -227,6 +180,9 @@ const ProjectListManager = () => {
               handleSort={handleSort}
               handleViewDetails={handleViewDetails}
               isLoading={loading}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
             />
           ) : (
             <div className="flex flex-col items-center justify-center h-64 text-gray-500">
@@ -234,25 +190,6 @@ const ProjectListManager = () => {
               Không có dữ liệu để hiển thị.
             </div>
           )}
-        </div>
-        <div className="flex justify-between mt-5">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            Trang trước
-          </button>
-          <span>
-            Trang {currentPage} / {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            Trang sau
-          </button>
         </div>
       </div>
     </>

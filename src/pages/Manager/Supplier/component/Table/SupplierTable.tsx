@@ -1,11 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
-import EditSupplier from '../Edit/EditSuplier';
-import {
-  SupplierItem,
-  UpdateSupplierRequest,
-} from '../../../../../types/Supplier';
+import EditSupplier from '../Edit/EditSupplier';
+import { SupplierItem, UpdateSupplierRequest } from '../../../../../types/Supplier';
 import { updateSupplier } from '../../../../../api/Supplier/Supplier';
 
 interface SupplierTableProps {
@@ -89,6 +86,10 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     } catch (error) {
       setAlertMessage('Sửa thất bại');
       setAlertType('error');
+    } finally {
+      setTimeout(() => {
+        setIsModalOpen(false);
+      }, 1000);
     }
   };
 

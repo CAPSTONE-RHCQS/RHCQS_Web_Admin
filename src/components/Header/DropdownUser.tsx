@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
 import UserOne from '../../images/user/user-01.png';
@@ -6,7 +6,15 @@ import { toast } from 'react-toastify';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [user, setUser] = useState<{ name: string; role: string; ImgUrl: string } | null>(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = localStorage.getItem('user');
+    if (userData) {
+      setUser(JSON.parse(userData));
+    }
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
@@ -17,6 +25,7 @@ const DropdownUser = () => {
     toast.success('Đăng xuất thành công!');
     navigate('/auth/signin');
   };
+
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
       <Link
@@ -26,13 +35,19 @@ const DropdownUser = () => {
       >
         <span className="hidden text-right lg:block">
           <span className="block text-sm font-medium text-black dark:text-white">
-            Thomas Anree
+            {user ? user.name : 'Guest'}
           </span>
-          <span className="block text-xs">UX Designer</span>
+          <span className="block text-xs">
+            {user ? user.role : 'Role'}
+          </span>
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img
+            src={user?.ImgUrl || UserOne}
+            alt="User"
+            className="object-cover h-full w-full rounded-full"
+          />
         </span>
 
         <svg

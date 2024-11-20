@@ -3,63 +3,78 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { createContractDesign } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-type BatchPayment = {
-  price: string;
-  percents: string;
-  description: string;
-  paymentDate: string;
-  paymentPhase: string;
-};
+import {
+  CreateContractDesignRequest,
+  BatchPaymentRequest,
+} from '../../../types/ContractTypes';
 
 const CreateContractDesign = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const navigate = useNavigate();
 
-  const [contractDetails, setContractDetails] = useState({
-    type: 'Design',
-    startDate: '',
-    endDate: '',
-    validityPeriod: '',
-    taxCode: '',
-    contractValue: '',
-    urlFile: '',
-    note: '',
-  });
+  const [contractDetails, setContractDetails] =
+    useState<CreateContractDesignRequest>({
+      projectId: projectId || '',
+      type: 'Design',
+      startDate: '',
+      endDate: '',
+      validityPeriod: 0,
+      taxCode: '',
+      contractValue: 0,
+      urlFile: '',
+      note: '',
+      batchPaymentRequests: [],
+    });
 
-  const [batchPayments, setBatchPayments] = useState<BatchPayment[]>([
+  const [batchPayments, setBatchPayments] = useState<BatchPaymentRequest[]>([
     {
-      price: '',
-      percents: '',
-      description: '',
+      numberOfBatches: 1,
+      price: 0,
       paymentDate: '',
       paymentPhase: '',
+      percents: '',
+      description: '',
     },
   ]);
 
-  const handleChangeContractDetails = (field: string, value: string) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChangeContractDetails = (
+    field: keyof CreateContractDesignRequest,
+    value: string | number,
+  ) => {
     setContractDetails({ ...contractDetails, [field]: value });
   };
 
   const handleBatchPaymentChange = (
     index: number,
-    field: keyof BatchPayment,
-    value: string,
+    field: keyof BatchPaymentRequest,
+    value: string | number,
   ) => {
-    const newBatchPayments = [...batchPayments];
-    newBatchPayments[index][field] = value;
-    setBatchPayments(newBatchPayments);
+    setBatchPayments((prevBatchPayments) => {
+      const newBatchPayments = [...prevBatchPayments];
+      const payment = newBatchPayments[index];
+
+      if (field === 'price' || field === 'numberOfBatches') {
+        payment[field] = typeof value === 'number' ? value : parseFloat(value);
+      } else {
+        payment[field] = value as string;
+      }
+
+      return newBatchPayments;
+    });
   };
 
   const addBatchPayment = () => {
     setBatchPayments([
       ...batchPayments,
       {
-        price: '',
-        percents: '',
-        description: '',
+        numberOfBatches: 1,
+        price: 0,
         paymentDate: '',
         paymentPhase: '',
+        percents: '',
+        description: '',
       },
     ]);
   };
@@ -70,27 +85,16 @@ const CreateContractDesign = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const requestBody = {
-      projectId: projectId || '',
-      type: contractDetails.type,
-      startDate: contractDetails.startDate,
-      endDate: contractDetails.endDate,
-      validityPeriod: parseInt(contractDetails.validityPeriod, 10),
-      taxCode: contractDetails.taxCode,
-      contractValue: parseFloat(contractDetails.contractValue),
-      urlFile: contractDetails.urlFile,
-      note: contractDetails.note,
+    setIsSubmitting(true);
+
+    const requestBody: CreateContractDesignRequest = {
+      ...contractDetails,
       batchPaymentRequests: batchPayments.map((payment) => ({
-        numberOfBatches: 1,
-        price: parseFloat(payment.price),
-        paymentDate: payment.paymentDate,
-        paymentPhase: payment.paymentPhase,
-        percents: payment.percents,
-        description: payment.description,
+        ...payment,
+        price: parseFloat(payment.price.toString()),
       })),
     };
 
-    console.log('Request Body:', requestBody);
 
     try {
       const response = await createContractDesign(requestBody);
@@ -100,6 +104,8 @@ const CreateContractDesign = () => {
     } catch (error) {
       console.error('Error creating contract:', error);
       toast.error('Có lỗi xảy ra khi tạo hợp đồng.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -159,7 +165,10 @@ const CreateContractDesign = () => {
                 type="number"
                 value={contractDetails.contractValue}
                 onChange={(e) =>
-                  handleChangeContractDetails('contractValue', e.target.value)
+                  handleChangeContractDetails(
+                    'contractValue',
+                    parseFloat(e.target.value),
+                  )
                 }
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
@@ -203,7 +212,10 @@ const CreateContractDesign = () => {
                 type="number"
                 value={contractDetails.validityPeriod}
                 onChange={(e) =>
-                  handleChangeContractDetails('validityPeriod', e.target.value)
+                  handleChangeContractDetails(
+                    'validityPeriod',
+                    parseInt(e.target.value, 10),
+                  )
                 }
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
@@ -240,7 +252,11 @@ const CreateContractDesign = () => {
                 type="number"
                 value={payment.price}
                 onChange={(e) =>
-                  handleBatchPaymentChange(index, 'price', e.target.value)
+                  handleBatchPaymentChange(
+                    index,
+                    'price',
+                    parseFloat(e.target.value),
+                  )
                 }
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
@@ -291,7 +307,7 @@ const CreateContractDesign = () => {
                 Giai đoạn thanh toán:
               </label>
               <input
-                type="text"
+                type="date"
                 value={payment.paymentPhase}
                 onChange={(e) =>
                   handleBatchPaymentChange(
@@ -338,6 +354,7 @@ const CreateContractDesign = () => {
           <button
             type="submit"
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+            disabled={isSubmitting}
           >
             Lưu
           </button>
