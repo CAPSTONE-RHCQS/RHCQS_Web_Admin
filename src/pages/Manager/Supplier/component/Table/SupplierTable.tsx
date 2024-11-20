@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
-import EditSupplier from '../Edit/EditSupplier';
 import { SupplierItem, UpdateSupplierRequest } from '../../../../../types/Supplier';
 import { updateSupplier } from '../../../../../api/Supplier/Supplier';
+import EditSupplier from '../Edit/EditSuplier';
 
 interface SupplierTableProps {
   dataSupplier: SupplierItem[];

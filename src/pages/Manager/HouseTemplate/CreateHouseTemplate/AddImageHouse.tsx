@@ -188,15 +188,12 @@ const AddImageHouse: React.FC = () => {
       try {
         const formData = new FormData();
 
-        // Thêm OverallImage
         formData.append('OverallImage', overallImage, overallImage.name);
 
-        // Thêm OutSideImage dưới dạng mảng
         outsideImages.forEach((image) => {
           formData.append('OutSideImage', image, image.name);
         });
 
-        // Thêm DesignDrawingImage dưới dạng mảng
         designDrawingImages.forEach((image) => {
           formData.append('DesignDrawingImage', image, image.name);
         });
@@ -216,12 +213,10 @@ const AddImageHouse: React.FC = () => {
           console.log('Package JSON string:', packageJsonString);
         }
 
-        // Kiểm tra tất cả các SubTemplate đ�� c�� ảnh
         const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
           (subTemplate) => subTemplateImages[subTemplate.Id] !== undefined,
         );
 
-        // Kiểm tra tất cả các packageFinished đã có ảnh
         const allPackageImagesSelected =
           packageFinishedImages.length === packageFinished.length;
 
@@ -232,7 +227,7 @@ const AddImageHouse: React.FC = () => {
           });
           return;
         }
-        // Gửi ảnh cho từng SubTemplate
+
         for (const subTemplate of houseTemplate?.SubTemplates || []) {
           const image = subTemplateImages[subTemplate.Id];
           const subFormData = new FormData();
