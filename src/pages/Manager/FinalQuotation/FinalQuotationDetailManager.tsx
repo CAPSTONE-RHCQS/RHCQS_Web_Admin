@@ -74,7 +74,13 @@ const FinalQuotationDetailManager = () => {
         type: approvalType,
         reason,
       });
-      toast.success('Phê duyệt báo giá thành công');
+
+      if (approvalType === 'Approved') {
+        toast.success('Chấp nhận báo giá thành công');
+      } else if (approvalType === 'Rejected') {
+        toast.success('Từ chối báo giá thành công');
+      }
+
       setIsModalOpen(false);
       fetchQuotationDetail();
     } catch (error: any) {
