@@ -26,13 +26,19 @@ const MaterialSectionList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputNameValue, setInputNameValue] = useState('');
+  const [inputCodeValue, setInputCodeValue] = useState('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+  const [pageInput, setPageInput] = useState<string>(page.toString());
+
+  useEffect(() => {
+    setPageInput(page.toString());
+  }, [page]);
 
   useEffect(() => {
     setIsLoading(true);
-    getMaterialList(page, 10).then((dataMaterial) => {
+    getMaterialList(1, 1000).then((dataMaterial) => {
       setDataMaterial(dataMaterial.Items);
     });
     getMaterialSectionList(page, 10).then((data) => {
@@ -72,12 +78,30 @@ const MaterialSectionList: React.FC = () => {
     }
   };
 
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPage = e.target.value;
+    setPageInput(newPage);
+  };
+
+  const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const newPage = parseInt(pageInput, 10);
+      if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
+      }
+    }
+  };
+
   const handleSave = async () => {
     try {
-      await createMaterialSection({ name: inputValue });
+      await createMaterialSection({
+        name: inputNameValue,
+        code: inputCodeValue,
+      });
       setAlertMessage('Tạo hạng mục vật tư thành công');
       setAlertType('success');
       handleRefresh();
+      setIsCreateModalOpen(false);
     } catch (error) {
       setAlertMessage('Tạo hạng mục vật tư thất bại');
       setAlertType('error');
@@ -140,7 +164,15 @@ const MaterialSectionList: React.FC = () => {
               Trang trước
             </button>
             <span>
-              Trang {page} / {totalPages}
+              Trang 
+              <input
+                type="text"
+                value={pageInput}
+                onChange={handlePageInputChange}
+                onKeyDown={handlePageInputKeyDown}
+                className="w-12 text-center border rounded mx-2"
+              />
+              / {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(page + 1)}
@@ -156,8 +188,10 @@ const MaterialSectionList: React.FC = () => {
       {isCreateModalOpen && (
         <CreateMaterialSection
           isOpen={isCreateModalOpen}
-          inputValue={inputValue}
-          onInputChange={setInputValue}
+          inputNameValue={inputNameValue}
+          inputCodeValue={inputCodeValue}
+          onInputNameChange={setInputNameValue}
+          onInputCodeChange={setInputCodeValue}
           onSave={handleSave}
           onCancel={() => setIsCreateModalOpen(false)}
         />

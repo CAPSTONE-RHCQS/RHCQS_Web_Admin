@@ -23,16 +23,23 @@ const SupplierList: React.FC = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
-    name: '',
-    email: '',
-    constractPhone: '',
-    imgUrl: '',
-    deflag: false,
-    shortDescription: '',
-    description: '',
+    Name: '',
+    Email: '',
+    ConstractPhone: '',
+    ImgUrl: null,
+    Deflag: false,
+    ShortDescription: '',
+    Description: '',
+    Code: '',
+    Image: '',
   });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+  const [pageInput, setPageInput] = useState<string>(page.toString());
+
+  useEffect(() => {
+    setPageInput(page.toString());
+  }, [page]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -61,15 +68,17 @@ const SupplierList: React.FC = () => {
     }
   };
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: any) => {
     setInputValue((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSave = async () => {
     try {
-      await createSupplier(inputValue);
+      const supplierData = { ...inputValue };
+      await createSupplier(supplierData);
       setAlertMessage('Tạo nhà cung cấp thành công');
       setAlertType('success');
+      setIsCreateModalOpen(false);
       handleRefresh();
     } catch (error) {
       setAlertMessage('Tạo nhà cung cấp thất bại');
@@ -77,6 +86,21 @@ const SupplierList: React.FC = () => {
       console.error('Error creating supplier:', error);
     }
   };
+
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPage = e.target.value;
+    setPageInput(newPage);
+  };
+
+  const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const newPage = parseInt(pageInput, 10);
+      if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+        setPage(newPage);
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -122,7 +146,17 @@ const SupplierList: React.FC = () => {
               Trang trước
             </button>
             <span>
-              Trang {page} / {totalPages}
+              Trang
+              <input
+                type="number"
+                value={pageInput}
+                onChange={handlePageInputChange}
+                onKeyDown={handlePageInputKeyDown}
+                className="w-12 text-center border rounded mx-2 no-spin"
+                min={1}
+                max={totalPages}
+              />
+              / {totalPages}
             </span>
             <button
               onClick={() => handlePageChange(page + 1)}

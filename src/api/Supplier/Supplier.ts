@@ -10,6 +10,7 @@ export async function getSupplierList(
             params: { page, size },
             headers: {
                 accept: 'text/plain',
+                'Content-Type': 'multipart/form-data',
             },
         });
         return response.data;
@@ -24,6 +25,7 @@ export async function createSupplier(data: UpdateSupplierRequest) {
         const response = await requestWebRHCQS.post('/supplier', data, {
             headers: {
                 accept: 'text/plain',
+                'Content-Type': 'multipart/form-data',
             },
         });
         return response.data;
@@ -39,6 +41,7 @@ export async function updateSupplier(id: string, data: UpdateSupplierRequest) {
             {
                 headers: {
                     accept: 'text/plain',
+                    'Content-Type': 'multipart/form-data',
                 },
             },
         );
@@ -49,3 +52,12 @@ export async function updateSupplier(id: string, data: UpdateSupplierRequest) {
     }
 }
 
+export async function searchSupplier(name: string) {
+    try {
+        const response = await requestWebRHCQS.get(`/supplier/name?name=${name}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error searching supplier:', error);
+        throw new Error('Failed to search supplier');
+    }
+}
