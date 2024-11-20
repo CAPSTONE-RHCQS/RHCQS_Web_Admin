@@ -1,16 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { UpdateSupplierRequest } from '../../../../../types/Supplier';
 
 interface CreateModalProps {
   isOpen: boolean;
-  inputValue: {
-    name: string;
-    email: string;
-    constractPhone: string;
-    imgUrl: string;
-    deflag: boolean;
-    shortDescription: string;
-    description: string;
-  };
+  inputValue: UpdateSupplierRequest;
   onInputChange: (field: string, value: any) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -23,7 +16,21 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
   onSave,
   onCancel,
 }) => {
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+
   if (!isOpen) return null;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ? e.target.files[0] : null;
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result as string);
+        onInputChange('Image', file);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -32,39 +39,49 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
         <strong className="font-bold">Tên nhà cung cấp:</strong>
         <input
           type="text"
-          value={inputValue.name}
-          onChange={(e) => onInputChange('name', e.target.value)}
+          value={inputValue.Name}
+          onChange={(e) => onInputChange('Name', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập tên nhà cung cấp"
         />
         <strong className="font-bold">Email:</strong>
         <input
           type="email"
-          value={inputValue.email}
-          onChange={(e) => onInputChange('email', e.target.value)}
+          value={inputValue.Email}
+          onChange={(e) => onInputChange('Email', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập email"
         />
         <strong className="font-bold">Số điện thoại:</strong>
         <input
           type="text"
-          value={inputValue.constractPhone}
-          onChange={(e) => onInputChange('constractPhone', e.target.value)}
+          value={inputValue.ConstractPhone}
+          onChange={(e) => onInputChange('ConstractPhone', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập số điện thoại"
         />
         <strong className="font-bold">Hình ảnh:</strong>
+        <div
+          className="border-dashed border-2 border-gray-400 p-4 mb-4 w-40 rounded flex justify-center items-center cursor-pointer"
+          onClick={() => document.getElementById('fileInput')?.click()}
+        >
+          {previewImage ? (
+            <img src={previewImage} alt="Preview" className="max-h-40" />
+          ) : (
+            <span className="text-gray-500">+</span>
+          )}
+        </div>
         <input
-          type="text"
-          value={inputValue.imgUrl}
-          onChange={(e) => onInputChange('imgUrl', e.target.value)}
-          className="border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập URL hình ảnh"
+          id="fileInput"
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          className="hidden"
         />
         <strong className="font-bold">Trạng thái:</strong>
         <select
-          value={inputValue.deflag.toString()}
-          onChange={(e) => onInputChange('deflag', e.target.value === 'true')}
+          value={inputValue.Deflag.toString()}
+          onChange={(e) => onInputChange('Deflag', e.target.value === 'true')}
           className="border p-2 mb-4 w-full rounded font-regular"
         >
           <option value="true">Hoạt động</option>
@@ -73,17 +90,26 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
         <strong className="font-bold">Mô tả ngắn:</strong>
         <input
           type="text"
-          value={inputValue.shortDescription}
-          onChange={(e) => onInputChange('shortDescription', e.target.value)}
+          value={inputValue.ShortDescription}
+          onChange={(e) => onInputChange('ShortDescription', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập mô tả ngắn"
         />
         <strong className="font-bold">Mô tả:</strong>
         <textarea
-          value={inputValue.description}
-          onChange={(e) => onInputChange('description', e.target.value)}
+          value={inputValue.Description}
+          onChange={(e) => onInputChange('Description', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập mô tả"
+        />
+        <strong className="font-bold">Mã nhà cung cấp:</strong>
+        <input
+          type="text"
+          value={inputValue.Code}
+          onChange={(e) => onInputChange('Code', e.target.value)}
+          className="border p-2 mb-4 w-full rounded font-regular"
+          placeholder="Nhập mã nhà cung cấp"
+          maxLength={5}
         />
         <div className="flex justify-end space-x-2">
           <button

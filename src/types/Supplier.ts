@@ -12,19 +12,23 @@ export interface SupplierItem {
     Email?: string;
     ConstractPhone?: string;
     ImgUrl: any;
+    Code?: string;
     InsDate?: string;
     UpsDate?: string
     Deflag: boolean
     ShortDescription?: string;
     Description?: string;
+    Image?: string;
 }
 
 export interface UpdateSupplierRequest {
-    name: string;
-    email: string;
-    constractPhone: string;
-    imgUrl: string;
-    shortDescription: string;
-    description: string;
-    deflag: boolean;
+    Name: string;
+    Email: string;
+    ConstractPhone: string;
+    ImgUrl: string | null;
+    Code: string;
+    ShortDescription: string;
+    Description: string;
+    Deflag: boolean;
+    Image: string;
 }

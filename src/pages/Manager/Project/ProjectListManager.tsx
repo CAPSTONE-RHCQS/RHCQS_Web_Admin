@@ -14,6 +14,7 @@ type Project = {
   category: string;
   date: string;
   status: string;
+  type: string;
   isChecked: boolean;
 };
 
@@ -50,6 +51,14 @@ const ProjectListManager = () => {
     { key: 'status', label: 'Trạng thái' },
   ];
 
+  const typeOptions = {
+    TEMPLATE: 'Mẫu nhà',
+    FINISHED: 'Hoàn thiện',
+    ROUGH: 'Thô',
+    ALL: 'Thô & Hoàn thiện',
+    HAVE_DRAWING: 'Sẵn bản thiết kế',
+  };
+
   const fetchProjects = async () => {
     setLoading(true);
     setError(null);
@@ -72,6 +81,7 @@ const ProjectListManager = () => {
         category: item.Type,
         date: new Date(item.InsDate).toLocaleDateString('vi-VN'),
         status: item.Status,
+        type: item.Type,
         isChecked: false,
       }));
       setProjects(formattedData);
@@ -148,12 +158,9 @@ const ProjectListManager = () => {
               >
                 <option value="">{field === 'type' ? 'Tất cả' : 'Tất cả'}</option>
                 {field === 'type' ? (
-                  <>
-                    <option value="TEMPLATE">Mẫu nhà</option>
-                    <option value="FINISHED">Hoàn thiện</option>
-                    <option value="ROUGH">Thô</option>
-                    <option value="ALL">Thô & Hoàn thiện</option>
-                  </>
+                  Object.entries(typeOptions).map(([value, label]) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))
                 ) : (
                   <>
                     <option value="Processing">Đang xử lý</option>
