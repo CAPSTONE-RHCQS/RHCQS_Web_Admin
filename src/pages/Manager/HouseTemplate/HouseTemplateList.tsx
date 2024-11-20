@@ -87,12 +87,10 @@ const HouseTemplateList: React.FC = () => {
               />
             </div>
             <CardBody>
-              <Typography variant="h5" className="font-semibold text-primary">
+              <h1 className="font-semibold text-primary text-lg">
                 {template.Name}
-              </Typography>
-              <Typography className="text-gray-600 mt-2">
-                {template.Description}
-              </Typography>
+              </h1>
+              <p className="text-gray-600 mt-2">{template.Description}</p>
             </CardBody>
             <CardFooter
               divider
