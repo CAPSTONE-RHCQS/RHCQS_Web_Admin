@@ -74,7 +74,7 @@ const HouseTemplateList: React.FC = () => {
         {houseTemplates.map((template) => (
           <Card
             key={template.Id}
-            className="shadow-lg rounded-lg overflow-hidden"
+            className="shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
           >
             <div
               onClick={() => handleTemplateClick(template.Id)}
@@ -87,7 +87,7 @@ const HouseTemplateList: React.FC = () => {
               />
             </div>
             <CardBody>
-              <Typography variant="h5" className="font-semibold">
+              <Typography variant="h5" className="font-semibold text-primary">
                 {template.Name}
               </Typography>
               <Typography className="text-gray-600 mt-2">
@@ -120,17 +120,17 @@ const HouseTemplateList: React.FC = () => {
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-gray-300 rounded disabled:opacity-50"
+          className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600 disabled:opacity-50"
         >
           Trang trước
         </button>
-        <span>
+        <span className="text-primary font-semibold">
           Trang {currentPage} / {totalPages}
         </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-gray-300 rounded"
+          className="px-4 py-2 bg-teal-500 text-white rounded hover:bg-teal-600"
         >
           Trang sau
         </button>

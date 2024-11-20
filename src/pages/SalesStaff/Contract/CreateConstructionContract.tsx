@@ -18,12 +18,16 @@ const CreateConstructionContract = () => {
     note: '',
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleChangeContractDetails = (field: string, value: string) => {
     setContractDetails({ ...contractDetails, [field]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+
     const requestBody = {
       projectId: projectId || '',
       startDate: contractDetails.startDate,
@@ -45,6 +49,8 @@ const CreateConstructionContract = () => {
       const errorMessage =
         error.response?.data?.Error || 'Có lỗi xảy ra khi tạo hợp đồng.';
       toast.error(`Lỗi: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -159,6 +165,7 @@ const CreateConstructionContract = () => {
           <button
             type="submit"
             className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+            disabled={isSubmitting}
           >
             Lưu
           </button>

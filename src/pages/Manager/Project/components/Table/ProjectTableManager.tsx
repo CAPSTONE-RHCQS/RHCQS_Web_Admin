@@ -8,7 +8,6 @@ import {
   FaBan,
   FaEye,
 } from 'react-icons/fa';
-import RejectionModal from '../../../../../components/Modals/RejectionModal';
 import SortIcon from '../../../../../components/Buttonicons/SortIcon';
 import { ClipLoader } from 'react-spinners';
 
@@ -31,6 +30,9 @@ interface ProjectTableManagerProps {
   handleSort: (key: SortKey) => void;
   handleViewDetails: (id: string) => void;
   isLoading: boolean;
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (newPage: number) => void;
 }
 
 const getStatusStyle = (status: string) => {
@@ -70,12 +72,26 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
   handleSort,
   handleViewDetails,
   isLoading,
+  currentPage,
+  totalPages,
+  onPageChange,
 }) => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleConfirmReject = (reason: string) => {
-    console.log('Rejected with reason:', reason);
-    setShowModal(false);
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => onPageChange(i)}
+          className={`px-3 py-1 mx-1 rounded ${
+            currentPage === i ? 'bg-primary text-white' : 'bg-gray-200'
+          } hover:bg-primary hover:text-white transition`}
+        >
+          {i}
+        </button>,
+      );
+    }
+    return pageNumbers;
   };
 
   return (
@@ -85,75 +101,89 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
           <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
         </div>
       ) : (
-        <table className="w-full table-auto border-collapse">
-          <thead>
-            <tr className="bg-gray-200 text-left dark:bg-meta-4">
-              {columns.map((column) => (
-                <th
-                  key={column.key}
-                  className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"
-                >
-                  {column.label}
-                  <SortIcon onClick={() => handleSort(column.key)} />
-                </th>
-              ))}
-              <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {data.map((item, index) => (
-              <tr
-                key={item.id}
-                className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
+        <>
+          <table className="w-full table-auto border-collapse">
+            <thead>
+              <tr className="bg-gray-200 text-left dark:bg-meta-4">
                 {columns.map((column) => (
-                  <td
+                  <th
                     key={column.key}
-                    className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
+                    className={`py-4 px-4 font-medium text-black dark:text-white ${
+                      column.key === 'customerName'
+                        ? 'min-w-[200px]'
+                        : 'min-w-[150px]'
+                    }`}
                   >
-                    {column.key === 'status' ? (
-                      <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
-                        style={{
-                          backgroundColor: getStatusStyle(item[column.key])
-                            .backgroundColor,
-                        }}
-                      >
-                        {getStatusStyle(item[column.key]).icon}
-                        <span className="ml-2">
-                          {getStatusLabel(item[column.key])}
-                        </span>
-                      </span>
-                    ) : column.key === 'projectId' ? (
-                      <strong style={{ color: '#FF5733' }}>
-                        {item[column.key]}
-                      </strong>
-                    ) : (
-                      item[column.key]
-                    )}
-                  </td>
+                    {column.label}
+                    <SortIcon onClick={() => handleSort(column.key)} />
+                  </th>
                 ))}
-                <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
-                  <button
-                    onClick={() => handleViewDetails(item.id)}
-                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
-                  >
-                    <FaEye className="text-xl" />
-                  </button>
-                </td>
+                <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      {showModal && (
-        <RejectionModal
-          title="Xác nhận từ chối"
-          message="Bạn có chắc chắn muốn từ chối? Vui lòng nhập lý do từ chối."
-          onConfirm={handleConfirmReject}
-          onCancel={() => setShowModal(false)}
-        />
+            </thead>
+            <tbody>
+              {data.map((item, index) => (
+                <tr
+                  key={item.id}
+                  className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {columns.map((column) => (
+                    <td
+                      key={column.key}
+                      className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
+                    >
+                      {column.key === 'status' ? (
+                        <span
+                          className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                          style={{
+                            backgroundColor: getStatusStyle(item[column.key])
+                              .backgroundColor,
+                          }}
+                        >
+                          {getStatusStyle(item[column.key]).icon}
+                          <span className="ml-2">
+                            {getStatusLabel(item[column.key])}
+                          </span>
+                        </span>
+                      ) : column.key === 'projectId' ? (
+                        <strong style={{ color: '#FF5733' }}>
+                          {item[column.key]}
+                        </strong>
+                      ) : (
+                        item[column.key]
+                      )}
+                    </td>
+                  ))}
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                    <button
+                      onClick={() => handleViewDetails(item.id)}
+                      className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
+                    >
+                      <FaEye className="text-xl" />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="flex justify-between mt-5">
+            <button
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              Trang trước
+            </button>
+            <div className="flex">{renderPageNumbers()}</div>
+            <button
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              Trang sau
+            </button>
+          </div>
+        </>
       )}
     </>
   );

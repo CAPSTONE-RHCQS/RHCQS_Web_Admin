@@ -1,16 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
-  FaCommentDots,
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
-  FaChevronDown,
-  FaChevronUp,
   FaHistory,
-  FaEdit,
   FaUserPlus,
-  FaEllipsisH,
   FaBan,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
@@ -21,8 +16,12 @@ import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
 import StatusTracker from '../../../components/StatusTracker/StatusTracker';
 import ContractHistoryTimeline from '../../../components/ContractHistoryTimeline';
-import { Dialog } from '@material-tailwind/react';
-import ChatBox from '../../../components/ChatBox';
+import {
+  Accordion,
+  AccordionBody,
+  AccordionHeader,
+  Dialog,
+} from '@material-tailwind/react';
 import {
   getProjectDetail,
   cancelProject,
@@ -39,20 +38,15 @@ import HouseDesignDrawingEmployeeList from './components/Modals/HouseDesignDrawi
 import { createHouseDesign } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import AssignModal from './components/Modals/AssignModal';
 import EmployeeList from './components/Employee/EmployeeList';
+import ArrowIcon from '../../../SVG/ArrowIcon';
 
-const ProjectDetail = () => {
+const ProjectDetailManager = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
     null,
   );
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
-  const [showInitialInfo, setShowInitialInfo] = useState(false);
-  const [showDesignDrawing, setShowDesignDrawing] = useState(false);
-  const [showFinalInfo, setShowFinalInfo] = useState(false);
-  const [showContract, setShowContract] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
@@ -61,11 +55,16 @@ const ProjectDetail = () => {
   }>({});
   const [currentCategory, setCurrentCategory] = useState<string | null>(null);
   const [showEmployeeListModal, setShowEmployeeListModal] = useState(false);
+  const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
+  const [open, setOpen] = useState(0);
+
+  const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
   const fetchProjectDetail = async () => {
     if (projectId) {
       try {
         const data = await getProjectDetail(projectId);
+        console.log(data);
         setProjectDetail(data);
       } catch (error) {
         console.error('Error fetching project detail:', error);
@@ -129,10 +128,6 @@ const ProjectDetail = () => {
 
   const handleCloseHistory = () => {
     setShowHistory(false);
-  };
-
-  const toggleChat = () => {
-    setShowChat(!showChat);
   };
 
   const statusMap: { [key: string]: string } = {
@@ -216,6 +211,11 @@ const ProjectDetail = () => {
       contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
   );
 
+  console.log('isInitialInfoFinalized', isInitialInfoFinalized);
+  const resetSelectedEmployees = () => {
+    setSelectedEmployees({});
+  };
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -242,21 +242,6 @@ const ProjectDetail = () => {
                   >
                     <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
-                  </a>
-                  {/* <Link
-                      to={`/editquote`}
-                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      <FaEdit className="mr-2" />
-                      Chỉnh sửa hợp đồng
-                    </Link> */}
-                  <a
-                    href="#"
-                    onClick={() => handleMenuItemClick('assign')}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaUserPlus className="mr-2" />
-                    Phân công nhân viên
                   </a>
                   <a
                     href="#"
@@ -287,7 +272,7 @@ const ProjectDetail = () => {
           <ContactCard
             data={{
               title: 'Mã Dự Án',
-              number: projectDetail.ProjectCode || 'N/A',
+              number: projectDetail.ProjectCode || '',
             }}
             fields={[
               { key: 'title', label: 'Name' },
@@ -297,19 +282,19 @@ const ProjectDetail = () => {
           />
           <ContactCard
             data={{
-              fullName: projectDetail.AccountName || 'N/A',
+              fullName: projectDetail.AccountName || '',
+              phoneNumber: projectDetail.Phone || '',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
               { key: 'phoneNumber', label: 'Phone' },
-              { key: 'emailAddress', label: 'Email' },
             ]}
-            avatarUrl={Avatar}
+            avatarUrl={projectDetail.Avatar}
           />
           <ContactCard
             data={{
               nameHouse: 'Nhà ở dân dụng',
-              address: projectDetail.Address || 'N/A',
+              address: projectDetail.Address || '',
             }}
             fields={[
               { key: 'nameHouse', label: 'Name' },
@@ -320,13 +305,14 @@ const ProjectDetail = () => {
 
           <ContactCard
             data={{
-              staffName: projectDetail.StaffName || 'Chờ phân công...',
+              staffName: projectDetail.StaffName || 'Phân công nhân viên',
               staffPhone: projectDetail.StaffPhone || '',
             }}
             fields={[
               { key: 'staffName', label: 'Name' },
               { key: 'staffPhone', label: 'Phone' },
             ]}
+            onClick={() => handleMenuItemClick('assign')}
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
@@ -358,120 +344,179 @@ const ProjectDetail = () => {
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
-        <hr className="my-4 border-gray-300" />
-        <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
-          onClick={() => setShowInitialInfo(!showInitialInfo)}
-        >
-          Báo giá sơ bộ
-          {projectDetail.InitialInfo &&
-            projectDetail.InitialInfo.length > 0 &&
-            (showInitialInfo ? (
-              <FaChevronUp className="ml-2 text-secondary" />
-            ) : (
-              <FaChevronDown className="ml-2 text-secondary" />
-            ))}
-        </h3>
-        {projectDetail.InitialInfo &&
-          projectDetail.InitialInfo.length > 0 &&
-          showInitialInfo && (
-            <InitialInfoTable quoteData={projectDetail.InitialInfo} />
-          )}
-
-        <hr className="my-4 border-gray-300" />
-        <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
-          onClick={() => setShowDesignDrawing(!showDesignDrawing)}
-        >
-          Thiết kế bản vẽ
-          {projectDetail.HouseDesignDrawingInfo &&
-            projectDetail.HouseDesignDrawingInfo.length > 0 &&
-            (showDesignDrawing ? (
-              <FaChevronUp className="ml-2 text-secondary" />
-            ) : (
-              <FaChevronDown className="ml-2 text-secondary" />
-            ))}
-        </h3>
-        {projectDetail.HouseDesignDrawingInfo &&
-        projectDetail.HouseDesignDrawingInfo.length === 0 &&
-        projectDetail.StaffName &&
-        isInitialInfoFinalized &&
-        hasDesignContract ? (
-          <button
-            onClick={() => setIsAssignModalOpen(true)}
-            className="bg-primaryGreenButton text-white p-2 rounded"
+        <div className="mt-4">
+          {/* <!-- Báo giá sơ bộ--> */}
+          <Accordion
+            open={open === 1}
+            icon={
+              projectDetail.InitialInfo &&
+              projectDetail.InitialInfo.length > 0 ? (
+                <ArrowIcon id={1} open={open} />
+              ) : null
+            }
+            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
           >
-            Phân công nhân viên
-          </button>
-        ) : (
-          projectDetail.HouseDesignDrawingInfo &&
-          projectDetail.HouseDesignDrawingInfo.length > 0 &&
-          showDesignDrawing && (
-            <HouseDesignDrawingInfoTable
-              designData={projectDetail.HouseDesignDrawingInfo}
+            <AccordionHeader
+              onClick={
+                projectDetail.InitialInfo &&
+                projectDetail.InitialInfo.length > 0
+                  ? () => handleOpen(1)
+                  : undefined
+              }
+              className={`border-b-0 transition-colors ${
+                open === 1
+                  ? 'text-secondary hover:text-secondaryBlue'
+                  : 'text-primary hover:text-primaryDarkGreen'
+              } font-montserrat`}
+            >
+              Báo giá sơ bộ
+            </AccordionHeader>
+            <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+              {projectDetail.InitialInfo &&
+                projectDetail.InitialInfo.length > 0 && (
+                  <InitialInfoTable quoteData={projectDetail.InitialInfo} />
+                )}
+            </AccordionBody>
+          </Accordion>
+          {/* <!-- Báo giá sơ bộ --> */}
+
+          {/* <!-- Thiết kế bản vẽ --> */}
+          <Accordion
+            open={open === 2}
+            icon={
+              projectDetail.HouseDesignDrawingInfo &&
+              projectDetail.HouseDesignDrawingInfo.length > 0 ? (
+                <ArrowIcon id={2} open={open} />
+              ) : null
+            }
+            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
+          >
+            <AccordionHeader
+              onClick={
+                projectDetail.HouseDesignDrawingInfo &&
+                projectDetail.HouseDesignDrawingInfo.length > 0
+                  ? () => handleOpen(2)
+                  : undefined
+              }
+              className={`border-b-0 transition-colors ${
+                open === 2
+                  ? 'text-secondary hover:text-secondaryBlue'
+                  : 'text-primary hover:text-primaryDarkGreen'
+              } font-montserrat`}
+            >
+              Thiết kế bản vẽ
+            </AccordionHeader>
+            {projectDetail.HouseDesignDrawingInfo &&
+            projectDetail.HouseDesignDrawingInfo.length === 0 &&
+            projectDetail.StaffName &&
+            isInitialInfoFinalized &&
+            hasDesignContract ? (
+              <button
+                onClick={() => setIsAssignModalOpen(true)}
+                className="mb-4 bg-primaryGreenButton text-white p-2 rounded font-montserrat"
+              >
+                Phân công nhân viên
+              </button>
+            ) : (
+              <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+                {projectDetail.HouseDesignDrawingInfo &&
+                  projectDetail.HouseDesignDrawingInfo.length > 0 && (
+                    <HouseDesignDrawingInfoTable
+                      designData={projectDetail.HouseDesignDrawingInfo}
+                    />
+                  )}
+              </AccordionBody>
+            )}
+          </Accordion>
+          {isAssignModalOpen && (
+            <AssignModal
+              onClose={() => {
+                setIsAssignModalOpen(false);
+                resetSelectedEmployees();
+              }}
+              onAssign={handleAssignDesigners}
+              setCurrentCategory={setCurrentCategory}
+              setShowEmployeeDialog={setShowEmployeeDialog}
+              selectedEmployees={selectedEmployees}
+              resetSelectedEmployees={resetSelectedEmployees}
             />
-          )
-        )}
-
-        {isAssignModalOpen && (
-          <AssignModal
-            onClose={() => setIsAssignModalOpen(false)}
-            onAssign={handleAssignDesigners}
-            setCurrentCategory={setCurrentCategory}
-            setShowEmployeeDialog={setShowEmployeeDialog}
-            selectedEmployees={selectedEmployees}
-          />
-        )}
-
-        {showEmployeeDialog && (
-          <Dialog open={showEmployeeDialog} handler={handleCloseEmployeeDialog}>
-            <div className="p-4">
-              <HouseDesignDrawingEmployeeList
-                onSelectEmployee={handleSelectEmployee}
-              />
-            </div>
-          </Dialog>
-        )}
-
-        <hr className="my-4 border-gray-300" />
-        <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
-          onClick={() => setShowFinalInfo(!showFinalInfo)}
-        >
-          Báo giá chi tiết
-          {projectDetail.FinalInfo &&
-            projectDetail.FinalInfo.length > 0 &&
-            (showFinalInfo ? (
-              <FaChevronUp className="ml-2 text-secondary" />
-            ) : (
-              <FaChevronDown className="ml-2 text-secondary" />
-            ))}
-        </h3>
-        {projectDetail.FinalInfo &&
-          projectDetail.FinalInfo.length > 0 &&
-          showFinalInfo && (
-            <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo} />
           )}
-
-        <hr className="my-4 border-gray-300" />
-        <h3
-          className="text-xl font-semibold mb-4 flex items-center cursor-pointer text-primary"
-          onClick={() => setShowContract(!showContract)}
-        >
-          Hợp đồng
-          {projectDetail.ContractInfo &&
-            projectDetail.ContractInfo.length > 0 &&
-            (showContract ? (
-              <FaChevronUp className="ml-2 text-secondary" />
-            ) : (
-              <FaChevronDown className="ml-2 text-secondary" />
-            ))}
-        </h3>
-        {projectDetail.ContractInfo &&
-          projectDetail.ContractInfo.length > 0 &&
-          showContract && (
-            <ContractTable contractData={projectDetail.ContractInfo} />
+          {showEmployeeDialog && (
+            <HouseDesignDrawingEmployeeList
+              onSelectEmployee={handleSelectEmployee}
+              onClose={handleCloseEmployeeDialog}
+            />
           )}
+          {/* <!-- Thiết kế bản vẽ --> */}
+
+          {/* <!-- Báo giá chi tiết --> */}
+          <Accordion
+            open={open === 3}
+            icon={
+              projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0 ? (
+                <ArrowIcon id={3} open={open} />
+              ) : null
+            }
+            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
+          >
+            <AccordionHeader
+              onClick={
+                projectDetail.FinalInfo && projectDetail.FinalInfo.length > 0
+                  ? () => handleOpen(3)
+                  : undefined
+              }
+              className={`border-b-0 transition-colors ${
+                open === 3
+                  ? 'text-secondary hover:text-secondaryBlue'
+                  : 'text-primary hover:text-primaryDarkGreen'
+              } font-montserrat`}
+            >
+              Báo giá chi tiết
+            </AccordionHeader>
+            <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+              {projectDetail.FinalInfo &&
+                projectDetail.FinalInfo.length > 0 && (
+                  <FinalInfoTable detailedQuoteData={projectDetail.FinalInfo} />
+                )}
+            </AccordionBody>
+          </Accordion>
+          {/* <!-- Báo giá chi tiết --> */}
+
+          {/* <!-- Hợp đồng --> */}
+          <Accordion
+            open={open === 4}
+            icon={
+              projectDetail.ContractInfo &&
+              projectDetail.ContractInfo.length > 0 ? (
+                <ArrowIcon id={4} open={open} />
+              ) : null
+            }
+            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
+          >
+            <AccordionHeader
+              onClick={
+                projectDetail.ContractInfo &&
+                projectDetail.ContractInfo.length > 0
+                  ? () => handleOpen(4)
+                  : undefined
+              }
+              className={`border-b-0 transition-colors ${
+                open === 4
+                  ? 'text-secondary hover:text-secondaryBlue'
+                  : 'text-primary hover:text-primaryDarkGreen'
+              } font-montserrat`}
+            >
+              Hợp đồng
+            </AccordionHeader>
+            <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+              {projectDetail.ContractInfo &&
+                projectDetail.ContractInfo.length > 0 && (
+                  <ContractTable contractData={projectDetail.ContractInfo} />
+                )}
+            </AccordionBody>
+          </Accordion>
+          {/* <!-- Hợp đồng --> */}
+        </div>
       </div>
       {isModalOpen && (
         <Modal
@@ -499,4 +544,4 @@ const ProjectDetail = () => {
   );
 };
 
-export default ProjectDetail;
+export default ProjectDetailManager;

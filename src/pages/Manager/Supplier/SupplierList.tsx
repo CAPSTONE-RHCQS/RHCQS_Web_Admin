@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
+import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import SupplierTable from './component/Table/SupplierTable';
-import Alert from '../../components/Alert';
-import { getSupplierList, createSupplier } from '../../api/Supplier/Supplier';
-import { SupplierItem, UpdateSupplierRequest } from '../../types/Supplier';
+import Alert from '../../../components/Alert';
+import {
+  getSupplierList,
+  createSupplier,
+} from '../../../api/Supplier/Supplier';
+import { SupplierItem, UpdateSupplierRequest } from '../../../types/Supplier';
 import CreateSupplier from './component/Create/CreateSupplier';
 
 const SupplierList: React.FC = () => {
@@ -68,7 +71,7 @@ const SupplierList: React.FC = () => {
       setAlertMessage('Tạo nhà cung cấp thành công');
       setAlertType('success');
       handleRefresh();
-  } catch (error) {
+    } catch (error) {
       setAlertMessage('Tạo nhà cung cấp thất bại');
       setAlertType('error');
       console.error('Error creating supplier:', error);

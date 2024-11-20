@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaEdit, FaPlus } from 'react-icons/fa';
 import { PencilIcon } from '@heroicons/react/24/solid';
-import Alert from '../../../../components/Alert';
+import Alert from '../../../../../components/Alert';
 import EditSupplier from '../Edit/EditSuplier';
-import { SupplierItem } from '../../../../types/Supplier';
-import { updateSupplier } from '../../../../api/Supplier/Supplier';
+import { SupplierItem } from '../../../../../types/Supplier';
+import { updateSupplier } from '../../../../../api/Supplier/Supplier';
 
 interface SupplierTableProps {
   dataSupplier: SupplierItem[];

@@ -63,12 +63,24 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
       <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center font-semibold">Tên thiết bị</th>
-            <th className="px-4 py-2 border text-center font-semibold">Đơn vị</th>
-            <th className="px-4 py-2 border text-center font-semibold">Số lượng</th>
-            <th className="px-4 py-2 border text-center font-semibold">Đơn giá</th>
-            <th className="px-4 py-2 border text-center font-semibold">Tổng giá</th>
-            <th className="px-4 py-2 border text-center font-semibold">Ghi chú</th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Tên thiết bị
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Đơn vị
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Số lượng
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Đơn giá
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Tổng giá
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Ghi chú
+            </th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -152,7 +164,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
             </tr>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={4} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td colSpan={4} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
             <td className="px-4 py-2 border text-center font-bold">
               {calculateTotalPrice().toLocaleString()} VNĐ
             </td>
@@ -164,7 +178,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
       {isEditing && (
         <button
           onClick={handleAddItem}
-          className="mt-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+          className="mt-2 bg-primaryGreenButton text-white px-4 py-2 rounded shadow-md hover:bg-secondaryGreenButton"
         >
           Thêm thiết bị
         </button>

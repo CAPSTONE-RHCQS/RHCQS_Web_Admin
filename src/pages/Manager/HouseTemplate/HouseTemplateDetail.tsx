@@ -94,10 +94,10 @@ const HouseTemplateDetail: React.FC = () => {
   return (
     <div className="container mx-auto p-6 bg-white rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold">Chi tiết thiết kế mẫu nhà</h2>
+        <h2 className="text-2xl font-bold text-primary">Chi tiết thiết kế mẫu nhà</h2>
         <button
           onClick={handleEdit}
-          className="text-primary cursor-pointer font-bold"
+          className="text-primary cursor-pointer font-bold hover:underline"
         >
           Chỉnh sửa mẫu nhà
         </button>
@@ -140,7 +140,7 @@ const HouseTemplateDetail: React.FC = () => {
                             defaultImageHouseTemplateUrl
                       }
                       alt={houseTemplate.Name}
-                      className={`object-cover ${isZoomed ? 'zoomed' : ''}`}
+                      className={`object-cover ${isZoomed ? 'zoomed' : ''} transition-transform duration-300 hover:scale-105`}
                       onClick={toggleZoom}
                       style={{
                         width: isZoomed ? '150%' : '100%',
@@ -152,13 +152,13 @@ const HouseTemplateDetail: React.FC = () => {
                   <div className="flex justify-center mt-4">
                     <button
                       onClick={handlePrev}
-                      className="bg-gray-200 p-2 rounded-full mx-2"
+                      className="bg-gray-200 p-2 rounded-full mx-2 hover:bg-gray-300"
                     >
                       <FontAwesomeIcon icon={faChevronLeft} />
                     </button>
                     <button
                       onClick={handleNext}
-                      className="bg-gray-200 p-2 rounded-full mx-2"
+                      className="bg-gray-200 p-2 rounded-full mx-2 hover:bg-gray-300"
                     >
                       <FontAwesomeIcon icon={faChevronRight} />
                     </button>
@@ -183,7 +183,7 @@ const HouseTemplateDetail: React.FC = () => {
                     <div className="flex flex-col">
                       <Typography
                         variant="h4"
-                        className="mb-3 font-bold text-gray-800"
+                        className="mb-3 font-bold text-primary"
                       >
                         {houseTemplate.Name}
                       </Typography>
@@ -268,7 +268,7 @@ const HouseTemplateDetail: React.FC = () => {
                 selectedDrawingIndex === -1
                   ? 'border-customRed'
                   : 'border-gray-200 hover:border-gray-400'
-              }`}
+              } hover:scale-105`}
             >
               <img
                 src={

@@ -39,8 +39,6 @@ export const fetchQuotationData = async (
       setQuotationData(data);
       setVersion(data.Version || null);
 
-      const comboDonGia = data.PackageQuotationList.UnitPackageFinished || 0;
-
       const updatedTableData = data.ItemInitial.map((item, index) => {
         const coefficient =
           item.Coefficient !== 0 ? item.Coefficient : item.SubCoefficient || 0;
@@ -61,7 +59,7 @@ export const fetchQuotationData = async (
 
       const totalRough = data.TotalRough;
       const totalUtilities = data.TotalUtilities;
-      let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
+      let giaTriHopDong = totalRough + totalUtilities;
 
       if (data.PromotionInfo) {
         const discountValue = giaTriHopDong * (data.PromotionInfo.Value / 100);

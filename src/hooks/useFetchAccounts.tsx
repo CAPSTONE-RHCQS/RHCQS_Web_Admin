@@ -38,14 +38,14 @@ const useFetchAccounts = (
           roleId: item.RoleId,
           email: item.Email,
           username: item.Username,
-          imageUrl: item.ImageUrl || 'default-avatar-url',
+          imageUrl: item.ImageUrl,
           phoneNumber: item.PhoneNumber || '',
           dateOfBirth: item.DateOfBirth
             ? new Date(item.DateOfBirth).toLocaleDateString()
             : '',
           insDate: item.InsDate,
           upsDate: item.UpsDate,
-          avatar: item.ImageUrl || 'default-avatar-url',
+          avatar: item.ImageUrl,
           accountName: item.Username,
           role: roleMapping[item.RoleId] || 'Unknown',
           birthday: item.DateOfBirth

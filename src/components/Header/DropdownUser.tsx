@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 
 const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; role: string } | null>(null);
+  const [user, setUser] = useState<{ name: string; role: string; ImgUrl: string } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -43,7 +43,11 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+          <img
+            src={user?.ImgUrl || UserOne}
+            alt="User"
+            className="object-cover h-full w-full rounded-full"
+          />
         </span>
 
         <svg

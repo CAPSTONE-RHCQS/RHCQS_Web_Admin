@@ -14,7 +14,7 @@ import { truncateName } from '../../../../../utils/stringUtils';
 
 interface Employee {
   id: string;
-  avatar: string;
+  avatar: string | null;
   name: string;
   roles: string[];
   phone: string;
@@ -54,10 +54,9 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         );
         const formattedEmployees = data.Items.map((item: any) => ({
           id: item.Id,
-          avatar: item.ImageUrl || 'https://via.placeholder.com/150',
+          avatar: item.ImageUrl,
           name: item.Username,
           roles: [item.RoleName],
-          address: 'N/A',
           phone: item.PhoneNumber,
         }));
         setEmployees(formattedEmployees);
@@ -100,7 +99,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
         setShowModal(true);
       }
     } else {
-      setMessage('Vui lòng chọn một nhân viên trước khi phân bổ.');
+      setMessage('Vui lòng chọn một nhân viên trước khi Phân công.');
       setShowModal(true);
     }
   };
@@ -124,10 +123,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
 
   return (
     <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center text-blue-600">
+      <h2 className="text-2xl font-bold mb-4 text-center text-primary">
         Chọn Nhân Viên
       </h2>
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {employees.map((employee) => (
           <EmployeeCard
             key={employee.id}
@@ -142,7 +141,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       </div>
       <div className="mt-4 flex justify-between items-center">
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className={`px-4 py-2 rounded transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 ${
+            page === 1
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-secondaryGreenButton text-white hover:bg-primaryGreenButton focus:ring-secondaryGreenButton'
+          }`}
           onClick={handlePrevPage}
           disabled={page === 1}
         >
@@ -152,7 +155,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           {page} / {totalPages}
         </span>
         <button
-          className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-green-500"
+          className={`px-4 py-2 rounded transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 ${
+            page === totalPages
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-secondaryGreenButton text-white hover:bg-primaryGreenButton focus:ring-secondaryGreenButton'
+          }`}
           onClick={handleNextPage}
           disabled={page === totalPages}
         >
@@ -161,7 +168,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       </div>
       <div className="mt-4">
         <textarea
-          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-teal-500"
           placeholder="Nhập ghi chú (không bắt buộc)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -169,10 +176,10 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       </div>
       <div className="mt-4 flex justify-end">
         <button
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500"
           onClick={handleAssign}
         >
-          Phân bổ
+          Phân công
         </button>
       </div>
       {message && (
@@ -182,11 +189,11 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
           className="w-80 mx-auto"
         >
           <div className="p-6 bg-white rounded-lg shadow-lg flex flex-col items-center">
-            <FaExclamationTriangle className="text-red-500 text-3xl mb-4" />
+            <FaExclamationTriangle className="text-teal-500 text-3xl mb-4" />
             <h3 className="text-xl font-semibold mb-2 text-center">Lỗi</h3>
             <p className="text-gray-700 text-center">{message}</p>
             <button
-              className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-6 bg-teal-500 text-white px-6 py-2 rounded-full hover:bg-teal-600 transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-teal-500"
               onClick={handleCloseModal}
             >
               Đóng

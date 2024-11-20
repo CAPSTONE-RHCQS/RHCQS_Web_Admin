@@ -1,4 +1,5 @@
 import requestWebRHCQS from '../../utils/axios';
+import { ProjectDetail } from '../../types/ProjectTypes';
 
 interface ProjectItem {
   Id: string;
@@ -110,9 +111,9 @@ export const getProjectsListSalesStaff = async (
   }
 };
 
-export const getProjectDetail = async (id: string) => {
+export const getProjectDetail = async (id: string): Promise<ProjectDetail> => {
   try {
-    const response = await requestWebRHCQS.get(`/project/id`, {
+    const response = await requestWebRHCQS.get<ProjectDetail>(`/project/id`, {
       params: {
         id,
       },
@@ -161,6 +162,7 @@ export const getProjectDetail = async (id: string) => {
 
 export const assignProject = async (accountId: string, projectId: string) => {
   try {
+    console.log('Assigning project', accountId, projectId);
     const response = await requestWebRHCQS.put(
       '/project/assign',
       {
@@ -208,7 +210,7 @@ export const getProjectsByMultiFilter = async (
   status: string,
   type: string,
   code: string,
-  phone: string
+  phone: string,
 ): Promise<ProjectListResponse> => {
   try {
     const response = await requestWebRHCQS.get('/project/multi-filter', {

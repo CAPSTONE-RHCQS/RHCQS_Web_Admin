@@ -5,7 +5,7 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
-import ConstructionAreaTable from '../../Quote/components/Table/ConstructionAreaTable';
+import ConstructionAreaTable from './Table/ConstructionAreaTable';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import { formatCurrencyShort } from '../../../utils/format';
 import {
@@ -57,8 +57,6 @@ const InitialQuotationDetailManager = () => {
         setQuotationData(data);
         setVersion(data.Version || null);
 
-        const comboDonGia = data.PackageQuotationList.UnitPackageFinished || 0;
-
         const updatedTableData = data.ItemInitial.map((item, index) => {
           const coefficient =
             item.Coefficient !== 0
@@ -82,7 +80,7 @@ const InitialQuotationDetailManager = () => {
           0,
         );
 
-        let giaTriHopDong = totalRough + totalUtilities + comboDonGia;
+        let giaTriHopDong = totalRough + totalUtilities;
 
         if (data.PromotionInfo && data.PromotionInfo.Value !== null) {
           const discountValue =
@@ -222,13 +220,15 @@ const InitialQuotationDetailManager = () => {
         {showChat && quotationData && (
           <ChatBox
             onClose={toggleChat}
-            accountName={quotationData.AccountName}
-            note={quotationData.Note}
+            accountName={quotationData.AccountName || ''}
+            note={quotationData.Note || ''}
           />
         )}
 
         <InitialQuotationStatusTracker
-          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
+          currentStatus={getStatusLabelInitalQuoteDetail(
+            quotationData.Status || '',
+          )}
         />
       </div>
       <div className="flex justify-end space-x-2">
@@ -262,9 +262,14 @@ const InitialQuotationDetailManager = () => {
           </h2>
           <div className="text-right">
             <span className="font-semibold">Phiên bản:</span>
-            <span className="text-gray-700 ml-2">{quotationData.Version}</span>
+            <span className="text-gray-700 ml-2">
+              {quotationData.Version || ''}
+            </span>
             <div className="text-gray-500 text-sm">
-              Tạo lúc {new Date(quotationData.InsDate).toLocaleString()}
+              Tạo lúc{' '}
+              {quotationData.InsDate
+                ? new Date(quotationData.InsDate).toLocaleString()
+                : ''}
             </div>
           </div>
         </div>
@@ -275,15 +280,17 @@ const InitialQuotationDetailManager = () => {
               1. ĐƠN GIÁ THI CÔNG:
             </p>
             <p className="mb-2">
-              {quotationData.PackageQuotationList.PackageRough} -{' '}
-              {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+              {quotationData.PackageQuotationList.PackageRough || ''} -{' '}
+              {quotationData.PackageQuotationList.UnitPackageRough?.toLocaleString() ||
+                ''}{' '}
               đồng/m²
             </p>
             {quotationData.PackageQuotationList.PackageFinished &&
               quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
                 <p className="mb-2">
                   {quotationData.PackageQuotationList.PackageFinished} -{' '}
-                  {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                  {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() ||
+                    ''}{' '}
                   đồng/m²
                 </p>
               )}
@@ -501,7 +508,7 @@ const InitialQuotationDetailManager = () => {
             </strong>
           </div>
           <p className="text-gray-700 whitespace-pre-line">
-            {quotationData.OthersAgreement}
+            {quotationData.OthersAgreement || ''}
           </p>
         </div>
 

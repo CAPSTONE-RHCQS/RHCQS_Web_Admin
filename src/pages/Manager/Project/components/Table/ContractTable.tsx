@@ -87,7 +87,7 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
               </span>
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Note ?? 'N/A'}
+              {item.Note ?? ''}
             </td>
             <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
               <FiMoreVertical

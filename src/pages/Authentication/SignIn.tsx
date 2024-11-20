@@ -44,6 +44,7 @@ const SignIn: React.FC = () => {
           decodedToken[
             'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'
           ],
+        ImgUrl: decodedToken.ImgUrl,
       };
       localStorage.setItem('user', JSON.stringify(userData));
       localStorage.setItem('token', data.Token);
@@ -74,7 +75,7 @@ const SignIn: React.FC = () => {
         style={{ filter: 'blur(8px)' }}
       ></div>
       <div className="relative flex flex-wrap w-full max-w-4xl bg-white rounded-lg shadow-md dark:bg-boxdark">
-        <div className="hidden xl:flex xl:w-1/2 items-center justify-center bg-gray-200 dark:bg-boxdark-2">
+        <div className="hidden xl:flex xl:w-1/2 items-center justify-center bg-gray-300 dark:bg-boxdark-2">
           <div className="p-8 text-center">
             <span className="inline-block">
               <PhoneSvg />

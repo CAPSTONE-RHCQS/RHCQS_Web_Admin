@@ -15,7 +15,7 @@ import PostList from './pages/BlogPost/PostList';
 import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import EditQuote from './pages/Quote/EditQuote/EditQuote';
 import AccountList from './pages/Manager/Account/AccountList.tsx';
-import ProjectDetail from './pages/Manager/Project/ProjectDetail';
+import ProjectDetailManager from './pages/Manager/Project/ProjectDetailManager.tsx';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
 import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
@@ -24,7 +24,6 @@ import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx'
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import BlogList from './components/BlogList.tsx';
-import ContractDetail from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
@@ -210,11 +209,11 @@ function App() {
               }
             />
             <Route
-              path="/project-detail/:id"
+              path="/project-detail-manager/:id"
               element={
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectDetail />
+                  <ProjectDetailManager />
                 </PrivateRoute>
               }
             />
@@ -432,7 +431,7 @@ function App() {
           </Routes>
         </DefaultLayout>
       )}
-      <ToastContainer position="bottom-right" autoClose={5000} />
+      <ToastContainer position="top-right" autoClose={5000} />
     </>
   );
 }

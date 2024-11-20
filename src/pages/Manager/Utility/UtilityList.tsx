@@ -28,13 +28,13 @@ const UtilityList: React.FC = () => {
 
   return (
     <>
-      <Breadcrumb pageName="Quản lý Tùy chọn và Tiện ích" />
+      <Breadcrumb pageName="Quản lý Dịch vụ và Tiện ích" />
 
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
             <span className="text-lg text-black dark:text-white">
-              Tổng số Tùy chọn và Tiện ích: {totalUtilities}
+              Tổng số Dịch vụ và Tiện ích: {totalUtilities}
             </span>
           </div>
           <div className="flex items-center">

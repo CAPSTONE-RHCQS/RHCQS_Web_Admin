@@ -33,7 +33,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose, accountName, note }) => {
       className="bg-primary text-white rounded-t-lg shadow-lg flex flex-col"
     >
       <div className="flex flex-col h-full">
-        <div className="flex items-center justify-between p-2 bg-secondaryGreen rounded-t-lg cursor-move">
+        <div className="flex items-center justify-between p-2 bg-primaryDarkGreen rounded-t-lg cursor-move">
           <div className="flex items-center">
             <img
               src={customerInfo.avatar}
@@ -73,13 +73,13 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose, accountName, note }) => {
                 alt="Avatar"
                 className="w-8 h-8 rounded-full mr-2"
               />
-              <div className="bg-secondaryGreen p-2 rounded text-white">
+              <div className="bg-primaryDarkGreen p-2 rounded text-white">
                 {note || 'Không có ghi chú nào từ khách hàng.'}
               </div>
             </div>
           </div>
         </div>
-        <div className="p-2 bg-secondaryGreen rounded-b-lg flex items-center">
+        <div className="p-2 bg-primaryDarkGreen rounded-b-lg flex items-center">
           <input
             type="text"
             placeholder="Aa"
