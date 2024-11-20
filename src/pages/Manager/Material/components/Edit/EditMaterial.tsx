@@ -1,13 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { getMaterialById } from '../../../../../api/Material/Material';
+import { MaterialRequest } from '../../../../../types/Material';
 
 interface EditMaterialProps {
   id: string;
+  onSuccess: (id: string, materialDetail: MaterialRequest) => void;
   onClose: () => void;
 }
 
-const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
+const EditMaterial: React.FC<EditMaterialProps> = ({
+  id,
+  onClose,
+  onSuccess,
+}) => {
   const [materialDetail, setMaterialDetail] = useState<any>(null);
+  const [newImage, setNewImage] = useState<string | null>(null);
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchMaterialDetail = async () => {
@@ -24,6 +33,44 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
       fetchMaterialDetail();
     }
   }, [id]);
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      setNewImageFile(file);
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setNewImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    const updatedMaterialDetail: MaterialRequest = {
+      SupplierId: materialDetail.SupplierId,
+      MaterialSectionId: materialDetail.MaterialSectionId,
+      Name: materialDetail.Name,
+      Price: materialDetail.Price,
+      Unit: materialDetail.Unit,
+      Size: materialDetail.Size,
+      Shape: materialDetail.Shape,
+      Description: materialDetail.Description,
+      IsAvailable: materialDetail.IsAvailable,
+      UnitPrice: materialDetail.UnitPrice,
+      Image: newImageFile || materialDetail.Image,
+    };
+
+    try {
+      await onSuccess(id, updatedMaterialDetail);
+    } catch (error) {
+      console.error('Failed to save material:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (!materialDetail) return null;
 
@@ -44,8 +91,10 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           <input
             type="text"
             value={materialDetail.Name}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Name: e.target.value })
+            }
             className="border p-2 w-full rounded font-regular"
-            readOnly
           />
         </div>
         <div className="mb-4">
@@ -53,8 +102,10 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           <input
             type="number"
             value={materialDetail.Price}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Price: e.target.value })
+            }
             className="border p-2 w-full rounded font-regular"
-            readOnly
           />
         </div>
         <div className="mb-4">
@@ -64,7 +115,20 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
             className="border p-2 w-full rounded font-regular"
             disabled
           >
-            {['cuộn', 'viên', 'm2', 'máy', 'bộ', 'cái', 'thùng', 'ống', 'bao', 'can', 'md', 'kg'].map((unit) => (
+            {[
+              'cuộn',
+              'viên',
+              'm2',
+              'máy',
+              'bộ',
+              'cái',
+              'thùng',
+              'ống',
+              'bao',
+              'can',
+              'md',
+              'kg',
+            ].map((unit) => (
               <option key={unit} value={unit}>
                 {unit}
               </option>
@@ -76,14 +140,19 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           <input
             type="text"
             value={materialDetail.Size}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Size: e.target.value })
+            }
             className="border p-2 w-full rounded font-regular"
-            readOnly
           />
         </div>
         <div className="mb-4">
           <strong className="font-bold">Hình dạng:</strong>
           <select
             value={materialDetail.Shape}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Shape: e.target.value })
+            }
             className="border p-2 w-full rounded font-regular"
           >
             {['Hình vuông', 'Hình chữ nhật', 'Hình sóng'].map((shape) => (
@@ -94,29 +163,66 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           </select>
         </div>
         <div className="mb-4">
-          <strong className="font-bold">URL Hình ảnh:</strong>
-          <img
-            src={materialDetail.ImgUrl}
-            alt="Material"
-            className="w-full h-auto rounded"
-          />
+          <strong className="font-bold">Hình ảnh:</strong>
+          <div className="flex space-x-4">
+            <div className="relative">
+              <img
+                src={materialDetail.ImgUrl}
+                alt="Material"
+                className="border-dashed border-2 border-gray-400 p-4 mb-4 w-40 h-40 rounded flex justify-center items-center cursor-pointer relative"
+              />
+              <span className="absolute inset-0 flex justify-center items-center text-white text-2xl font-bold bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity">
+                +
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                className="absolute inset-0 opacity-0 cursor-pointer"
+                onChange={handleImageUpload}
+              />
+              <div className="text-center mt-2">Ảnh hiện tại</div>
+            </div>
+            {newImage && (
+              <div className="relative">
+                <img
+                  src={newImage}
+                  alt="New Material"
+                  className="border-dashed border-2 border-gray-400 p-4 mb-4 w-40 h-40 rounded flex justify-center items-center"
+                />
+                <div className="text-center mt-2">Ảnh mới</div>
+              </div>
+            )}
+          </div>
         </div>
         <div className="mb-4">
           <strong className="font-bold">Mô tả:</strong>
           <input
             type="text"
             value={materialDetail.Description}
+            onChange={(e) =>
+              setMaterialDetail({
+                ...materialDetail,
+                Description: e.target.value,
+              })
+            }
             className="border p-2 w-full rounded font-regular"
-            readOnly
           />
         </div>
         <div className="mb-4">
           <strong className="font-bold">Có sẵn:</strong>
-          <input
-            type="checkbox"
-            checked={materialDetail.IsAvailable}
-            readOnly
-          />
+          <select
+            value={materialDetail.IsAvailable ? 'true' : 'false'}
+            onChange={(e) =>
+              setMaterialDetail({
+                ...materialDetail,
+                IsAvailable: e.target.value === 'true',
+              })
+            }
+            className="border p-2 w-full rounded font-regular"
+          >
+            <option value="true">Đang cung cấp</option>
+            <option value="false">Ngừng cung cấp</option>
+          </select>
         </div>
         <div className="mb-4">
           <strong className="font-bold">Giá đơn vị:</strong>
@@ -131,7 +237,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           <strong className="font-bold">Phần vật liệu:</strong>
           <input
             type="text"
-            value={materialDetail.MaterialSectionName}
+            value={materialDetail.MaterialSectionType}
             className="border p-2 w-full rounded font-regular"
             readOnly
           />
@@ -149,11 +255,39 @@ const EditMaterial: React.FC<EditMaterialProps> = ({ id, onClose }) => {
           <button
             onClick={onClose}
             className="text-black px-4 py-2 rounded font-bold"
+            disabled={isLoading}
           >
             Hủy
           </button>
-          <button className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold">
-            Lưu
+          <button
+            onClick={handleSave}
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold flex items-center"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Lưu"
+            )}
           </button>
         </div>
       </div>

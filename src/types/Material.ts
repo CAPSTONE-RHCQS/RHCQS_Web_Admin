@@ -1,3 +1,4 @@
+// MaterialSectionListResponse
 export interface MaterialSectionListResponse {
     Size: number
     Page: number
@@ -9,6 +10,8 @@ export interface MaterialSectionListResponse {
 export interface MaterialSectionItem {
     Id: string
     Name: string
+    Code: string
+    Type: string
     InsDate: string
 }
 
@@ -20,6 +23,8 @@ export interface MaterialListResponse {
     Items: MaterialItem[]
 }
 
+
+// MaterialItem
 export interface MaterialItem {
     Id: string
     Name: string
@@ -31,6 +36,23 @@ export interface MaterialItem {
     Description?: string
     IsAvailable: boolean
     UnitPrice: string
-    MaterialSectionName: string
+    MaterialSectionId: string
+    SupplierId: string
     SupplierName: string
+    MaterialSectionType: string
+    Code: string
+}
+
+export interface MaterialRequest {
+    SupplierId: string
+    MaterialSectionId: string
+    Name: string
+    Price: number
+    Unit: string
+    Size: string
+    Shape: string
+    Description: string
+    IsAvailable: boolean
+    UnitPrice: string
+    Image: string
 }
