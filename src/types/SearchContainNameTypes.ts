@@ -56,3 +56,16 @@ export interface Material {
 }
 
 export type GetMaterialByNameResponse = Material[];
+
+export interface Promotion {
+  Id: string;
+  Code: string;
+  Value: number;
+  InsDate: string;
+  StartTime: string;
+  Name: string;
+  ExpTime: string;
+  IsRunning: boolean;
+}
+
+export type GetPromotionByNameResponse = Promotion[];

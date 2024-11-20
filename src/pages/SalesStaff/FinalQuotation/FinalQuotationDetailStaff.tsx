@@ -83,37 +83,6 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
-  const addBatchPaymentRow = () => {
-    if (quotationDetail) {
-      const newPayment: BatchPaymentInfo = {
-        PaymentId: '',
-        PaymentTypeId: '',
-        PaymentTypeName: '',
-        ContractId: '',
-        InsDate: new Date().toISOString(),
-        Status: 'Pending',
-        UpsDate: new Date().toISOString(),
-        Description: '',
-        Percents: '0',
-        Price: 0,
-        Unit: 'VNĐ',
-        PaymentDate: new Date().toISOString(),
-        PaymentPhase: new Date().toISOString(),
-      };
-      const updatedPayments = [
-        ...quotationDetail.BatchPaymentInfos,
-        newPayment,
-      ];
-      setQuotationDetail({
-        ...quotationDetail,
-        BatchPaymentInfos: updatedPayments,
-      });
-      console.log('Added new payment row:', newPayment);
-    } else {
-      console.error('Quotation detail is null');
-    }
-  };
-
   const handleFinalQuotationItemsChange = (
     updatedItems: FinalQuotationItem[],
   ) => {
@@ -183,7 +152,6 @@ const FinalQuotationDetailStaff = () => {
         ConstructionId: '',
         ContructionName: '',
         SubConstructionId: '',
-        Coefficient: 0,
         Type: '',
         InsDate: new Date().toISOString(),
         QuotationItems: [],
@@ -438,17 +406,6 @@ const FinalQuotationDetailStaff = () => {
                   <FaChevronDown className="ml-2 text-secondary" />
                 )}
               </h3>
-              {isEditing && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addBatchPaymentRow();
-                  }}
-                  className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-                >
-                  <FaPlus />
-                </button>
-              )}
             </div>
           </div>
         </div>

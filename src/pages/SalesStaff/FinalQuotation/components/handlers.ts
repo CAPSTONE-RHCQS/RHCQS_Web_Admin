@@ -11,17 +11,15 @@ export const handleSave = async (
 ) => {
   if (quotationDetail) {
     const requestData: FinalQuotationRequest = {
+      customerName: quotationDetail.AccountName,
+      address: quotationDetail.ProjectAddress,
       projectId: quotationDetail.ProjectId,
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        initIntitialQuotationId: quotationDetail.InitailQuotationId,
-        paymentTypeId: payment.PaymentTypeId,
-        contractId: payment.ContractId,
-        price: payment.Price,
-        percents: payment.Percents,
-        description: payment.Description,
-        status: payment.Status,
+        numberOfBatch: payment.NumberOfBatch,
+        paymentDate: payment.PaymentDate,
+        paymentPhase: payment.PaymentPhase,
       })),
       equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
         name: item.Name,
@@ -81,17 +79,15 @@ export const hanldCreateNew = async (
 ): Promise<boolean> => {
   if (quotationDetail) {
     const requestData: FinalQuotationRequest = {
+      customerName: quotationDetail.AccountName,
+      address: quotationDetail.ProjectAddress,
       projectId: quotationDetail.ProjectId,
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        initIntitialQuotationId: quotationDetail.InitailQuotationId,
-        paymentTypeId: payment.PaymentTypeId,
-        contractId: payment.ContractId,
-        price: payment.Price,
-        percents: payment.Percents,
-        description: payment.Description,
-        status: payment.Status,
+        numberOfBatch: payment.NumberOfBatch,
+        paymentDate: payment.PaymentDate,
+        paymentPhase: payment.PaymentPhase,
       })),
       equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
         name: item.Name,

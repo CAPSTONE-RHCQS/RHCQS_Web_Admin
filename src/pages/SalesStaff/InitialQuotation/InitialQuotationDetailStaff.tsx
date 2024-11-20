@@ -129,6 +129,7 @@ const InitialQuotationDetailStaff = () => {
             promotionInfo,
             navigate,
             setIsSaving,
+            othersAgreement
           )
         }
       />

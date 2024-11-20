@@ -54,6 +54,7 @@ export interface InitialQuotationResponse {
   Area: number;
   TimeProcessing: number;
   TimeOthers: number;
+  TimeRough: number;
   OthersAgreement: string;
   InsDate: string;
   Status: string;
@@ -62,6 +63,7 @@ export interface InitialQuotationResponse {
   Note: string | null;
   TotalRough: number;
   TotalUtilities: number;
+  Discount: number;
   Unit: string;
   ReasonReject: string | null;
   PackageQuotationList: PackageQuotation;
@@ -106,6 +108,7 @@ export interface UpdateInitialQuotationRequest {
   address: string;
   versionPresent: number;
   projectId: string;
+  isSave: boolean;
   area: number;
   timeProcessing: number;
   timeRough: number;
@@ -116,6 +119,11 @@ export interface UpdateInitialQuotationRequest {
   items: Item[];
   packages: Package[];
   utilities: QuotationUtility[];
-  promotions: Promotion | null;
+  promotions: PromotionWithDiscount | null;
   batchPayments: BatchPayment[];
+}
+
+interface PromotionWithDiscount {
+  id: string;
+  discount: number;
 }

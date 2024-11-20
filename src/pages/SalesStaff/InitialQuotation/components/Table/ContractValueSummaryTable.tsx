@@ -13,9 +13,7 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
   promotionInfo,
   updateGiaTriHopDong,
 }) => {
-  const discount = promotionInfo
-    ? (thanhTien + totalUtilityCost) * (promotionInfo.Value / 100)
-    : 0;
+  const discount = promotionInfo ? promotionInfo.Value : 0;
   const giaTriHopDong = thanhTien + totalUtilityCost - discount;
 
   useEffect(() => {

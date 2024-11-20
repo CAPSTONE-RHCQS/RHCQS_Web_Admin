@@ -13,7 +13,6 @@ import BatchPaymentTable from './components/Table/BatchPaymentTable';
 import EquipmentTable from './components/Table/EquipmentTable';
 import FinalQuotationTable from './components/Table/FinalQuotationTable';
 import UtilityInfoTable from './components/Table/UtilityInfoTable';
-import FinalQuotationStatus from '../../../components/StatusTracker/FinalQuotationStatus';
 import {
   FaUser,
   FaMapMarkerAlt,
@@ -37,6 +36,7 @@ const CreateNewFinalQuotationStaff = () => {
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -45,6 +45,7 @@ const CreateNewFinalQuotationStaff = () => {
         try {
           const data = await postFinalQuotationByProjectId(id);
           setQuotationDetail(data);
+          setTotalPrice(calculateTotalPrice(data));
         } catch (error) {
           console.error('Error fetching quotation detail:', error);
         }
@@ -55,6 +56,44 @@ const CreateNewFinalQuotationStaff = () => {
 
     fetchQuotationDetail();
   }, [id]);
+
+  const calculateTotalPrice = (
+    quotationDetail: FinalQuotationDetailType | null,
+  ) => {
+    if (!quotationDetail) return 0;
+
+    const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
+      (total, item) => {
+        return (
+          total +
+          item.QuotationItems.reduce((subTotal, qItem) => {
+            return (
+              subTotal +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0)
+            );
+          }, 0)
+        );
+      },
+      0,
+    );
+
+    const totalUtilities = quotationDetail.UtilityInfos.reduce(
+      (total, util) => {
+        return total + (util.Price || 0);
+      },
+      0,
+    );
+
+    const totalEquipment = quotationDetail.EquipmentItems.reduce(
+      (total, item) => {
+        return total + (item.Quantity * item.UnitOfMaterial || 0);
+      },
+      0,
+    );
+
+    return totalFinalQuotation + totalUtilities + totalEquipment;
+  };
 
   const handleUtilitiesChange = (updatedUtilities: UtilityInfo[]) => {
     if (quotationDetail) {
@@ -67,50 +106,22 @@ const CreateNewFinalQuotationStaff = () => {
 
   const handleEquipmentItemsChange = (updatedItems: EquipmentItem[]) => {
     if (quotationDetail) {
-      setQuotationDetail({
+      const updatedQuotationDetail = {
         ...quotationDetail,
         EquipmentItems: updatedItems,
-      });
+      };
+      setQuotationDetail(updatedQuotationDetail);
+      setTotalPrice(calculateTotalPrice(updatedQuotationDetail));
     }
   };
 
   const handleBatchPaymentsChange = (updatedPayments: BatchPaymentInfo[]) => {
     if (quotationDetail) {
+      console.log('uuu', updatedPayments);
       setQuotationDetail({
         ...quotationDetail,
         BatchPaymentInfos: updatedPayments,
       });
-    }
-  };
-
-  const addBatchPaymentRow = () => {
-    if (quotationDetail) {
-      const newPayment: BatchPaymentInfo = {
-        PaymentId: '',
-        PaymentTypeId: '',
-        PaymentTypeName: '',
-        ContractId: '',
-        InsDate: new Date().toISOString(),
-        Status: 'Pending',
-        UpsDate: new Date().toISOString(),
-        Description: '',
-        Percents: '0',
-        Price: 0,
-        Unit: 'VNĐ',
-        PaymentDate: new Date().toISOString(),
-        PaymentPhase: new Date().toISOString(),
-      };
-      const updatedPayments = [
-        ...quotationDetail.BatchPaymentInfos,
-        newPayment,
-      ];
-      setQuotationDetail({
-        ...quotationDetail,
-        BatchPaymentInfos: updatedPayments,
-      });
-      console.log('Added new payment row:', newPayment);
-    } else {
-      console.error('Quotation detail is null');
     }
   };
 
@@ -179,7 +190,6 @@ const CreateNewFinalQuotationStaff = () => {
         ConstructionId: '',
         ContructionName: '',
         SubConstructionId: '',
-        Coefficient: 0,
         Type: '',
         InsDate: new Date().toISOString(),
         QuotationItems: [],
@@ -195,38 +205,19 @@ const CreateNewFinalQuotationStaff = () => {
     }
   };
 
-  const calculateTotalPrice = () => {
-    const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
-      (total, item) => {
-        return (
-          total +
-          item.QuotationItems.reduce((subTotal, qItem) => {
-            return (
-              subTotal +
-              (qItem.TotalPriceLabor || 0) +
-              (qItem.TotalPriceRough || 0)
-            );
-          }, 0)
-        );
-      },
-      0,
-    );
-
-    const totalUtilities = quotationDetail.UtilityInfos.reduce(
-      (total, util) => {
-        return total + (util.Price || 0);
-      },
-      0,
-    );
-
-    const totalEquipment = quotationDetail.EquipmentItems.reduce(
-      (total, item) => {
-        return total + (item.Quantity * item.UnitOfMaterial || 0);
-      },
-      0,
-    );
-
-    return totalFinalQuotation + totalUtilities + totalEquipment;
+  const handleSave = async () => {
+    if (quotationDetail) {
+      console.log('Quotation Detail before save:', quotationDetail); // Debugging
+      const success = await hanldCreateNew(
+        quotationDetail,
+        setIsEditing,
+        setIsSaving,
+        navigate,
+      );
+      if (success) {
+        // Handle success
+      }
+    }
   };
 
   return (
@@ -234,9 +225,7 @@ const CreateNewFinalQuotationStaff = () => {
       <CreateNewButtonGroup
         isEditing={isEditing}
         isSaving={isSaving}
-        hanldCreateNew={() =>
-          hanldCreateNew(quotationDetail, setIsEditing, setIsSaving, navigate)
-        }
+        hanldCreateNew={handleSave}
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
         handleShare={handleShare}
@@ -275,7 +264,7 @@ const CreateNewFinalQuotationStaff = () => {
           <FaMoneyBillWave className="mr-2 text-secondary" />
           <span className="font-semibold">Tổng chi phí:</span>
           <span className="text-gray-700 ml-2">
-            {calculateTotalPrice().toLocaleString()} VNĐ
+            {calculateTotalPrice(quotationDetail).toLocaleString()} VNĐ
           </span>
         </div>
 
@@ -410,6 +399,7 @@ const CreateNewFinalQuotationStaff = () => {
             onItemsChange={handleEquipmentItemsChange}
           />
         )}
+
         <hr className="my-4 border-gray-300" />
         <div className="flex items-center mb-4">
           <div className="flex items-center justify-between w-full">
@@ -425,17 +415,6 @@ const CreateNewFinalQuotationStaff = () => {
                   <FaChevronDown className="ml-2 text-secondary" />
                 )}
               </h3>
-              {isEditing && (
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    addBatchPaymentRow();
-                  }}
-                  className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
-                >
-                  <FaPlus />
-                </button>
-              )}
             </div>
           </div>
         </div>
@@ -443,7 +422,7 @@ const CreateNewFinalQuotationStaff = () => {
           <BatchPaymentTable
             payments={quotationDetail.BatchPaymentInfos}
             isEditing={isEditing}
-            totalPrice={calculateTotalPrice()}
+            totalPrice={totalPrice}
             onPaymentsChange={handleBatchPaymentsChange}
           />
         )}

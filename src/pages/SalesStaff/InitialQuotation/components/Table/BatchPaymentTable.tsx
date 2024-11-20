@@ -1,9 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { BatchPaymentInfo } from '../../../../../types/InitialQuotationTypes';
 
 interface BatchPaymentTableProps {
-  batchPayment: any[];
+  batchPayment: BatchPaymentInfo[];
   totalPercentage: number;
   totalAmount: number;
   giaTriHopDong: number;
@@ -37,13 +38,13 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
         </thead>
         <tbody>
           {batchPayment.map((row, index) => (
-            <tr key={row.Id}>
+            <tr key={row.PaymentId}>
               <td className="px-4 py-2 border text-center">{index + 1}</td>
               <td className="px-4 py-2 border text-left">
                 {isEditing ? (
                   <input
                     type="text"
-                    value={row.Description}
+                    value={row.Description || ''}
                     onChange={(e) =>
                       handlePaymentChange(index, 'Description', e.target.value)
                     }
@@ -58,20 +59,24 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                   {isEditing ? (
                     <input
                       type="text"
-                      value={row.Percents}
+                      value={row.Percents || ''}
                       onChange={(e) =>
                         handlePaymentChange(index, 'Percents', e.target.value)
                       }
                       className="w-7 bg-transparent text-right"
                     />
                   ) : (
-                    `${row.Percents}`
+                    `${row.Percents || 0}`
                   )}
                   <span className="ml-0.5">%</span>
                 </div>
               </td>
               <td className="px-4 py-2 border text-center">
-                {((row.Percents / 100) * giaTriHopDong).toLocaleString()} VNĐ
+                {(
+                  (parseFloat(row.Percents || '0') / 100) *
+                  giaTriHopDong
+                ).toLocaleString()}{' '}
+                VNĐ
               </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">

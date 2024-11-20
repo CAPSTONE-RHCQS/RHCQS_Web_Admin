@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
-import { InitialQuotationResponse } from '../../../types/InitialQuotationTypes';
+import {
+  InitialQuotationResponse,
+  PromotionInfo,
+} from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
 import UtilityTable from './components/Table/UtilityTable';
 import ConstructionPrice from './components/Table/ConstructionPrice';
 import BatchPaymentTable from './components/Table/BatchPaymentTable';
 import ContractValueSummaryTable from './components/Table/ContractValueSummaryTable';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaUser, FaMapMarkerAlt } from 'react-icons/fa';
+import { getPromotionByName } from '../../../api/Promotion/PromotionApi';
+import { Promotion } from '../../../types/SearchContainNameTypes';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -22,8 +27,8 @@ interface QuotationSummaryProps {
   utilityInfos: any[];
   setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
   totalUtilityCost: number;
-  promotionInfo: any;
-  setPromotionInfo: React.Dispatch<React.SetStateAction<any[]>>;
+  promotionInfo: PromotionInfo | null;
+  setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
   giaTriHopDong: number;
   setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>;
   batchPayment: any[];
@@ -57,6 +62,57 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   othersAgreement,
   setOthersAgreement,
 }) => {
+  const [searchName, setSearchName] = useState<string>('');
+  const [promotionList, setPromotionList] = useState<Promotion[]>([]);
+  const previousSearchNameRef = useRef<string>('');
+
+  const fetchPromotions = useCallback(async () => {
+    if (
+      searchName.trim() === '' ||
+      searchName === previousSearchNameRef.current
+    ) {
+      setPromotionList([]);
+      return;
+    }
+
+    try {
+      const promotions: Promotion[] = await getPromotionByName(searchName);
+      setPromotionList(promotions);
+      previousSearchNameRef.current = searchName;
+    } catch (error) {
+      console.error('Error fetching promotions:', error);
+    }
+  }, [searchName]);
+
+  useEffect(() => {
+    fetchPromotions();
+  }, [fetchPromotions]);
+
+  const handlePromotionSelect = (promotion: Promotion) => {
+    setPromotionInfo({
+      Id: promotion.Id,
+      Name: promotion.Name,
+      Value: promotion.Value,
+    });
+    setSearchName('');
+    setPromotionList([]);
+  };
+
+  const handlePromotionChange = (field: string, value: any) => {
+    if (field === 'Name') {
+      setSearchName(value);
+    }
+    if (promotionInfo) {
+      setPromotionInfo({ ...promotionInfo, [field]: value });
+    } else {
+      setPromotionInfo({
+        Id: '',
+        Name: field === 'Name' ? value : null,
+        Value: field === 'Value' ? value : null,
+      });
+    }
+  };
+
   const addUtilityRow = () => {
     setUtilityInfos([
       ...utilityInfos,
@@ -97,10 +153,6 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
     ]);
   };
 
-  const handlePromotionChange = (field: string, value: any) => {
-    setPromotionInfo({ ...promotionInfo, [field]: value });
-  };
-
   const handlePaymentChange = (index: number, field: string, value: any) => {
     const newSchedule = [...batchPayment];
     newSchedule[index] = { ...newSchedule[index], [field]: value };
@@ -126,6 +178,51 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <div className="text-gray-500 text-sm">
             Tạo lúc {new Date(quotationData.InsDate).toLocaleString()}
           </div>
+        </div>
+      </div>
+
+      <div className="mb-4">
+        <strong className="text-lg font-bold text-secondary">
+          Thông tin tài khoản:
+        </strong>
+        <div className="mt-2 flex items-center">
+          <FaUser className="text-blue-500 mr-2" />
+          <label className="block text-gray-700 font-semibold">
+            Tên khách hàng:
+          </label>
+          {isEditing ? (
+            <input
+              type="text"
+              value={quotationData.AccountName}
+              onChange={(e) =>
+                setQuotationData({
+                  ...quotationData,
+                  AccountName: e.target.value,
+                })
+              }
+              className="w-full p-2 border rounded ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          ) : (
+            <p className="ml-2">{quotationData.AccountName}</p>
+          )}
+        </div>
+        <div className="mt-2 flex items-center">
+          <FaMapMarkerAlt className="text-blue-500 mr-2" />
+          <label className="block text-gray-700 font-semibold">
+            Địa chỉ thi công:
+          </label>
+          {isEditing ? (
+            <input
+              type="text"
+              value={quotationData.Address}
+              onChange={(e) =>
+                setQuotationData({ ...quotationData, Address: e.target.value })
+              }
+              className="w-full p-2 border rounded ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          ) : (
+            <p className="ml-2">{quotationData.Address}</p>
+          )}
         </div>
       </div>
 
@@ -246,26 +343,73 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         isEditing={isEditing}
       />
 
-      <div>
+      <div className="mt-4">
         <div className="mb-4">
           <strong className="text-xl text-secondary">
             {sectionStart + 1}. KHUYẾN MÃI:
           </strong>
         </div>
-        <input
-          type="text"
-          placeholder="Tên khuyến mãi"
-          value={promotionInfo?.Name || ''}
-          onChange={(e) => handlePromotionChange('Name', e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="number"
-          placeholder="Giá trị (%)"
-          value={promotionInfo?.Value || ''}
-          onChange={(e) => handlePromotionChange('Value', e.target.value)}
-          className="w-full p-2 border rounded mt-2"
-        />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border text-center">Tên khuyến mãi</th>
+                <th className="px-4 py-2 border text-center">Giá trị</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-2 border text-center">
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      placeholder="Tên khuyến mãi"
+                      value={promotionInfo?.Name || ''}
+                      onChange={(e) =>
+                        handlePromotionChange('Name', e.target.value)
+                      }
+                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      list="promotion-suggestions"
+                    />
+                  ) : (
+                    <span>{promotionInfo?.Name || 'Không có'}</span>
+                  )}
+                  {isEditing && promotionList.length > 0 && (
+                    <ul className="promotion-list border border-gray-300 rounded mt-2">
+                      {promotionList.map((promotion) => (
+                        <li
+                          key={promotion.Id}
+                          onClick={() => handlePromotionSelect(promotion)}
+                          className="promotion-item cursor-pointer hover:bg-gray-200 p-2"
+                        >
+                          {promotion.Name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  {isEditing ? (
+                    <input
+                      type="number"
+                      placeholder="Giá trị khuyến mãi"
+                      value={promotionInfo?.Value || ''}
+                      onChange={(e) =>
+                        handlePromotionChange(
+                          'Value',
+                          parseFloat(e.target.value) || 0,
+                        )
+                      }
+                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : (
+                    <span>{promotionInfo?.Value || 0} đồng</span>
+                  )}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="mt-4">
@@ -282,31 +426,11 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         />
       </div>
 
-      <div className="mt-4">
-        <div className="mb-4">
-          <strong className="text-xl text-secondary">
-            {sectionStart + 3}. CÁC THỎA THUẬN KHÁC:
-          </strong>
-        </div>
-        {isEditing ? (
-          <textarea
-            value={othersAgreement}
-            onChange={(e) => setOthersAgreement(e.target.value)}
-            className="w-full p-2 border rounded h-32"
-            placeholder="Nhập nội dung thỏa thuận khác..."
-          />
-        ) : (
-          <p className="text-gray-700 whitespace-pre-line">
-            {quotationData.OthersAgreement}
-          </p>
-        )}
-      </div>
-
       <div className="flex items-center mt-4 mb-4">
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             <strong className="text-xl text-secondary">
-              {sectionStart + 4}. CÁC ĐỢT THANH TOÁN:
+              {sectionStart + 3}. CÁC ĐỢT THANH TOÁN:
             </strong>
           </div>
           {isEditing && (
@@ -329,6 +453,108 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         handlePaymentChange={handlePaymentChange}
         handleDeletePayment={handleDeletePayment}
       />
+
+      <div className="mt-4">
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionStart + 4}. CÁC THỎA THUẬN KHÁC:
+          </strong>
+        </div>
+        {isEditing ? (
+          <textarea
+            value={othersAgreement}
+            onChange={(e) => setOthersAgreement(e.target.value)}
+            className="w-full p-2 border rounded h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Nhập nội dung thỏa thuận khác..."
+          />
+        ) : (
+          <p className="text-gray-700 whitespace-pre-line">
+            {quotationData.OthersAgreement}
+          </p>
+        )}
+      </div>
+
+      <div className="mt-4 w-1/3">
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionStart + 5}. THỜI GIAN THI CÔNG:
+          </strong>
+        </div>
+
+        <div className="mb-4 text-right">
+          <p className="flex justify-between">
+            <strong>Thời gian hoàn thành công trình là:</strong>
+            {isEditing ? (
+              <>
+                <input
+                  type="number"
+                  value={quotationData.TimeProcessing || ''}
+                  onChange={(e) =>
+                    setQuotationData({
+                      ...quotationData,
+                      TimeProcessing: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  className="w-10 p-1 border rounded text-right"
+                />
+              </>
+            ) : (
+              <span className="font-bold">
+                {quotationData.TimeProcessing} Ngày
+              </span>
+            )}
+          </p>
+          <p className="text-left">
+            <em>Trong đó:</em>
+          </p>
+          <div className="ml-5">
+            <p className="flex justify-between">
+              <em>Thời gian thi công phần thô:</em>
+              {isEditing ? (
+                <>
+                  <input
+                    type="number"
+                    value={quotationData.TimeRough || ''}
+                    onChange={(e) =>
+                      setQuotationData({
+                        ...quotationData,
+                        TimeRough: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-10 p-1 border rounded text-right"
+                  />
+                </>
+              ) : (
+                <span className="font-italic">
+                  {quotationData.TimeRough} Ngày
+                </span>
+              )}
+            </p>
+            <p className="flex justify-between">
+              <em>Phối hợp với CT hoàn thiện công trình:</em>
+              {isEditing ? (
+                <>
+                  <input
+                    type="number"
+                    value={quotationData.TimeOthers || ''}
+                    onChange={(e) =>
+                      setQuotationData({
+                        ...quotationData,
+                        TimeOthers: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-10 p-1 border rounded text-right"
+                  />
+                </>
+              ) : (
+                <span className="font-italic">
+                  {quotationData.TimeOthers} Ngày
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

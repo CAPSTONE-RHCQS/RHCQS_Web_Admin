@@ -364,11 +364,13 @@ const ProjectDetailSalesStaff = () => {
             </AccordionHeader>
             {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length === 0 &&
-            
-            isFinalized ? (
+            isFinalized &&
+            projectDetail.HouseDesignDrawingInfo.some(
+              (info) => info.Type === 'DIENNUOC' && info.Status === 'Accepted'
+            ) ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
-                onClick={() => navigate(`/create-initial-quote/${id}`)}
+                onClick={() => navigate(`/create-new-final-quotation-staff/${id}`)}
               >
                 Khởi tạo báo giá
               </button>

@@ -2,6 +2,8 @@ import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
   QuotationUtility,
+  PromotionInfo,
+  BatchPaymentInfo,
 } from '../../../../types/InitialQuotationTypes';
 import {
   getInitialQuotation,
@@ -62,7 +64,7 @@ export const fetchQuotationData = async (
       let giaTriHopDong = totalRough + totalUtilities;
 
       if (data.PromotionInfo) {
-        const discountValue = giaTriHopDong * (data.PromotionInfo.Value / 100);
+        const discountValue = data.PromotionInfo.Value || 0;
         giaTriHopDong -= discountValue;
         setPromotionInfo(data.PromotionInfo);
       }
@@ -81,11 +83,12 @@ export const handleSave = async (
   quotationData: InitialQuotationResponse | null,
   tableData: TableRow[],
   version: number | null,
-  paymentSchedule: any[],
+  paymentSchedule: BatchPaymentInfo[],
   utilityInfos: QuotationUtility[],
-  promotionInfo: any,
+  promotionInfo: PromotionInfo | null,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
+  othersAgreement: string
 ) => {
   if (!quotationData) return;
 
@@ -99,26 +102,25 @@ export const handleSave = async (
   }
 
   const requestData: UpdateInitialQuotationRequest = {
-    versionPresent: version || 1,
     accountName: quotationData.AccountName,
     address: quotationData.Address,
+    versionPresent: version || 1,
     projectId: quotationData.ProjectId,
+    isSave: true,
     area: quotationData.Area,
-    timeProcessing: parseInt(quotationData.TimeProcessing || '0', 10),
-    timeRough: 0,
-    timeOthers: parseInt(quotationData.TimeOthers || '0', 10),
-    othersAgreement: quotationData.OthersAgreement || '',
+    timeProcessing: quotationData.TimeProcessing,
+    timeRough: quotationData.TimeRough,
+    timeOthers: quotationData.TimeOthers,
+    othersAgreement: othersAgreement,
     totalRough: quotationData.TotalRough,
     totalUtilities: quotationData.TotalUtilities,
-    items: tableData.map((item) => {
-      return {
-        name: item.hangMuc,
-        constructionItemId: item.constructionItemId || 'default-id',
-        subConstructionId: item.subConstructionId ?? null,
-        area: parseFloat(item.dTich),
-        price: 0,
-      };
-    }),
+    items: tableData.map((item) => ({
+      name: item.hangMuc,
+      constructionItemId: item.constructionItemId || 'default-id',
+      subConstructionId: item.subConstructionId ?? null,
+      area: parseFloat(item.dTich),
+      price: item.price || 0,
+    })),
     packages: [
       ...(quotationData.PackageQuotationList.IdPackageRough
         ? [
@@ -143,11 +145,9 @@ export const handleSave = async (
       price: utility.price,
       description: utility.description,
     })),
-    promotions:
-      promotionInfo &&
-      promotionInfo.Id !== '00000000-0000-0000-0000-000000000000'
-        ? { id: promotionInfo.Id }
-        : null,
+    promotions: promotionInfo
+      ? { id: promotionInfo.Id, discount: promotionInfo.Value || 0 }
+      : null,
     batchPayments: paymentSchedule.map((payment) => ({
       price: payment.Price,
       percents: payment.Percents,
@@ -162,7 +162,6 @@ export const handleSave = async (
     navigate(`/project-detail-staff/${quotationData.ProjectId}`);
   } catch (error) {
     console.error('Error saving data:', error);
-
     const errorMessage =
       error instanceof Error ? error.message : 'Có lỗi xảy ra khi lưu dữ liệu.';
     toast.error(errorMessage);

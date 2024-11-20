@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   createNewInitialQuotation,
@@ -9,6 +9,7 @@ import {
   QuotationUtility,
   UpdateInitialQuotationRequest,
   UtilityInfo,
+  PromotionInfo,
 } from '../../../types/InitialQuotationTypes';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
@@ -19,6 +20,8 @@ import ConstructionPrice from './components/Table/ConstructionPrice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FaPlus } from 'react-icons/fa';
+import { Promotion } from '../../../types/SearchContainNameTypes';
+import { getPromotionByName } from '../../../api/Promotion/PromotionApi';
 
 const convertToQuotationUtility = (
   utilityInfo: UtilityInfo,
@@ -37,11 +40,16 @@ const CreateInitialQuote = () => {
   const [quotationData, setQuotationData] =
     useState<InitialQuotationResponse | null>(null);
   const [paymentSchedule, setPaymentSchedule] = useState<any[]>([]);
-  const [promotionInfo, setPromotionInfo] = useState<any>(null);
+  const [promotionInfo, setPromotionInfo] = useState<PromotionInfo | null>(
+    null,
+  );
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(false);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [othersAgreement, setOthersAgreement] = useState<string>('');
+  const [searchName, setSearchName] = useState<string>('');
+  const [promotionList, setPromotionList] = useState<Promotion[]>([]);
+  const previousSearchNameRef = useRef<string>('');
 
   useEffect(() => {
     const fetchQuotationData = async () => {
@@ -54,6 +62,14 @@ const CreateInitialQuote = () => {
           setTableData(initialTableData);
 
           setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
+
+          if (data.PromotionInfo) {
+            setPromotionInfo({
+              Id: data.PromotionInfo.Id,
+              Name: data.PromotionInfo.Name,
+              Value: data.PromotionInfo.Value || 0,
+            });
+          }
         } catch (error) {
           console.error('Error fetching initial quotation:', error);
         }
@@ -61,6 +77,65 @@ const CreateInitialQuote = () => {
     };
     fetchQuotationData();
   }, [projectId]);
+
+  useEffect(() => {
+    if (!quotationData) return;
+
+    const totalDienTich = tableData.reduce(
+      (total, row) => total + parseFloat(row.dienTich),
+      0,
+    );
+    const donGia = quotationData.PackageQuotationList.UnitPackageRough;
+    const thanhTien = totalDienTich * donGia;
+    const totalUtilityCost = utilityInfos.reduce(
+      (total, utility) => total + utility.price,
+      0,
+    );
+
+    const giaTriHopDong =
+      tableData.length > 0
+        ? thanhTien + totalUtilityCost - (promotionInfo?.Value || 0)
+        : totalUtilityCost - (promotionInfo?.Value || 0);
+
+    setPaymentSchedule((prevSchedule) =>
+      prevSchedule.map((payment) => ({
+        ...payment,
+        price: (giaTriHopDong * parseFloat(payment.percents || '0')) / 100,
+      })),
+    );
+  }, [utilityInfos, tableData, promotionInfo, quotationData]);
+
+  const fetchPromotions = useCallback(async () => {
+    if (
+      searchName.trim() === '' ||
+      searchName === previousSearchNameRef.current
+    ) {
+      setPromotionList([]);
+      return;
+    }
+
+    try {
+      const promotions: Promotion[] = await getPromotionByName(searchName);
+      setPromotionList(promotions);
+      previousSearchNameRef.current = searchName;
+    } catch (error) {
+      console.error('Error fetching promotions:', error);
+    }
+  }, [searchName]);
+
+  useEffect(() => {
+    fetchPromotions();
+  }, [fetchPromotions]);
+
+  const handlePromotionSelect = (promotion: Promotion) => {
+    setPromotionInfo({
+      Id: promotion.Id,
+      Name: promotion.Name,
+      Value: promotion.Value,
+    });
+    setSearchName('');
+    setPromotionList([]);
+  };
 
   const convertToTableRow = (item: any, index: number) => ({
     stt: index + 1,
@@ -105,13 +180,8 @@ const CreateInitialQuote = () => {
 
   const giaTriHopDong =
     tableData.length > 0
-      ? thanhTien +
-        totalUtilityCost -
-        (promotionInfo
-          ? (thanhTien + totalUtilityCost) * (promotionInfo.Value / 100)
-          : 0)
-      : totalUtilityCost -
-        (promotionInfo ? totalUtilityCost * (promotionInfo.Value / 100) : 0);
+      ? thanhTien + totalUtilityCost - (promotionInfo?.Value || 0)
+      : totalUtilityCost - (promotionInfo?.Value || 0);
 
   const handlePaymentScheduleChange = (
     index: number,
@@ -149,7 +219,15 @@ const CreateInitialQuote = () => {
   };
 
   const handlePromotionChange = (field: string, value: any) => {
-    setPromotionInfo({ ...promotionInfo, [field]: value });
+    if (promotionInfo) {
+      setPromotionInfo({ ...promotionInfo, [field]: value });
+    } else {
+      setPromotionInfo({
+        Id: field === 'Id' ? value : '',
+        Name: field === 'Name' ? value : '',
+        Value: field === 'Value' ? value : 0,
+      });
+    }
   };
 
   const handleCreateInitialQuote = async () => {
@@ -158,14 +236,15 @@ const CreateInitialQuote = () => {
     setIsButtonDisabled(true);
 
     const requestData: UpdateInitialQuotationRequest = {
-      versionPresent: 0,
-      projectId: quotationData.ProjectId,
       accountName: quotationData.AccountName,
       address: quotationData.Address,
+      versionPresent: -1,
+      projectId: quotationData.ProjectId,
+      isSave: true,
       area: quotationData.Area,
-      timeProcessing: 0,
-      timeRough: 0,
-      timeOthers: 0,
+      timeProcessing: quotationData.TimeProcessing,
+      timeRough: quotationData.TimeRough,
+      timeOthers: quotationData.TimeOthers,
       othersAgreement,
       totalRough: thanhTien,
       totalUtilities: totalUtilityCost,
@@ -200,7 +279,9 @@ const CreateInitialQuote = () => {
         price: utility.price,
         description: utility.description,
       })),
-      promotions: promotionInfo ? { id: promotionInfo.Id } : null,
+      promotions: promotionInfo
+        ? { id: promotionInfo.Id, discount: promotionInfo.Value || 0 }
+        : null,
       batchPayments: paymentSchedule.map((payment) => ({
         price: payment.price,
         percents: payment.percents,
@@ -263,6 +344,38 @@ const CreateInitialQuote = () => {
       <h2 className="text-2xl font-bold mb-4 text-primary">
         Khởi tạo báo giá sơ bộ
       </h2>
+      <div className="mb-4">
+        <p>
+          <strong>Tên tài khoản:</strong>
+          <input
+            type="text"
+            value={quotationData.AccountName || ''}
+            onChange={(e) =>
+              setQuotationData({
+                ...quotationData,
+                AccountName: e.target.value,
+              })
+            }
+            className="w-full p-1 border rounded"
+          />
+        </p>
+        <p>
+          <strong>Địa chỉ:</strong>
+          <input
+            type="text"
+            value={quotationData.Address || ''}
+            onChange={(e) =>
+              setQuotationData({ ...quotationData, Address: e.target.value })
+            }
+            className="w-full p-1 border rounded"
+          />
+        </p>
+
+        <p>
+          <strong>Giảm giá:</strong> {quotationData.Discount} VNĐ
+        </p>
+      </div>
+
       <div className="flex items-center">
         <div className="mb-4">
           <p className="text-lg font-bold mb-2 text-secondary">
@@ -385,20 +498,57 @@ const CreateInitialQuote = () => {
             {sectionNumber + 1}. KHUYẾN MÃI:
           </strong>
         </div>
-        <input
-          type="text"
-          placeholder="Tên khuyến mãi"
-          value={promotionInfo?.Name || ''}
-          onChange={(e) => handlePromotionChange('Name', e.target.value)}
-          className="w-full p-2 border rounded"
-        />
-        <input
-          type="number"
-          placeholder="Giá trị (%)"
-          value={promotionInfo?.Value || ''}
-          onChange={(e) => handlePromotionChange('Value', e.target.value)}
-          className="w-full p-2 border rounded mt-2"
-        />
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border text-center">Tên khuyến mãi</th>
+                <th className="px-4 py-2 border text-center">Giá trị</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="px-4 py-2 border text-center">
+                  <input
+                    type="text"
+                    placeholder="Tên khuyến mãi"
+                    value={promotionInfo?.Name || ''}
+                    onChange={(e) => {
+                      handlePromotionChange('Name', e.target.value);
+                      setSearchName(e.target.value);
+                    }}
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    list="promotion-suggestions"
+                  />
+                  {promotionList.length > 0 && (
+                    <ul className="promotion-list border border-gray-300 rounded mt-2">
+                      {promotionList.map((promotion) => (
+                        <li
+                          key={promotion.Id}
+                          onClick={() => handlePromotionSelect(promotion)}
+                          className="promotion-item cursor-pointer hover:bg-gray-200 p-2"
+                        >
+                          {promotion.Name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  <input
+                    type="number"
+                    placeholder="Giá trị giảm giá (%)"
+                    value={promotionInfo?.Value || ''}
+                    onChange={(e) =>
+                      handlePromotionChange('Value', parseFloat(e.target.value) || 0)
+                    }
+                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div className="mt-4">
@@ -440,12 +590,12 @@ const CreateInitialQuote = () => {
               {promotionInfo && (
                 <tr className="hover:bg-gray-50">
                   <td className="px-4 py-2 border text-left">
-                    Khuyến mãi ({promotionInfo.Name})
+                    {promotionInfo.Name}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    -{promotionInfo.Value}%
+                    - {promotionInfo?.Value?.toLocaleString()}VNĐ
                   </td>
-                  <td className="px-4 py-2 border text-center">%</td>
+                  <td className="px-4 py-2 border text-center">VNĐ</td>
                 </tr>
               )}
               <tr className="hover:bg-gray-50">
@@ -465,23 +615,9 @@ const CreateInitialQuote = () => {
       </div>
 
       <div className="mt-4">
-        <div className="mb-4">
-          <strong className="text-xl text-secondary">
-            {sectionNumber + 3}. CÁC THỎA THUẬN KHÁC:
-          </strong>
-        </div>
-        <textarea
-          value={othersAgreement}
-          onChange={(e) => setOthersAgreement(e.target.value)}
-          className="w-full p-2 border rounded h-32"
-          placeholder="Nhập nội dung thỏa thuận khác..."
-        />
-      </div>
-
-      <div className="mt-4">
         <div className="flex items-center mb-4">
           <strong className="text-xl text-secondary">
-            {sectionNumber + 4}. CÁC ĐỢT THANH TOÁN:
+            {sectionNumber + 3}. CÁC ĐỢT THANH TOÁN:
           </strong>
         </div>
         <div className="overflow-x-auto mb-4">
@@ -593,6 +729,80 @@ const CreateInitialQuote = () => {
           </button>
         )}
       </div>
+
+      <div className="mt-4">
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 4}. CÁC THỎA THUẬN KHÁC:
+          </strong>
+        </div>
+        <textarea
+          value={othersAgreement}
+          onChange={(e) => setOthersAgreement(e.target.value)}
+          className="w-full p-2 border rounded h-32"
+          placeholder="Nhập nội dung thỏa thuận khác..."
+        />
+      </div>
+
+      <div className="mt-4">
+        <div className="mb-4">
+          <strong className="text-xl text-secondary">
+            {sectionNumber + 5}. THỜI GIAN THI CÔNG:
+          </strong>
+        </div>
+
+        <div className="mb-4">
+          <p>
+            <strong>Thời gian hoàn thành công trình là:</strong>{' '}
+            <input
+              type="number"
+              value={quotationData.TimeProcessing || ''}
+              onChange={(e) =>
+                setQuotationData({
+                  ...quotationData,
+                  TimeProcessing: parseInt(e.target.value) || 0,
+                })
+              }
+              className="w-20 p-1 border rounded"
+            />{' '}
+            Ngày
+          </p>
+          <p>
+            <em>Trong đó:</em>
+          </p>
+          <p style={{ marginLeft: '20px' }}>
+            <em>Thời gian thi công phần thô:</em>{' '}
+            <input
+              type="number"
+              value={quotationData.TimeRough || ''}
+              onChange={(e) =>
+                setQuotationData({
+                  ...quotationData,
+                  TimeRough: parseInt(e.target.value) || 0,
+                })
+              }
+              className="w-20 p-1 border rounded"
+            />{' '}
+            Ngày
+          </p>
+          <p style={{ marginLeft: '20px' }}>
+            <em>Phối hợp với CT hoàn thiện công trình:</em>{' '}
+            <input
+              type="number"
+              value={quotationData.TimeOthers || ''}
+              onChange={(e) =>
+                setQuotationData({
+                  ...quotationData,
+                  TimeOthers: parseInt(e.target.value) || 0,
+                })
+              }
+              className="w-20 p-1 border rounded"
+            />{' '}
+            Ngày
+          </p>
+        </div>
+      </div>
+
       <div className="mt-6 flex justify-end">
         <button
           type="button"
