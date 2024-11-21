@@ -24,8 +24,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   useEffect(() => {
     const formattedPayments = payments.map((payment) => ({
       ...payment,
-      PaymentDate: new Date(payment.PaymentDate).toISOString().split('T')[0],
-      PaymentPhase: new Date(payment.PaymentPhase).toISOString().split('T')[0],
+      PaymentDate: payment.PaymentDate ? new Date(payment.PaymentDate).toISOString().split('T')[0] : '',
+      PaymentPhase: payment.PaymentPhase ? new Date(payment.PaymentPhase).toISOString().split('T')[0] : '',
     }));
     setEditedPayments(formattedPayments);
   }, [payments]);
@@ -110,16 +110,14 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                   <input
                     type="date"
                     ref={(el) => (dateRefs.current[index] = el)}
-                    value={
-                      new Date(payment.PaymentDate).toISOString().split('T')[0]
-                    }
+                    value={payment.PaymentDate || ''}
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentDate', e.target.value)
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  new Date(payment.PaymentDate).toLocaleDateString()
+                  payment.PaymentDate ? new Date(payment.PaymentDate).toLocaleDateString() : ''
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
@@ -129,16 +127,14 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     ref={(el) =>
                       (dateRefs.current[index + editedPayments.length] = el)
                     }
-                    value={
-                      new Date(payment.PaymentPhase).toISOString().split('T')[0]
-                    }
+                    value={payment.PaymentPhase || ''}
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentPhase', e.target.value)
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  new Date(payment.PaymentPhase).toLocaleDateString()
+                  payment.PaymentPhase ? new Date(payment.PaymentPhase).toLocaleDateString() : ''
                 )}
               </td>
             </tr>
