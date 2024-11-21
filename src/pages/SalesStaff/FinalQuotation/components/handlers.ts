@@ -10,6 +10,24 @@ export const handleSave = async (
   setIsSaving: (value: boolean) => void,
 ) => {
   if (quotationDetail) {
+    const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
+      (item) => item.QuotationItems.length === 0,
+    );
+
+    const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
+      (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+    );
+
+    if (hasEmptyConstruction) {
+      toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
+      return;
+    }
+
+    if (hasEmptyDate) {
+      toast.error('Tất cả các trường ngày phải được điền.');
+      return;
+    }
+
     const requestData: FinalQuotationRequest = {
       customerName: quotationDetail.AccountName,
       address: quotationDetail.ProjectAddress,
@@ -77,8 +95,26 @@ export const hanldCreateNew = async (
   setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
   navigate: (path: string) => void,
-): Promise<boolean> => {
+) => {
   if (quotationDetail) {
+    const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
+      (item) => item.QuotationItems.length === 0,
+    );
+
+    const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
+      (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+    );
+
+    if (hasEmptyConstruction) {
+      toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
+      return;
+    }
+
+    if (hasEmptyDate) {
+      toast.error('Tất cả các trường ngày phải được điền.');
+      return;
+    }
+
     const requestData: FinalQuotationRequest = {
       customerName: quotationDetail.AccountName,
       address: quotationDetail.ProjectAddress,

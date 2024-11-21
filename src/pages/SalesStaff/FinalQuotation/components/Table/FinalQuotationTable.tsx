@@ -174,16 +174,13 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   const calculateTotalPrices = (index: number, qItemIndex: number) => {
     const updatedItems = [...items];
     const quotationItem = updatedItems[index].QuotationItems[qItemIndex];
-    const coefficient = updatedItems[index].Coefficient || 1;
 
     quotationItem.TotalPriceLabor =
       (quotationItem.UnitPriceLabor || 0) *
-      coefficient *
       (quotationItem.Weight || 0);
 
     quotationItem.TotalPriceRough =
       (quotationItem.UnitPriceRough || 0) *
-      coefficient *
       (quotationItem.Weight || 0);
 
     onItemsChange(updatedItems);

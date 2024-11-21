@@ -19,7 +19,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   const [editedPayments, setEditedPayments] = useState(payments);
 
   useEffect(() => {
-    const formattedPayments = payments.map(payment => ({
+    const formattedPayments = payments.map((payment) => ({
       ...payment,
       PaymentDate: new Date(payment.PaymentDate).toISOString().split('T')[0],
       PaymentPhase: new Date(payment.PaymentPhase).toISOString().split('T')[0],
@@ -28,7 +28,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   }, [payments]);
 
   useEffect(() => {
-    const updatedPayments = editedPayments.map(payment => ({
+    const updatedPayments = editedPayments.map((payment) => ({
       ...payment,
       Price: (parseFloat(payment.Percents) / 100) * totalPrice,
     }));
@@ -36,7 +36,11 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
     onPaymentsChange(updatedPayments);
   }, [totalPrice]);
 
-  const handleDateChange = (index: number, field: 'PaymentDate' | 'PaymentPhase', value: string) => {
+  const handleDateChange = (
+    index: number,
+    field: 'PaymentDate' | 'PaymentPhase',
+    value: string,
+  ) => {
     const updatedPayments = [...editedPayments];
     updatedPayments[index][field] = value;
     setEditedPayments(updatedPayments);
@@ -112,7 +116,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     value={
                       new Date(payment.PaymentDate).toISOString().split('T')[0]
                     }
-                    onChange={(e) => handleDateChange(index, 'PaymentDate', e.target.value)}
+                    onChange={(e) =>
+                      handleDateChange(index, 'PaymentDate', e.target.value)
+                    }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
@@ -126,7 +132,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     value={
                       new Date(payment.PaymentPhase).toISOString().split('T')[0]
                     }
-                    onChange={(e) => handleDateChange(index, 'PaymentPhase', e.target.value)}
+                    onChange={(e) =>
+                      handleDateChange(index, 'PaymentPhase', e.target.value)
+                    }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (

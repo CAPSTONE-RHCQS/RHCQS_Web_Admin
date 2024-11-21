@@ -28,7 +28,7 @@ export interface EquipmentItem {
 
 export interface QuotationItem {
   Id: string;
-  LaborId: string;
+  LaborId: string | null;
   MaterialId: string | null;
   Name: string;
   Unit: string;
@@ -41,7 +41,7 @@ export interface QuotationItem {
   TotalPriceFinished: number | null;
   InsDate: string | null;
   UpsDate: string | null;
-  Note: string;
+  Note: string | null;
 }
 
 export interface FinalQuotationItem {

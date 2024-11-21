@@ -207,7 +207,7 @@ const CreateNewFinalQuotationStaff = () => {
 
   const handleSave = async () => {
     if (quotationDetail) {
-      console.log('Quotation Detail before save:', quotationDetail); // Debugging
+      console.log('Quotation Detail before save:', quotationDetail); 
       const success = await hanldCreateNew(
         quotationDetail,
         setIsEditing,
@@ -215,7 +215,7 @@ const CreateNewFinalQuotationStaff = () => {
         navigate,
       );
       if (success) {
-        // Handle success
+        
       }
     }
   };
