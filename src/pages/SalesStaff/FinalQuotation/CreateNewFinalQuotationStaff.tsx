@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { postFinalQuotationByProjectId } from '../../../api/FinalQuotation/FinalQuotationApi';
@@ -24,6 +24,7 @@ import {
 import 'react-toastify/dist/ReactToastify.css';
 import CreateNewButtonGroup from './components/Button/CreateNewButtonGroup';
 import { hanldCreateNew, handleEditToggle } from './components/handlers';
+import { toast } from 'react-toastify';
 
 const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +39,8 @@ const CreateNewFinalQuotationStaff = () => {
   const [showUtilities, setShowUtilities] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
   const navigate = useNavigate();
+
+  const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -207,16 +210,23 @@ const CreateNewFinalQuotationStaff = () => {
 
   const handleSave = async () => {
     if (quotationDetail) {
-      console.log('Quotation Detail before save:', quotationDetail); 
+      const emptyDateIndex = quotationDetail.BatchPaymentInfos.findIndex(
+        (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+      );
+
+      if (emptyDateIndex !== -1) {
+        toast.error('Tất cả các trường ngày phải được điền.');
+        dateRefs.current[emptyDateIndex]?.focus();
+        return;
+      }
+
+      console.log('Quotation Detail before save:', quotationDetail);
       const success = await hanldCreateNew(
         quotationDetail,
-        setIsEditing,
         setIsSaving,
         navigate,
       );
-      if (success) {
-        
-      }
+      
     }
   };
 
@@ -424,6 +434,7 @@ const CreateNewFinalQuotationStaff = () => {
             isEditing={isEditing}
             totalPrice={totalPrice}
             onPaymentsChange={handleBatchPaymentsChange}
+            dateRefs={dateRefs}
           />
         )}
       </div>

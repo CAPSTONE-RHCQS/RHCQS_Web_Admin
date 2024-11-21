@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BatchPaymentInfo } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-hot-toast';
 
 interface BatchPaymentTableProps {
   payments: BatchPaymentInfo[];
   isEditing: boolean;
   totalPrice: number;
   onPaymentsChange: (updatedPayments: BatchPaymentInfo[]) => void;
+  dateRefs: React.MutableRefObject<(HTMLInputElement | null)[]>;
 }
 
 const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
@@ -15,6 +17,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   isEditing,
   totalPrice,
   onPaymentsChange,
+  dateRefs,
 }) => {
   const [editedPayments, setEditedPayments] = useState(payments);
 
@@ -43,12 +46,6 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   ) => {
     const updatedPayments = [...editedPayments];
     updatedPayments[index][field] = value;
-    setEditedPayments(updatedPayments);
-    onPaymentsChange(updatedPayments);
-  };
-
-  const handleDeletePayment = (index: number) => {
-    const updatedPayments = editedPayments.filter((_, i) => i !== index);
     setEditedPayments(updatedPayments);
     onPaymentsChange(updatedPayments);
   };
@@ -89,7 +86,6 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             <th className="px-4 py-2 border text-center font-semibold">
               Giai đoạn thanh toán
             </th>
-            {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
@@ -113,6 +109,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 {isEditing ? (
                   <input
                     type="date"
+                    ref={(el) => (dateRefs.current[index] = el)}
                     value={
                       new Date(payment.PaymentDate).toISOString().split('T')[0]
                     }
@@ -129,6 +126,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 {isEditing ? (
                   <input
                     type="date"
+                    ref={(el) =>
+                      (dateRefs.current[index + editedPayments.length] = el)
+                    }
                     value={
                       new Date(payment.PaymentPhase).toISOString().split('T')[0]
                     }
@@ -141,16 +141,6 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                   new Date(payment.PaymentPhase).toLocaleDateString()
                 )}
               </td>
-              {isEditing && (
-                <td className="px-4 py-2 border text-center">
-                  <button
-                    onClick={() => handleDeletePayment(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                  </button>
-                </td>
-              )}
             </tr>
           ))}
           <tr className="bg-gray-200">

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { getFinalQuotation } from '../../../api/FinalQuotation/FinalQuotationApi';
@@ -24,8 +24,9 @@ import {
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
-import { handleSave, handleEditToggle } from './components/handlers';
+import { handleSeva } from './components/handlers';
 import ChatBox from '../../../components/ChatBox';
+import { toast } from 'react-toastify';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -38,6 +39,8 @@ const FinalQuotationDetailStaff = () => {
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
+
+  const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -201,6 +204,29 @@ const FinalQuotationDetailStaff = () => {
     return totalFinalQuotation + totalUtilities + totalEquipment;
   };
 
+  const handleSave = async () => {
+    if (quotationDetail) {
+      const emptyDateIndex = quotationDetail.BatchPaymentInfos.findIndex(
+        (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+      );
+
+      if (emptyDateIndex !== -1) {
+        toast.error('Tất cả các trường ngày phải được điền.');
+        dateRefs.current[emptyDateIndex]?.focus();
+        return;
+      }
+
+      const success = await handleSeva(
+        quotationDetail,
+        setIsEditing,
+        setIsSaving,
+      );
+      if (success) {
+        // Handle success case
+      }
+    }
+  };
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {showChat && quotationDetail && (
@@ -215,9 +241,7 @@ const FinalQuotationDetailStaff = () => {
       <ButtonGroup
         isEditing={isEditing}
         isSaving={isSaving}
-        handleSave={() =>
-          handleSave(quotationDetail, setIsEditing, setIsSaving)
-        }
+        handleSave={handleSave}
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}
         handleShare={handleShare}
@@ -415,6 +439,7 @@ const FinalQuotationDetailStaff = () => {
             isEditing={isEditing}
             totalPrice={calculateTotalPrice()}
             onPaymentsChange={handleBatchPaymentsChange}
+            dateRefs={dateRefs}
           />
         )}
       </div>

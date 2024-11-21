@@ -4,11 +4,11 @@ import { updateFinalQuotation } from '../../../../api/FinalQuotation/FinalQuotat
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-export const handleSave = async (
+export const handleSeva = async (
   quotationDetail: FinalQuotationDetailType | null,
   setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
-) => {
+): Promise<boolean> => {
   if (quotationDetail) {
     const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
       (item) => item.QuotationItems.length === 0,
@@ -20,12 +20,12 @@ export const handleSave = async (
 
     if (hasEmptyConstruction) {
       toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
-      return;
+      return false;
     }
 
     if (hasEmptyDate) {
       toast.error('Tất cả các trường ngày phải được điền.');
-      return;
+      return false;
     }
 
     const requestData: FinalQuotationRequest = {
@@ -69,6 +69,7 @@ export const handleSave = async (
       await updateFinalQuotation(requestData);
       setIsEditing(false);
       toast.success('Cập nhật báo giá thành công!');
+      return true;
     } catch (error) {
       console.error('Lỗi khi cập nhật báo giá:', error);
       if (axios.isAxiosError(error)) {
@@ -84,15 +85,16 @@ export const handleSave = async (
       } else {
         toast.error('Đã xảy ra lỗi không xác định.');
       }
+      return false;
     } finally {
       setIsSaving(false);
     }
   }
+  return false;
 };
 
 export const hanldCreateNew = async (
   quotationDetail: FinalQuotationDetailType | null,
-  setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
   navigate: (path: string) => void,
 ) => {
