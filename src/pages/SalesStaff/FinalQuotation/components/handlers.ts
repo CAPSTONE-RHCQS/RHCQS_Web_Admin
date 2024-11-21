@@ -17,6 +17,7 @@ export const handleSave = async (
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
+        price: payment.Price,
         numberOfBatch: payment.NumberOfBatch,
         paymentDate: payment.PaymentDate,
         paymentPhase: payment.PaymentPhase,
@@ -85,6 +86,7 @@ export const hanldCreateNew = async (
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
+        price: payment.Price,
         numberOfBatch: payment.NumberOfBatch,
         paymentDate: payment.PaymentDate,
         paymentPhase: payment.PaymentPhase,

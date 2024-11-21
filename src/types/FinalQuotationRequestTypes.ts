@@ -1,4 +1,5 @@
 export interface BatchPaymentInfoRequest {
+  price: number;
   numberOfBatch: number;
   paymentDate: string;
   paymentPhase: string;

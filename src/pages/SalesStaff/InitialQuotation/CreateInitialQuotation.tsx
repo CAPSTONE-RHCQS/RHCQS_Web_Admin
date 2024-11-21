@@ -238,7 +238,7 @@ const CreateInitialQuote = () => {
     const requestData: UpdateInitialQuotationRequest = {
       accountName: quotationData.AccountName,
       address: quotationData.Address,
-      versionPresent: -1,
+      versionPresent: 0,
       projectId: quotationData.ProjectId,
       isSave: true,
       area: quotationData.Area,
@@ -540,7 +540,10 @@ const CreateInitialQuote = () => {
                     placeholder="Giá trị giảm giá (%)"
                     value={promotionInfo?.Value || ''}
                     onChange={(e) =>
-                      handlePromotionChange('Value', parseFloat(e.target.value) || 0)
+                      handlePromotionChange(
+                        'Value',
+                        parseFloat(e.target.value) || 0,
+                      )
                     }
                     className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
