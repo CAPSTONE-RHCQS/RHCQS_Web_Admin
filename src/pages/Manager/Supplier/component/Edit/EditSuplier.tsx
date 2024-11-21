@@ -17,15 +17,30 @@ const EditSupplier: React.FC<EditModalProps> = ({
   onCancel,
 }) => {
   const [newImageUrl, setNewImageUrl] = useState<string | null>(null);
+  const [newImageFile, setNewImageFile] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      setNewImageFile(file);
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setNewImageUrl(reader.result as string);
       };
       reader.readAsDataURL(file);
+
+      onInputChange('Image', file);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      await onSave();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,21 +75,34 @@ const EditSupplier: React.FC<EditModalProps> = ({
           placeholder="Nhập số điện thoại"
         />
         <strong className="font-bold">Hình ảnh:</strong>
-        <div className="mb-4 relative group">
-          <img
-            src={newImageUrl || inputValue.ImgUrl || ''}
-            alt="Supplier"
-            className="h-48 object-cover rounded"
-          />
-          <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity">
-            <span className="text-white text-2xl">+</span>
+        <div className="flex space-x-4 mb-4">
+          <div className="relative">
+            <img
+              src={inputValue.ImgUrl || ''}
+              alt="Supplier"
+              className="border-dashed border-2 border-gray-400 p-4 mb-4 w-40 h-40 rounded flex justify-center items-center cursor-pointer relative object-cover"
+            />
+            <span className="absolute inset-0 flex justify-center items-center text-white text-2xl font-bold bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity">
+              +
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={handleImageChange}
+            />
+            <div className="text-center mt-2">Ảnh hiện tại</div>
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="absolute inset-0 opacity-0 cursor-pointer"
-          />
+          {newImageUrl && (
+            <div className="relative">
+              <img
+                src={newImageUrl}
+                alt="New Supplier"
+                className="border-dashed border-2 border-gray-400 p-4 mb-4 w-40 h-40 rounded flex justify-center items-center object-cover"
+              />
+              <div className="text-center mt-2">Ảnh mới</div>
+            </div>
+          )}
         </div>
         <strong className="font-bold">Trạng thái:</strong>
         <select
@@ -113,14 +141,39 @@ const EditSupplier: React.FC<EditModalProps> = ({
           <button
             onClick={onCancel}
             className="text-black px-4 py-2 rounded font-bold"
+            disabled={isLoading}
           >
             Hủy
           </button>
           <button
-            onClick={onSave}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
+            onClick={handleSave}
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold flex items-center"
+            disabled={isLoading}
           >
-            Lưu
+            {isLoading ? (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Lưu"
+            )}
           </button>
         </div>
       </div>

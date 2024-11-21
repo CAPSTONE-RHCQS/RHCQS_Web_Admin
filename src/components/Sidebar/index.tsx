@@ -304,7 +304,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           !isHovered && !sidebarOpen ? 'hidden' : ''
                         }`}
                       >
-                        Các nhà cung cấp
+                        Quản lý cung cấp
                       </span>
                     </NavLink>
                   </li>

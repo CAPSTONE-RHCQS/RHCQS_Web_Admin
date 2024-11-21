@@ -17,6 +17,7 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
   onCancel,
 }) => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   if (!isOpen) return null;
 
@@ -29,6 +30,15 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
         onInputChange('Image', file);
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      await onSave();
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,15 +88,6 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
           onChange={handleFileChange}
           className="hidden"
         />
-        <strong className="font-bold">Trạng thái:</strong>
-        <select
-          value={inputValue.Deflag.toString()}
-          onChange={(e) => onInputChange('Deflag', e.target.value === 'true')}
-          className="border p-2 mb-4 w-full rounded font-regular"
-        >
-          <option value="true">Hoạt động</option>
-          <option value="false">Ngừng hoạt động</option>
-        </select>
         <strong className="font-bold">Mô tả ngắn:</strong>
         <input
           type="text"
@@ -115,14 +116,39 @@ const CreateSupplier: React.FC<CreateModalProps> = ({
           <button
             onClick={onCancel}
             className="text-black px-4 py-2 rounded font-bold"
+            disabled={isLoading}
           >
             Hủy
           </button>
           <button
-            onClick={onSave}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
+            onClick={handleSave}
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold flex items-center"
+            disabled={isLoading}
           >
-            Tạo
+            {isLoading ? (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            ) : (
+              "Tạo"
+            )}
           </button>
         </div>
       </div>

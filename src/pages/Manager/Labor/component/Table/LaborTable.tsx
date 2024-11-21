@@ -58,6 +58,18 @@ const LaborTable: React.FC<LaborTableProps> = ({
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+  };
+
   return (
     <>
       <table className="w-full table-auto">
@@ -81,10 +93,10 @@ const LaborTable: React.FC<LaborTableProps> = ({
                   {item.Name}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.Price}
+                  {formatPrice(item.Price)}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.InsDate}
+                  {formatDate(item.InsDate || '')}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   {item.Type}

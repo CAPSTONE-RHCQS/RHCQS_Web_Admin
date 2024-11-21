@@ -27,7 +27,7 @@ const SupplierList: React.FC = () => {
     Email: '',
     ConstractPhone: '',
     ImgUrl: null,
-    Deflag: false,
+    Deflag: true,
     ShortDescription: '',
     Description: '',
     Code: '',
