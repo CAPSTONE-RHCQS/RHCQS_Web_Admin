@@ -98,7 +98,7 @@ const LaborList: React.FC = () => {
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
               >
-                + Thêm nhà cung cấp
+                + Thêm nhân công
               </button>
               <ArrowPathIcon
                 onClick={handleRefresh}

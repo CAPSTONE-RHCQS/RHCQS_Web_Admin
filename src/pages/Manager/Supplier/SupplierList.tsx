@@ -65,6 +65,7 @@ const SupplierList: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
+      setEditModalOpen(false);
     }
   };
 

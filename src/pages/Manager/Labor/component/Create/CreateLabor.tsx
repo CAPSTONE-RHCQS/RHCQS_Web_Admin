@@ -27,7 +27,7 @@ const CreateLabor: React.FC<CreateLaborProps> = ({
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 rounded shadow-lg w-1/2 max-h-[80vh] overflow-y-auto no-scrollbar">
-        <h2 className="text-lg font-bold mb-4">Tạo mới lao động</h2>
+        <h2 className="text-lg font-bold mb-4">Thêm nhân công mới</h2>
         <strong className="font-bold">Tên:</strong>
         <input
           type="text"
