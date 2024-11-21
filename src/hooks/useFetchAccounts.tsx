@@ -7,10 +7,10 @@ import {
 import { Account } from '../types/Account';
 
 const roleMapping: { [key: string]: string } = {
-  '9959ce96-de26-40a7-b8a7-28a704062e89': 'Sales Staff',
-  '7af0d75e-1157-48b4-899d-3196deed5fad': 'Design Staff',
-  'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': 'Manager',
-  '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Customer',
+  '9959ce96-de26-40a7-b8a7-28a704062e89': 'Nhân viên báo giá',
+  '7af0d75e-1157-48b4-899d-3196deed5fad': 'Nhân viên thiết kế',
+  'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': 'Quản lý',
+  '789dd57d-0f75-40d1-8366-ef6ab582efc8': 'Khách hàng',
 };
 
 const useFetchAccounts = (

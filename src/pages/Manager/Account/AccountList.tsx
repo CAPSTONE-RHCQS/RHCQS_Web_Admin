@@ -14,17 +14,17 @@ import AccountTable from './components/Table/AccountTable';
 type SortKey = string;
 
 const roleClassMapping: { [key: string]: string } = {
-  'Sales Staff': 'bg-blue-500 text-white',
-  'Design Staff': 'bg-pink-500 text-white',
-  Manager: 'bg-purple-500 text-white',
-  Customer: 'bg-primary text-white',
+  'Nhân viên báo giá': 'bg-blue-500 text-white',
+  'Nhân viên thiết kế': 'bg-pink-500 text-white',
+  'Quản lý': 'bg-purple-500 text-white',
+  'Khách hàng': 'bg-primary text-white',
 };
 
 const roleIconMapping: { [key: string]: JSX.Element } = {
-  'Sales Staff': <ShoppingCartIcon className="w-4 h-4" />,
-  'Design Staff': <PencilIcon className="w-4 h-4" />,
-  Manager: <BriefcaseIcon className="w-4 h-4" />,
-  Customer: <UserIcon className="w-4 h-4" />,
+  'Nhân viên báo giá': <ShoppingCartIcon className="w-4 h-4" />,
+  'Nhân viên thiết kế': <PencilIcon className="w-4 h-4" />,
+  'Quản lý': <BriefcaseIcon className="w-4 h-4" />,
+  'Khách hàng': <UserIcon className="w-4 h-4" />,
 };
 
 const AccountList: React.FC = () => {
