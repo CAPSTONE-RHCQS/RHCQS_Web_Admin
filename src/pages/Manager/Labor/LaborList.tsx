@@ -4,9 +4,10 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 // import LaborTable from './component/Table/LaborTable';
 import Alert from '../../../components/Alert';
-import { getLabor } from '../../../api/Labor/Labor';
+import { createLabor, getLabor } from '../../../api/Labor/Labor';
 import { LaborItem } from '../../../types/Labor';
 import LaborTable from './component/Table/LaborTable';
+import CreateLabor from './component/Create/CreateLabor';
 
 const LaborList: React.FC = () => {
   const [dataLabor, setDataLabor] = useState<LaborItem[]>([]);
@@ -18,7 +19,9 @@ const LaborList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
-
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [currentEditId, setCurrentEditId] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
@@ -34,8 +37,14 @@ const LaborList: React.FC = () => {
     });
   }, [page, refreshKey]);
 
+  const openEditModal = (id: string) => {
+    setCurrentEditId(id);
+    setEditModalOpen(true);
+  };
+
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
+    setEditModalOpen(false);
   };
 
   const handlePageChange = (newPage: number) => {
@@ -47,6 +56,23 @@ const LaborList: React.FC = () => {
   const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPage = e.target.value;
     setPageInput(newPage);
+  };
+
+  const handleCreateLabor = async (newLabor: any) => {
+    try {
+      await createLabor(newLabor);
+      setAlertMessage('Tạo nhân công thành công');
+      setAlertType('success');
+      setIsCreateModalOpen(false);
+      handleRefresh();
+    } catch (error) {
+      setAlertMessage('Tạo nhân công thất bại');
+      setAlertType('error');
+    } finally {
+      setTimeout(() => {
+        setIsCreateModalOpen(false);
+      }, 1000);
+    }
   };
 
   const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -67,10 +93,18 @@ const LaborList: React.FC = () => {
             <span className="text-lg text-black dark:text-white">
               Tổng số lao động: {totalLabor}
             </span>
-            <ArrowPathIcon
-              onClick={handleRefresh}
-              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
-            />
+            <div className="flex space-x-2">
+              <button
+                onClick={() => setIsCreateModalOpen(true)}
+                className="px-4 py-2 text-primary font-bold"
+              >
+                + Thêm nhà cung cấp
+              </button>
+              <ArrowPathIcon
+                onClick={handleRefresh}
+                className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
+              />
+            </div>
           </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">
@@ -80,6 +114,8 @@ const LaborList: React.FC = () => {
             <LaborTable
               dataLabor={dataLabor}
               refreshData={handleRefresh}
+              openEditModal={openEditModal}
+              currentEditId={currentEditId}
             />
           )}
           <div className="flex justify-between mt-4">
@@ -113,6 +149,14 @@ const LaborList: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <CreateLabor
+          isOpen={isCreateModalOpen}
+          onCreate={handleCreateLabor}
+          onCancel={() => setIsCreateModalOpen(false)}
+        />
+      )}
 
       {alertMessage && (
         <Alert

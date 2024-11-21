@@ -7,11 +7,11 @@ export interface LaborResponse {
 }
 
 export interface LaborItem {
-  Id: string;
+  Id?: string;
   Name: string;
   Price: number;
-  InsDate: string;
-  UpsDate: string;
+  InsDate?: string;
+  UpsDate?: string;
   Deflag: boolean;
   Type: string;
 }

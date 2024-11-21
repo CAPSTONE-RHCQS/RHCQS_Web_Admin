@@ -1,18 +1,63 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 
 import { LaborItem } from '../../../../../types/Labor';
+import EditLabor from '../Edit/EditLabor';
+import { updateLabor } from '../../../../../api/Labor/Labor';
 
 interface LaborTableProps {
+  openEditModal: (id: string) => void;
+  currentEditId: string | null;
   dataLabor: LaborItem[];
   refreshData: () => void;
 }
 
 const LaborTable: React.FC<LaborTableProps> = ({
   dataLabor,
+  openEditModal,
+  currentEditId,
   refreshData,
 }) => {
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error'>('success');
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [inputValue, setInputValue] = useState<LaborItem>({
+    Id: currentEditId || '',
+    Name: '',
+    Price: 0,
+    Deflag: true,
+    Type: '',
+  });
+
+  const handleInputChange = (field: string, value: any) => {
+    setInputValue((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleEditClick = (item: LaborItem) => {
+    openEditModal(item.Id || '');
+    console.log(item.Id);
+    setInputValue(item);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSave = async () => {
+    try {
+      await updateLabor(currentEditId || '', inputValue);
+      setAlertMessage('Sửa nhân công thành công');
+      setAlertType('success');
+      setIsEditModalOpen(false);
+      refreshData();
+    } catch (error) {
+      setAlertMessage('Sửa nhân công thất bại');
+      setAlertType('error');
+    } finally {
+      setTimeout(() => {
+        setIsEditModalOpen(false);
+      }, 1000);
+    }
+  };
+
   return (
     <>
       <table className="w-full table-auto">
@@ -45,7 +90,10 @@ const LaborTable: React.FC<LaborTableProps> = ({
                   {item.Type}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-                  <div className="flex justify-center relative">
+                  <div
+                    className="flex justify-center relative"
+                    onClick={() => handleEditClick(item)}
+                  >
                     <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
                   </div>
                 </td>
@@ -55,11 +103,19 @@ const LaborTable: React.FC<LaborTableProps> = ({
         </tbody>
       </table>
 
-      {/* <Alert
-        message="Thông báo"
-        type="success"
-        onClose={() => {}}
-      /> */}
+      {isEditModalOpen && (
+        <EditLabor
+          isOpen={isEditModalOpen}
+          inputValue={inputValue}
+          onInputChange={handleInputChange}
+          onSave={handleSave}
+          onCancel={() => setIsEditModalOpen(false)}
+        />
+      )}
+
+      {alertMessage && (
+        <Alert message={alertMessage} type={alertType} onClose={() => {}} />
+      )}
     </>
   );
 };

@@ -37,3 +37,23 @@ export async function getLabor(
     throw new Error('Failed to fetch labor');
   }
 }
+
+export async function createLabor(data: any): Promise<any> {
+  try {
+    const response = await requestWebRHCQS.post('/labor', data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating labor:', error);
+    throw new Error('Failed to create labor');
+  }
+}
+
+export async function updateLabor(id: string, data: any): Promise<any> {
+  try {
+    const response = await requestWebRHCQS.put(`/labor?id=${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating labor:', error);
+    throw new Error('Failed to update labor');
+  }
+}
