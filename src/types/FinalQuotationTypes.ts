@@ -57,7 +57,7 @@ export interface FinalQuotationItem {
 export interface PromotionInfo {
   Id: string;
   Name: string;
-  Value: number;
+  Value?: number;
 }
 
 export interface UtilityInfo {

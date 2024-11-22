@@ -26,6 +26,7 @@ import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatBox from '../../../components/ChatBox';
+import PromotionTable from './components/Table/PromotionTable';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -40,6 +41,7 @@ const FinalQuotationDetailManager = () => {
   const [approvalType, setApprovalType] = useState('Approved');
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(true);
+  const [showPromotions, setShowPromotions] = useState(false);
 
   const fetchQuotationDetail = async () => {
     if (id) {
@@ -209,38 +211,6 @@ const FinalQuotationDetailManager = () => {
           </span>
         </div>
 
-        {/* Thêm thông tin ConstructionRough và ConstructionFinished */}
-        <div className="mb-2 text-lg">
-          <span className="font-semibold">Chi tiết xây dựng:</span>
-          <div className="ml-6">
-            <div className="text-gray-700">
-              <span className="font-semibold">Thô:</span>{' '}
-              {quotationDetail.ConstructionRough.TotalPriceRough.toLocaleString()}{' '}
-              VNĐ
-            </div>
-            <div className="text-gray-700">
-              <span className="font-semibold">Hoàn thiện:</span>{' '}
-              {quotationDetail.ConstructionFinished.TotalPriceRough.toLocaleString()}{' '}
-              VNĐ
-            </div>
-          </div>
-        </div>
-
-        {/* Thêm thông tin Equitment */}
-        <div className="mb-2 text-lg">
-          <span className="font-semibold">Thiết bị:</span>
-          <div className="ml-6">
-            <div className="text-gray-700">
-              <span className="font-semibold">Thô:</span>{' '}
-              {quotationDetail.Equitment.TotalPriceRough.toLocaleString()} VNĐ
-            </div>
-            <div className="text-gray-700">
-              <span className="font-semibold">Hoàn thiện:</span>{' '}
-              {quotationDetail.Equitment.TotalPriceLabor.toLocaleString()} VNĐ
-            </div>
-          </div>
-        </div>
-
         <hr className="my-4 border-gray-300" />
 
         <h3
@@ -296,9 +266,28 @@ const FinalQuotationDetailManager = () => {
 
         <h3
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
+          onClick={() => setShowPromotions(!showPromotions)}
+        >
+          4. Khuyến mãi:
+          {showPromotions ? (
+            <FaChevronUp className="ml-2 text-secondary" />
+          ) : (
+            <FaChevronDown className="ml-2 text-secondary" />
+          )}
+        </h3>
+        {showPromotions && (
+          <PromotionTable
+            promotionInfo={quotationDetail.PromotionInfo}
+          />
+        )}
+
+        <hr className="my-4 border-gray-300" />
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
-          4. Các đợt thanh toán:
+          5. Các đợt thanh toán:
           {showBatchPayments ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (

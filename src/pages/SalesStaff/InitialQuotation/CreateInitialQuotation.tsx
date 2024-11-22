@@ -19,7 +19,7 @@ import UtilityTable from './components/Table/UtilityTable';
 import ConstructionPrice from './components/Table/ConstructionPrice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { FaPlus } from 'react-icons/fa';
+import { FaPlus, FaUser, FaMapMarkerAlt } from 'react-icons/fa';
 import { Promotion } from '../../../types/SearchContainNameTypes';
 import { getPromotionByName } from '../../../api/Promotion/PromotionApi';
 
@@ -339,38 +339,52 @@ const CreateInitialQuote = () => {
     0,
   );
 
+  const handleCustomerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (quotationData) {
+      setQuotationData({
+        ...quotationData,
+        AccountName: e.target.value,
+      });
+    }
+  };
+
+  const handleProjectAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (quotationData) {
+      setQuotationData({
+        ...quotationData,
+        Address: e.target.value,
+      });
+    }
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <h2 className="text-2xl font-bold mb-4 text-primary">
         Khởi tạo báo giá sơ bộ
       </h2>
       <div className="mb-4">
-        <p>
-          <strong>Tên tài khoản:</strong>
+        <div className="mb-2 text-lg flex items-center">
+          <FaUser className="mr-2 text-secondary" />
+          <span className="font-semibold">Tên khách hàng:</span>
           <input
             type="text"
-            value={quotationData.AccountName || ''}
-            onChange={(e) =>
-              setQuotationData({
-                ...quotationData,
-                AccountName: e.target.value,
-              })
-            }
-            className="w-full p-1 border rounded"
+            value={quotationData.AccountName}
+            onChange={handleCustomerNameChange}
+            className="ml-2 border border-gray-300 rounded-md p-2"
           />
-        </p>
-        <p>
-          <strong>Địa chỉ:</strong>
+        </div>
+        <div className="mb-2 text-lg flex items-center">
+          <FaMapMarkerAlt className="mr-2 text-secondary" />
+          <span className="font-semibold">Địa chỉ thi công:</span>
           <input
             type="text"
-            value={quotationData.Address || ''}
-            onChange={(e) =>
-              setQuotationData({ ...quotationData, Address: e.target.value })
-            }
-            className="w-full p-1 border rounded"
+            value={quotationData.Address}
+            onChange={handleProjectAddressChange}
+            className="ml-2 border border-gray-300 rounded-md p-2"
           />
-        </p>
-
+        </div>
         <p>
           <strong>Giảm giá:</strong> {quotationData.Discount} VNĐ
         </p>

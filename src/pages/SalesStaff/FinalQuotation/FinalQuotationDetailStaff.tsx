@@ -8,6 +8,7 @@ import {
   EquipmentItem,
   BatchPaymentInfo,
   FinalQuotationItem,
+  PromotionInfo,
 } from '../../../types/FinalQuotationTypes';
 import BatchPaymentTable from './components/Table/BatchPaymentTable';
 import EquipmentTable from './components/Table/EquipmentTable';
@@ -27,6 +28,7 @@ import ButtonGroup from './components/Button/ButtonGroup';
 import { handleSeva } from './components/handlers';
 import ChatBox from '../../../components/ChatBox';
 import { toast } from 'react-toastify';
+import PromotionTable from './components/Table/PromotionTable';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,8 +36,12 @@ const FinalQuotationDetailStaff = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
+  const [promotionInfo, setPromotionInfo] = useState<PromotionInfo | null>(
+    null,
+  );
   const [showChat, setShowChat] = useState(false);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
+  const [showPromotions, setShowPromotions] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
   const [showUtilities, setShowUtilities] = useState(false);
@@ -201,7 +207,11 @@ const FinalQuotationDetailStaff = () => {
       0,
     );
 
-    return totalFinalQuotation + totalUtilities + totalEquipment;
+    const promotionValue = quotationDetail.PromotionInfo?.Value || 0;
+
+    return (
+      totalFinalQuotation + totalUtilities + totalEquipment - promotionValue
+    );
   };
 
   const handleSave = async () => {
@@ -224,6 +234,37 @@ const FinalQuotationDetailStaff = () => {
       if (success) {
         // Handle success case
       }
+    }
+  };
+
+  const handleCustomerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        AccountName: e.target.value,
+      });
+    }
+  };
+
+  const handleProjectAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (quotationDetail) {
+      setQuotationDetail({
+        ...quotationDetail,
+        ProjectAddress: e.target.value,
+      });
+    }
+  };
+
+  const handlePromotionNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    if (promotionInfo) {
+      setPromotionInfo({
+        ...promotionInfo,
+        Name: e.target.value,
+      });
     }
   };
 
@@ -265,16 +306,34 @@ const FinalQuotationDetailStaff = () => {
         <div className="mb-2 text-lg flex items-center">
           <FaUser className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
-          <span className="text-gray-700 ml-2">
-            {quotationDetail.AccountName}
-          </span>
+          {isEditing ? (
+            <input
+              type="text"
+              value={quotationDetail.AccountName}
+              onChange={handleCustomerNameChange}
+              className="ml-2 border border-gray-300 rounded-md p-2"
+            />
+          ) : (
+            <span className="text-gray-700 ml-2">
+              {quotationDetail.AccountName}
+            </span>
+          )}
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
-          <span className="text-gray-700 ml-2">
-            {quotationDetail.ProjectAddress}
-          </span>
+          {isEditing ? (
+            <input
+              type="text"
+              value={quotationDetail.ProjectAddress}
+              onChange={handleProjectAddressChange}
+              className="ml-2 border border-gray-300 rounded-md p-2"
+            />
+          ) : (
+            <span className="text-gray-700 ml-2">
+              {quotationDetail.ProjectAddress}
+            </span>
+          )}
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaMoneyBillWave className="mr-2 text-secondary" />
@@ -282,38 +341,6 @@ const FinalQuotationDetailStaff = () => {
           <span className="text-gray-700 ml-2">
             {calculateTotalPrice().toLocaleString()} VNĐ
           </span>
-        </div>
-
-        {/* Thêm thông tin ConstructionRough và ConstructionFinished */}
-        <div className="mb-2 text-lg">
-          <span className="font-semibold">Chi tiết xây dựng:</span>
-          <div className="ml-6">
-            <div className="text-gray-700">
-              <span className="font-semibold">Thô:</span>{' '}
-              {quotationDetail.ConstructionRough.TotalPriceRough.toLocaleString()}{' '}
-              VNĐ
-            </div>
-            <div className="text-gray-700">
-              <span className="font-semibold">Hoàn thiện:</span>{' '}
-              {quotationDetail.ConstructionFinished.TotalPriceRough.toLocaleString()}{' '}
-              VNĐ
-            </div>
-          </div>
-        </div>
-
-        {/* Thêm thông tin Equitment */}
-        <div className="mb-2 text-lg">
-          <span className="font-semibold">Thiết bị:</span>
-          <div className="ml-6">
-            <div className="text-gray-700">
-              <span className="font-semibold">Thô:</span>{' '}
-              {quotationDetail.Equitment.TotalPriceRough.toLocaleString()} VNĐ
-            </div>
-            <div className="text-gray-700">
-              <span className="font-semibold">Hoàn thiện:</span>{' '}
-              {quotationDetail.Equitment.TotalPriceLabor.toLocaleString()} VNĐ
-            </div>
-          </div>
         </div>
 
         <hr className="my-4 border-gray-300" />
@@ -415,6 +442,34 @@ const FinalQuotationDetailStaff = () => {
             onItemsChange={handleEquipmentItemsChange}
           />
         )}
+
+        <hr className="my-4 border-gray-300" />
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center justify-between w-full"
+              onClick={() => setShowPromotions(!showPromotions)}
+            >
+              <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
+                4. Khuyến mãi:
+                {showPromotions ? (
+                  <FaChevronUp className="ml-2 text-secondary" />
+                ) : (
+                  <FaChevronDown className="ml-2 text-secondary" />
+                )}
+              </h3>
+            </div>
+          </div>
+        </div>
+        {showPromotions && (
+          <PromotionTable
+            promotionInfo={promotionInfo}
+            isEditing={isEditing}
+            onNameChange={handlePromotionNameChange}
+            setPromotionInfo={setPromotionInfo}
+          />
+        )}
+
         <hr className="my-4 border-gray-300" />
         <div className="flex items-center mb-4">
           <div className="flex items-center justify-between w-full">
@@ -423,7 +478,7 @@ const FinalQuotationDetailStaff = () => {
               onClick={() => setShowBatchPayments(!showBatchPayments)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                4. Các đợt thanh toán:
+                5. Các đợt thanh toán:
                 {showBatchPayments ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (

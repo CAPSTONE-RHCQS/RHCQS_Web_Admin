@@ -62,7 +62,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
     }, 0);
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFileName(file.name);
@@ -80,7 +82,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
     }
   };
 
-  const autoResizeTextarea = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const autoResizeTextarea = (
+    event: React.ChangeEvent<HTMLTextAreaElement>,
+  ) => {
     const textarea = event.target;
     textarea.style.height = 'auto';
     textarea.style.height = `${textarea.scrollHeight}px`;
@@ -104,12 +108,16 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
             />
             <label
               htmlFor="file-upload"
-              className={`cursor-pointer bg-primaryGreenButton text-white px-4 py-2 rounded shadow-md hover:bg-secondaryGreenButton ${isUploading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              className={`cursor-pointer bg-primaryGreenButton text-white px-4 py-2 rounded shadow-md hover:bg-secondaryGreenButton ${
+                isUploading ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
               {isUploading ? 'Đang tải lên...' : 'Chọn tệp'}
             </label>
             {selectedFileName && (
-              <span className="ml-2 text-sm text-gray-600">{selectedFileName}</span>
+              <span className="ml-2 text-sm text-gray-600">
+                {selectedFileName}
+              </span>
             )}
           </div>
         </div>
@@ -151,7 +159,11 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   disabled={!isEditing}
                   rows={1}
-                  style={{ overflow: 'hidden', minHeight: '60px', resize: 'vertical' }}
+                  style={{
+                    overflow: 'hidden',
+                    minHeight: '60px',
+                    resize: 'vertical',
+                  }}
                 />
               </td>
               <td className="px-4 py-2 border text-center align-middle">
@@ -206,16 +218,20 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   disabled={!isEditing}
                   rows={1}
-                  style={{ overflow: 'hidden', minHeight: '60px', resize: 'vertical' }}
+                  style={{
+                    overflow: 'hidden',
+                    minHeight: '60px',
+                    resize: 'vertical',
+                  }}
                 />
               </td>
               {isEditing && (
-                <td className="px-4 py-2 border text-center align-top">
+                <td className="px-4 py-2 border text-center align-middle">
                   <button
                     onClick={() => handleRemoveItem(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full mx-auto"
                   >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </td>
               )}

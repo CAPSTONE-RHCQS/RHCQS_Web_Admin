@@ -166,6 +166,22 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
   const sectionStart = tableData.length > 0 ? 3 : 2;
 
+  const handleCustomerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuotationData({
+      ...quotationData,
+      AccountName: e.target.value,
+    });
+  };
+
+  const handleProjectAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    setQuotationData({
+      ...quotationData,
+      Address: e.target.value,
+    });
+  };
+
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between items-center mb-4">
@@ -194,13 +210,8 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             <input
               type="text"
               value={quotationData.AccountName}
-              onChange={(e) =>
-                setQuotationData({
-                  ...quotationData,
-                  AccountName: e.target.value,
-                })
-              }
-              className="w-full p-2 border rounded ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleCustomerNameChange}
+              className="ml-2 border border-gray-300 rounded-md p-2"
             />
           ) : (
             <p className="ml-2">{quotationData.AccountName}</p>
@@ -215,10 +226,8 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             <input
               type="text"
               value={quotationData.Address}
-              onChange={(e) =>
-                setQuotationData({ ...quotationData, Address: e.target.value })
-              }
-              className="w-full p-2 border rounded ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={handleProjectAddressChange}
+              className="ml-2 border border-gray-300 rounded-md p-2"
             />
           ) : (
             <p className="ml-2">{quotationData.Address}</p>
