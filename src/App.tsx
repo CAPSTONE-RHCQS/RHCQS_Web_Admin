@@ -16,7 +16,6 @@ import AccountList from './pages/Manager/Account/AccountList.tsx';
 import ProjectDetailManager from './pages/Manager/Project/ProjectDetailManager.tsx';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
-import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
@@ -383,15 +382,6 @@ function App() {
                 <PrivateRoute allowedRoles={['DesignStaff']}>
                   <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
                   <CreateDesignHouse />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/UploadDesignDrawing"
-              element={
-                <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
-                  <UploadDesignDrawing />
                 </PrivateRoute>
               }
             />

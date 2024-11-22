@@ -57,19 +57,22 @@ const HouseDesignTable: React.FC<HouseDesignTableProps> = ({
         <table className="w-full table-auto">
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
-              {['Tên', 'Bước', 'Ngày tạo', 'Trạng thái', ''].map((header, index) => (
-                <th
-                  key={header}
-                  className={`py-4 px-4 font-medium text-black dark:text-white ${
-                    index === 1 || index === 3 ? 'text-center' : 'text-left'
-                  }`}
-                  style={{
-                    width: index === 0 ? '150px' : index === 2 ? '120px' : 'auto',
-                  }}
-                >
-                  {header}
-                </th>
-              ))}
+              {['Tên', 'Bước', 'Ngày tạo', 'Trạng thái', ''].map(
+                (header, index) => (
+                  <th
+                    key={header}
+                    className={`py-4 px-4 font-medium text-black dark:text-white ${
+                      index === 1 || index === 3 ? 'text-center' : 'text-left'
+                    }`}
+                    style={{
+                      width:
+                        index === 0 ? '150px' : index === 2 ? '120px' : 'auto',
+                    }}
+                  >
+                    {header}
+                  </th>
+                ),
+              )}
             </tr>
           </thead>
           <tbody>
@@ -92,9 +95,7 @@ const HouseDesignTable: React.FC<HouseDesignTableProps> = ({
                     }}
                   >
                     {stepIcon}
-                    <span className="ml-2 text-white">
-                      Bước {item.Step}
-                    </span>
+                    <span className="ml-2 text-white">Bước {item.Step}</span>
                   </span>
                 </td>
                 <td

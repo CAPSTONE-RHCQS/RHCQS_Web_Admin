@@ -27,13 +27,13 @@ interface HouseDesign {
 
 const statusMap: { [key: string]: string } = {
   Processing: 'Đang xử lý',
-  Rejected: 'Bị từ chối',
-  Updating: 'Đang chỉnh sửa',
   Reviewing: 'Chờ xác nhận từ quản lý',
+  Updating: 'Đang chỉnh sửa',
+  Updated: 'Đã chỉnh sửa',
   Approved: 'Quản lý đã xác nhận',
   Accepted: 'Đã xác nhận',
-  Canceled: 'Đã đóng',
   Finalized: 'Đã hoàn thành',
+  Canceled: 'Đã đóng',
 };
 
 export const statusStyles: {
