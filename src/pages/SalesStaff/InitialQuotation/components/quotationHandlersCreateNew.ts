@@ -120,17 +120,17 @@ export const handleSave = async (
     return;
   }
 
-  const hasEmptyUtilityFields = utilityInfos.some(
-    (utility) =>
-      utility.description.trim() === '' ||
-      utility.coefficient === 0 ||
-      utility.price === 0,
-  );
+  // const hasEmptyUtilityFields = utilityInfos.some(
+  //   (utility) =>
+  //     utility.description.trim() === '' ||
+  //     utility.coefficient === 0 ||
+  //     utility.price === 0,
+  // );
 
-  if (hasEmptyUtilityFields) {
-    toast.error('Các trường tiện ích không được để trống.');
-    return;
-  }
+  // if (hasEmptyUtilityFields) {
+  //   toast.error('Các trường tiện ích không được để trống.');
+  //   return;
+  // }
 
   const isInvalidPromotion =
     !promotionInfo ||
