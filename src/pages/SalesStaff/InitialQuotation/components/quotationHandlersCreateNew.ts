@@ -140,7 +140,7 @@ export const handleSave = async (
   const requestData: UpdateInitialQuotationRequest = {
     accountName: quotationData.AccountName,
     address: quotationData.Address,
-    versionPresent: version || 1,
+    versionPresent: 0,
     projectId: quotationData.ProjectId,
     isSave: true,
     area: quotationData.Area,
