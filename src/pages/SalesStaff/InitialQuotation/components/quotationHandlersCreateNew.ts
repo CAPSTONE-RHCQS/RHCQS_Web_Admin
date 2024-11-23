@@ -28,7 +28,6 @@ export const fetchQuotationData = async (
   >,
   setVersion: React.Dispatch<React.SetStateAction<number | null>>,
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
-  setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>,
   setPaymentSchedule: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>,
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
@@ -71,7 +70,6 @@ export const fetchQuotationData = async (
         setPromotionInfo(data.PromotionInfo);
       }
 
-      setGiaTriHopDong(giaTriHopDong);
       setPaymentSchedule(data.BatchPaymentInfos);
       setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
       setDonGia(data.PackageQuotationList.UnitPackageRough);
@@ -88,6 +86,7 @@ export const handleSave = async (
   paymentSchedule: BatchPaymentInfo[],
   utilityInfos: QuotationUtility[],
   promotionInfo: PromotionInfo | null,
+  giaTriHopDong: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
   othersAgreement: string,
@@ -103,8 +102,39 @@ export const handleSave = async (
     return;
   }
 
-  const isInvalidPromotion = !promotionInfo || 
-    promotionInfo.Id === "00000000-0000-0000-0000-000000000000" || 
+  const hasEmptyPaymentFields = paymentSchedule.some(
+    (payment) =>
+      payment.Description.trim() === '' ||
+      (typeof payment.Percents === 'number' && payment.Percents === 0) ||
+      !payment.PaymentDate ||
+      !payment.PaymentPhase,
+  );
+
+  if (hasEmptyPaymentFields) {
+    toast.error('Các đợt thanh toán không được để trống.');
+    return;
+  }
+
+  if (paymentSchedule.length === 0) {
+    toast.error('Các đợt thanh toán không được để trống.');
+    return;
+  }
+
+  const hasEmptyUtilityFields = utilityInfos.some(
+    (utility) =>
+      utility.description.trim() === '' ||
+      utility.coefficient === 0 ||
+      utility.price === 0,
+  );
+
+  if (hasEmptyUtilityFields) {
+    toast.error('Các trường tiện ích không được để trống.');
+    return;
+  }
+
+  const isInvalidPromotion =
+    !promotionInfo ||
+    promotionInfo.Id === '00000000-0000-0000-0000-000000000000' ||
     promotionInfo.Value === 0;
 
   const requestData: UpdateInitialQuotationRequest = {
@@ -155,8 +185,8 @@ export const handleSave = async (
       ? null
       : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
     batchPayments: paymentSchedule.map((payment) => ({
-      numberOfBatch: parseInt(payment.PaymentId),
-      price: payment.Price,
+      numberOfBatch: payment.NumberOfBatch,
+      price: (parseFloat(payment.Percents) / 100) * giaTriHopDong,
       percents: parseFloat(payment.Percents),
       description: payment.Description,
       paymentDate: payment.PaymentDate || '',

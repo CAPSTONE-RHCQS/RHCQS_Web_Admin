@@ -42,7 +42,6 @@ const InitialQuotationDetailStaff = () => {
         setQuotationData,
         setVersion,
         setTableData,
-        setGiaTriHopDong,
         setBatchPayment,
         setUtilityInfos,
         setDonGia,
@@ -127,9 +126,10 @@ const InitialQuotationDetailStaff = () => {
             batchPayment,
             utilityInfos,
             promotionInfo,
+            giaTriHopDong,
             navigate,
             setIsSaving,
-            othersAgreement
+            othersAgreement,
           )
         }
       />

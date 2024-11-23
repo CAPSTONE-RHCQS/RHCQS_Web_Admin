@@ -34,18 +34,14 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               Giá trị thanh toán (VNĐ)
             </th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">
-              Giai đoạn thanh toán
-            </th>
+            <th className="px-4 py-2 border text-center">Giai đoạn thanh toán</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
           {batchPayment.map((row, index) => (
             <tr key={row.PaymentId}>
-              <td className="px-4 py-2 border text-center">
-                {row.NumberOfBatch}
-              </td>
+              <td className="px-4 py-2 border text-center">{index + 1}</td>
               <td className="px-4 py-2 border text-left">
                 {isEditing ? (
                   <input
@@ -64,14 +60,10 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 <div className="flex items-center justify-center">
                   {isEditing ? (
                     <input
-                      type="number"
-                      value={row.Percents || 0}
+                      type="text"
+                      value={row.Percents || ''}
                       onChange={(e) =>
-                        handlePaymentChange(
-                          index,
-                          'Percents',
-                          parseFloat(e.target.value) || 0,
-                        )
+                        handlePaymentChange(index, 'Percents', e.target.value)
                       }
                       className="w-7 bg-transparent text-right"
                     />
@@ -98,10 +90,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                ) : row.PaymentDate ? (
-                  new Date(row.PaymentDate).toLocaleDateString()
                 ) : (
-                  ''
+                  row.PaymentDate ? new Date(row.PaymentDate).toLocaleDateString() : ''
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
@@ -114,10 +104,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
-                ) : row.PaymentPhase ? (
-                  new Date(row.PaymentPhase).toLocaleDateString()
                 ) : (
-                  ''
+                  row.PaymentPhase ? new Date(row.PaymentPhase).toLocaleDateString() : ''
                 )}
               </td>
               {isEditing && (

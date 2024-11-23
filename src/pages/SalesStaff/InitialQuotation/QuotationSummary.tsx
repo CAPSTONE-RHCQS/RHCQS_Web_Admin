@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import {
+  BatchPaymentInfo,
   InitialQuotationResponse,
   PromotionInfo,
 } from '../../../types/InitialQuotationTypes';
@@ -32,7 +33,7 @@ interface QuotationSummaryProps {
   giaTriHopDong: number;
   setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>;
   batchPayment: any[];
-  setBatchPayment: React.Dispatch<React.SetStateAction<any[]>>;
+  setBatchPayment: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>;
   totalPercentage: number;
   totalAmount: number;
   othersAgreement: string;
@@ -78,24 +79,43 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       return;
     }
 
-    try {
-      const promotionsFinished: Promotion[] = IdPackageFinished
-        ? await getPromotionByName(searchName, IdPackageFinished)
-        : [];
+    let promotionsFinished: Promotion[] = [];
+    let promotionsRough: Promotion[] = [];
 
-      const promotionsRough: Promotion[] = IdPackageRough
-        ? await getPromotionByName(searchName, IdPackageRough)
-        : [];
-      setPromotionList([...promotionsFinished, ...promotionsRough]);
-      previousSearchNameRef.current = searchName;
+    try {
+      if (IdPackageFinished) {
+        promotionsFinished = await getPromotionByName(
+          searchName,
+          IdPackageFinished,
+        );
+      }
     } catch (error) {
-      console.error('Error fetching promotions:', error);
+      console.error('Error fetching promotions for finished package:', error);
     }
+
+    try {
+      if (IdPackageRough) {
+        promotionsRough = await getPromotionByName(searchName, IdPackageRough);
+      }
+    } catch (error) {
+      console.error('Error fetching promotions for rough package:', error);
+    }
+
+    const combinedPromotions = [...promotionsFinished, ...promotionsRough];
+    setPromotionList(combinedPromotions);
+    previousSearchNameRef.current = searchName;
   }, [searchName, quotationData.PackageQuotationList]);
 
   useEffect(() => {
     fetchPromotions();
   }, [fetchPromotions]);
+
+  useEffect(() => {
+    setPromotionList([]);
+  }, [
+    quotationData.PackageQuotationList.IdPackageRough,
+    quotationData.PackageQuotationList.IdPackageFinished,
+  ]);
 
   const handlePromotionSelect = (promotion: Promotion) => {
     setPromotionInfo({
@@ -153,7 +173,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
     setBatchPayment([
       ...batchPayment,
       {
-        Id: batchPayment.length + 1,
+        NumberOfBatch: batchPayment.length + 1,
         Description: '',
         Percents: 0,
         Price: 0,
@@ -190,6 +210,10 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
       Address: e.target.value,
     });
   };
+
+  const hasSelectedPackage =
+    quotationData.PackageQuotationList.IdPackageRough !== null ||
+    quotationData.PackageQuotationList.IdPackageFinished !== null;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -253,6 +277,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             quotationData={quotationData}
             setQuotationData={setQuotationData}
             isEditing={isEditing}
+            setPromotionInfo={setPromotionInfo}
           />
         </div>
       </div>
@@ -379,32 +404,40 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
               <tr>
                 <td className="px-4 py-2 border text-center">
                   {isEditing ? (
-                    <input
-                      type="text"
-                      placeholder="Tên khuyến mãi"
-                      value={promotionInfo?.Name || ''}
-                      onChange={(e) =>
-                        handlePromotionChange('Name', e.target.value)
-                      }
-                      className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      list="promotion-suggestions"
-                    />
+                    hasSelectedPackage ? (
+                      <input
+                        type="text"
+                        placeholder="Tên khuyến mãi"
+                        value={promotionInfo?.Name || ''}
+                        onChange={(e) =>
+                          handlePromotionChange('Name', e.target.value)
+                        }
+                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        list="promotion-suggestions"
+                      />
+                    ) : (
+                      <span className="text-red-500">
+                        Chưa chọn gói thi công!
+                      </span>
+                    )
                   ) : (
                     <span>{promotionInfo?.Name || 'Không có'}</span>
                   )}
-                  {isEditing && promotionList.length > 0 && (
-                    <ul className="promotion-list border border-gray-300 rounded mt-2">
-                      {promotionList.map((promotion) => (
-                        <li
-                          key={promotion.Id}
-                          onClick={() => handlePromotionSelect(promotion)}
-                          className="promotion-item cursor-pointer hover:bg-gray-200 p-2"
-                        >
-                          {promotion.Name}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
+                  {isEditing &&
+                    hasSelectedPackage &&
+                    promotionList.length > 0 && (
+                      <ul className="promotion-list border border-gray-300 rounded mt-2">
+                        {promotionList.map((promotion) => (
+                          <li
+                            key={promotion.Id}
+                            onClick={() => handlePromotionSelect(promotion)}
+                            className="promotion-item cursor-pointer hover:bg-gray-200 p-2"
+                          >
+                            {promotion.Name}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <span>{promotionInfo?.Value || 0} đồng</span>

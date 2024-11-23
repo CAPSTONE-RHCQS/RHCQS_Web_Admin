@@ -19,7 +19,7 @@ import {
 import { FaCommentDots } from 'react-icons/fa';
 import ChatBox from '../../../components/ChatBox';
 
-const CreateNewInitialQuotationStaff = () => {
+const InitialQuotationDetailStaff = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const [quotationData, setQuotationData] =
     useState<InitialQuotationResponse | null>(null);
@@ -45,7 +45,6 @@ const CreateNewInitialQuotationStaff = () => {
         setQuotationData,
         setVersion,
         setTableData,
-        setGiaTriHopDong,
         setBatchPayment,
         setUtilityInfos,
         setDonGia,
@@ -126,6 +125,7 @@ const CreateNewInitialQuotationStaff = () => {
             batchPayment,
             utilityInfos,
             promotionInfo,
+            giaTriHopDong,
             navigate,
             setIsSaving,
             othersAgreement,
@@ -159,4 +159,4 @@ const CreateNewInitialQuotationStaff = () => {
   );
 };
 
-export default CreateNewInitialQuotationStaff;
+export default InitialQuotationDetailStaff;
