@@ -4,7 +4,6 @@ import {
   getContractDesignById,
   paymentContractDesign,
   paymentContractConstruction,
-  getPaymentBatchesByProjectId,
 } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,7 +11,6 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import {
   FaFileDownload,
   FaUser,
-  FaMapMarkerAlt,
   FaRulerCombined,
   FaCalendarAlt,
   FaClock,
@@ -26,55 +24,64 @@ import {
   FaUpload,
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
+import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
 
 const ContractDetailManager = () => {
   const { contractId } = useParams<{ contractId: string }>();
-  const [contractDetail, setContractDetail] = useState<any | null>(null);
+  const [contractDetail, setContractDetail] =
+    useState<ContractDesignResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
+
+  const fetchContractDetail = async () => {
+    if (contractId) {
+      try {
+        const data = await getContractDesignById(contractId);
+        setContractDetail(data);
+      } catch (error) {
+        console.error('Error fetching contract detail:', error);
+      }
+    } else {
+      console.error('Contract ID is undefined');
+    }
+  };
 
   useEffect(() => {
-    const fetchContractDetail = async () => {
-      if (contractId) {
-        try {
-          const data = await getContractDesignById(contractId);
-          setContractDetail(data);
-        } catch (error) {
-          console.error('Error fetching contract detail:', error);
-        }
-      } else {
-        console.error('Contract ID is undefined');
-      }
-    };
-
     fetchContractDetail();
   }, [contractId]);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    batchNumber: number,
+  ) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
+      setSelectedBatch(batchNumber);
     }
   };
 
   const handleUpload = async () => {
-    if (contractId && selectedFile && contractDetail) {
+    if (
+      contractId &&
+      selectedFile &&
+      contractDetail &&
+      selectedBatch !== null
+    ) {
       try {
-        const paymentBatches = await getPaymentBatchesByProjectId(contractId);
-        const paymentBatch = paymentBatches.find(batch => batch.Status === 'Progress');
-        
-        if (!paymentBatch) {
-          throw new Error('Không tìm thấy đợt thanh toán nào đang tiến hành.');
-        }
-
-        const paymentId = paymentBatch.Id;
-
-        if (contractDetail.Name === "Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng") {
+        const paymentId = contractDetail.BatchPayment[selectedBatch].PaymentId;
+        if (
+          contractDetail.Name ===
+          'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+        ) {
           await paymentContractDesign(paymentId, selectedFile);
-        } else if (contractDetail.Name === "Hợp đồng thi công nhà ở dân dụng") {
+        } else if (contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng') {
           await paymentContractConstruction(paymentId, selectedFile);
         } else {
           throw new Error('Loại hợp đồng không được hỗ trợ để tải lên.');
         }
+
         toast.success('Tải lên thành công!');
+        fetchContractDetail();
       } catch (error) {
         console.error('Error uploading signed contract:', error);
         if (error instanceof Error) {
@@ -96,8 +103,8 @@ const ContractDetailManager = () => {
 
   const statusMap: { [key: string]: string } = {
     Processing: 'Đang xử lý',
-    Created: 'Đã tạo hợp đồng',
     Completed: 'Hoàn thành',
+    Finished: 'Đã thanh toán',
     Ended: 'Chấm dứt hợp đồng',
   };
 
@@ -122,107 +129,153 @@ const ContractDetailManager = () => {
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="mb-4 text-lg flex items-center">
-            <FaFileDownload className="mr-2" />
-            <span className="font-semibold">Mã hợp đồng:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.ContractCode}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaUser className="mr-2" />
-            <span className="font-semibold">Tên khách hàng:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.CustomerName}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaCalendarAlt className="mr-2" />
-            <span className="font-semibold">Ngày bắt đầu:</span>
-            <span className="text-gray-700 ml-2">
-              {new Date(contractDetail.StartDate).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaCalendarAlt className="mr-2" />
-            <span className="font-semibold">Ngày kết thúc:</span>
-            <span className="text-gray-700 ml-2">
-              {new Date(contractDetail.EndDate).toLocaleDateString()}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaClock className="mr-2" />
-            <span className="font-semibold">Thời hạn hiệu lực:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.ValidityPeriod} ngày
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaRulerCombined className="mr-2" />
-            <span className="font-semibold">Diện tích:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Area} m²</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaMoneyBillWave className="mr-2" />
-            <span className="font-semibold">Giá trị hợp đồng:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.ContractValue || 'Chưa xác định'}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaInfoCircle className="mr-2" />
-            <span className="font-semibold">Trạng thái:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Status}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaBoxOpen className="mr-2" />
-            <span className="font-semibold">Gói thô:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.RoughPackagePrice} {contractDetail.UnitPrice}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaBox className="mr-2" />
-            <span className="font-semibold">Gói hoàn thiện:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.FinishedPackagePrice} {contractDetail.UnitPrice}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaFileContract className="mr-2" />
-            <span className="font-semibold">Loại hợp đồng:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Type}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaPaperclip className="mr-2" />
-            <span className="font-semibold">Tệp đính kèm:</span>
-            <a
-              href={contractDetail.UrlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline ml-2"
+          {[
+            {
+              icon: <FaFileDownload />,
+              label: 'Mã hợp đồng',
+              value: contractDetail.ContractCode,
+            },
+            {
+              icon: <FaUser />,
+              label: 'Tên khách hàng',
+              value: contractDetail.CustomerName,
+            },
+            {
+              icon: <FaCalendarAlt />,
+              label: 'Ngày bắt đầu',
+              value: new Date(contractDetail.StartDate).toLocaleDateString(),
+            },
+            {
+              icon: <FaCalendarAlt />,
+              label: 'Ngày kết thúc',
+              value: new Date(contractDetail.EndDate).toLocaleDateString(),
+            },
+            {
+              icon: <FaClock />,
+              label: 'Thời hạn hiệu lực',
+              value: `${contractDetail.ValidityPeriod} ngày`,
+            },
+            {
+              icon: <FaRulerCombined />,
+              label: 'Diện tích',
+              value: `${contractDetail.Area} m²`,
+            },
+            {
+              icon: <FaMoneyBillWave />,
+              label: 'Giá trị hợp đồng',
+              value: contractDetail.ContractValue || 'Chưa xác định',
+            },
+            {
+              icon: <FaInfoCircle />,
+              label: 'Trạng thái',
+              value: contractDetail.Status,
+            },
+            {
+              icon: <FaBoxOpen />,
+              label: 'Gói thô',
+              value: `${contractDetail.RoughPackagePrice} ${contractDetail.UnitPrice}`,
+            },
+            {
+              icon: <FaBox />,
+              label: 'Gói hoàn thiện',
+              value: `${contractDetail.FinishedPackagePrice} ${contractDetail.UnitPrice}`,
+            },
+            {
+              icon: <FaFileContract />,
+              label: 'Loại hợp đồng',
+              value: contractDetail.Type,
+            },
+            {
+              icon: <FaPaperclip />,
+              label: 'Tệp đính kèm',
+              value: (
+                <a
+                  href={contractDetail.UrlFile}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline ml-2"
+                >
+                  <FaFileDownload className="inline-block mr-1" /> Tải xuống
+                </a>
+              ),
+            },
+            {
+              icon: <FaStickyNote />,
+              label: 'Ghi chú',
+              value: contractDetail.Note || '',
+            },
+            {
+              icon: <FaInfoCircle />,
+              label: 'Mã số thuế',
+              value: contractDetail.TaxCode || '',
+            },
+            {
+              icon: <FaInfoCircle />,
+              label: 'Hợp đồng đã ký',
+              value: contractDetail.Quotation.File,
+            },
+          ].map((item, index) => (
+            <div
+              key={index}
+              className="mb-4 text-lg flex items-center bg-gray-100 p-4 rounded-lg shadow-sm"
             >
-              <FaFileDownload className="inline-block mr-1" /> Tải xuống
-            </a>
-          </div>
-          <div className="mb-4 col-span-full text-lg flex items-center">
-            <FaStickyNote className="mr-2" />
-            <span className="font-semibold">Ghi chú:</span>
-            <span className="text-gray-700 ml-2">
-              {contractDetail.Note || 'Không có ghi chú'}
-            </span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaUpload className="mr-2" />
-            <span className="font-semibold">Tải lên Thông tin thanh toán:</span>
-            <input type="file" onChange={handleFileChange} className="ml-2" />
-            <button
-              onClick={handleUpload}
-              className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-            >
-              Tải lên
-            </button>
-          </div>
+              {item.icon}
+              <span className="font-semibold ml-2">{item.label}:</span>
+              <span className="text-gray-700 ml-2">{item.value}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-4">Thanh toán đợt</h3>
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border text-center">Đợt</th>
+                <th className="px-4 py-2 border text-center">Mô tả</th>
+                <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">Hóa đơn</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contractDetail.BatchPayment.map((batch, index) => (
+                <tr key={batch.NumberOfBatch} className="text-center">
+                  <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
+                  <td className="px-4 py-2 border">{batch.Description}</td>
+                  <td className="px-4 py-2 border">
+                    {batch.Price} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {batch.InvoiceImage !== 'Hình ảnh chuyển khoản chưa có' ? (
+                      <img
+                        src={batch.InvoiceImage}
+                        alt={`Invoice for ${batch.Description}`}
+                        className="w-16 h-16 object-cover mx-auto"
+                      />
+                    ) : (
+                      'Chưa có hóa đơn'
+                    )}
+                  </td>
+                  {batch.InvoiceImage === 'Hình ảnh chuyển khoản chưa có' && (
+                    <td className="px-4 py-2 border">
+                      <>
+                        <input
+                          type="file"
+                          onChange={(e) => handleFileChange(e, index)}
+                          className="ml-2"
+                        />
+                        <button
+                          onClick={handleUpload}
+                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                        >
+                          <FaUpload />
+                        </button>
+                      </>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>

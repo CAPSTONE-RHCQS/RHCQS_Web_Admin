@@ -96,8 +96,7 @@ const HouseDesignDetailStaff: React.FC = () => {
 
     try {
       const response = await createDesign(designData);
-      console.log('Design submitted successfully:', response.data);
-      toast.success('Design submitted successfully!');
+      toast.success('Tải lên bản vẽ thành công!');
       fetchDesignDetail();
     } catch (error: any) {
       console.error('Error submitting design:', error);
