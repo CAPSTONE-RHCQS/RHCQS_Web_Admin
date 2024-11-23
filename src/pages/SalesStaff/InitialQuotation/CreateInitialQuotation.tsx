@@ -106,6 +106,9 @@ const CreateInitialQuote = () => {
   }, [utilityInfos, tableData, promotionInfo, quotationData]);
 
   const fetchPromotions = useCallback(async () => {
+    const { IdPackageFinished, IdPackageRough } =
+      quotationData?.PackageQuotationList || {};
+
     if (
       searchName.trim() === '' ||
       searchName === previousSearchNameRef.current
@@ -115,13 +118,20 @@ const CreateInitialQuote = () => {
     }
 
     try {
-      const promotions: Promotion[] = await getPromotionByName(searchName);
-      setPromotionList(promotions);
+      const promotionsFinished: Promotion[] = IdPackageFinished
+        ? await getPromotionByName(searchName, IdPackageFinished)
+        : [];
+
+      const promotionsRough: Promotion[] = IdPackageRough
+        ? await getPromotionByName(searchName, IdPackageRough)
+        : [];
+
+      setPromotionList([...promotionsFinished, ...promotionsRough]);
       previousSearchNameRef.current = searchName;
     } catch (error) {
       console.error('Error fetching promotions:', error);
     }
-  }, [searchName]);
+  }, [searchName, quotationData?.PackageQuotationList]);
 
   useEffect(() => {
     fetchPromotions();
@@ -189,13 +199,6 @@ const CreateInitialQuote = () => {
     value: any,
   ) => {
     const newSchedule = [...paymentSchedule];
-
-    if (field === 'percents') {
-      const percentsValue = parseFloat(value) || 0;
-      if (percentsValue > 100) return;
-      newSchedule[index].price = (giaTriHopDong * percentsValue) / 100;
-    }
-
     newSchedule[index] = { ...newSchedule[index], [field]: value };
     setPaymentSchedule(newSchedule);
   };
@@ -204,8 +207,9 @@ const CreateInitialQuote = () => {
     setPaymentSchedule([
       ...paymentSchedule,
       {
+        numberOfBatch: paymentSchedule.length + 1,
         price: 0,
-        percents: '',
+        percents: 0,
         description: '',
         paymentDate: '',
         paymentPhase: '',
@@ -234,6 +238,11 @@ const CreateInitialQuote = () => {
     if (!quotationData) return;
 
     setIsButtonDisabled(true);
+
+    const isInvalidPromotion =
+      !promotionInfo ||
+      promotionInfo.Id === '00000000-0000-0000-0000-000000000000' ||
+      promotionInfo.Value === 0;
 
     const requestData: UpdateInitialQuotationRequest = {
       accountName: quotationData.AccountName,
@@ -279,13 +288,16 @@ const CreateInitialQuote = () => {
         price: utility.price,
         description: utility.description,
       })),
-      promotions: promotionInfo
-        ? { id: promotionInfo.Id, discount: promotionInfo.Value || 0 }
-        : null,
+      promotions: isInvalidPromotion
+        ? null
+        : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
       batchPayments: paymentSchedule.map((payment) => ({
+        numberOfBatch: payment.numberOfBatch,
         price: payment.price,
         percents: payment.percents,
         description: payment.description,
+        paymentDate: payment.paymentDate,
+        paymentPhase: payment.paymentPhase,
       })),
     };
 
@@ -549,18 +561,9 @@ const CreateInitialQuote = () => {
                   )}
                 </td>
                 <td className="px-4 py-2 border text-center">
-                  <input
-                    type="number"
-                    placeholder="Giá trị giảm giá (%)"
-                    value={promotionInfo?.Value || ''}
-                    onChange={(e) =>
-                      handlePromotionChange(
-                        'Value',
-                        parseFloat(e.target.value) || 0,
-                      )
-                    }
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+                  <span>
+                    {promotionInfo?.Value?.toLocaleString() || '0'} VNĐ
+                  </span>
                 </td>
               </tr>
             </tbody>
@@ -657,6 +660,12 @@ const CreateInitialQuote = () => {
                   <th className="px-4 py-2 border text-center">
                     Giá trị thanh toán (VNĐ)
                   </th>
+                  <th className="px-4 py-2 border text-center">
+                    Ngày thanh toán
+                  </th>
+                  <th className="px-4 py-2 border text-center">
+                    Giai đoạn thanh toán
+                  </th>
                   <th className="px-4 py-2 border text-center"></th>
                 </tr>
               </thead>
@@ -664,12 +673,9 @@ const CreateInitialQuote = () => {
                 {paymentSchedule.map((payment, index) => (
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="px-4 py-2 border text-center">
-                      {index + 1}
+                      {payment.numberOfBatch}
                     </td>
-                    <td
-                      className="px-4 py-2 border text-center"
-                      style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}
-                    >
+                    <td className="px-4 py-2 border text-center">
                       <input
                         type="text"
                         value={payment.description}
@@ -687,13 +693,13 @@ const CreateInitialQuote = () => {
                     <td className="px-4 py-2 border text-center">
                       <div className="flex items-center justify-center">
                         <input
-                          type="text"
+                          type="number"
                           value={payment.percents}
                           onChange={(e) =>
                             handlePaymentScheduleChange(
                               index,
                               'percents',
-                              e.target.value,
+                              parseFloat(e.target.value) || 0,
                             )
                           }
                           className="w-7 bg-transparent text-right"
@@ -704,6 +710,34 @@ const CreateInitialQuote = () => {
                     </td>
                     <td className="px-4 py-2 border text-center">
                       {payment.price.toLocaleString()} VNĐ
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <input
+                        type="date"
+                        value={payment.paymentDate}
+                        onChange={(e) =>
+                          handlePaymentScheduleChange(
+                            index,
+                            'paymentDate',
+                            e.target.value,
+                          )
+                        }
+                        className="w-full bg-transparent text-center"
+                      />
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      <input
+                        type="date"
+                        value={payment.paymentPhase}
+                        onChange={(e) =>
+                          handlePaymentScheduleChange(
+                            index,
+                            'paymentPhase',
+                            e.target.value,
+                          )
+                        }
+                        className="w-full bg-transparent text-center"
+                      />
                     </td>
                     <td className="px-4 py-2 border text-center">
                       <div className="flex justify-center items-center">
@@ -720,17 +754,15 @@ const CreateInitialQuote = () => {
                 <tr className="bg-gray-100">
                   <td
                     className="px-4 py-2 border text-center font-bold"
-                    colSpan={2}
+                    colSpan={3}
                   >
                     TỔNG GIÁ TRỊ HỢP ĐỒNG
                   </td>
                   <td className="px-4 py-2 border text-center font-bold">
-                    {totalPercents}
-                    <span className="ml-0.5">%</span>
-                  </td>
-                  <td className="px-4 py-2 border text-center font-bold">
                     {totalPaymentValue.toLocaleString()} VNĐ
                   </td>
+                  <td className="px-4 py-2 border text-center"></td>
+                  <td className="px-4 py-2 border text-center"></td>
                   <td className="px-4 py-2 border text-center"></td>
                 </tr>
               </tbody>

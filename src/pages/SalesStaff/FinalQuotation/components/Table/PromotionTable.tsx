@@ -2,12 +2,17 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PromotionInfo } from '../../../../../types/FinalQuotationTypes';
 import { getPromotionByName } from '../../../../../api/Promotion/PromotionApi';
 import { Promotion } from '../../../../../types/SearchContainNameTypes';
+import { Console } from 'console';
 
 interface PromotionTableProps {
   promotionInfo: PromotionInfo | null;
   isEditing: boolean;
   onNameChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
+  packageQuotationList: {
+    IdPackageFinished: string | null;
+    IdPackageRough: string | null;
+  };
 }
 
 const PromotionTable: React.FC<PromotionTableProps> = ({
@@ -15,12 +20,15 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
   isEditing,
   onNameChange,
   setPromotionInfo,
+  packageQuotationList,
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
   const previousSearchNameRef = useRef<string>('');
 
   const fetchPromotions = useCallback(async () => {
+    const { IdPackageFinished, IdPackageRough } = packageQuotationList;
+
     if (
       searchName.trim() === '' ||
       searchName === previousSearchNameRef.current
@@ -30,13 +38,20 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
     }
 
     try {
-      const promotions: Promotion[] = await getPromotionByName(searchName);
-      setPromotionList(promotions);
+      const promotionsFinished: Promotion[] = IdPackageFinished
+        ? await getPromotionByName(searchName, IdPackageFinished)
+        : [];
+
+      const promotionsRough: Promotion[] = IdPackageRough
+        ? await getPromotionByName(searchName, IdPackageRough)
+        : [];
+
+      setPromotionList([...promotionsFinished, ...promotionsRough]);
       previousSearchNameRef.current = searchName;
     } catch (error) {
       console.error('Error fetching promotions:', error);
     }
-  }, [searchName]);
+  }, [searchName, packageQuotationList]);
 
   useEffect(() => {
     fetchPromotions();
@@ -51,6 +66,8 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
     setSearchName('');
     setPromotionList([]);
   };
+
+  console.log(promotionInfo);
 
   return (
     <div className="overflow-x-auto">

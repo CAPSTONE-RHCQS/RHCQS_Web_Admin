@@ -39,7 +39,7 @@ interface QuotationSummaryProps {
   setOthersAgreement: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const QuotationSummary: React.FC<QuotationSummaryProps> = ({
+const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   quotationData,
   setQuotationData,
   tableData,
@@ -562,4 +562,4 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   );
 };
 
-export default QuotationSummary;
+export default CreateNewQuotationSummary;

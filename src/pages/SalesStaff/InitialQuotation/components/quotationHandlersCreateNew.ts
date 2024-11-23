@@ -6,7 +6,7 @@ import {
   BatchPaymentInfo,
 } from '../../../../types/InitialQuotationTypes';
 import {
-  getInitialQuotation,
+  createNewInitialQuotation,
   updateInitialQuotation,
 } from '../../../../api/InitialQuotation/InitialQuotationApi';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const convertToQuotationUtility = (utility: any): QuotationUtility => {
 };
 
 export const fetchQuotationData = async (
-  id: string | undefined,
+  projectId: string | undefined,
   setQuotationData: React.Dispatch<
     React.SetStateAction<InitialQuotationResponse | null>
   >,
@@ -34,9 +34,11 @@ export const fetchQuotationData = async (
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
 ) => {
-  if (id) {
+  if (projectId) {
     try {
-      const data: InitialQuotationResponse = await getInitialQuotation(id);
+      const data: InitialQuotationResponse = await createNewInitialQuotation(
+        projectId,
+      );
       console.log('Fetched Quotation Data:', data);
       setQuotationData(data);
       setVersion(data.Version || null);
@@ -88,7 +90,7 @@ export const handleSave = async (
   promotionInfo: PromotionInfo | null,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
-  othersAgreement: string
+  othersAgreement: string,
 ) => {
   if (!quotationData) return;
 

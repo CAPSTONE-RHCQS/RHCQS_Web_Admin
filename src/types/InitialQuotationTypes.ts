@@ -35,6 +35,7 @@ export interface PromotionInfo {
 }
 
 export interface BatchPaymentInfo {
+  NumberOfBatch: number;
   PaymentId: string;
   Status: string;
   Description: string;
@@ -98,9 +99,12 @@ export interface Promotion {
 }
 
 export interface BatchPayment {
+  numberOfBatch: number;
   price: number;
-  percents: string;
+  percents: number;
   description: string;
+  paymentDate: string;
+  paymentPhase: string;
 }
 
 export interface UpdateInitialQuotationRequest {

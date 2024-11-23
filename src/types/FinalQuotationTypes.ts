@@ -2,7 +2,7 @@ export interface BatchPaymentInfo {
   PaymentId: string;
   PaymentTypeId: string;
   PaymentTypeName: string;
-  ContractId: string;
+  ContractId: string | null;
   InsDate: string;
   Status: string;
   UpsDate: string | null;
@@ -57,7 +57,7 @@ export interface FinalQuotationItem {
 export interface PromotionInfo {
   Id: string;
   Name: string;
-  Value?: number;
+  Value: number;
 }
 
 export interface UtilityInfo {
@@ -90,6 +90,16 @@ export interface HouseDrawingVersionInfo {
   Version: number;
 }
 
+export interface PackageQuotationList {
+  IdPackageRough: string | null;
+  PackageRough: string | null;
+  UnitPackageRough: number;
+  IdPackageFinished: string | null;
+  PackageFinished: string | null;
+  UnitPackageFinished: number;
+  Unit: string;
+}
+
 export interface FinalQuotationDetail {
   Id: string;
   AccountName: string;
@@ -102,12 +112,14 @@ export interface FinalQuotationDetail {
   Discount: number;
   TotalPrice: number;
   Note: string;
+  OthersAgreement: string;
   Version: number;
   InsDate: string;
   UpsDate: string;
   Status: string;
   Deflag: boolean;
   ReasonReject: string | null;
+  PackageQuotationList: PackageQuotationList;
   BatchPaymentInfos: BatchPaymentInfo[];
   EquipmentItems: EquipmentItem[];
   FinalQuotationItems: FinalQuotationItem[];

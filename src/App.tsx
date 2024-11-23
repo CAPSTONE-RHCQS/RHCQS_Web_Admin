@@ -22,7 +22,6 @@ import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesSt
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import BlogList from './components/BlogList.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
-import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
 import FinalQuotationDetailManager from './pages/Manager/FinalQuotation/FinalQuotationDetailManager.tsx';
@@ -43,6 +42,7 @@ import SupplierList from './pages/Manager/Supplier/SupplierList.tsx';
 import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
 import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
+import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -317,7 +317,7 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateInitialQuote />
+                  <CreateNewInitialQuotationStaff />
                 </PrivateRoute>
               }
             />

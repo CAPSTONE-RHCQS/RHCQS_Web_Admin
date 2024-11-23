@@ -65,6 +65,12 @@ const FinalQuotationDetailStaff = () => {
     fetchQuotationDetail();
   }, [id]);
 
+  useEffect(() => {
+    if (quotationDetail) {
+      setPromotionInfo(quotationDetail.PromotionInfo || null);
+    }
+  }, [quotationDetail]);
+
   const handleUtilitiesChange = (updatedUtilities: UtilityInfo[]) => {
     if (quotationDetail) {
       setQuotationDetail({
@@ -467,6 +473,12 @@ const FinalQuotationDetailStaff = () => {
             isEditing={isEditing}
             onNameChange={handlePromotionNameChange}
             setPromotionInfo={setPromotionInfo}
+            packageQuotationList={
+              quotationDetail?.PackageQuotationList || {
+                IdPackageFinished: null,
+                IdPackageRough: null,
+              }
+            }
           />
         )}
 

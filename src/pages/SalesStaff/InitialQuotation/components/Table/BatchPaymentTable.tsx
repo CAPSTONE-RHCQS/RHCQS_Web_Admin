@@ -33,13 +33,19 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             <th className="px-4 py-2 border text-center">
               Giá trị thanh toán (VNĐ)
             </th>
+            <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
+            <th className="px-4 py-2 border text-center">
+              Giai đoạn thanh toán
+            </th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
         <tbody>
           {batchPayment.map((row, index) => (
             <tr key={row.PaymentId}>
-              <td className="px-4 py-2 border text-center">{index + 1}</td>
+              <td className="px-4 py-2 border text-center">
+                {row.NumberOfBatch}
+              </td>
               <td className="px-4 py-2 border text-left">
                 {isEditing ? (
                   <input
@@ -58,10 +64,14 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 <div className="flex items-center justify-center">
                   {isEditing ? (
                     <input
-                      type="text"
-                      value={row.Percents || ''}
+                      type="number"
+                      value={row.Percents || 0}
                       onChange={(e) =>
-                        handlePaymentChange(index, 'Percents', e.target.value)
+                        handlePaymentChange(
+                          index,
+                          'Percents',
+                          parseFloat(e.target.value) || 0,
+                        )
                       }
                       className="w-7 bg-transparent text-right"
                     />
@@ -78,6 +88,38 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 ).toLocaleString()}{' '}
                 VNĐ
               </td>
+              <td className="px-4 py-2 border text-center">
+                {isEditing ? (
+                  <input
+                    type="date"
+                    value={row.PaymentDate || ''}
+                    onChange={(e) =>
+                      handlePaymentChange(index, 'PaymentDate', e.target.value)
+                    }
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : row.PaymentDate ? (
+                  new Date(row.PaymentDate).toLocaleDateString()
+                ) : (
+                  ''
+                )}
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {isEditing ? (
+                  <input
+                    type="date"
+                    value={row.PaymentPhase || ''}
+                    onChange={(e) =>
+                      handlePaymentChange(index, 'PaymentPhase', e.target.value)
+                    }
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                ) : row.PaymentPhase ? (
+                  new Date(row.PaymentPhase).toLocaleDateString()
+                ) : (
+                  ''
+                )}
+              </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
                   <div className="flex justify-center items-center">
@@ -93,7 +135,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             </tr>
           ))}
           <tr>
-            <td className="px-4 py-2 border text-center" colSpan={2}>
+            <td className="px-4 py-2 border text-center" colSpan={3}>
               <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
             </td>
             <td className="px-4 py-2 border text-center">
@@ -105,6 +147,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             <td className="px-4 py-2 border text-center">
               <strong>{totalAmount.toLocaleString()} VNĐ</strong>
             </td>
+            <td className="px-4 py-2 border text-center"></td>
+            {isEditing && <td className="px-4 py-2 border text-center"></td>}
           </tr>
         </tbody>
       </table>

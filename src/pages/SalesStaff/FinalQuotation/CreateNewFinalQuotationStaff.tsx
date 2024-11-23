@@ -472,6 +472,12 @@ const CreateNewFinalQuotationStaff = () => {
             isEditing={isEditing}
             onNameChange={handlePromotionNameChange}
             setPromotionInfo={setPromotionInfo}
+            packageQuotationList={
+              quotationDetail?.PackageQuotationList || {
+                IdPackageFinished: null,
+                IdPackageRough: null,
+              }
+            }
           />
         )}
 
