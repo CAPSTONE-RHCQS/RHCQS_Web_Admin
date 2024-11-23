@@ -212,7 +212,16 @@ const ContractDetailManager = () => {
             {
               icon: <FaInfoCircle />,
               label: 'Hợp đồng đã ký',
-              value: contractDetail.Quotation.File,
+              value: (
+                <a
+                  href={contractDetail.Quotation.File}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline ml-2"
+                >
+                  <FaFileDownload className="inline-block mr-1" /> Tải xuống
+                </a>
+              ),
             },
           ].map((item, index) => (
             <div

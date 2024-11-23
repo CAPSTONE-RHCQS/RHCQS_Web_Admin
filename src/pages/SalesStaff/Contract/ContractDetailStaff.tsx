@@ -184,6 +184,13 @@ const ContractDetailStaff = () => {
               <FaFileDownload className="inline-block mr-1" /> Tải xuống
             </a>
           </div>
+          <div className="mb-4 text-lg flex items-center">
+            <FaInfoCircle className="mr-2" />
+            <span className="font-semibold">Mã số thuế:</span>
+            <span className="text-gray-700 ml-2">
+              {contractDetail.TaxCode || ''}
+            </span>
+          </div>
           <div className="mb-4 col-span-full text-lg flex items-center">
             <FaStickyNote className="mr-2" />
             <span className="font-semibold">Ghi chú:</span>
@@ -194,10 +201,15 @@ const ContractDetailStaff = () => {
           {contractDetail.Quotation.File !== 'Không có file' && (
             <div className="mb-4 text-lg flex items-center">
               <FaInfoCircle className="mr-2" />
-              <span className="font-semibold">Hợp đồng đã kí:</span>
-              <span className="text-gray-700 ml-2">
-                {contractDetail.Quotation.File}
-              </span>
+              <span className="font-semibold">Hợp đồng đã ký:</span>
+              <a
+                href={contractDetail.Quotation.File}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
             </div>
           )}
         </div>
