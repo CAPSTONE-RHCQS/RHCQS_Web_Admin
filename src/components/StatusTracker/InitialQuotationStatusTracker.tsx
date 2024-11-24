@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  FaSpinner,
-  FaClipboardCheck,
-  FaFileContract,
-  FaHourglassHalf,
-  FaCheck,
-  FaBan,
-} from 'react-icons/fa';
+import { FaSpinner, FaClipboardCheck, FaCheck, FaBan } from 'react-icons/fa';
 
 interface InitialQuotationStatusTrackerProps {
   currentStatus: string;

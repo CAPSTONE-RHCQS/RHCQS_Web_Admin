@@ -188,24 +188,35 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   disabled={!isEditing}
                 />
               </td>
-              <td className="px-4 py-2 border text-center align-middle">
-                <input
-                  type="number"
-                  value={item.UnitOfMaterial}
-                  onChange={(e) =>
-                    handleInputChange(
-                      index,
-                      'UnitOfMaterial',
-                      Number(e.target.value),
-                    )
-                  }
-                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  disabled={!isEditing}
-                />
+              <td className="px-4 py-2 border text-center">
+                {isEditing ? (
+                  <input
+                    type="number"
+                    value={item.UnitOfMaterial}
+                    onChange={(e) =>
+                      handleInputChange(
+                        index,
+                        'UnitOfMaterial',
+                        Number(e.target.value),
+                      )
+                    }
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!isEditing}
+                  />
+                ) : (
+                  new Intl.NumberFormat('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0,
+                  })
+                    .format(item.UnitOfMaterial)
+                    .replace('₫', '')
+                )}
               </td>
               <td className="px-4 py-2 border text-center align-middle">
                 <span>
-                  {(item.Quantity * item.UnitOfMaterial).toLocaleString()} VNĐ
+                  {(item.Quantity * item.UnitOfMaterial).toLocaleString('vi-VN')}
                 </span>
               </td>
               <td className="px-4 py-2 border text-center align-middle">

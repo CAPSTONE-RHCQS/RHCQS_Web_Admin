@@ -2,22 +2,19 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import 'react-toastify/dist/ReactToastify.css';
-
-import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
-import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import {
   fetchQuotationData,
   handleSave,
-} from './components/quotationHandlersCreateNew';
+} from './components/handler/quotationHandlersCreateNew';
 import { TableRow } from './components/types';
 import ActionButtons from './components/ActionButtons';
-import QuotationSummary from './QuotationSummary';
 import {
   InitialQuotationResponse,
   QuotationUtility,
 } from '../../../types/InitialQuotationTypes';
 import { FaCommentDots } from 'react-icons/fa';
 import ChatBox from '../../../components/ChatBox';
+import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 
 const InitialQuotationDetailStaff = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -32,7 +29,6 @@ const InitialQuotationDetailStaff = () => {
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
-  const [version, setVersion] = useState<number | null>(null);
   const [othersAgreement, setOthersAgreement] = useState<string>(
     quotationData?.OthersAgreement || '',
   );
@@ -43,7 +39,6 @@ const InitialQuotationDetailStaff = () => {
       await fetchQuotationData(
         projectId,
         setQuotationData,
-        setVersion,
         setTableData,
         setBatchPayment,
         setUtilityInfos,
@@ -71,14 +66,14 @@ const InitialQuotationDetailStaff = () => {
     setIsEditing(!isEditing);
   };
 
-  const totalDienTich = tableData.reduce((total, row) => {
+  const totalArea = tableData.reduce((total, row) => {
     const dienTich = parseFloat(row.dienTich);
     return total + (isNaN(dienTich) ? 0 : dienTich);
   }, 0);
 
-  const thanhTien = totalDienTich * donGia;
+  const totalRough = totalArea * donGia;
 
-  const totalUtilityCost = utilityInfos.reduce(
+  const totalUtilities = utilityInfos.reduce(
     (total, utility) => total + utility.price,
     0,
   );
@@ -121,29 +116,30 @@ const InitialQuotationDetailStaff = () => {
           handleSave(
             quotationData,
             tableData,
-            version,
             batchPayment,
             utilityInfos,
             promotionInfo,
             giaTriHopDong,
+            totalArea,
+            totalRough,
+            totalUtilities,
             navigate,
             setIsSaving,
-            othersAgreement,
           )
         }
       />
-      <QuotationSummary
+      <CreateNewQuotationSummary
         quotationData={quotationData}
         setQuotationData={setQuotationData}
         tableData={tableData}
         setTableData={setTableData}
         isEditing={isEditing}
-        totalDienTich={totalDienTich}
+        totalArea={totalArea}
         donGia={donGia}
-        thanhTien={thanhTien}
+        totalRough={totalRough}
         utilityInfos={utilityInfos}
         setUtilityInfos={setUtilityInfos}
-        totalUtilityCost={totalUtilityCost}
+        totalUtilities={totalUtilities}
         promotionInfo={promotionInfo}
         setPromotionInfo={setPromotionInfo}
         giaTriHopDong={giaTriHopDong}

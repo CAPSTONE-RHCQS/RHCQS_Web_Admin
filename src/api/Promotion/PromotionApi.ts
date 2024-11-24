@@ -80,14 +80,12 @@ export const getPromotionByName = async (
   packageId: string,
 ): Promise<Promotion[]> => {
   try {
-    console.log('API called with', name, packageId);
     const response = await requestWebRHCQS.get(`/promotion/name`, {
       params: { name, packageId },
       headers: {
         accept: 'text/plain',
       },
     });
-    console.log('API response', response.data);
     return response.data;
   } catch (error) {
     console.error('Error fetching promotion by name:', error);

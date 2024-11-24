@@ -117,7 +117,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                 <span>{util.Coefficient}</span>
               </td>
               <td className="px-4 py-2 border text-center">
-                <span>{util.Price}</span>
+                <span>{util.Price.toLocaleString()}</span>
               </td>
 
               {isEditing && (

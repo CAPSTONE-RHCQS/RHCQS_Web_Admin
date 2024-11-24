@@ -273,7 +273,6 @@ const CreateNewFinalQuotationStaff = () => {
         return;
       }
 
-      console.log('Quotation Detail before save:', quotationDetail);
       const success = await hanldCreateNew(
         quotationDetail,
         setIsSaving,

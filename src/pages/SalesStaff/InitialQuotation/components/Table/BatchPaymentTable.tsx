@@ -22,6 +22,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   handlePaymentChange,
   handleDeletePayment,
 }) => {
+  const today = new Date().toISOString().split('T')[0];
+
   return (
     <div className="overflow-x-auto mb-4">
       <table className="min-w-full bg-white border border-gray-200">
@@ -34,7 +36,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               Giá trị thanh toán (VNĐ)
             </th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">Giai đoạn thanh toán</th>
+            <th className="px-4 py-2 border text-center">
+              Giai đoạn thanh toán
+            </th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -84,28 +88,42 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 {isEditing ? (
                   <input
                     type="date"
-                    value={row.PaymentDate || ''}
+                    value={
+                      row.PaymentDate
+                        ? new Date(row.PaymentDate).toISOString().split('T')[0]
+                        : ''
+                    }
+                    min={today} // Ngăn chọn ngày trong quá khứ
                     onChange={(e) =>
                       handlePaymentChange(index, 'PaymentDate', e.target.value)
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                ) : row.PaymentDate ? (
+                  new Date(row.PaymentDate).toLocaleDateString()
                 ) : (
-                  row.PaymentDate ? new Date(row.PaymentDate).toLocaleDateString() : ''
+                  ''
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
                     type="date"
-                    value={row.PaymentPhase || ''}
+                    value={
+                      row.PaymentPhase
+                        ? new Date(row.PaymentPhase).toISOString().split('T')[0]
+                        : ''
+                    }
+                    min={today} // Ngăn chọn ngày trong quá khứ
                     onChange={(e) =>
                       handlePaymentChange(index, 'PaymentPhase', e.target.value)
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                ) : row.PaymentPhase ? (
+                  new Date(row.PaymentPhase).toLocaleDateString()
                 ) : (
-                  row.PaymentPhase ? new Date(row.PaymentPhase).toLocaleDateString() : ''
+                  ''
                 )}
               </td>
               {isEditing && (
@@ -123,7 +141,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             </tr>
           ))}
           <tr>
-            <td className="px-4 py-2 border text-center" colSpan={3}>
+            <td className="px-4 py-2 border text-center" colSpan={2}>
               <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
             </td>
             <td className="px-4 py-2 border text-center">
@@ -135,8 +153,6 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
             <td className="px-4 py-2 border text-center">
               <strong>{totalAmount.toLocaleString()} VNĐ</strong>
             </td>
-            <td className="px-4 py-2 border text-center"></td>
-            {isEditing && <td className="px-4 py-2 border text-center"></td>}
           </tr>
         </tbody>
       </table>

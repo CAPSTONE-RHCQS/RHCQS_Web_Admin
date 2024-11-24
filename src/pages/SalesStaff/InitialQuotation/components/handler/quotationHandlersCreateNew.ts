@@ -4,13 +4,13 @@ import {
   QuotationUtility,
   PromotionInfo,
   BatchPaymentInfo,
-} from '../../../../types/InitialQuotationTypes';
+} from '../../../../../types/InitialQuotationTypes';
 import {
   createNewInitialQuotation,
   updateInitialQuotation,
-} from '../../../../api/InitialQuotation/InitialQuotationApi';
+} from '../../../../../api/InitialQuotation/InitialQuotationApi';
 import { toast } from 'react-toastify';
-import { TableRow } from './types';
+import { TableRow } from '../types';
 
 const convertToQuotationUtility = (utility: any): QuotationUtility => {
   return {
@@ -26,7 +26,6 @@ export const fetchQuotationData = async (
   setQuotationData: React.Dispatch<
     React.SetStateAction<InitialQuotationResponse | null>
   >,
-  setVersion: React.Dispatch<React.SetStateAction<number | null>>,
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
   setPaymentSchedule: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>,
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
@@ -40,7 +39,6 @@ export const fetchQuotationData = async (
       );
       console.log('Fetched Quotation Data:', data);
       setQuotationData(data);
-      setVersion(data.Version || null);
 
       const updatedTableData = data.ItemInitial.map((item, index) => {
         const coefficient =
@@ -82,14 +80,15 @@ export const fetchQuotationData = async (
 export const handleSave = async (
   quotationData: InitialQuotationResponse | null,
   tableData: TableRow[],
-  version: number | null,
   paymentSchedule: BatchPaymentInfo[],
   utilityInfos: QuotationUtility[],
   promotionInfo: PromotionInfo | null,
   giaTriHopDong: number,
+  totalArea: number,
+  totalRough: number,
+  totalUtilities: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
-  othersAgreement: string,
 ) => {
   if (!quotationData) return;
 
@@ -143,13 +142,13 @@ export const handleSave = async (
     versionPresent: 0,
     projectId: quotationData.ProjectId,
     isSave: true,
-    area: quotationData.Area,
+    area: totalArea,
     timeProcessing: quotationData.TimeProcessing,
     timeRough: quotationData.TimeRough,
     timeOthers: quotationData.TimeOthers,
-    othersAgreement: othersAgreement,
-    totalRough: quotationData.TotalRough,
-    totalUtilities: quotationData.TotalUtilities,
+    othersAgreement: quotationData.OthersAgreement,
+    totalRough: totalRough,
+    totalUtilities: totalUtilities,
     items: tableData.map((item) => ({
       name: item.hangMuc,
       constructionItemId: item.constructionItemId || 'default-id',

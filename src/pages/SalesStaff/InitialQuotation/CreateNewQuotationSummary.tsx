@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import {
+  BatchPaymentInfo,
   InitialQuotationResponse,
   PromotionInfo,
 } from '../../../types/InitialQuotationTypes';
@@ -12,6 +13,8 @@ import ContractValueSummaryTable from './components/Table/ContractValueSummaryTa
 import { FaPlus, FaUser, FaMapMarkerAlt } from 'react-icons/fa';
 import { getPromotionByName } from '../../../api/Promotion/PromotionApi';
 import { Promotion } from '../../../types/SearchContainNameTypes';
+import OthersAgreementEditor from './components/Table/OthersAgreementEditor';
+import PromotionTable from './components/Table/PromotionTable';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -21,18 +24,18 @@ interface QuotationSummaryProps {
   tableData: TableRow[];
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>;
   isEditing: boolean;
-  totalDienTich: number;
+  totalArea: number;
   donGia: number;
-  thanhTien: number;
+  totalRough: number;
   utilityInfos: any[];
   setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
-  totalUtilityCost: number;
+  totalUtilities: number;
   promotionInfo: PromotionInfo | null;
   setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
   giaTriHopDong: number;
   setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>;
   batchPayment: any[];
-  setBatchPayment: React.Dispatch<React.SetStateAction<any[]>>;
+  setBatchPayment: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>;
   totalPercentage: number;
   totalAmount: number;
   othersAgreement: string;
@@ -45,12 +48,12 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   tableData,
   setTableData,
   isEditing,
-  totalDienTich,
+  totalArea,
   donGia,
-  thanhTien,
+  totalRough,
   utilityInfos,
   setUtilityInfos,
-  totalUtilityCost,
+  totalUtilities,
   promotionInfo,
   setPromotionInfo,
   giaTriHopDong,
@@ -316,7 +319,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
 
               setTableData(newData);
             }}
-            totalDienTich={totalDienTich}
+            totalArea={totalArea}
             setTableData={setTableData}
           />
 
@@ -343,7 +346,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
                 <tbody>
                   <tr>
                     <td className="px-4 py-2 border text-center">
-                      {totalDienTich} m²
+                      {totalArea} m²
                     </td>
                     <td className="px-4 py-2 border text-center">x</td>
                     <td className="px-4 py-2 border text-center">
@@ -351,7 +354,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
                     </td>
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
-                      <strong> {thanhTien.toLocaleString()} đồng</strong>
+                      <strong> {totalRough.toLocaleString()} VNĐ</strong>
                     </td>
                   </tr>
                 </tbody>
@@ -391,60 +394,21 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
             {sectionStart + 1}. KHUYẾN MÃI:
           </strong>
         </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">Tên khuyến mãi</th>
-                <th className="px-4 py-2 border text-center">Giá trị</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="px-4 py-2 border text-center">
-                  {isEditing ? (
-                    hasSelectedPackage ? (
-                      <input
-                        type="text"
-                        placeholder="Tên khuyến mãi"
-                        value={promotionInfo?.Name || ''}
-                        onChange={(e) =>
-                          handlePromotionChange('Name', e.target.value)
-                        }
-                        className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        list="promotion-suggestions"
-                      />
-                    ) : (
-                      <span className="text-red-500">
-                        Chưa chọn gói thi công!
-                      </span>
-                    )
-                  ) : (
-                    <span>{promotionInfo?.Name || 'Không có'}</span>
-                  )}
-                  {isEditing &&
-                    hasSelectedPackage &&
-                    promotionList.length > 0 && (
-                      <ul className="promotion-list border border-gray-300 rounded mt-2">
-                        {promotionList.map((promotion) => (
-                          <li
-                            key={promotion.Id}
-                            onClick={() => handlePromotionSelect(promotion)}
-                            className="promotion-item cursor-pointer hover:bg-gray-200 p-2"
-                          >
-                            {promotion.Name}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                </td>
-                <td className="px-4 py-2 border text-center">
-                  <span>{promotionInfo?.Value || 0} đồng</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <PromotionTable
+          isEditing={isEditing}
+          promotionInfo={
+            promotionInfo
+              ? {
+                  Name: promotionInfo.Name || '',
+                  Value: promotionInfo.Value ?? 0,
+                }
+              : null
+          }
+          promotionList={promotionList}
+          hasSelectedPackage={hasSelectedPackage}
+          handlePromotionChange={handlePromotionChange}
+          handlePromotionSelect={handlePromotionSelect}
+        />
       </div>
 
       <div className="mt-4">
@@ -454,8 +418,8 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
           </strong>
         </div>
         <ContractValueSummaryTable
-          thanhTien={thanhTien}
-          totalUtilityCost={totalUtilityCost}
+          totalRough={totalRough}
+          totalUtilities={totalUtilities}
           promotionInfo={promotionInfo}
           updateGiaTriHopDong={setGiaTriHopDong}
         />
@@ -495,18 +459,13 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
             {sectionStart + 4}. CÁC THỎA THUẬN KHÁC:
           </strong>
         </div>
-        {isEditing ? (
-          <textarea
-            value={othersAgreement}
-            onChange={(e) => setOthersAgreement(e.target.value)}
-            className="w-full p-2 border rounded h-32 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Nhập nội dung thỏa thuận khác..."
-          />
-        ) : (
-          <p className="text-gray-700 whitespace-pre-line">
-            {quotationData.OthersAgreement}
-          </p>
-        )}
+        <OthersAgreementEditor
+          isEditing={isEditing}
+          othersAgreement={quotationData.OthersAgreement}
+          setOthersAgreement={(value) =>
+            setQuotationData({ ...quotationData, OthersAgreement: value })
+          }
+        />
       </div>
 
       <div className="mt-4 w-1/3">

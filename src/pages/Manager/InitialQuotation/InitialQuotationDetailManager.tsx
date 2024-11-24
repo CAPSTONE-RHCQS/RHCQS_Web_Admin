@@ -137,6 +137,7 @@ const InitialQuotationDetailManager = () => {
     (total, row) => total + parseFloat(row.Percents),
     0,
   );
+
   const totalAmount = paymentSchedule.reduce(
     (total, row) => total + row.Price,
     0,
@@ -379,7 +380,7 @@ const InitialQuotationDetailManager = () => {
                   <th className="px-4 py-2 border text-center">
                     Tên khuyến mãi
                   </th>
-                  <th className="px-4 py-2 border text-center">Giá trị (%)</th>
+                  <th className="px-4 py-2 border text-center">Giá trị</th>
                 </tr>
               </thead>
               <tbody>
@@ -389,7 +390,7 @@ const InitialQuotationDetailManager = () => {
                       {promotionInfo.Name}
                     </td>
                     <td className="px-4 py-2 border text-center">
-                      {promotionInfo.Value}%
+                      {promotionInfo.Value.toLocaleString()} VNĐ
                     </td>
                   </tr>
                 ) : (
@@ -556,7 +557,7 @@ const InitialQuotationDetailManager = () => {
         <div className="mt-4 w-1/3">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
-              8. THỜI GIAN THI CÔNG:
+              {sectionStart + 5} THỜI GIAN THI CÔNG:
             </strong>
           </div>
 

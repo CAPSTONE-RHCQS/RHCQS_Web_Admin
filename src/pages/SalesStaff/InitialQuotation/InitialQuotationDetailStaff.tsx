@@ -5,7 +5,10 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
-import { fetchQuotationData, handleSave } from './components/quotationHandlers';
+import {
+  fetchQuotationData,
+  handleSave,
+} from './components/handler/quotationHandlers';
 import { TableRow } from './components/types';
 import ActionButtons from './components/ActionButtons';
 import QuotationSummary from './QuotationSummary';
@@ -68,14 +71,14 @@ const InitialQuotationDetailStaff = () => {
     setIsEditing(!isEditing);
   };
 
-  const totalDienTich = tableData.reduce((total, row) => {
+  const totalArea = tableData.reduce((total, row) => {
     const dienTich = parseFloat(row.dienTich);
     return total + (isNaN(dienTich) ? 0 : dienTich);
   }, 0);
 
-  const thanhTien = totalDienTich * donGia;
+  const totalRough = totalArea * donGia;
 
-  const totalUtilityCost = utilityInfos.reduce(
+  const totalUtilities = utilityInfos.reduce(
     (total, utility) => total + utility.price,
     0,
   );
@@ -127,9 +130,11 @@ const InitialQuotationDetailStaff = () => {
             utilityInfos,
             promotionInfo,
             giaTriHopDong,
+            totalArea,
+            totalRough,
+            totalUtilities,
             navigate,
             setIsSaving,
-            othersAgreement,
           )
         }
       />
@@ -139,12 +144,12 @@ const InitialQuotationDetailStaff = () => {
         tableData={tableData}
         setTableData={setTableData}
         isEditing={isEditing}
-        totalDienTich={totalDienTich}
+        totalArea={totalArea}
         donGia={donGia}
-        thanhTien={thanhTien}
+        totalRough={totalRough}
         utilityInfos={utilityInfos}
         setUtilityInfos={setUtilityInfos}
-        totalUtilityCost={totalUtilityCost}
+        totalUtilities={totalUtilities}
         promotionInfo={promotionInfo}
         setPromotionInfo={setPromotionInfo}
         giaTriHopDong={giaTriHopDong}

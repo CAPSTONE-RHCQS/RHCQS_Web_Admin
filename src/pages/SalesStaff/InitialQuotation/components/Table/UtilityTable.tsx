@@ -119,30 +119,10 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={utility.coefficient.toString()}
-                  onChange={(e) =>
-                    handleEditUtility(
-                      index,
-                      'coefficient',
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="w-full text-center"
-                  disabled={true}
-                />
+                {utility.coefficient !== 0 ? utility.coefficient.toString() : ''}
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="number"
-                  value={utility.price}
-                  onChange={(e) =>
-                    handleEditUtility(index, 'price', e.target.value)
-                  }
-                  className="w-full text-center"
-                  disabled={true}
-                />
+                {utility.price.toLocaleString('vi-VN')}
               </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
@@ -163,7 +143,9 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               <strong>Tổng chi phí tiện ích</strong>
             </td>
             <td className="px-4 py-2 border text-center">
-              <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
+              <strong>{`${totalUtilityCost.toLocaleString(
+                'vi-VN',
+              )} VNĐ`}</strong>
             </td>
           </tr>
         </tbody>

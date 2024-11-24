@@ -37,20 +37,31 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
       return;
     }
 
+    let promotionsFinished: Promotion[] = [];
+    let promotionsRough: Promotion[] = [];
+
     try {
-      const promotionsFinished: Promotion[] = IdPackageFinished
-        ? await getPromotionByName(searchName, IdPackageFinished)
-        : [];
-
-      const promotionsRough: Promotion[] = IdPackageRough
-        ? await getPromotionByName(searchName, IdPackageRough)
-        : [];
-
-      setPromotionList([...promotionsFinished, ...promotionsRough]);
-      previousSearchNameRef.current = searchName;
+      if (IdPackageFinished) {
+        promotionsFinished = await getPromotionByName(
+          searchName,
+          IdPackageFinished,
+        );
+      }
     } catch (error) {
-      console.error('Error fetching promotions:', error);
+      console.error('Error fetching promotions for finished package:', error);
     }
+
+    try {
+      if (IdPackageRough) {
+        promotionsRough = await getPromotionByName(searchName, IdPackageRough);
+      }
+    } catch (error) {
+      console.error('Error fetching promotions for rough package:', error);
+    }
+
+    const combinedPromotions = [...promotionsFinished, ...promotionsRough];
+    setPromotionList(combinedPromotions);
+    previousSearchNameRef.current = searchName;
   }, [searchName, packageQuotationList]);
 
   useEffect(() => {

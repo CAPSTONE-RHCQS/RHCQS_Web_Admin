@@ -255,8 +255,8 @@ const ProjectDetailSalesStaff = () => {
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
+        {/* <!-- Báo giá sơ bộ--> */}
         <div className="mt-4">
-          {/* <!-- Báo giá sơ bộ--> */}
           <Accordion
             open={open === 1}
             icon={
