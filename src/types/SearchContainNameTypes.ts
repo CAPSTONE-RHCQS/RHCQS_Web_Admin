@@ -13,7 +13,7 @@ export interface Utility {
   UtilityItemId: string;
   Name: string;
   Coefficient: number;
-  UnitPrice: number;
+  UnitPrice: number | null;
 }
 
 export type GetUtilityByNameResponse = Utility[];

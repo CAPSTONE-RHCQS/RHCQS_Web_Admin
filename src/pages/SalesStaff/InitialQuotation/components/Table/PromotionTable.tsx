@@ -6,6 +6,7 @@ interface PromotionTableProps {
   promotionInfo: { Name: string; Value: number } | null;
   promotionList: Promotion[];
   hasSelectedPackage: boolean;
+  totalArea: number;
   handlePromotionChange: (field: string, value: any) => void;
   handlePromotionSelect: (promotion: Promotion) => void;
 }
@@ -15,16 +16,20 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
   promotionInfo,
   promotionList,
   hasSelectedPackage,
+  totalArea,
   handlePromotionChange,
   handlePromotionSelect,
 }) => {
+  const totalDiscount = promotionInfo ? totalArea * promotionInfo.Value : 0;
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
             <th className="px-4 py-2 border text-center">Tên khuyến mãi</th>
-            <th className="px-4 py-2 border text-center">Giá trị</th>
+            <th className="px-4 py-2 border text-center">Giá trị khuyến mãi</th>
+            <th className="px-4 py-2 border text-center">Tổng giảm</th>
           </tr>
         </thead>
         <tbody>
@@ -64,6 +69,9 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
             </td>
             <td className="px-4 py-2 border text-center">
               <span>{promotionInfo?.Value.toLocaleString() || 0} VNĐ</span>
+            </td>
+            <td className="px-4 py-2 border text-center">
+              <span>{totalDiscount.toLocaleString()} VNĐ</span>
             </td>
           </tr>
         </tbody>

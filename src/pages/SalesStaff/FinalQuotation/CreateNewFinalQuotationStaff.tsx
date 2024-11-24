@@ -38,6 +38,7 @@ const CreateNewFinalQuotationStaff = () => {
   const [promotionInfo, setPromotionInfo] = useState<PromotionInfo | null>(
     null,
   );
+  const [totalRough, setTotalRough] = useState(0);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showPromotions, setShowPromotions] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
@@ -46,6 +47,8 @@ const CreateNewFinalQuotationStaff = () => {
   const navigate = useNavigate();
 
   const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -67,6 +70,19 @@ const CreateNewFinalQuotationStaff = () => {
   useEffect(() => {
     if (quotationDetail) {
       setPromotionInfo(quotationDetail.PromotionInfo || null);
+      const total = quotationDetail.FinalQuotationItems.reduce(
+        (acc, item) =>
+          acc +
+          item.QuotationItems.reduce(
+            (subAcc, qItem) =>
+              subAcc +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0),
+            0,
+          ),
+        0,
+      );
+      setTotalRough(total);
     }
   }, [quotationDetail]);
 
@@ -202,6 +218,10 @@ const CreateNewFinalQuotationStaff = () => {
     }
   };
 
+  const handlePriceChange = (prices: number[]) => {
+    setUtilityPrices(prices);
+  };
+
   if (!quotationDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -273,11 +293,22 @@ const CreateNewFinalQuotationStaff = () => {
         return;
       }
 
+      const updatedQuotationDetail = {
+        ...quotationDetail,
+        UtilityInfos: quotationDetail.UtilityInfos.map((util, index) => ({
+          ...util,
+          Price: utilityPrices[index],
+        })),
+      };
+
       const success = await hanldCreateNew(
-        quotationDetail,
+        updatedQuotationDetail,
         setIsSaving,
         navigate,
       );
+      if (success) {
+        // Handle success case
+      }
     }
   };
 
@@ -416,8 +447,10 @@ const CreateNewFinalQuotationStaff = () => {
         {showUtilities && (
           <UtilityInfoTable
             utilities={quotationDetail.UtilityInfos}
+            totalRough={totalRough}
             isEditing={isEditing}
             onUtilitiesChange={handleUtilitiesChange}
+            onPriceChange={handlePriceChange}
           />
         )}
 

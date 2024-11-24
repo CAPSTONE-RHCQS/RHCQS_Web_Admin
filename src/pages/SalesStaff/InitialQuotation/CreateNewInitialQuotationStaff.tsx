@@ -12,7 +12,13 @@ import {
   InitialQuotationResponse,
   QuotationUtility,
 } from '../../../types/InitialQuotationTypes';
-import { FaCommentDots } from 'react-icons/fa';
+import {
+  FaChevronLeft,
+  FaChevronRight,
+  FaCommentDots,
+  FaFileInvoiceDollar,
+  FaRulerCombined,
+} from 'react-icons/fa';
 import ChatBox from '../../../components/ChatBox';
 import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 
@@ -33,6 +39,8 @@ const InitialQuotationDetailStaff = () => {
     quotationData?.OthersAgreement || '',
   );
   const navigate = useNavigate();
+  const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
+  const [isPanelVisible, setIsPanelVisible] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,12 +74,17 @@ const InitialQuotationDetailStaff = () => {
     setIsEditing(!isEditing);
   };
 
+  const togglePanel = () => {
+    setIsPanelVisible(!isPanelVisible);
+  };
+
   const totalArea = tableData.reduce((total, row) => {
     const dienTich = parseFloat(row.dienTich);
     return total + (isNaN(dienTich) ? 0 : dienTich);
   }, 0);
 
-  const totalRough = totalArea * donGia;
+  const totalRough =
+    totalArea * quotationData.PackageQuotationList.UnitPackageRough;
 
   const totalUtilities = utilityInfos.reduce(
     (total, utility) => total + utility.price,
@@ -90,24 +103,49 @@ const InitialQuotationDetailStaff = () => {
 
   return (
     <>
-      <div>
-        {!showChat && (
-          <button
-            onClick={toggleChat}
-            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-          >
-            <FaCommentDots className="text-2xl" />
-          </button>
-        )}
+      <div
+        className={`fixed bottom-4 right-0 flex items-center group transition-transform duration-300 ${
+          isPanelVisible ? 'translate-x-0' : 'translate-x-90'
+        }`}
+      >
+        <button
+          onClick={togglePanel}
+          className={`p-2 rounded-full shadow-lg transition-colors duration-200 ${
+            isPanelVisible
+              ? 'bg-[#d9d9d9] hover:bg-[#8d8b8b] text-black opacity-0 group-hover:opacity-100'
+              : 'bg-[#d9d9d9] hover:bg-[#8d8b8b] text-black'
+          }`}
+        >
+          {isPanelVisible ? (
+            <FaChevronRight className="text-xl" />
+          ) : (
+            <FaChevronLeft className="text-xl" />
+          )}
+        </button>
 
-        {showChat && quotationData && (
-          <ChatBox
-            onClose={toggleChat}
-            accountName={quotationData.AccountName}
-            note={quotationData.Note}
-          />
-        )}
+        <div className="flex space-x-4 ml-2">
+          {!showChat && (
+            <button
+              onClick={toggleChat}
+              className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+            >
+              <FaCommentDots className="text-2xl" />
+            </button>
+          )}
+
+          <div className="bg-blue-500 text-white p-3 rounded-full shadow-lg flex items-center h-12">
+            <FaRulerCombined className="mr-2" />
+            <span className="font-bold">{totalArea} m²</span>
+          </div>
+          <div className="bg-green-500 text-white p-3 rounded-full shadow-lg flex items-center h-12">
+            <FaFileInvoiceDollar className="mr-2" />
+            <span className="font-bold">
+              {giaTriHopDong.toLocaleString()} VNĐ
+            </span>
+          </div>
+        </div>
       </div>
+
       <ActionButtons
         isEditing={isEditing}
         isSaving={isSaving}
@@ -125,6 +163,7 @@ const InitialQuotationDetailStaff = () => {
             totalUtilities,
             navigate,
             setIsSaving,
+            utilityPrices,
           )
         }
       />
@@ -150,6 +189,7 @@ const InitialQuotationDetailStaff = () => {
         totalAmount={totalAmount}
         othersAgreement={othersAgreement}
         setOthersAgreement={setOthersAgreement}
+        onPriceChange={setUtilityPrices}
       />
     </>
   );

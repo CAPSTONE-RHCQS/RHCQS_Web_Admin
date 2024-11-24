@@ -90,6 +90,7 @@ export const handleSave = async (
   totalUtilities: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
+  utilityPrices: number[],
 ) => {
   if (!quotationData) return;
 
@@ -175,10 +176,10 @@ export const handleSave = async (
           ]
         : []),
     ],
-    utilities: utilityInfos.map((utility) => ({
+    utilities: utilityInfos.map((utility, index) => ({
       utilitiesItemId: utility.utilitiesItemId,
       coefficient: utility.coefficient,
-      price: utility.price,
+      price: utilityPrices[index],
       description: utility.description,
     })),
     promotions: isInvalidPromotion

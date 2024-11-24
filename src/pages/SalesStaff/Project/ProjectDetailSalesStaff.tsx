@@ -251,7 +251,7 @@ const ProjectDetailSalesStaff = () => {
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaRulerCombined className="mr-2 text-secondary" />
-          <span className="font-semibold">Diện tích:</span>
+          <span className="font-semibold">Diện tích xây dựng:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 

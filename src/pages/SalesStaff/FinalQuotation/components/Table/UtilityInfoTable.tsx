@@ -9,17 +9,23 @@ interface UtilityInfoTableProps {
   utilities: UtilityInfo[];
   isEditing: boolean;
   onUtilitiesChange: (updatedUtilities: UtilityInfo[]) => void;
+  totalRough: number;
+  onPriceChange: (prices: number[]) => void;
 }
 
 const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   utilities,
   isEditing,
   onUtilitiesChange,
+  totalRough,
+  onPriceChange,
 }) => {
   const [editableUtilities, setEditableUtilities] = useState(utilities);
+  const [quantities, setQuantities] = useState<number[]>([]);
 
   useEffect(() => {
     setEditableUtilities(utilities);
+    setQuantities(new Array(utilities.length).fill(0));
   }, [utilities]);
 
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
@@ -48,6 +54,12 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
     }
   };
 
+  const handleQuantityChange = (index: number, value: number) => {
+    const newQuantities = [...quantities];
+    newQuantities[index] = value;
+    setQuantities(newQuantities);
+  };
+
   const handleUtilitySelect = (utility: Utility) => {
     if (selectedUtilityIndex !== null) {
       const updatedUtilities = [...editableUtilities];
@@ -55,7 +67,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         ...updatedUtilities[selectedUtilityIndex],
         Name: utility.Name,
         Coefficient: utility.Coefficient,
-        Price: utility.UnitPrice,
+        Price: utility.UnitPrice || 0,
         utilitiesItemId: utility.UtilityItemId,
         utilitiesSectionId: utility.UtilitySectionId,
       };
@@ -67,11 +79,23 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   };
 
   const calculateTotalPrice = () => {
-    return editableUtilities.reduce(
-      (total, util) => total + (util.Price || 0),
-      0,
-    );
+    return editableUtilities.reduce((total, util, index) => {
+      const price =
+        util.Coefficient !== 0
+          ? util.Coefficient * totalRough
+          : util.Price * (quantities[index] || 0);
+      return total + price;
+    }, 0);
   };
+
+  useEffect(() => {
+    const prices = editableUtilities.map((util, index) => {
+      return util.Coefficient !== 0
+        ? util.Coefficient * totalRough
+        : util.Price * (quantities[index] || 0);
+    });
+    onPriceChange(prices);
+  }, [editableUtilities, quantities, totalRough, onPriceChange]);
 
   return (
     <div className="overflow-x-auto mb-4">
@@ -79,10 +103,14 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         <thead className="bg-gray-100">
           <tr>
             <th className="px-4 py-2 border text-center font-semibold">Tên</th>
-            <th className="px-4 py-2 border text-center font-semibold">
+            <th className="px-2 py-2 border text-center font-semibold w-20">
               Hệ số
             </th>
-            <th className="px-4 py-2 border text-center font-semibold">Giá</th>
+            <th className="px-2 py-2 border text-center font-semibold w-24">
+              Số lượng
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">Đơn giá</th>
+            <th className="px-4 py-2 border text-center font-semibold">Giá trị thanh toán</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -113,13 +141,37 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                   </ul>
                 )}
               </td>
-              <td className="px-4 py-2 border text-center">
-                <span>{util.Coefficient}</span>
+              <td className="px-2 py-2 border text-center w-20">
+                <span>{util.Coefficient !== 0 ? util.Coefficient : ''}</span>
+              </td>
+              <td className="px-2 py-2 border text-center w-24">
+                {util.Coefficient === 0 ? (
+                  <input
+                    type="number"
+                    value={quantities[index] || ''}
+                    onChange={(e) =>
+                      handleQuantityChange(index, Number(e.target.value))
+                    }
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={!isEditing}
+                  />
+                ) : (
+                  <span></span>
+                )}
               </td>
               <td className="px-4 py-2 border text-center">
-                <span>{util.Price.toLocaleString()}</span>
+                <span>
+                  {util.Coefficient === 0 ? util.Price.toLocaleString() : ''}
+                </span>
               </td>
-
+              <td className="px-4 py-2 border text-center">
+                <span>
+                  {(util.Coefficient !== 0
+                    ? util.Coefficient * totalRough
+                    : util.Price * (quantities[index] || 0)
+                  ).toLocaleString()}
+                </span>
+              </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center align-middle">
                   <button
@@ -139,7 +191,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
             </tr>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={2} className="px-4 py-2 border text-center font-bold">
+            <td colSpan={4} className="px-4 py-2 border text-center font-bold">
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">

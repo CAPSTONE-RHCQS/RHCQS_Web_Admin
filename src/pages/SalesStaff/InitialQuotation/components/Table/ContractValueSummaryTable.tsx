@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 interface ContractValueSummaryTableProps {
+  totalArea: number;
   totalRough: number;
   totalUtilities: number;
   promotionInfo: any;
@@ -8,13 +9,14 @@ interface ContractValueSummaryTableProps {
 }
 
 const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
+  totalArea,
   totalRough,
   totalUtilities,
   promotionInfo,
   updateGiaTriHopDong,
 }) => {
   const discount = promotionInfo ? promotionInfo.Value : 0;
-  const giaTriHopDong = totalRough + totalUtilities - discount;
+  const giaTriHopDong = totalRough + totalUtilities - discount * totalArea;
 
   useEffect(() => {
     updateGiaTriHopDong(giaTriHopDong);
@@ -51,7 +53,7 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
                 Khuyến mãi ({promotionInfo.Name})
               </td>
               <td className="px-4 py-2 border text-center">
-                -{discount.toLocaleString()}
+                -{(discount * totalArea).toLocaleString()}
               </td>
               <td className="px-4 py-2 border text-center">VNĐ</td>
             </tr>

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { PromotionInfo } from '../../../../../types/FinalQuotationTypes';
 import { getPromotionByName } from '../../../../../api/Promotion/PromotionApi';
 import { Promotion } from '../../../../../types/SearchContainNameTypes';
-import { Console } from 'console';
 
 interface PromotionTableProps {
   promotionInfo: PromotionInfo | null;

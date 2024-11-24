@@ -40,6 +40,7 @@ interface QuotationSummaryProps {
   totalAmount: number;
   othersAgreement: string;
   setOthersAgreement: React.Dispatch<React.SetStateAction<string>>;
+  onPriceChange: (prices: number[]) => void;
 }
 
 const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
@@ -49,7 +50,6 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   setTableData,
   isEditing,
   totalArea,
-  donGia,
   totalRough,
   utilityInfos,
   setUtilityInfos,
@@ -62,11 +62,11 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   setBatchPayment,
   totalPercentage,
   totalAmount,
-  othersAgreement,
-  setOthersAgreement,
+  onPriceChange,
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
+
   const previousSearchNameRef = useRef<string>('');
 
   const fetchPromotions = useCallback(async () => {
@@ -350,7 +350,8 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
                     </td>
                     <td className="px-4 py-2 border text-center">x</td>
                     <td className="px-4 py-2 border text-center">
-                      {donGia.toLocaleString()} đồng/m²
+                      {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+                      đồng/m²
                     </td>
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
@@ -383,9 +384,11 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
       </div>
 
       <UtilityTable
+        totalRough={totalRough}
         utilityInfos={utilityInfos}
         setUtilityInfos={setUtilityInfos}
         isEditing={isEditing}
+        onPriceChange={onPriceChange}
       />
 
       <div className="mt-4">
@@ -406,6 +409,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
           }
           promotionList={promotionList}
           hasSelectedPackage={hasSelectedPackage}
+          totalArea={totalArea}
           handlePromotionChange={handlePromotionChange}
           handlePromotionSelect={handlePromotionSelect}
         />
@@ -418,6 +422,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
           </strong>
         </div>
         <ContractValueSummaryTable
+          totalArea={totalArea}
           totalRough={totalRough}
           totalUtilities={totalUtilities}
           promotionInfo={promotionInfo}

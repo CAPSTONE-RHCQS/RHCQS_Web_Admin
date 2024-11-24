@@ -39,6 +39,7 @@ const FinalQuotationDetailStaff = () => {
   const [promotionInfo, setPromotionInfo] = useState<PromotionInfo | null>(
     null,
   );
+  const [totalRough, setTotalRough] = useState(0);
   const [showChat, setShowChat] = useState(false);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showPromotions, setShowPromotions] = useState(false);
@@ -47,6 +48,8 @@ const FinalQuotationDetailStaff = () => {
   const [showUtilities, setShowUtilities] = useState(false);
 
   const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -68,6 +71,19 @@ const FinalQuotationDetailStaff = () => {
   useEffect(() => {
     if (quotationDetail) {
       setPromotionInfo(quotationDetail.PromotionInfo || null);
+      const total = quotationDetail.FinalQuotationItems.reduce(
+        (acc, item) =>
+          acc +
+          item.QuotationItems.reduce(
+            (subAcc, qItem) =>
+              subAcc +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0),
+            0,
+          ),
+        0,
+      );
+      setTotalRough(total);
     }
   }, [quotationDetail]);
 
@@ -220,6 +236,10 @@ const FinalQuotationDetailStaff = () => {
     );
   };
 
+  const handlePriceChange = (prices: number[]) => {
+    setUtilityPrices(prices);
+  };
+
   const handleSave = async () => {
     if (quotationDetail) {
       const emptyDateIndex = quotationDetail.BatchPaymentInfos.findIndex(
@@ -232,8 +252,16 @@ const FinalQuotationDetailStaff = () => {
         return;
       }
 
+      const updatedQuotationDetail = {
+        ...quotationDetail,
+        UtilityInfos: quotationDetail.UtilityInfos.map((util, index) => ({
+          ...util,
+          Price: utilityPrices[index],
+        })),
+      };
+
       const success = await handleSeva(
-        quotationDetail,
+        updatedQuotationDetail,
         setIsEditing,
         setIsSaving,
       );
@@ -418,9 +446,11 @@ const FinalQuotationDetailStaff = () => {
         </div>
         {showUtilities && (
           <UtilityInfoTable
+            totalRough={totalRough}
             utilities={quotationDetail.UtilityInfos}
             isEditing={isEditing}
             onUtilitiesChange={handleUtilitiesChange}
+            onPriceChange={handlePriceChange}
           />
         )}
 
