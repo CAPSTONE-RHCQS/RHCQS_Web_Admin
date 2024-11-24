@@ -42,6 +42,7 @@ import SupplierList from './pages/Manager/Supplier/SupplierList.tsx';
 import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/CreateNewFinalQuotationStaff.tsx';
 import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
+import LaborList from './pages/Manager/Labor/LaborList.tsx';
 import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
 
 function App() {
@@ -191,6 +192,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
                   <SupplierList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/labor-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Labor List | RHCQS - Residential Housing Construction Quotation System" />
+                  <LaborList />
                 </PrivateRoute>
               }
             />

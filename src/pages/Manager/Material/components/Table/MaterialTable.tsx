@@ -127,7 +127,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
             {['Tên', 'Ngày tạo', ''].map((header) => (
               <th
                 key={header}
-                className="py-4 px-4 font-medium text-black dark:text-white"
+                className="py-4 px-4 font-bold text-black dark:text-white"
               >
                 {header}
               </th>
@@ -142,7 +142,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                   className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center"
                   onClick={() => toggleOpenItem(index)}
                 >
-                  {item.Name}
+                  <span className="font-medium">{item.Name}</span>
                   <ChevronDownIcon className="w-4 h-4 ml-2 text-gray-500" />
                 </td>
                 <td

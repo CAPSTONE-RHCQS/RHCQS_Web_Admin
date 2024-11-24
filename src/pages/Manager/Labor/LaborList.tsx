@@ -2,51 +2,36 @@ import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import SupplierTable from './component/Table/SupplierTable';
+// import LaborTable from './component/Table/LaborTable';
 import Alert from '../../../components/Alert';
-import {
-  getSupplierList,
-  createSupplier,
-} from '../../../api/Supplier/Supplier';
-import { SupplierItem, UpdateSupplierRequest } from '../../../types/Supplier';
-import CreateSupplier from './component/Create/CreateSupplier';
+import { createLabor, getLabor } from '../../../api/Labor/Labor';
+import { LaborItem } from '../../../types/Labor';
+import LaborTable from './component/Table/LaborTable';
+import CreateLabor from './component/Create/CreateLabor';
 
-const SupplierList: React.FC = () => {
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
-  const [editModalOpen, setEditModalOpen] = useState(false);
-  const [currentEditId, setCurrentEditId] = useState<string | null>(null);
-  const [dataSupplier, setDataSupplier] = useState<SupplierItem[]>([]);
+const LaborList: React.FC = () => {
+  const [dataLabor, setDataLabor] = useState<LaborItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalSupplier, setTotalSupplier] = useState(0);
+  const [totalLabor, setTotalLabor] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [inputValue, setInputValue] = useState<UpdateSupplierRequest>({
-    Name: '',
-    Email: '',
-    ConstractPhone: '',
-    ImgUrl: null,
-    Deflag: true,
-    ShortDescription: '',
-    Description: '',
-    Code: '',
-    Image: '',
-  });
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
-
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [currentEditId, setCurrentEditId] = useState<string | null>(null);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
 
   useEffect(() => {
     setIsLoading(true);
-    getSupplierList(page, 10).then((data: any) => {
-      setDataSupplier(data.Items);
+    getLabor(page, 10).then((data: any) => {
+      setDataLabor(data.Items);
       setTotalPages(data.TotalPages);
-      setTotalSupplier(data.Total);
+      setTotalLabor(data.Total);
       console.log(data.Items);
       setIsLoading(false);
     });
@@ -65,32 +50,29 @@ const SupplierList: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
-      setEditModalOpen(false);
-    }
-  };
-
-  const handleInputChange = (field: string, value: any) => {
-    setInputValue((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleSave = async () => {
-    try {
-      const supplierData = { ...inputValue };
-      await createSupplier(supplierData);
-      setAlertMessage('Tạo nhà cung cấp thành công');
-      setAlertType('success');
-      setIsCreateModalOpen(false);
-      handleRefresh();
-    } catch (error) {
-      setAlertMessage('Tạo nhà cung cấp thất bại');
-      setAlertType('error');
-      console.error('Error creating supplier:', error);
     }
   };
 
   const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPage = e.target.value;
     setPageInput(newPage);
+  };
+
+  const handleCreateLabor = async (newLabor: any) => {
+    try {
+      await createLabor(newLabor);
+      setAlertMessage('Tạo nhân công thành công');
+      setAlertType('success');
+      setIsCreateModalOpen(false);
+      handleRefresh();
+    } catch (error) {
+      setAlertMessage('Tạo nhân công thất bại');
+      setAlertType('error');
+    } finally {
+      setTimeout(() => {
+        setIsCreateModalOpen(false);
+      }, 1000);
+    }
   };
 
   const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -105,18 +87,18 @@ const SupplierList: React.FC = () => {
   return (
     <>
       <div>
-        <Breadcrumb pageName="Quản lý nhà cung cấp" />
+        <Breadcrumb pageName="Quản lý lao động" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <span className="text-lg text-black dark:text-white">
-              Tổng số nhà cung cấp: {totalSupplier}
+              Tổng số lao động: {totalLabor}
             </span>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
               >
-                + Thêm nhà cung cấp
+                + Thêm nhân công
               </button>
               <ArrowPathIcon
                 onClick={handleRefresh}
@@ -129,13 +111,11 @@ const SupplierList: React.FC = () => {
               <ClipLoader size={50} color={'#5BABAC'} loading={isLoading} />
             </div>
           ) : (
-            <SupplierTable
-              dataSupplier={dataSupplier}
-              openItems={openItems}
-              editModalOpen={editModalOpen}
+            <LaborTable
+              dataLabor={dataLabor}
+              refreshData={handleRefresh}
               openEditModal={openEditModal}
               currentEditId={currentEditId}
-              refreshData={handleRefresh}
             />
           )}
           <div className="flex justify-between mt-4">
@@ -171,14 +151,13 @@ const SupplierList: React.FC = () => {
       </div>
 
       {isCreateModalOpen && (
-        <CreateSupplier
+        <CreateLabor
           isOpen={isCreateModalOpen}
-          inputValue={inputValue}
-          onInputChange={handleInputChange}
-          onSave={handleSave}
+          onCreate={handleCreateLabor}
           onCancel={() => setIsCreateModalOpen(false)}
         />
       )}
+
       {alertMessage && (
         <Alert
           message={alertMessage}
@@ -190,4 +169,4 @@ const SupplierList: React.FC = () => {
   );
 };
 
-export default SupplierList;
+export default LaborList;
