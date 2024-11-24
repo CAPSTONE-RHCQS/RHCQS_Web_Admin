@@ -98,12 +98,14 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                   onClick={() => toggleOpenItem(index)}
                   className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark flex items-center">
-                    {item.Name}
-                    {item.SubConstructionItems &&
-                      item.SubConstructionItems.length > 0 && (
-                        <ChevronDownIcon className="w-4 h-4 ml-2 text-gray-500" />
-                      )}
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                    <div className="flex items-center">
+                      {item.Name}
+                      {item.SubConstructionItems &&
+                        item.SubConstructionItems.length > 0 && (
+                          <ChevronDownIcon className="w-4 h-4 ml-2 text-gray-500" />
+                        )}
+                    </div>
                   </td>
                   <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
                     {item.Coefficient}

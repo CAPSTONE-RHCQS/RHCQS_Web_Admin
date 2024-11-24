@@ -16,14 +16,12 @@ import AccountList from './pages/Manager/Account/AccountList.tsx';
 import ProjectDetailManager from './pages/Manager/Project/ProjectDetailManager.tsx';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
 import ProjectListManager from './pages/Manager/Project/ProjectListManager';
-import UploadDesignDrawing from './pages/DesignStaff/UploadDesignDrawing';
 import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
 import BlogList from './components/BlogList.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
-import CreateInitialQuote from './pages/SalesStaff/InitialQuotation/CreateInitialQuotation.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
 import FinalQuotationDetailManager from './pages/Manager/FinalQuotation/FinalQuotationDetailManager.tsx';
@@ -45,6 +43,7 @@ import CreateNewFinalQuotationStaff from './pages/SalesStaff/FinalQuotation/Crea
 import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff.tsx';
 import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
 import LaborList from './pages/Manager/Labor/LaborList.tsx';
+import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -328,7 +327,7 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['SalesStaff']}>
                   <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateInitialQuote />
+                  <CreateNewInitialQuotationStaff />
                 </PrivateRoute>
               }
             />
@@ -393,15 +392,6 @@ function App() {
                 <PrivateRoute allowedRoles={['DesignStaff']}>
                   <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
                   <CreateDesignHouse />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/UploadDesignDrawing"
-              element={
-                <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
-                  <UploadDesignDrawing />
                 </PrivateRoute>
               }
             />

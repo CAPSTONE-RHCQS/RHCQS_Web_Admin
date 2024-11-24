@@ -7,8 +7,8 @@ interface ContractStatusTrackerProps {
 
 const contractStatuses = [
   { label: 'Đang xử lý', icon: <FaCog /> },
-  { label: 'Đã tạo hợp đồng', icon: <FaFileContract /> },
-  { label: 'Hoàn thành', icon: <FaCheck /> },
+  { label: 'Hoàn thành', icon: <FaFileContract /> },
+  { label: 'Đã thanh toán', icon: <FaCheck /> },
   { label: 'Chấm dứt hợp đồng', icon: <FaBan /> },
 ];
 

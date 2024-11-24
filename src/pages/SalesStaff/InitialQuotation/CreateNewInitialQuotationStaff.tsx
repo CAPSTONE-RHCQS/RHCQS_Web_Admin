@@ -2,25 +2,22 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import 'react-toastify/dist/ReactToastify.css';
-
-import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
-import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import {
   fetchQuotationData,
   handleSave,
-} from './components/handler/quotationHandlers';
+} from './components/handler/quotationHandlersCreateNew';
 import { TableRow } from './components/types';
 import ActionButtons from './components/ActionButtons';
-import QuotationSummary from './QuotationSummary';
 import {
   InitialQuotationResponse,
   QuotationUtility,
 } from '../../../types/InitialQuotationTypes';
 import { FaCommentDots } from 'react-icons/fa';
 import ChatBox from '../../../components/ChatBox';
+import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 
 const InitialQuotationDetailStaff = () => {
-  const { id } = useParams<{ id: string }>();
+  const { projectId } = useParams<{ projectId: string }>();
   const [quotationData, setQuotationData] =
     useState<InitialQuotationResponse | null>(null);
   const [showChat, setShowChat] = useState(false);
@@ -32,7 +29,6 @@ const InitialQuotationDetailStaff = () => {
   const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
-  const [version, setVersion] = useState<number | null>(null);
   const [othersAgreement, setOthersAgreement] = useState<string>(
     quotationData?.OthersAgreement || '',
   );
@@ -41,9 +37,8 @@ const InitialQuotationDetailStaff = () => {
   useEffect(() => {
     const fetchData = async () => {
       await fetchQuotationData(
-        id,
+        projectId,
         setQuotationData,
-        setVersion,
         setTableData,
         setBatchPayment,
         setUtilityInfos,
@@ -112,10 +107,6 @@ const InitialQuotationDetailStaff = () => {
             note={quotationData.Note}
           />
         )}
-
-        <InitialQuotationStatusTracker
-          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
-        />
       </div>
       <ActionButtons
         isEditing={isEditing}
@@ -125,7 +116,6 @@ const InitialQuotationDetailStaff = () => {
           handleSave(
             quotationData,
             tableData,
-            version,
             batchPayment,
             utilityInfos,
             promotionInfo,
@@ -138,7 +128,7 @@ const InitialQuotationDetailStaff = () => {
           )
         }
       />
-      <QuotationSummary
+      <CreateNewQuotationSummary
         quotationData={quotationData}
         setQuotationData={setQuotationData}
         tableData={tableData}

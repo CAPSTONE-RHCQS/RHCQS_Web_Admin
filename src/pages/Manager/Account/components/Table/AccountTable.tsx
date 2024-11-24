@@ -72,10 +72,10 @@ const TableRow: React.FC<{
     {columns.map((column) => (
       <td
         key={column.key}
-        className={`border-b border-gray-300 py-5 px-4 dark:border-strokedark ${
+        className={`border-b border-gray-300 py-5 px-9 dark:border-strokedark ${
           ['role'].includes(column.key) ? 'text-center' : ''
         }`}
-        style={{ width: column.key === 'role' ? '170px' : column.width }}
+        style={{ width: column.key === 'role' ? '250px' : column.width }}
       >
         {column.key === 'avatar' ? (
           <div className="relative w-20 h-20">

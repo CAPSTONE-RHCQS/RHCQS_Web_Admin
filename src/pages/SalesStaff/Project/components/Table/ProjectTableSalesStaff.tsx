@@ -127,6 +127,10 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
                       <strong style={{ color: '#FF5733' }}>
                         {item[column.key]}
                       </strong>
+                    ) : column.key === 'category' ? (
+                      <span className="text-primaryGreenButton">
+                        {item[column.key]}
+                      </span>
                     ) : (
                       item[column.key]
                     )}

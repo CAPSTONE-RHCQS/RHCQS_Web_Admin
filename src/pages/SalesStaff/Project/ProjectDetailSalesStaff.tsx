@@ -255,8 +255,8 @@ const ProjectDetailSalesStaff = () => {
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
+        {/* <!-- Báo giá sơ bộ--> */}
         <div className="mt-4">
-          {/* <!-- Báo giá sơ bộ--> */}
           <Accordion
             open={open === 1}
             icon={
@@ -364,11 +364,18 @@ const ProjectDetailSalesStaff = () => {
             </AccordionHeader>
             {projectDetail.FinalInfo &&
             projectDetail.FinalInfo.length === 0 &&
-            
-            isFinalized ? (
+            isFinalized &&
+            projectDetail.ContractInfo.some(
+              (info) => info.Status === 'Finished',
+            ) &&
+            projectDetail.HouseDesignDrawingInfo.some(
+              (info) => info.Type === 'DIENNUOC' && info.Status === 'Accepted',
+            ) ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
-                onClick={() => navigate(`/create-initial-quote/${id}`)}
+                onClick={() =>
+                  navigate(`/create-new-final-quotation-staff/${id}`)
+                }
               >
                 Khởi tạo báo giá
               </button>

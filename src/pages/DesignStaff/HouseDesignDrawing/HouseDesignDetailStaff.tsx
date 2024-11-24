@@ -96,8 +96,7 @@ const HouseDesignDetailStaff: React.FC = () => {
 
     try {
       const response = await createDesign(designData);
-      console.log('Design submitted successfully:', response.data);
-      toast.success('Design submitted successfully!');
+      toast.success('Tải lên bản vẽ thành công!');
       fetchDesignDetail();
     } catch (error: any) {
       console.error('Error submitting design:', error);
@@ -216,61 +215,102 @@ const HouseDesignDetailStaff: React.FC = () => {
                 ))}
               </tbody>
             </table>
+
+            <h3 className="text-xl font-bold mt-6">Phụ thuộc vào phiên bản</h3>
+            <table className="w-full table-auto mt-4">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tên phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tệp
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {designDetail.DependOnVersion.map((depend, index) => (
+                  <tr key={depend.HouseDesginVersionId}>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {depend.HouseDesignVersionName}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {depend.HouseDesignVersion}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <a
+                        href={depend.FileDesignVersion}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" hover:underline"
+                      >
+                        <FiFileText className="inline-block" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <div className="mt-6 flex flex-col items-center">
-          <div className="w-full max-w-md">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Tải lên bản vẽ
-            </label>
-            <div className="flex items-center justify-center w-full">
-              <label
-                htmlFor="file-upload"
-                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:border-blue-500"
-              >
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg
-                    aria-hidden="true"
-                    className="w-10 h-10 mb-3 text-gray-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M7 16V8m0 0l-3 3m3-3l3 3m6 8V8m0 0l-3 3m3-3l3 3"
-                    ></path>
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Nhấn để tải lên</span> hoặc
-                    kéo thả
-                  </p>
-                  <p className="text-xs text-gray-500">PDF (MAX. 10MB)</p>
-                </div>
-                <input
-                  id="file-upload"
-                  type="file"
-                  accept="application/pdf"
-                  className="hidden"
-                  onChange={handleFileChange}
-                  disabled={uploading}
-                />
+        {['Processing', 'Updating'].includes(designDetail.Status) && (
+          <div className="mt-6 flex flex-col items-center">
+            <div className="w-full max-w-md">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tải lên bản vẽ
               </label>
+              <div className="flex items-center justify-center w-full">
+                <label
+                  htmlFor="file-upload"
+                  className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:border-blue-500"
+                >
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <svg
+                      aria-hidden="true"
+                      className="w-10 h-10 mb-3 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M7 16V8m0 0l-3 3m3-3l3 3m6 8V8m0 0l-3 3m3-3l3 3"
+                      ></path>
+                    </svg>
+                    <p className="mb-2 text-sm text-gray-500">
+                      <span className="font-semibold">Nhấn để tải lên</span> hoặc
+                      kéo thả
+                    </p>
+                    <p className="text-xs text-gray-500">PDF (MAX. 10MB)</p>
+                  </div>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    accept="application/pdf"
+                    className="hidden"
+                    onChange={handleFileChange}
+                    disabled={uploading}
+                  />
+                </label>
+              </div>
+              {uploading && <p className="mt-2 text-blue-500">Đang tải lên...</p>}
             </div>
-            {uploading && <p className="mt-2 text-blue-500">Đang tải lên...</p>}
+            <button
+              onClick={handleSubmitDesign}
+              disabled={!fileUrl}
+              className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50"
+            >
+              Nộp bản vẽ
+            </button>
           </div>
-          <button
-            onClick={handleSubmitDesign}
-            disabled={!fileUrl}
-            className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50"
-          >
-            Nộp bản vẽ
-          </button>
-        </div>
+        )}
       </div>
       {fileUrl && (
         <div className="mt-6">

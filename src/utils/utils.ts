@@ -38,7 +38,7 @@ export const getStatusLabelInitalQuoteDetail = (status: string) => {
     Rejected: 'Từ chối báo giá SB',
     Approved: 'Đã xác nhận',
     Finalized: 'Đã hoàn thành',
-    Canceled: 'Đã đóng',
+    Ended: 'Đã đóng',
   };
   return statusLabelMap[status] || 'Không xác định';
 };

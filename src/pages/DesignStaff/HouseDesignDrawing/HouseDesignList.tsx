@@ -2,8 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { getHouseDesigns } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import HouseDesignTable from './components/Table/HouseDesignTable';
-import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import {
+  FaSyncAlt,
+  FaRegFrown,
+  FaCheckCircle,
+  FaTimesCircle,
+  FaEdit,
+  FaEye,
+} from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 
 interface HouseDesign {
   Id: string;
@@ -19,13 +27,62 @@ interface HouseDesign {
 
 const statusMap: { [key: string]: string } = {
   Processing: 'Đang xử lý',
-  Rejected: 'Bị từ chối',
-  Updating: 'Đang chỉnh sửa',
   Reviewing: 'Chờ xác nhận từ quản lý',
+  Updating: 'Đang chỉnh sửa',
+  Updated: 'Đã chỉnh sửa',
   Approved: 'Quản lý đã xác nhận',
   Accepted: 'Đã xác nhận',
-  Canceled: 'Đã đóng',
   Finalized: 'Đã hoàn thành',
+  Canceled: 'Đã đóng',
+};
+
+export const statusStyles: {
+  [key: string]: {
+    backgroundColor: string;
+    borderColor: string;
+    icon: JSX.Element;
+  };
+} = {
+  Processing: {
+    backgroundColor: '#FFA500',
+    borderColor: '#FFD700',
+    icon: <FaSyncAlt className="text-white" />,
+  },
+  Rejected: {
+    backgroundColor: '#FF6347',
+    borderColor: '#FF0000',
+    icon: <FaTimesCircle className="text-white" />,
+  },
+  Updating: {
+    backgroundColor: '#1E90FF',
+    borderColor: '#007BFF',
+    icon: <FaEdit className="text-white" />,
+  },
+  Reviewing: {
+    backgroundColor: '#9370DB',
+    borderColor: '#800080',
+    icon: <FaSyncAlt className="text-white" />,
+  },
+  Approved: {
+    backgroundColor: '#32CD32',
+    borderColor: '#008000',
+    icon: <FaCheckCircle className="text-white" />,
+  },
+  Accepted: {
+    backgroundColor: '#32CD32',
+    borderColor: '#008000',
+    icon: <FaCheckCircle className="text-white" />,
+  },
+  Canceled: {
+    backgroundColor: '#A9A9A9',
+    borderColor: '#808080',
+    icon: <FaTimesCircle className="text-white" />,
+  },
+  Finalized: {
+    backgroundColor: '#32CD32',
+    borderColor: '#008000',
+    icon: <FaCheckCircle className="text-white" />,
+  },
 };
 
 const HouseDesignList: React.FC = () => {
@@ -81,34 +138,50 @@ const HouseDesignList: React.FC = () => {
           </div>
         </div>
         <div className="max-w-full overflow-x-auto">
-          <HouseDesignTable
-            data={designs.map(design => ({
-              ...design,
-              Status: statusMap[design.Status] || design.Status,
-            }))}
-            isLoading={loading}
-            onEditSuccess={handleRefresh}
-          />
+          {designs.length > 0 ? (
+            <HouseDesignTable
+              data={designs.map((design) => ({
+                ...design,
+                Status: statusMap[design.Status] || design.Status,
+                style: statusStyles[design.Status] || {
+                  backgroundColor: '#FFFFFF',
+                  borderColor: '#D3D3D3',
+                  icon: <FaSyncAlt className="text-gray-500" />,
+                },
+              }))}
+              isLoading={loading}
+              onEditSuccess={handleRefresh}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64">
+              <FaRegFrown className="text-4xl text-gray-500 mb-4" />
+              <p className="text-lg text-gray-500">
+                Hiện tại chưa có công việc nào dành cho bạn.
+              </p>
+            </div>
+          )}
         </div>
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
-          >
-            Trang trước
-          </button>
-          <span>
-            Trang {currentPage} / {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
-          >
-            Trang sau
-          </button>
-        </div>
+        {designs.length > 0 && (
+          <div className="flex justify-between mt-4">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+            >
+              Trang trước
+            </button>
+            <span>
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 text-black rounded disabled:opacity-50"
+            >
+              Trang sau
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

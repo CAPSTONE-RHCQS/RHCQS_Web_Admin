@@ -67,7 +67,10 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   };
 
   const calculateTotalPrice = () => {
-    return editableUtilities.reduce((total, util) => total + (util.Price || 0), 0);
+    return editableUtilities.reduce(
+      (total, util) => total + (util.Price || 0),
+      0,
+    );
   };
 
   return (
@@ -76,7 +79,9 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         <thead className="bg-gray-100">
           <tr>
             <th className="px-4 py-2 border text-center font-semibold">Tên</th>
-            <th className="px-4 py-2 border text-center font-semibold">Hệ số</th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Hệ số
+            </th>
             <th className="px-4 py-2 border text-center font-semibold">Giá</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
@@ -112,11 +117,11 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                 <span>{util.Coefficient}</span>
               </td>
               <td className="px-4 py-2 border text-center">
-                <span>{util.Price}</span>
+                <span>{util.Price.toLocaleString()}</span>
               </td>
 
               {isEditing && (
-                <td className="px-4 py-2 border text-center">
+                <td className="px-4 py-2 border text-center align-middle">
                   <button
                     onClick={() => {
                       const newData = editableUtilities.filter(
@@ -125,16 +130,18 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                       setEditableUtilities(newData);
                       onUtilitiesChange(newData);
                     }}
-                    className="text-red-500 hover:text-red-700"
+                    className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full mx-auto"
                   >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
+                    <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </td>
               )}
             </tr>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={2} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td colSpan={2} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
             <td className="px-4 py-2 border text-center font-bold">
               {calculateTotalPrice().toLocaleString()} VNĐ
             </td>

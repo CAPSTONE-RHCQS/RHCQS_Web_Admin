@@ -1,11 +1,8 @@
 export interface BatchPaymentInfoRequest {
-  initIntitialQuotationId: string;
-  paymentTypeId: string;
-  contractId: string;
+  numberOfBatch: number;
   price: number;
-  percents: string;
-  description: string;
-  status: string;
+  paymentDate: string;
+  paymentPhase: string;
 }
 
 export interface EquipmentItemRequest {
@@ -36,6 +33,8 @@ export interface FinalQuotationItemRequest {
 }
 
 export interface FinalQuotationRequest {
+  customerName: string;
+  address: string;
   projectId: string;
   promotionId: string | null;
   note: string;

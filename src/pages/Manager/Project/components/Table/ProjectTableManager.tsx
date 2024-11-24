@@ -20,6 +20,7 @@ type Project = {
   date: string;
   status: string;
   isChecked: boolean;
+  type: string;
 };
 
 type SortKey = keyof Project;
@@ -64,6 +65,17 @@ const getStatusLabel = (status: string) => {
     Ended: 'Đã chấm dứt',
   };
   return statusLabelMap[status] || 'Không xác định';
+};
+
+const typeOptions = (type: string) => {
+  const typeOptions: { [key: string]: string } = {
+    TEMPLATE: 'Mẫu nhà',
+    FINISHED: 'Hoàn thiện',
+    ROUGH: 'Thô',
+    ALL: 'Thô & Hoàn thiện',
+    HAVE_DRAWING: 'Sẵn bản thiết kế',
+  };
+  return typeOptions[type] || 'Không xác định';
 };
 
 const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
@@ -149,6 +161,12 @@ const ProjectTableManager: React.FC<ProjectTableManagerProps> = ({
                         <strong style={{ color: '#FF5733' }}>
                           {item[column.key]}
                         </strong>
+                      ) : column.key === 'category' ? (
+                        <span className="flex items-center">
+                          <span className="text-primaryGreenButton font-medium mr-2">
+                            {typeOptions(item[column.key])}
+                          </span>
+                        </span>
                       ) : (
                         item[column.key]
                       )}

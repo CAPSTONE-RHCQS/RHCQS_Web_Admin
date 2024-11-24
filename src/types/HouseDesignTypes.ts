@@ -7,7 +7,7 @@ export interface HouseDesign {
   Type: string;
   IsCompany: boolean;
   InsDate: string;
-  Versions: any[];
+  Versions: VersionDetail[];
 }
 
 export interface HouseDesignResponse {
@@ -30,6 +30,13 @@ export interface VersionDetail {
   Reason: string | null;
 }
 
+export interface DependOnVersion {
+  HouseDesginVersionId: string;
+  HouseDesignVersionName: string;
+  HouseDesignVersion: number;
+  FileDesignVersion: string;
+}
+
 export interface HouseDesignDetailResponse {
   Id: string;
   ProjectId: string;
@@ -41,5 +48,6 @@ export interface HouseDesignDetailResponse {
   Type: string;
   IsCompany: boolean;
   InsDate: string;
+  DependOnVersion: DependOnVersion[];
   Versions: VersionDetail[];
 }

@@ -2,13 +2,15 @@ import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
   QuotationUtility,
-} from '../../../../types/InitialQuotationTypes';
+  PromotionInfo,
+  BatchPaymentInfo,
+} from '../../../../../types/InitialQuotationTypes';
 import {
-  getInitialQuotation,
+  createNewInitialQuotation,
   updateInitialQuotation,
-} from '../../../../api/InitialQuotation/InitialQuotationApi';
+} from '../../../../../api/InitialQuotation/InitialQuotationApi';
 import { toast } from 'react-toastify';
-import { TableRow } from './types';
+import { TableRow } from '../types';
 
 const convertToQuotationUtility = (utility: any): QuotationUtility => {
   return {
@@ -20,24 +22,23 @@ const convertToQuotationUtility = (utility: any): QuotationUtility => {
 };
 
 export const fetchQuotationData = async (
-  id: string | undefined,
+  projectId: string | undefined,
   setQuotationData: React.Dispatch<
     React.SetStateAction<InitialQuotationResponse | null>
   >,
-  setVersion: React.Dispatch<React.SetStateAction<number | null>>,
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
-  setGiaTriHopDong: React.Dispatch<React.SetStateAction<number>>,
-  setPaymentSchedule: React.Dispatch<React.SetStateAction<any[]>>,
+  setPaymentSchedule: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>,
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
 ) => {
-  if (id) {
+  if (projectId) {
     try {
-      const data: InitialQuotationResponse = await getInitialQuotation(id);
+      const data: InitialQuotationResponse = await createNewInitialQuotation(
+        projectId,
+      );
       console.log('Fetched Quotation Data:', data);
       setQuotationData(data);
-      setVersion(data.Version || null);
 
       const updatedTableData = data.ItemInitial.map((item, index) => {
         const coefficient =
@@ -62,12 +63,11 @@ export const fetchQuotationData = async (
       let giaTriHopDong = totalRough + totalUtilities;
 
       if (data.PromotionInfo) {
-        const discountValue = giaTriHopDong * (data.PromotionInfo.Value / 100);
+        const discountValue = data.PromotionInfo.Value || 0;
         giaTriHopDong -= discountValue;
         setPromotionInfo(data.PromotionInfo);
       }
 
-      setGiaTriHopDong(giaTriHopDong);
       setPaymentSchedule(data.BatchPaymentInfos);
       setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
       setDonGia(data.PackageQuotationList.UnitPackageRough);
@@ -80,10 +80,13 @@ export const fetchQuotationData = async (
 export const handleSave = async (
   quotationData: InitialQuotationResponse | null,
   tableData: TableRow[],
-  version: number | null,
-  paymentSchedule: any[],
+  paymentSchedule: BatchPaymentInfo[],
   utilityInfos: QuotationUtility[],
-  promotionInfo: any,
+  promotionInfo: PromotionInfo | null,
+  giaTriHopDong: number,
+  totalArea: number,
+  totalRough: number,
+  totalUtilities: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
 ) => {
@@ -98,27 +101,61 @@ export const handleSave = async (
     return;
   }
 
+  const hasEmptyPaymentFields = paymentSchedule.some(
+    (payment) =>
+      payment.Description.trim() === '' ||
+      (typeof payment.Percents === 'number' && payment.Percents === 0) ||
+      !payment.PaymentDate ||
+      !payment.PaymentPhase,
+  );
+
+  if (hasEmptyPaymentFields) {
+    toast.error('Các đợt thanh toán không được để trống.');
+    return;
+  }
+
+  if (paymentSchedule.length === 0) {
+    toast.error('Các đợt thanh toán không được để trống.');
+    return;
+  }
+
+  // const hasEmptyUtilityFields = utilityInfos.some(
+  //   (utility) =>
+  //     utility.description.trim() === '' ||
+  //     utility.coefficient === 0 ||
+  //     utility.price === 0,
+  // );
+
+  // if (hasEmptyUtilityFields) {
+  //   toast.error('Các trường tiện ích không được để trống.');
+  //   return;
+  // }
+
+  const isInvalidPromotion =
+    !promotionInfo ||
+    promotionInfo.Id === '00000000-0000-0000-0000-000000000000' ||
+    promotionInfo.Value === 0;
+
   const requestData: UpdateInitialQuotationRequest = {
-    versionPresent: version || 1,
     accountName: quotationData.AccountName,
     address: quotationData.Address,
+    versionPresent: 0,
     projectId: quotationData.ProjectId,
-    area: quotationData.Area,
-    timeProcessing: parseInt(quotationData.TimeProcessing || '0', 10),
-    timeRough: 0,
-    timeOthers: parseInt(quotationData.TimeOthers || '0', 10),
-    othersAgreement: quotationData.OthersAgreement || '',
-    totalRough: quotationData.TotalRough,
-    totalUtilities: quotationData.TotalUtilities,
-    items: tableData.map((item) => {
-      return {
-        name: item.hangMuc,
-        constructionItemId: item.constructionItemId || 'default-id',
-        subConstructionId: item.subConstructionId ?? null,
-        area: parseFloat(item.dTich),
-        price: 0,
-      };
-    }),
+    isSave: true,
+    area: totalArea,
+    timeProcessing: quotationData.TimeProcessing,
+    timeRough: quotationData.TimeRough,
+    timeOthers: quotationData.TimeOthers,
+    othersAgreement: quotationData.OthersAgreement,
+    totalRough: totalRough,
+    totalUtilities: totalUtilities,
+    items: tableData.map((item) => ({
+      name: item.hangMuc,
+      constructionItemId: item.constructionItemId || 'default-id',
+      subConstructionId: item.subConstructionId ?? null,
+      area: parseFloat(item.dTich),
+      price: item.price || 0,
+    })),
     packages: [
       ...(quotationData.PackageQuotationList.IdPackageRough
         ? [
@@ -143,15 +180,16 @@ export const handleSave = async (
       price: utility.price,
       description: utility.description,
     })),
-    promotions:
-      promotionInfo &&
-      promotionInfo.Id !== '00000000-0000-0000-0000-000000000000'
-        ? { id: promotionInfo.Id }
-        : null,
+    promotions: isInvalidPromotion
+      ? null
+      : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
     batchPayments: paymentSchedule.map((payment) => ({
-      price: payment.Price,
-      percents: payment.Percents,
+      numberOfBatch: payment.NumberOfBatch,
+      price: (parseFloat(payment.Percents) / 100) * giaTriHopDong,
+      percents: parseFloat(payment.Percents),
       description: payment.Description,
+      paymentDate: payment.PaymentDate || '',
+      paymentPhase: payment.PaymentPhase || '',
     })),
   };
 
@@ -162,7 +200,6 @@ export const handleSave = async (
     navigate(`/project-detail-staff/${quotationData.ProjectId}`);
   } catch (error) {
     console.error('Error saving data:', error);
-
     const errorMessage =
       error instanceof Error ? error.message : 'Có lỗi xảy ra khi lưu dữ liệu.';
     toast.error(errorMessage);

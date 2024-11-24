@@ -4,24 +4,41 @@ import { updateFinalQuotation } from '../../../../api/FinalQuotation/FinalQuotat
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
-export const handleSave = async (
+export const handleSeva = async (
   quotationDetail: FinalQuotationDetailType | null,
   setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
-) => {
+): Promise<boolean> => {
   if (quotationDetail) {
+    const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
+      (item) => item.QuotationItems.length === 0,
+    );
+
+    const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
+      (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+    );
+
+    if (hasEmptyConstruction) {
+      toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
+      return false;
+    }
+
+    if (hasEmptyDate) {
+      toast.error('Tất cả các trường ngày phải được điền.');
+      return false;
+    }
+
     const requestData: FinalQuotationRequest = {
+      customerName: quotationDetail.AccountName,
+      address: quotationDetail.ProjectAddress,
       projectId: quotationDetail.ProjectId,
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        initIntitialQuotationId: quotationDetail.InitailQuotationId,
-        paymentTypeId: payment.PaymentTypeId,
-        contractId: payment.ContractId,
         price: payment.Price,
-        percents: payment.Percents,
-        description: payment.Description,
-        status: payment.Status,
+        numberOfBatch: payment.NumberOfBatch,
+        paymentDate: payment.PaymentDate,
+        paymentPhase: payment.PaymentPhase,
       })),
       equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
         name: item.Name,
@@ -52,6 +69,7 @@ export const handleSave = async (
       await updateFinalQuotation(requestData);
       setIsEditing(false);
       toast.success('Cập nhật báo giá thành công!');
+      return true;
     } catch (error) {
       console.error('Lỗi khi cập nhật báo giá:', error);
       if (axios.isAxiosError(error)) {
@@ -67,31 +85,49 @@ export const handleSave = async (
       } else {
         toast.error('Đã xảy ra lỗi không xác định.');
       }
+      return false;
     } finally {
       setIsSaving(false);
     }
   }
+  return false;
 };
 
 export const hanldCreateNew = async (
   quotationDetail: FinalQuotationDetailType | null,
-  setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
   navigate: (path: string) => void,
-): Promise<boolean> => {
+) => {
   if (quotationDetail) {
+    const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
+      (item) => item.QuotationItems.length === 0,
+    );
+
+    const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
+      (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+    );
+
+    if (hasEmptyConstruction) {
+      toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
+      return;
+    }
+
+    if (hasEmptyDate) {
+      toast.error('Tất cả các trường ngày phải được điền.');
+      return;
+    }
+
     const requestData: FinalQuotationRequest = {
+      customerName: quotationDetail.AccountName,
+      address: quotationDetail.ProjectAddress,
       projectId: quotationDetail.ProjectId,
       promotionId: quotationDetail.PromotionInfo?.Id || null,
       note: quotationDetail.Note || '',
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        initIntitialQuotationId: quotationDetail.InitailQuotationId,
-        paymentTypeId: payment.PaymentTypeId,
-        contractId: payment.ContractId,
         price: payment.Price,
-        percents: payment.Percents,
-        description: payment.Description,
-        status: payment.Status,
+        numberOfBatch: payment.NumberOfBatch,
+        paymentDate: payment.PaymentDate,
+        paymentPhase: payment.PaymentPhase,
       })),
       equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
         name: item.Name,

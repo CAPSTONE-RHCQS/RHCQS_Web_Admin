@@ -1,5 +1,9 @@
 import { PromotionRequest } from '../../types/PromotionTypes';
 import requestWebRHCQS from '../../utils/axios';
+import {
+  GetPromotionByNameResponse,
+  Promotion,
+} from '../../types/SearchContainNameTypes';
 
 export const getPromotions = async (page: number, size: number) => {
   try {
@@ -68,5 +72,23 @@ export const putPromotion = async (
       console.error('Error updating promotion:', error);
       throw error;
     }
+  }
+};
+
+export const getPromotionByName = async (
+  name: string,
+  packageId: string,
+): Promise<Promotion[]> => {
+  try {
+    const response = await requestWebRHCQS.get(`/promotion/name`, {
+      params: { name, packageId },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching promotion by name:', error);
+    throw error;
   }
 };

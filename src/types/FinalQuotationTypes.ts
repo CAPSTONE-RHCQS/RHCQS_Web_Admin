@@ -2,16 +2,17 @@ export interface BatchPaymentInfo {
   PaymentId: string;
   PaymentTypeId: string;
   PaymentTypeName: string;
-  ContractId: string;
+  ContractId: string | null;
   InsDate: string;
   Status: string;
-  UpsDate: string;
+  UpsDate: string | null;
   Price: number;
   PaymentDate: string;
   PaymentPhase: string;
   Unit: string;
   Percents: string;
   Description: string;
+  NumberOfBatch: number;
 }
 
 export interface EquipmentItem {
@@ -21,7 +22,7 @@ export interface EquipmentItem {
   Quantity: number;
   UnitOfMaterial: number;
   TotalOfMaterial: number;
-  Note: string | null;
+  Note: string;
   Type: string;
 }
 
@@ -49,8 +50,7 @@ export interface FinalQuotationItem {
   SubConstructionId: string | null;
   ContructionName: string;
   Type: string;
-  Coefficient: number;
-  InsDate: string | null;
+  InsDate: string;
   QuotationItems: QuotationItem[];
 }
 
@@ -84,21 +84,42 @@ export interface Equitment {
   TotalPriceLabor: number;
 }
 
+export interface HouseDrawingVersionInfo {
+  VersionId: string;
+  VersionName: string;
+  Version: number;
+}
+
+export interface PackageQuotationList {
+  IdPackageRough: string | null;
+  PackageRough: string | null;
+  UnitPackageRough: number;
+  IdPackageFinished: string | null;
+  PackageFinished: string | null;
+  UnitPackageFinished: number;
+  Unit: string;
+}
+
 export interface FinalQuotationDetail {
   Id: string;
   AccountName: string;
   ProjectId: string;
   InitailQuotationId: string;
+  InitailQuotationVersion: number;
+  HouseDrawingVersionInf: HouseDrawingVersionInfo[];
   ProjectType: string;
   ProjectAddress: string;
+  Discount: number;
   TotalPrice: number;
-  Note: string | null;
+  Note: string;
+  OthersAgreement: string;
   Version: number;
   InsDate: string;
   UpsDate: string;
   Status: string;
   Deflag: boolean;
   ReasonReject: string | null;
+  PackageQuotationList: PackageQuotationList;
   BatchPaymentInfos: BatchPaymentInfo[];
   EquipmentItems: EquipmentItem[];
   FinalQuotationItems: FinalQuotationItem[];
@@ -109,27 +130,4 @@ export interface FinalQuotationDetail {
   Equitment: Equitment;
 }
 
-export interface FinalQuotationResponse {
-  Id: string;
-  AccountName: string;
-  ProjectId: string;
-  InitailQuotationId: string;
-  ProjectType: string;
-  ProjectAddress: string;
-  TotalPrice: number;
-  Note: string | null;
-  Version: number;
-  InsDate: string;
-  UpsDate: string;
-  Status: string;
-  Deflag: boolean;
-  ReasonReject: string | null;
-  BatchPaymentInfos: BatchPaymentInfo[];
-  EquipmentItems: EquipmentItem[];
-  FinalQuotationItems: FinalQuotationItem[];
-  PromotionInfo: PromotionInfo | null;
-  UtilityInfos: UtilityInfo[];
-  ConstructionRough: ConstructionDetail;
-  ConstructionFinished: ConstructionDetail;
-  Equitment: Equitment;
-}
+export interface FinalQuotationResponse extends FinalQuotationDetail {}

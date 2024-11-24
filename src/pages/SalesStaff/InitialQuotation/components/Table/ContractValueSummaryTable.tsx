@@ -1,22 +1,20 @@
 import React, { useEffect } from 'react';
 
 interface ContractValueSummaryTableProps {
-  thanhTien: number;
-  totalUtilityCost: number;
+  totalRough: number;
+  totalUtilities: number;
   promotionInfo: any;
   updateGiaTriHopDong: (value: number) => void;
 }
 
 const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
-  thanhTien,
-  totalUtilityCost,
+  totalRough,
+  totalUtilities,
   promotionInfo,
   updateGiaTriHopDong,
 }) => {
-  const discount = promotionInfo
-    ? (thanhTien + totalUtilityCost) * (promotionInfo.Value / 100)
-    : 0;
-  const giaTriHopDong = thanhTien + totalUtilityCost - discount;
+  const discount = promotionInfo ? promotionInfo.Value : 0;
+  const giaTriHopDong = totalRough + totalUtilities - discount;
 
   useEffect(() => {
     updateGiaTriHopDong(giaTriHopDong);
@@ -36,14 +34,14 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
           <tr>
             <td className="px-4 py-2 border text-left">Phần Thô Tiết Kiệm</td>
             <td className="px-4 py-2 border text-center">
-              {thanhTien.toLocaleString()} VNĐ
+              {totalRough.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
           <tr>
             <td className="px-4 py-2 border text-left">Tùy chọn & Tiện ích</td>
             <td className="px-4 py-2 border text-center">
-              {totalUtilityCost.toLocaleString()} VNĐ
+              {totalUtilities.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
@@ -53,7 +51,7 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
                 Khuyến mãi ({promotionInfo.Name})
               </td>
               <td className="px-4 py-2 border text-center">
-                -{discount.toLocaleString()} VNĐ
+                -{discount.toLocaleString()}
               </td>
               <td className="px-4 py-2 border text-center">VNĐ</td>
             </tr>

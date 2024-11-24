@@ -40,7 +40,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     Approved: '#008000',
     Rejected: '#FF0000',
     Finalized: '#4B0082',
-    Canceled: '#808080',
+    Ended: '#808080',
   };
 
   const statusLabelMap: { [key: string]: string } = {
@@ -50,7 +50,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     Approved: 'Đã xác nhận',
     Rejected: 'Từ chối báo giá SB',
     Finalized: 'Đã hoàn thành',
-    Canceled: 'Đã đóng',
+    Ended: 'Đã đóng',
   };
 
   const getStatusStyle = (status: string) => {
