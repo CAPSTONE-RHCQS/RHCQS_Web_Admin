@@ -1,17 +1,20 @@
 import React, { useState } from 'react';
 import { Package } from '../../../../../types/SearchContainNameTypes';
 import { getPackageByName } from '../../../../../api/Package/PackageApi';
+import { PromotionInfo } from '../../../../../types/InitialQuotationTypes';
 
 interface ConstructionPriceProps {
   quotationData: any;
   setQuotationData: React.Dispatch<React.SetStateAction<any>>;
   isEditing: boolean;
+  setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
 }
 
 const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
   quotationData,
   setQuotationData,
   isEditing,
+  setPromotionInfo,
 }) => {
   const [searchResultsRough, setSearchResultsRough] = useState<Package[]>([]);
   const [searchResultsFinished, setSearchResultsFinished] = useState<Package[]>(
@@ -58,6 +61,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
       setSearchResultsFinished([]);
     }
     setQuotationData(newQuotationData);
+    setPromotionInfo(null);
   };
 
   const handleInputChange = (
@@ -72,17 +76,21 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
       if (value === '') {
         newQuotationData.PackageQuotationList.UnitPackageRough = 0;
         newQuotationData.PackageQuotationList.IdPackageRough = null;
+        setSearchResultsRough([]);
       }
     } else if (type === 'FINISHED') {
       newQuotationData.PackageQuotationList.PackageFinished = value;
       if (value === '') {
         newQuotationData.PackageQuotationList.UnitPackageFinished = 0;
         newQuotationData.PackageQuotationList.IdPackageFinished = null;
+        setSearchResultsFinished([]);
       }
     }
 
     setQuotationData(newQuotationData);
-    handleSearchPackage(value, type);
+    if (value !== '') {
+      handleSearchPackage(value, type);
+    }
   };
 
   return (

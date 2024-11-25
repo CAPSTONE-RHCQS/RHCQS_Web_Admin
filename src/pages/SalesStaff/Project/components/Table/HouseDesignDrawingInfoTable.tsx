@@ -12,6 +12,7 @@ interface HouseDesignDrawingInfoTableProps {
 }
 
 const statusColorMap: { [key: string]: string } = {
+  Pending: '#A9A9A9',
   Processing: '#FFA500',
   Rejected: '#FF0000',
   Updating: '#1E90FF',
@@ -23,6 +24,7 @@ const statusColorMap: { [key: string]: string } = {
 };
 
 const statusLabelMap: { [key: string]: string } = {
+  Pending: 'Đang chờ',
   Processing: 'Đang xử lý',
   Rejected: 'Bị từ chối',
   Updating: 'Đang chỉnh sửa',

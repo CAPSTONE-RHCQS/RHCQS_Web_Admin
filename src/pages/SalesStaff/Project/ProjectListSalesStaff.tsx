@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import { FaRegFrown } from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableSalesStaff from './components/Table/ProjectTableSalesStaff';
 import useProjectsSalesStaff from '../../../hooks/useProjectsSalesStaff';
@@ -25,10 +26,23 @@ const ProjectListSalesStaff = () => {
     [navigate],
   );
 
+  const typeMap: { [key: string]: string } = {
+    TEMPLATE: 'Mẫu nhà',
+    FINISHED: 'Hoàn thiện',
+    ROUGH: 'Thô',
+    ALL: 'Thô & Hoàn thiện',
+    HAVE_DRAWING: 'Sẵn bản thiết kế',
+  };
+
   const filteredProjects = useMemo(() => {
-    return projects.filter((project) =>
-      project.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
-    );
+    return projects
+      .filter((project) =>
+        project.projectName.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+      .map((project) => ({
+        ...project,
+        category: typeMap[project.category] || project.category,
+      }));
   }, [projects, searchTerm]);
 
   const columns = useMemo(
@@ -77,34 +91,45 @@ const ProjectListSalesStaff = () => {
           />
         </div>
         <div className="max-w-full overflow-x-auto">
-          <ProjectTableSalesStaff
-            data={filteredProjects}
-            columns={columns}
-            handleSort={handleSort}
-            handleViewDetails={handleViewDetails}
-            isLoading={loading}
-            error={error}
-          />
+          {filteredProjects.length > 0 ? (
+            <ProjectTableSalesStaff
+              data={filteredProjects}
+              columns={columns}
+              handleSort={handleSort}
+              handleViewDetails={handleViewDetails}
+              isLoading={loading}
+              error={error}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-64">
+              <FaRegFrown className="text-4xl text-gray-500 mb-4" />
+              <p className="text-lg text-gray-500">
+                Hiện tại chưa có công việc nào dành cho bạn.
+              </p>
+            </div>
+          )}
         </div>
-        <div className="flex justify-between mt-5">
-          <button
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
-          >
-            Trang trước
-          </button>
-          <span>
-            Trang {currentPage} / {totalPages}
-          </span>
-          <button
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
-          >
-            Trang sau
-          </button>
-        </div>
+        {filteredProjects.length > 0 && (
+          <div className="flex justify-between mt-5">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+            >
+              Trang trước
+            </button>
+            <span>
+              Trang {currentPage} / {totalPages}
+            </span>
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 disabled:opacity-50"
+            >
+              Trang sau
+            </button>
+          </div>
+        )}
       </div>
     </>
   );

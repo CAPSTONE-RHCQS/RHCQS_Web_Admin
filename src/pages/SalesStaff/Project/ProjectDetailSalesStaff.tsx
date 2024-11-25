@@ -125,6 +125,9 @@ const ProjectDetailSalesStaff = () => {
 
   const isFinalized = isAnyInitialInfoFinalized(projectDetail.InitialInfo);
 
+  const isContractDesignEnabled =
+    projectDetail.Type === 'TEMPLATE' || projectDetail.Type === 'HAVE_DRAWING';
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -141,28 +144,15 @@ const ProjectDetailSalesStaff = () => {
             {menuVisible && (
               <div className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out">
                 <div className="py-2">
-                  <a
-                    href="#"
-                    onClick={() => handleMenuItemClick('history')}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaHistory className="mr-2" />
-                    Lịch sử chỉnh sửa
-                  </a>
-                  <Link
-                    to={`/editquote`}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                  >
-                    <FaEdit className="mr-2" />
-                    Chỉnh sửa hợp đồng
-                  </Link>
-                  <div
-                    onClick={handleCreateContractDesign}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                  >
-                    <FaFileContract className="mr-2" />
-                    Tạo hợp đồng thiết kế
-                  </div>
+                  {!isContractDesignEnabled && (
+                    <div
+                      onClick={handleCreateContractDesign}
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                    >
+                      <FaFileContract className="mr-2" />
+                      Tạo hợp đồng thiết kế
+                    </div>
+                  )}
                   <div
                     onClick={handleCreateConstructionContract}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
@@ -251,12 +241,12 @@ const ProjectDetailSalesStaff = () => {
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaRulerCombined className="mr-2 text-secondary" />
-          <span className="font-semibold">Diện tích:</span>
+          <span className="font-semibold">Diện tích xây dựng:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
+        {/* <!-- Báo giá sơ bộ--> */}
         <div className="mt-4">
-          {/* <!-- Báo giá sơ bộ--> */}
           <Accordion
             open={open === 1}
             icon={
@@ -302,40 +292,42 @@ const ProjectDetailSalesStaff = () => {
           {/* <!-- Báo giá sơ bộ --> */}
 
           {/* <!-- Bản vẽ thiết kế --> */}
-          <Accordion
-            open={open === 2}
-            icon={
-              projectDetail.HouseDesignDrawingInfo &&
-              projectDetail.HouseDesignDrawingInfo.length > 0 ? (
-                <ArrowIcon id={2} open={open} />
-              ) : null
-            }
-            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
-          >
-            <AccordionHeader
-              onClick={
+          {projectDetail.Type !== 'TEMPLATE' && (
+            <Accordion
+              open={open === 2}
+              icon={
                 projectDetail.HouseDesignDrawingInfo &&
-                projectDetail.HouseDesignDrawingInfo.length > 0
-                  ? () => handleOpen(2)
-                  : undefined
+                projectDetail.HouseDesignDrawingInfo.length > 0 ? (
+                  <ArrowIcon id={2} open={open} />
+                ) : null
               }
-              className={`border-b-0 transition-colors ${
-                open === 2
-                  ? 'text-secondary hover:text-secondaryBlue'
-                  : 'text-primary hover:text-primaryDarkGreen'
-              } font-montserrat`}
+              className="mb-2 rounded-lg border border-blue-gray-100 px-4"
             >
-              Thiết kế bản vẽ
-            </AccordionHeader>
-            <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
-              {projectDetail.HouseDesignDrawingInfo &&
-                projectDetail.HouseDesignDrawingInfo.length > 0 && (
-                  <HouseDesignDrawingInfoTable
-                    designData={projectDetail.HouseDesignDrawingInfo}
-                  />
-                )}
-            </AccordionBody>
-          </Accordion>
+              <AccordionHeader
+                onClick={
+                  projectDetail.HouseDesignDrawingInfo &&
+                  projectDetail.HouseDesignDrawingInfo.length > 0
+                    ? () => handleOpen(2)
+                    : undefined
+                }
+                className={`border-b-0 transition-colors ${
+                  open === 2
+                    ? 'text-secondary hover:text-secondaryBlue'
+                    : 'text-primary hover:text-primaryDarkGreen'
+                } font-montserrat`}
+              >
+                Thiết kế bản vẽ
+              </AccordionHeader>
+              <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+                {projectDetail.HouseDesignDrawingInfo &&
+                  projectDetail.HouseDesignDrawingInfo.length > 0 && (
+                    <HouseDesignDrawingInfoTable
+                      designData={projectDetail.HouseDesignDrawingInfo}
+                    />
+                  )}
+              </AccordionBody>
+            </Accordion>
+          )}
           {/* <!-- Bản vẽ thiết kế --> */}
 
           {/* <!-- Báo giá chi tiết--> */}
@@ -362,13 +354,24 @@ const ProjectDetailSalesStaff = () => {
             >
               Báo giá chi tiết
             </AccordionHeader>
-            {projectDetail.FinalInfo &&
-            projectDetail.FinalInfo.length === 0 &&
-            
-            isFinalized ? (
+            {(projectDetail.FinalInfo &&
+              projectDetail.FinalInfo.length === 0 &&
+              isFinalized &&
+              projectDetail.ContractInfo.some(
+                (info) => info.Status === 'Finished',
+              ) &&
+              projectDetail.HouseDesignDrawingInfo.some(
+                (info) =>
+                  info.Type === 'DIENNUOC' && info.Status === 'Accepted',
+              )) ||
+            (projectDetail.FinalInfo.length === 0 &&
+              isContractDesignEnabled &&
+              isFinalized) ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
-                onClick={() => navigate(`/create-initial-quote/${id}`)}
+                onClick={() =>
+                  navigate(`/create-new-final-quotation-staff/${id}`)
+                }
               >
                 Khởi tạo báo giá
               </button>

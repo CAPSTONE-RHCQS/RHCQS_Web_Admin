@@ -103,3 +103,18 @@ export const getAccountsByRoleId = async (
     throw error;
   }
 };
+
+export const getAvailableSalesStaff = async (page: number, size: number) => {
+  try {
+    const response = await requestWebRHCQS.get(`/task/sale-staff/available?`, {
+      params: { page, size },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching accounts by role id:', error);
+    throw error;
+  }
+};

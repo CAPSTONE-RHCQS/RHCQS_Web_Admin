@@ -1,16 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
   FaHistory,
-  FaUserPlus,
   FaBan,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
-import Avatar from '../../../images/user/user-01.png';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
@@ -235,14 +233,14 @@ const ProjectDetailManager = () => {
                 style={{ opacity: menuVisible ? 1 : 0 }}
               >
                 <div className="py-2">
-                  <a
+                  {/* <a
                     href="#"
                     onClick={() => handleMenuItemClick('history')}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
                   >
                     <FaHistory className="mr-2" />
                     Lịch sử chỉnh sửa
-                  </a>
+                  </a> */}
                   <a
                     href="#"
                     onClick={(e) => {
@@ -340,7 +338,7 @@ const ProjectDetailManager = () => {
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaRulerCombined className="mr-2 text-secondary" />
-          <span className="font-semibold">Diện tích:</span>
+          <span className="font-semibold">Diện tích xây dựng:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
         </div>
 
@@ -381,53 +379,55 @@ const ProjectDetailManager = () => {
           {/* <!-- Báo giá sơ bộ --> */}
 
           {/* <!-- Thiết kế bản vẽ --> */}
-          <Accordion
-            open={open === 2}
-            icon={
-              projectDetail.HouseDesignDrawingInfo &&
-              projectDetail.HouseDesignDrawingInfo.length > 0 ? (
-                <ArrowIcon id={2} open={open} />
-              ) : null
-            }
-            className="mb-2 rounded-lg border border-blue-gray-100 px-4"
-          >
-            <AccordionHeader
-              onClick={
+          {projectDetail.Type !== 'TEMPLATE' && (
+            <Accordion
+              open={open === 2}
+              icon={
                 projectDetail.HouseDesignDrawingInfo &&
-                projectDetail.HouseDesignDrawingInfo.length > 0
-                  ? () => handleOpen(2)
-                  : undefined
+                projectDetail.HouseDesignDrawingInfo.length > 0 ? (
+                  <ArrowIcon id={2} open={open} />
+                ) : null
               }
-              className={`border-b-0 transition-colors ${
-                open === 2
-                  ? 'text-secondary hover:text-secondaryBlue'
-                  : 'text-primary hover:text-primaryDarkGreen'
-              } font-montserrat`}
+              className="mb-2 rounded-lg border border-blue-gray-100 px-4"
             >
-              Thiết kế bản vẽ
-            </AccordionHeader>
-            {projectDetail.HouseDesignDrawingInfo &&
-            projectDetail.HouseDesignDrawingInfo.length === 0 &&
-            projectDetail.StaffName &&
-            isInitialInfoFinalized &&
-            hasDesignContract ? (
-              <button
-                onClick={() => setIsAssignModalOpen(true)}
-                className="mb-4 bg-primaryGreenButton text-white p-2 rounded font-montserrat"
+              <AccordionHeader
+                onClick={
+                  projectDetail.HouseDesignDrawingInfo &&
+                  projectDetail.HouseDesignDrawingInfo.length > 0
+                    ? () => handleOpen(2)
+                    : undefined
+                }
+                className={`border-b-0 transition-colors ${
+                  open === 2
+                    ? 'text-secondary hover:text-secondaryBlue'
+                    : 'text-primary hover:text-primaryDarkGreen'
+                } font-montserrat`}
               >
-                Phân công nhân viên
-              </button>
-            ) : (
-              <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
-                {projectDetail.HouseDesignDrawingInfo &&
-                  projectDetail.HouseDesignDrawingInfo.length > 0 && (
-                    <HouseDesignDrawingInfoTable
-                      designData={projectDetail.HouseDesignDrawingInfo}
-                    />
-                  )}
-              </AccordionBody>
-            )}
-          </Accordion>
+                Thiết kế bản vẽ
+              </AccordionHeader>
+              {projectDetail.HouseDesignDrawingInfo &&
+              projectDetail.HouseDesignDrawingInfo.length === 0 &&
+              projectDetail.StaffName &&
+              isInitialInfoFinalized &&
+              hasDesignContract ? (
+                <button
+                  onClick={() => setIsAssignModalOpen(true)}
+                  className="mb-4 bg-primaryGreenButton text-white p-2 rounded font-montserrat"
+                >
+                  Phân công nhân viên
+                </button>
+              ) : (
+                <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
+                  {projectDetail.HouseDesignDrawingInfo &&
+                    projectDetail.HouseDesignDrawingInfo.length > 0 && (
+                      <HouseDesignDrawingInfoTable
+                        designData={projectDetail.HouseDesignDrawingInfo}
+                      />
+                    )}
+                </AccordionBody>
+              )}
+            </Accordion>
+          )}
           {isAssignModalOpen && (
             <AssignModal
               onClose={() => {

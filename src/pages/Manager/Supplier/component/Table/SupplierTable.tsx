@@ -105,7 +105,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
             {['Tên công ty', 'Mô tả', ''].map((header) => (
               <th
                 key={header}
-                className="py-4 px-4 font-medium text-black dark:text-white"
+                className="py-4 px-4 font-bold text-black dark:text-white"
               >
                 {header}
               </th>
@@ -116,7 +116,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
           {dataSupplier.map((item, index) => (
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-medium">
                   {item.Name}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

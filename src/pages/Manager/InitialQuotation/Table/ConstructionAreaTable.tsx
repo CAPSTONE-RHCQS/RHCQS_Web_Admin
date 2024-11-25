@@ -41,38 +41,10 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
           {tableData.map((row, index) => (
             <tr key={index}>
               <td className="px-4 py-2 border text-center">{row.stt}</td>
-              <td className="px-4 py-2 border text-center border-2 border-green-300">
-                <input
-                  type="text"
-                  value={row.hangMuc}
-                  onChange={(e) => handleInputChange(e, index, 'hangMuc')}
-                  className="w-full text-left"
-                />
-              </td>
-              <td className="px-4 py-2 border text-center border-2 border-green-300">
-                <input
-                  type="text"
-                  value={row.dTich}
-                  onChange={(e) => handleInputChange(e, index, 'dTich')}
-                  className="w-full text-center"
-                />
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={row.heSo}
-                  onChange={(e) => handleInputChange(e, index, 'heSo')}
-                  className="w-full text-center"
-                />
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={row.dienTich}
-                  onChange={(e) => handleInputChange(e, index, 'dienTich')}
-                  className="w-full text-center"
-                />
-              </td>
+              <td className="px-4 py-2 border text-center">{row.hangMuc}</td>
+              <td className="px-4 py-2 border text-center">{row.dTich}</td>
+              <td className="px-4 py-2 border text-center">{row.heSo}</td>
+              <td className="px-4 py-2 border text-center">{row.dienTich}</td>
               <td className="px-4 py-2 border text-center">{row.donVi}</td>
             </tr>
           ))}

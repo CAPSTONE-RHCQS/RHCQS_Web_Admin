@@ -19,6 +19,7 @@ import SupplierManagerIcon from '../../SVG/SidebarIcon/ManagerIcon/SupplierManag
 import DashboardIcon from '../../SVG/SidebarIcon/DashboardIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack, faTimes } from '@fortawesome/free-solid-svg-icons';
+import LaborManagerIcon from '../../SVG/SidebarIcon/ManagerIcon/LaborManagerIcon';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -303,7 +304,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           !isHovered && !sidebarOpen ? 'hidden' : ''
                         }`}
                       >
-                        Các nhà cung cấp
+                        Quản lý cung cấp
+                      </span>
+                    </NavLink>
+                  </li>
+
+                  {/* <!-- Menu Item LaborManager --> */}
+                  <li>
+                    <NavLink
+                      to="/labor-list-manager"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname.includes('/labor-list-manager') &&
+                        'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <LaborManagerIcon />
+                      <span
+                        className={`${
+                          !isHovered && !sidebarOpen ? 'hidden' : ''
+                        }`}
+                      >
+                        Quản lý nhân công
                       </span>
                     </NavLink>
                   </li>

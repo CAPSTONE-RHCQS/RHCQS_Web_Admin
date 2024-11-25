@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { BatchPaymentInfo } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { toast } from 'react-hot-toast';
 
 interface BatchPaymentTableProps {
   payments: BatchPaymentInfo[];
   isEditing: boolean;
   totalPrice: number;
   onPaymentsChange: (updatedPayments: BatchPaymentInfo[]) => void;
+  dateRefs: React.MutableRefObject<(HTMLInputElement | null)[]>;
 }
 
 const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
@@ -15,33 +17,54 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   isEditing,
   totalPrice,
   onPaymentsChange,
+  dateRefs,
 }) => {
   const [editedPayments, setEditedPayments] = useState(payments);
 
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
-    setEditedPayments(payments);
+    const formattedPayments = payments.map((payment) => ({
+      ...payment,
+      PaymentDate: payment.PaymentDate ? new Date(payment.PaymentDate).toISOString().split('T')[0] : '',
+      PaymentPhase: payment.PaymentPhase ? new Date(payment.PaymentPhase).toISOString().split('T')[0] : '',
+    }));
+    setEditedPayments(formattedPayments);
   }, [payments]);
 
-  const handlePercentChange = (index: number, newPercent: number) => {
-    const updatedPayments = [...editedPayments];
-    updatedPayments[index].Percents = newPercent.toString();
-    updatedPayments[index].Price = (newPercent / 100) * totalPrice;
+  useEffect(() => {
+    const updatedPayments = editedPayments.map((payment) => ({
+      ...payment,
+      Price: (payment.Percents / 100) * totalPrice,
+    }));
     setEditedPayments(updatedPayments);
     onPaymentsChange(updatedPayments);
-  };
+  }, [totalPrice]);
 
-  const handleDeletePayment = (index: number) => {
-    const updatedPayments = editedPayments.filter((_, i) => i !== index);
+  const handleDateChange = (
+    index: number,
+    field: 'PaymentDate' | 'PaymentPhase',
+    value: string,
+  ) => {
+    const updatedPayments = [...editedPayments];
+    updatedPayments[index][field] = value;
     setEditedPayments(updatedPayments);
     onPaymentsChange(updatedPayments);
   };
 
   const calculateTotalPercents = () => {
-    return editedPayments.reduce((total, payment) => total + parseFloat(payment.Percents), 0);
+    return editedPayments.reduce(
+      (total, payment) => total + payment.Percents,
+      0,
+    );
   };
 
   const calculateTotalPrice = () => {
-    return editedPayments.reduce((total, payment) => total + ((parseFloat(payment.Percents) / 100) * totalPrice), 0);
+    return editedPayments.reduce(
+      (total, payment) =>
+        total + (payment.Percents / 100) * totalPrice,
+      0,
+    );
   };
 
   return (
@@ -49,114 +72,87 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
       <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center font-semibold">Mô tả</th>
-            <th className="px-4 py-2 border text-center font-semibold">Phần trăm</th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Mô tả
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Phần trăm
+            </th>
             <th className="px-4 py-2 border text-center font-semibold">Giá</th>
-            <th className="px-4 py-2 border text-center font-semibold">Đơn vị</th>
-            <th className="px-4 py-2 border text-center font-semibold">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center font-semibold">Giai đoạn thanh toán</th>
-            {isEditing && <th className="px-4 py-2 border text-center"></th>}
+            <th className="px-4 py-2 border text-center font-semibold">
+              Đơn vị
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Ngày thanh toán
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Giai đoạn thanh toán
+            </th>
           </tr>
         </thead>
         <tbody>
           {editedPayments.map((payment, index) => (
             <tr key={payment.PaymentId} className="hover:bg-gray-50">
               <td className="px-4 py-2 border text-center">
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={payment.Description}
-                    onChange={(e) => {
-                      const updatedPayments = [...editedPayments];
-                      updatedPayments[index].Description = e.target.value;
-                      setEditedPayments(updatedPayments);
-                      onPaymentsChange(updatedPayments);
-                    }}
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  payment.Description
-                )}
+                {payment.Description}
               </td>
               <td className="px-4 py-2 border text-center">
-                {isEditing ? (
-                  <input
-                    type="number"
-                    value={payment.Percents}
-                    onChange={(e) =>
-                      handlePercentChange(index, parseFloat(e.target.value))
-                    }
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : (
-                  `${payment.Percents}%`
-                )}
+                {`${payment.Percents}%`}
               </td>
               <td className="px-4 py-2 border text-center">
-                {((parseFloat(payment.Percents) / 100) * totalPrice).toLocaleString()} {payment.Unit}
+                {(
+                  (payment.Percents / 100) *
+                  totalPrice
+                ).toLocaleString()}{' '}
+                {payment.Unit}
               </td>
               <td className="px-4 py-2 border text-center">{payment.Unit}</td>
               <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
                     type="date"
-                    value={
-                      new Date(payment.PaymentDate).toISOString().split('T')[0]
+                    ref={(el) => (dateRefs.current[index] = el)}
+                    value={payment.PaymentDate || ''}
+                    min={today}
+                    onChange={(e) =>
+                      handleDateChange(index, 'PaymentDate', e.target.value)
                     }
-                    onChange={(e) => {
-                      const updatedPayments = [...editedPayments];
-                      updatedPayments[index].PaymentDate = new Date(
-                        e.target.value,
-                      ).toISOString();
-                      setEditedPayments(updatedPayments);
-                      onPaymentsChange(updatedPayments);
-                    }}
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  new Date(payment.PaymentDate).toLocaleDateString()
+                  payment.PaymentDate ? new Date(payment.PaymentDate).toLocaleDateString() : ''
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
                     type="date"
-                    value={
-                      new Date(payment.PaymentPhase).toISOString().split('T')[0]
+                    ref={(el) =>
+                      (dateRefs.current[index + editedPayments.length] = el)
                     }
-                    onChange={(e) => {
-                      const updatedPayments = [...editedPayments];
-                      updatedPayments[index].PaymentPhase = new Date(
-                        e.target.value,
-                      ).toISOString();
-                      setEditedPayments(updatedPayments);
-                      onPaymentsChange(updatedPayments);
-                    }}
+                    value={payment.PaymentPhase || ''}
+                    min={today}
+                    onChange={(e) =>
+                      handleDateChange(index, 'PaymentPhase', e.target.value)
+                    }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : (
-                  new Date(payment.PaymentPhase).toLocaleDateString()
+                  payment.PaymentPhase ? new Date(payment.PaymentPhase).toLocaleDateString() : ''
                 )}
               </td>
-              {isEditing && (
-                <td className="px-4 py-2 border text-center">
-                  <button
-                    onClick={() => handleDeletePayment(index)}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <FontAwesomeIcon icon={faTrash} className="w-4 h-4" />
-                  </button>
-                </td>
-              )}
             </tr>
           ))}
           <tr className="bg-gray-200">
-            <td className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
             <td className="px-4 py-2 border text-center font-bold">
               {calculateTotalPercents()}%
             </td>
             <td className="px-4 py-2 border text-center font-bold">
-              {calculateTotalPrice().toLocaleString()} {editedPayments[0]?.Unit || ''}
+              {calculateTotalPrice().toLocaleString()}{' '}
+              {editedPayments[0]?.Unit || ''}
             </td>
             <td colSpan={4} className="px-4 py-2 border text-center"></td>
           </tr>

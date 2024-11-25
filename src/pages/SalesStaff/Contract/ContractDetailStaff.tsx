@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getContractDesignById, signContractCompletion } from '../../../api/Contract/ContractApi';
+import {
+  getContractDesignById,
+  signContractCompletion,
+} from '../../../api/Contract/ContractApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
   FaFileDownload,
@@ -19,10 +22,12 @@ import {
   FaUpload,
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
+import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
 
 const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
-  const [contractDetail, setContractDetail] = useState<any | null>(null);
+  const [contractDetail, setContractDetail] =
+    useState<ContractDesignResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   useEffect(() => {
@@ -70,8 +75,8 @@ const ContractDetailStaff = () => {
 
   const statusMap: { [key: string]: string } = {
     Processing: 'Đang xử lý',
-    Created: 'Đã tạo hợp đồng',
     Completed: 'Hoàn thành',
+    Finished: 'Đã thanh toán',
     Ended: 'Chấm dứt hợp đồng',
   };
 
@@ -179,21 +184,41 @@ const ContractDetailStaff = () => {
               <FaFileDownload className="inline-block mr-1" /> Tải xuống
             </a>
           </div>
+          <div className="mb-4 text-lg flex items-center">
+            <FaInfoCircle className="mr-2" />
+            <span className="font-semibold">Mã số thuế:</span>
+            <span className="text-gray-700 ml-2">
+              {contractDetail.TaxCode || ''}
+            </span>
+          </div>
           <div className="mb-4 col-span-full text-lg flex items-center">
             <FaStickyNote className="mr-2" />
             <span className="font-semibold">Ghi chú:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.Note || 'Không có ghi chú'}
+              {contractDetail.Note || ''}
             </span>
           </div>
+          {contractDetail.Quotation.File !== 'Không có file' && (
+            <div className="mb-4 text-lg flex items-center">
+              <FaInfoCircle className="mr-2" />
+              <span className="font-semibold">Báo giá chi tiết:</span>
+              <a
+                href={contractDetail.Quotation.File}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
+            </div>
+          )}
+        </div>
+
+        {contractDetail.Status === 'Processing' && (
           <div className="mb-4 text-lg flex items-center">
             <FaUpload className="mr-2" />
             <span className="font-semibold">Tải lên Hợp đồng đã ký:</span>
-            <input
-              type="file"
-              onChange={handleFileChange}
-              className="ml-2"
-            />
+            <input type="file" onChange={handleFileChange} className="ml-2" />
             <button
               onClick={handleUpload}
               className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
@@ -201,6 +226,42 @@ const ContractDetailStaff = () => {
               Tải lên
             </button>
           </div>
+        )}
+
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-4">Thanh toán đợt</h3>
+          <table className="min-w-full bg-white border border-gray-200">
+            <thead>
+              <tr>
+                <th className="px-4 py-2 border text-center">Đợt</th>
+                <th className="px-4 py-2 border text-center">Mô tả</th>
+                <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">Hóa đơn</th>
+              </tr>
+            </thead>
+            <tbody>
+              {contractDetail.BatchPayment.map((batch) => (
+                <tr key={batch.NumberOfBatch} className="text-center">
+                  <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
+                  <td className="px-4 py-2 border">{batch.Description}</td>
+                  <td className="px-4 py-2 border">
+                    {batch.Price} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {batch.InvoiceImage !== 'Hình ảnh chuyển khoản chưa có' ? (
+                      <img
+                        src={batch.InvoiceImage}
+                        alt={`Invoice for ${batch.Description}`}
+                        className="w-16 h-16 object-cover mx-auto"
+                      />
+                    ) : (
+                      'Chưa có hóa đơn'
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
     </>

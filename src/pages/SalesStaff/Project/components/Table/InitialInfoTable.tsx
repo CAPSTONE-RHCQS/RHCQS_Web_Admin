@@ -38,9 +38,9 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     Processing: '#0000FF',
     Reviewing: '#FFD700',
     Approved: '#008000',
-    Rejected: '#FF0000',
     Finalized: '#4B0082',
-    Canceled: '#808080',
+    Rejected: '#FF0000',
+    Ended: '#808080',
   };
 
   const statusLabelMap: { [key: string]: string } = {
@@ -48,9 +48,9 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     Processing: 'Đang xử lý',
     Reviewing: 'Chờ xác nhận từ quản lý',
     Approved: 'Đã xác nhận',
-    Rejected: 'Từ chối báo giá SB',
     Finalized: 'Đã hoàn thành',
-    Canceled: 'Đã đóng',
+    Rejected: 'Từ chối báo giá SB',
+    Ended: 'Đã đóng',
   };
 
   const getStatusStyle = (status: string) => {

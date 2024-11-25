@@ -90,10 +90,22 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   };
 
   const roleMapping: { [key: string]: { name: string; color: string } } = {
-    '9959ce96-de26-40a7-b8a7-28a704062e89': { name: 'Sales Staff', color: 'bg-blue-500' },
-    '7af0d75e-1157-48b4-899d-3196deed5fad': { name: 'Design Staff', color: 'bg-pink-500' },
-    'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': { name: 'Manager', color: 'bg-green-500' },
-    '789dd57d-0f75-40d1-8366-ef6ab582efc8': { name: 'Customer', color: 'bg-yellow-500' },
+    '9959ce96-de26-40a7-b8a7-28a704062e89': {
+      name: 'Nhân viên báo giá',
+      color: 'bg-blue-500',
+    },
+    '7af0d75e-1157-48b4-899d-3196deed5fad': {
+      name: 'Nhân viên thiết kế',
+      color: 'bg-pink-500',
+    },
+    'a3bb42ca-de7c-4c9f-8f58-d8175f96688c': {
+      name: 'Quản lý',
+      color: 'bg-green-500',
+    },
+    '789dd57d-0f75-40d1-8366-ef6ab582efc8': {
+      name: 'Khách hàng',
+      color: 'bg-yellow-500',
+    },
   };
 
   return (
@@ -151,7 +163,11 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                 </label>
                 <label>
                   <strong>Vai trò:</strong>
-                  <div className={`p-2 rounded ${roleMapping[editedAccount.RoleId]?.color || 'bg-gray-500'}`}>
+                  <div
+                    className={`p-2 rounded ${
+                      roleMapping[editedAccount.RoleId]?.color || 'bg-gray-500'
+                    }`}
+                  >
                     {roleMapping[editedAccount.RoleId]?.name || 'Unknown Role'}
                   </div>
                 </label>
@@ -209,7 +225,11 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
                 />
                 <p>
                   <strong>Vai trò:</strong>
-                  <span className={`p-2 rounded ${roleMapping[account.RoleId]?.color || 'bg-gray-500'}`}>
+                  <span
+                    className={`p-2 rounded ${
+                      roleMapping[account.RoleId]?.color || 'bg-gray-500'
+                    }`}
+                  >
                     {roleMapping[account.RoleId]?.name || 'Unknown Role'}
                   </span>
                 </p>

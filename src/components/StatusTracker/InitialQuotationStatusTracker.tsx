@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  FaSpinner,
-  FaClipboardCheck,
-  FaFileContract,
-  FaHourglassHalf,
-  FaCheck,
-  FaBan,
-} from 'react-icons/fa';
+import { FaSpinner, FaClipboardCheck, FaCheck, FaBan } from 'react-icons/fa';
 
 interface InitialQuotationStatusTrackerProps {
   currentStatus: string;
@@ -17,8 +10,8 @@ const statuses = [
   { label: 'Đang xử lý', icon: <FaSpinner /> },
   { label: 'Chờ xác nhận từ quản lý', icon: <FaClipboardCheck /> },
   { label: 'Đã xác nhận', icon: <FaCheck /> },
-  { label: 'Từ chối báo giá SB', icon: <FaBan /> },
   { label: 'Đã hoàn thành', icon: <FaCheck /> },
+  { label: 'Từ chối báo giá SB', icon: <FaBan /> },
   { label: 'Đã đóng', icon: <FaBan /> },
 ];
 

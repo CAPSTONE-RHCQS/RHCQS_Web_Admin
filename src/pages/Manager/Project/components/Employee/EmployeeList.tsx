@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EmployeeCard from './EmployeeCard';
-import { getAccountsByRoleId } from '../../../../../api/Account/AccountApi';
+import { getAvailableSalesStaff } from '../../../../../api/Account/AccountApi';
 import { assignProject } from '../../../../../api/Project/ProjectApi';
 import {
   FaArrowLeft,
@@ -47,11 +47,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   useEffect(() => {
     const fetchEmployees = async () => {
       try {
-        const data = await getAccountsByRoleId(
-          '9959CE96-DE26-40A7-B8A7-28A704062E89',
-          page,
-          size,
-        );
+        const data = await getAvailableSalesStaff(page, size);
         const formattedEmployees = data.Items.map((item: any) => ({
           id: item.Id,
           avatar: item.ImageUrl,
@@ -126,19 +122,23 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
       <h2 className="text-2xl font-bold mb-4 text-center text-primary">
         Chọn Nhân Viên
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {employees.map((employee) => (
-          <EmployeeCard
-            key={employee.id}
-            avatar={employee.avatar}
-            name={truncateName(employee.name, 10)}
-            roles={employee.roles}
-            phone={employee.phone}
-            onSelect={() => handleSelect(employee.id)}
-            isSelected={selectedEmployeeId === employee.id}
-          />
-        ))}
-      </div>
+      {employees.length === 0 ? (
+        <p className="text-center text-gray-500">Hiện tại chưa có nhân viên...</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {employees.map((employee) => (
+            <EmployeeCard
+              key={employee.id}
+              avatar={employee.avatar}
+              name={truncateName(employee.name, 10)}
+              roles={employee.roles}
+              phone={employee.phone}
+              onSelect={() => handleSelect(employee.id)}
+              isSelected={selectedEmployeeId === employee.id}
+            />
+          ))}
+        </div>
+      )}
       <div className="mt-4 flex justify-between items-center">
         <button
           className={`px-4 py-2 rounded transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 ${

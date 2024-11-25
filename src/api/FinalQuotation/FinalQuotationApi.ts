@@ -1,6 +1,5 @@
 import requestWebRHCQS from '../../utils/axios';
 import { FinalQuotationResponse } from '../../types/FinalQuotationTypes';
-import axios from 'axios';
 import { FinalQuotationRequest } from '../../types/FinalQuotationRequestTypes';
 
 export const getFinalQuotation = async (
@@ -52,7 +51,6 @@ export async function approveFinalQuotation(
         },
       },
     );
-    console.log('Approval successful:', response.data);
   } catch (error) {
     console.error('Error approving final quotation:', error);
     throw new Error('Failed to approve final quotation');

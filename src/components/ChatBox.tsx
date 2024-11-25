@@ -15,7 +15,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose, accountName, note }) => {
     name: accountName,
   };
 
-  // Kích thước mặc định của ChatBox
   const defaultWidth = 320;
   const defaultHeight = 400;
 
@@ -31,6 +30,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({ onClose, accountName, note }) => {
       minHeight={200}
       bounds="window"
       className="bg-primary text-white rounded-t-lg shadow-lg flex flex-col"
+      style={{ zIndex: 1000 }}
     >
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-2 bg-primaryDarkGreen rounded-t-lg cursor-move">

@@ -125,6 +125,7 @@ const ProjectListManager = () => {
   const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
+    setCurrentPage(1);
   };
 
   return (

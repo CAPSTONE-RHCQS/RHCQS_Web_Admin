@@ -4,6 +4,7 @@ import { FaDownload, FaShareAlt } from 'react-icons/fa';
 interface ButtonGroupProps {
   isEditing: boolean;
   isSaving: boolean;
+  isFinalized: boolean;
   handleSave: () => void;
   handleEditToggle: () => void;
   handleDownload: () => void;
@@ -13,6 +14,7 @@ interface ButtonGroupProps {
 const ButtonGroup: React.FC<ButtonGroupProps> = ({
   isEditing,
   isSaving,
+  isFinalized,
   handleSave,
   handleEditToggle,
   handleDownload,
@@ -20,21 +22,25 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 }) => {
   return (
     <div className="flex justify-end space-x-2">
-      <button
-        onClick={handleEditToggle}
-        disabled={isSaving}
-        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-      >
-        {isEditing ? 'Hủy' : 'Chỉnh sửa'}
-      </button>
-      {isEditing && (
-        <button
-          onClick={handleSave}
-          disabled={isSaving}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-        >
-          {isSaving ? 'Đang lưu...' : 'Lưu'}
-        </button>
+      {!isFinalized && (
+        <>
+          <button
+            onClick={handleEditToggle}
+            disabled={isSaving}
+            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+          >
+            {isEditing ? 'Hủy' : 'Chỉnh sửa'}
+          </button>
+          {isEditing && (
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+            >
+              {isSaving ? 'Đang lưu...' : 'Lưu'}
+            </button>
+          )}
+        </>
       )}
       <button
         onClick={handleDownload}

@@ -25,6 +25,8 @@ export interface UtilityInfo {
   Id: string;
   Description: string;
   Coefficient: number;
+  Quantity: number | null;
+  UnitPrice: number;
   Price: number;
 }
 
@@ -35,6 +37,7 @@ export interface PromotionInfo {
 }
 
 export interface BatchPaymentInfo {
+  NumberOfBatch: number;
   PaymentId: string;
   Status: string;
   Description: string;
@@ -54,6 +57,7 @@ export interface InitialQuotationResponse {
   Area: number;
   TimeProcessing: number;
   TimeOthers: number;
+  TimeRough: number;
   OthersAgreement: string;
   InsDate: string;
   Status: string;
@@ -62,6 +66,7 @@ export interface InitialQuotationResponse {
   Note: string | null;
   TotalRough: number;
   TotalUtilities: number;
+  Discount: number;
   Unit: string;
   ReasonReject: string | null;
   PackageQuotationList: PackageQuotation;
@@ -89,6 +94,7 @@ export interface QuotationUtility {
   coefficient: number;
   price: number;
   description: string;
+  quantity: number | null;
 }
 
 export interface Promotion {
@@ -96,9 +102,12 @@ export interface Promotion {
 }
 
 export interface BatchPayment {
+  numberOfBatch: number;
   price: number;
-  percents: string;
+  percents: number;
   description: string;
+  paymentDate: string;
+  paymentPhase: string;
 }
 
 export interface UpdateInitialQuotationRequest {
@@ -106,6 +115,7 @@ export interface UpdateInitialQuotationRequest {
   address: string;
   versionPresent: number;
   projectId: string;
+  isSave: boolean;
   area: number;
   timeProcessing: number;
   timeRough: number;
@@ -116,6 +126,11 @@ export interface UpdateInitialQuotationRequest {
   items: Item[];
   packages: Package[];
   utilities: QuotationUtility[];
-  promotions: Promotion | null;
+  promotions: PromotionWithDiscount | null;
   batchPayments: BatchPayment[];
+}
+
+interface PromotionWithDiscount {
+  id: string;
+  discount: number;
 }

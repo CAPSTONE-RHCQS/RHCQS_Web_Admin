@@ -1,5 +1,9 @@
-import { CreateContractDesignRequest, PaymentBatch } from '../../types/ContractTypes';
+import {
+  CreateContractDesignRequest,
+  PaymentBatch,
+} from '../../types/ContractTypes';
 import requestWebRHCQS from '../../utils/axios';
+import { ContractDesignResponse } from '../../types/ContractResponseTypes';
 
 export const createContractDesign = async (
   data: CreateContractDesignRequest,
@@ -18,7 +22,9 @@ export const createContractDesign = async (
   }
 };
 
-export const getContractDesignById = async (contractId: string) => {
+export const getContractDesignById = async (
+  contractId: string,
+): Promise<ContractDesignResponse> => {
   try {
     const response = await requestWebRHCQS.get(
       `/contract/design/id?contractId=${contractId}`,
@@ -66,7 +72,7 @@ export const paymentContractDesign = async (paymentId: string, file: File) => {
     formData.append('files', file, file.name);
 
     const response = await requestWebRHCQS.put(
-      `/contract/design/confirm/completed?paymentId=${paymentId}`,
+      `/contract/design/confirm?paymentId=${paymentId}`,
       formData,
       {
         headers: {
@@ -91,7 +97,7 @@ export const paymentContractConstruction = async (
     formData.append('files', file, file.name);
 
     const response = await requestWebRHCQS.put(
-      `/contract/construction/sign/completed?paymentId=${paymentId}`,
+      `/contract/construction/confirm?paymentId=${paymentId}`,
       formData,
       {
         headers: {
@@ -106,18 +112,3 @@ export const paymentContractConstruction = async (
     throw error;
   }
 };
-
-export const getPaymentBatchesByProjectId = async (projectId: string): Promise<PaymentBatch[]> => {
-  try {
-    const response = await requestWebRHCQS.get(`/payment/batch/id?projectId=${projectId}`, {
-      headers: {
-        accept: 'text/plain',
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching payment batches by project ID:', error);
-    throw error;
-  }
-};
-

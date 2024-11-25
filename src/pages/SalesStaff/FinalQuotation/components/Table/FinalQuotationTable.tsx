@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { FinalQuotationItem } from '../../../../../types/FinalQuotationTypes';
+import {
+  FinalQuotationItem,
+  PackageQuotationList,
+} from '../../../../../types/FinalQuotationTypes';
 import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
 import { getLaborByName } from '../../../../../api/Labor/Labor';
 import { getMaterialByName } from '../../../../../api/Material/Material';
@@ -7,6 +10,8 @@ import {
   Construction,
   Labor,
   Material,
+  GetLaborByNameResponse,
+  GetMaterialByNameResponse,
 } from '../../../../../types/SearchContainNameTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -19,12 +24,14 @@ import {
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
+  quotationPackage: PackageQuotationList;
   onItemsChange: (updatedItems: FinalQuotationItem[]) => void;
   isEditing: boolean;
 }
 
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   items,
+  quotationPackage,
   onItemsChange,
   isEditing,
 }) => {
@@ -88,17 +95,29 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     try {
       const searchType = searchTypes[`${index}-${qItemIndex}`] || 'Labor';
-      let results;
-      if (searchType === 'Labor') {
-        results = await getLaborByName(name);
+      let results: GetLaborByNameResponse | GetMaterialByNameResponse;
+      const constructionType = updatedItems[index].Type;
+      const packageId =
+        constructionType === 'ROUGH'
+          ? quotationPackage.IdPackageRough
+          : constructionType === 'FINISHED'
+          ? quotationPackage.IdPackageFinished
+          : null;
+
+      if (packageId) {
+        if (searchType === 'Labor') {
+          results = await getLaborByName(name, packageId);
+        } else {
+          results = await getMaterialByName(name, packageId);
+        }
+        setSearchResults((prev) => ({
+          ...prev,
+          [`item-${index}-${qItemIndex}`]: results,
+        }));
+        setSelectedItemIndex(index);
       } else {
-        results = await getMaterialByName(name);
+        console.error('Invalid packageId:', packageId);
       }
-      setSearchResults((prev) => ({
-        ...prev,
-        [`item-${index}-${qItemIndex}`]: results,
-      }));
-      setSelectedItemIndex(index);
     } catch (error) {
       console.error('Error fetching data by name:', error);
     }
@@ -112,6 +131,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         ConstructionId: construction.Id,
         SubConstructionId: construction.SubConstructionId || null,
         ContructionName: construction.Name,
+        Type: construction.Type,
       };
       onItemsChange(updatedItems);
       setSearchResults((prev) => ({
@@ -174,17 +194,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   const calculateTotalPrices = (index: number, qItemIndex: number) => {
     const updatedItems = [...items];
     const quotationItem = updatedItems[index].QuotationItems[qItemIndex];
-    const coefficient = updatedItems[index].Coefficient || 1;
 
     quotationItem.TotalPriceLabor =
-      (quotationItem.UnitPriceLabor || 0) *
-      coefficient *
-      (quotationItem.Weight || 0);
+      (quotationItem.UnitPriceLabor || 0) * (quotationItem.Weight || 0);
 
     quotationItem.TotalPriceRough =
-      (quotationItem.UnitPriceRough || 0) *
-      coefficient *
-      (quotationItem.Weight || 0);
+      (quotationItem.UnitPriceRough || 0) * (quotationItem.Weight || 0);
 
     onItemsChange(updatedItems);
   };
@@ -210,8 +225,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     let totalLabor = 0;
     let totalRough = 0;
 
-    items.forEach(item => {
-      item.QuotationItems.forEach(quotationItem => {
+    items.forEach((item) => {
+      item.QuotationItems.forEach((quotationItem) => {
         totalLabor += quotationItem.TotalPriceLabor || 0;
         totalRough += quotationItem.TotalPriceRough || 0;
       });
@@ -463,7 +478,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                     <td className="px-4 py-2 border text-center">
                       <button
                         onClick={() => handleDeleteRow(index, qItemIndex)}
-                        className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300"
+                        className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full"
                       >
                         <FontAwesomeIcon icon={faTrash} />
                       </button>
@@ -474,7 +489,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             </React.Fragment>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={6} className="px-4 py-2 border text-center font-bold">Tổng cộng</td>
+            <td colSpan={6} className="px-4 py-2 border text-center font-bold">
+              Tổng cộng
+            </td>
             <td className="px-4 py-2 border text-center font-bold">
               {calculateColumnTotals().totalLabor.toLocaleString()} VNĐ
             </td>

@@ -2,6 +2,7 @@ export interface Construction {
   Id: string;
   SubConstructionId: string | null;
   Name: string;
+  Type: string;
   Price: number;
   Coefficient: number;
 }
@@ -13,6 +14,7 @@ export interface Utility {
   UtilityItemId: string;
   Name: string;
   Coefficient: number;
+  Quantity: number;
   UnitPrice: number;
 }
 
@@ -56,3 +58,16 @@ export interface Material {
 }
 
 export type GetMaterialByNameResponse = Material[];
+
+export interface Promotion {
+  Id: string;
+  Code: string;
+  Value: number;
+  InsDate: string;
+  StartTime: string;
+  Name: string;
+  ExpTime: string;
+  IsRunning: boolean;
+}
+
+export type GetPromotionByNameResponse = Promotion[];

@@ -16,9 +16,9 @@ const statusColorMap: { [key: string]: string } = {
 
 const statusLabelMap: { [key: string]: string } = {
   Processing: 'Đang xử lý',
-  Completed: 'Đã tạo hợp đồng',
+  Completed: 'Hoàn thành',
+  Finished: 'Đã thanh toán',
   Ended: 'Chấm dứt hợp đồng',
-  Finished: 'Hoàn thành',
 };
 
 const getStatusStyle = (status: string | null) => {

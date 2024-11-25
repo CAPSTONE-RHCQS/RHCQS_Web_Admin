@@ -45,9 +45,8 @@ const HouseDesignDetailManager: React.FC = () => {
       const designData = response.data;
       setDesignDetail(designData);
 
-      // Set the default selected version based on VersionPresent
       const defaultVersion = designData.Versions.find(
-        (version) => version.Version === designData.VersionPresent
+        (version) => version.Version === designData.VersionPresent,
       );
       if (defaultVersion) {
         setSelectedVersionId(defaultVersion.Id);
@@ -225,6 +224,45 @@ const HouseDesignDetailManager: React.FC = () => {
                     <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                       <a
                         href={version.FileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className=" hover:underline"
+                      >
+                        <FiFileText className="inline-block" />
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <h3 className="text-xl font-bold mt-6">Phụ thuộc vào phiên bản</h3>
+            <table className="w-full table-auto mt-4">
+              <thead>
+                <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tên phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Phiên bản
+                  </th>
+                  <th className="py-4 px-4 font-medium text-black dark:text-white">
+                    Tệp
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {designDetail.DependOnVersion.map((depend, index) => (
+                  <tr key={depend.HouseDesginVersionId}>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {depend.HouseDesignVersionName}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      {depend.HouseDesignVersion}
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <a
+                        href={depend.FileDesignVersion}
                         target="_blank"
                         rel="noopener noreferrer"
                         className=" hover:underline"

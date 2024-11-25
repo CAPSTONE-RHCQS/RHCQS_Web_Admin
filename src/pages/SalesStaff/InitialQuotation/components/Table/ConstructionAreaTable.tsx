@@ -16,7 +16,7 @@ interface ConstructionAreaTableProps {
     index: number,
     field: keyof TableRow,
   ) => void;
-  totalDienTich: number;
+  totalArea: number;
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>;
 }
 
@@ -24,7 +24,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
   tableData,
   isEditing,
   handleInputChange,
-  totalDienTich,
+  totalArea,
   setTableData,
 }) => {
   const [searchResults, setSearchResults] =
@@ -124,22 +124,10 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 />
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={item.heSo}
-                  onChange={(e) => handleInputChange(e, index, 'heSo')}
-                  className="w-full text-center"
-                  disabled={true}
-                />
+                {item.heSo}
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={item.dienTich}
-                  onChange={(e) => handleInputChange(e, index, 'dienTich')}
-                  className="w-full text-center"
-                  disabled={true}
-                />
+                {item.dienTich}
               </td>
               <td className="px-4 py-2 border text-center">{item.donVi}</td>
               {isEditing && (
@@ -162,7 +150,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
             </td>
             <td className="px-4 py-2 border text-center">
               <strong>
-                {isNaN(totalDienTich) ? '0' : totalDienTich.toString()}
+                {isNaN(totalArea) ? '0' : totalArea.toString()} m²
               </strong>
             </td>
             <td className="px-4 py-2 border text-center">

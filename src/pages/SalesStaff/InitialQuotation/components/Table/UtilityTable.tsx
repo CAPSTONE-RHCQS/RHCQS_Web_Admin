@@ -8,39 +8,62 @@ import { Utility } from '../../../../../types/SearchContainNameTypes';
 
 interface UtilityTableProps {
   utilityInfos: QuotationUtility[];
+  totalRough: number;
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>;
   isEditing: boolean;
+  onPriceChange: (prices: number[]) => void;
+  quantities: (number | null)[];
+  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
 const convertToQuotationUtility = (utility: Utility): QuotationUtility => {
   return {
     utilitiesItemId: utility.UtilityItemId || utility.UtilitySectionId,
     coefficient: utility.Coefficient,
-    price: utility.UnitPrice,
+    price: utility.UnitPrice || 0,
+    quantity: utility.Quantity || null,
     description: utility.Name,
   };
 };
 
 const UtilityTable: React.FC<UtilityTableProps> = ({
   utilityInfos,
+  totalRough,
   setUtilityInfos,
   isEditing,
+  onPriceChange,
+  quantities,
+  setQuantities,
 }) => {
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [totalUtilityCost, setTotalUtilityCost] = useState<number>(0);
 
   useEffect(() => {
-    const totalCost = utilityInfos.reduce(
-      (total, utility) => total + (utility.price || 0),
-      0,
-    );
+    const totalCost = utilityInfos.reduce((total, utility, index) => {
+      const quantity = quantities[index] || 0;
+      return (
+        total +
+        (utility.coefficient === 0
+          ? utility.price * quantity
+          : utility.coefficient * totalRough)
+      );
+    }, 0);
     setTotalUtilityCost(totalCost);
-  }, [utilityInfos]);
+
+    const prices = utilityInfos.map((utility, index) => {
+      const quantity = quantities[index] || 0;
+      return utility.coefficient === 0
+        ? utility.price * quantity
+        : utility.coefficient * totalRough;
+    });
+    onPriceChange(prices);
+  }, [utilityInfos, quantities, totalRough, onPriceChange]);
 
   const handleDeleteRow = (index: number) => {
     const newData = utilityInfos.filter((_, i) => i !== index);
     setUtilityInfos(newData);
+    setQuantities(quantities.filter((_, i) => i !== index));
   };
 
   const handleSearchAndEdit = async (value: string, index: number) => {
@@ -82,13 +105,21 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
     setUtilityInfos(newData);
   };
 
+  const handleQuantityChange = (index: number, value: number) => {
+    const newQuantities = [...quantities];
+    newQuantities[index] = value || null;
+    setQuantities(newQuantities);
+  };
+
   return (
     <div className="overflow-x-auto mb-4">
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
             <th className="px-4 py-2 border text-center">Mô tả</th>
-            <th className="px-4 py-2 border text-center">Hệ số</th>
+            <th className="px-2 py-2 border text-center w-20">Hệ số</th>
+            <th className="px-2 py-2 border text-center w-24">Số lượng</th>
+            <th className="px-4 py-2 border text-center">Đơn giá</th>
             <th className="px-4 py-2 border text-center">Giá</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
@@ -118,31 +149,39 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                   </ul>
                 )}
               </td>
-              <td className="px-4 py-2 border text-center">
-                <input
-                  type="text"
-                  value={utility.coefficient.toString()}
-                  onChange={(e) =>
-                    handleEditUtility(
-                      index,
-                      'coefficient',
-                      parseFloat(e.target.value),
-                    )
-                  }
-                  className="w-full text-center"
-                  disabled={true}
-                />
+              <td className="px-2 py-2 border text-center w-20">
+                {utility.coefficient !== 0
+                  ? utility.coefficient.toString()
+                  : ''}
+              </td>
+              <td className="px-2 py-2 border text-center w-24">
+                {utility.coefficient === 0 ? (
+                  <input
+                    type="number"
+                    min="0"
+                    value={quantities[index] || ''}
+                    onChange={(e) =>
+                      handleQuantityChange(index, Number(e.target.value))
+                    }
+                    className="w-full text-center"
+                    disabled={!isEditing}
+                  />
+                ) : (
+                  <span>-</span>
+                )}
               </td>
               <td className="px-4 py-2 border text-center">
-                <input
-                  type="number"
-                  value={utility.price}
-                  onChange={(e) =>
-                    handleEditUtility(index, 'price', e.target.value)
-                  }
-                  className="w-full text-center"
-                  disabled={true}
-                />
+                <span>
+                  {utility.coefficient === 0
+                    ? utility.price.toLocaleString()
+                    : ''}
+                </span>
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {(utility.coefficient === 0
+                  ? utility.price * (quantities[index] || 0)
+                  : utility.coefficient * totalRough
+                ).toLocaleString('vi-VN')}
               </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
@@ -159,11 +198,13 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
             </tr>
           ))}
           <tr>
-            <td className="px-4 py-2 border text-center" colSpan={2}>
+            <td className="px-4 py-2 border text-center" colSpan={4}>
               <strong>Tổng chi phí tiện ích</strong>
             </td>
             <td className="px-4 py-2 border text-center">
-              <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
+              <strong>{`${totalUtilityCost.toLocaleString(
+                'vi-VN',
+              )} VNĐ`}</strong>
             </td>
           </tr>
         </tbody>

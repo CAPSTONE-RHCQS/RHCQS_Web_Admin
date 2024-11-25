@@ -27,7 +27,7 @@ const SupplierList: React.FC = () => {
     Email: '',
     ConstractPhone: '',
     ImgUrl: null,
-    Deflag: false,
+    Deflag: true,
     ShortDescription: '',
     Description: '',
     Code: '',
@@ -65,6 +65,7 @@ const SupplierList: React.FC = () => {
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
+      setEditModalOpen(false);
     }
   };
 
