@@ -15,7 +15,7 @@ export interface Utility {
   Name: string;
   Coefficient: number;
   Quantity: number;
-  UnitPrice: number | null;
+  UnitPrice: number;
 }
 
 export type GetUtilityByNameResponse = Utility[];

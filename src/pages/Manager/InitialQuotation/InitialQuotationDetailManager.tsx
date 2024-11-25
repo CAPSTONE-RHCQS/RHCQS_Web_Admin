@@ -14,6 +14,7 @@ import {
 import {
   BatchPaymentInfo,
   InitialQuotationResponse,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import ChatBox from '../../../components/ChatBox';
@@ -37,7 +38,7 @@ const InitialQuotationDetailManager = () => {
   const [paymentSchedule, setPaymentSchedule] = useState<BatchPaymentInfo[]>(
     [],
   );
-  const [utilityInfos, setUtilityInfos] = useState<any[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,6 +49,7 @@ const InitialQuotationDetailManager = () => {
     if (id) {
       try {
         const data: InitialQuotationResponse = await getInitialQuotation(id);
+        console.log('fetch', data);
         setQuotationData(data);
         const updatedTableData = data.ItemInitial.map((item, index) => {
           const coefficient =
@@ -66,10 +68,12 @@ const InitialQuotationDetailManager = () => {
         setTableData(updatedTableData);
 
         const totalRough = data.TotalRough;
+        const area = data.Area;
         const totalUtilities = data.TotalUtilities;
         const discount: number | null | undefined = data.PromotionInfo?.Value;
 
-        let giaTriHopDong = totalRough + totalUtilities - (discount ?? 0);
+        let giaTriHopDong =
+          totalRough + totalUtilities - (discount ?? 0) * area;
 
         if (data.PromotionInfo && data.PromotionInfo.Value !== null) {
           setPromotionInfo(data.PromotionInfo);
@@ -120,6 +124,7 @@ const InitialQuotationDetailManager = () => {
   );
 
   const thanhTien = totalDienTich * donGia;
+  const discount = promotionInfo.Value * quotationData.Area;
 
   const handleDownload = () => {
     alert('Tải về hợp đồng');
@@ -160,8 +165,12 @@ const InitialQuotationDetailManager = () => {
     if (!id) return;
     try {
       await approveInitialQuotation(id, { type, reason });
-      console.log('Quotation approved/rejected successfully');
-      toast.success('Phê duyệt thành công!');
+      if (type === 'Accepted') {
+        toast.success('Chấp nhận báo giá thành công!');
+      } else if (type === 'Rejected') {
+        toast.success('Từ chối báo giá thành công!');
+      }
+
       handleCloseModal();
       fetchQuotationData();
     } catch (error: any) {
@@ -338,6 +347,8 @@ const InitialQuotationDetailManager = () => {
               <tr>
                 <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Hệ số</th>
+                <th className="px-4 py-2 border text-center">Số lượng</th>
+                <th className="px-4 py-2 border text-center">Đơn Giá</th>
                 <th className="px-4 py-2 border text-center">Giá</th>
               </tr>
             </thead>
@@ -348,15 +359,23 @@ const InitialQuotationDetailManager = () => {
                     {utility.Description}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {utility.Coefficient}
+                    {utility.Coefficient !== 0 ? utility.Coefficient : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {utility.Price.toLocaleString()} VNĐ
+                    {utility.Quantity !== 0 || null ? utility.Quantity : ''}
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {utility.UnitPrice !== 0
+                      ? utility.UnitPrice.toLocaleString()
+                      : ''}
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {utility.Price.toLocaleString()}
                   </td>
                 </tr>
               ))}
               <tr>
-                <td className="px-4 py-2 border text-center" colSpan={2}>
+                <td className="px-4 py-2 border text-center" colSpan={4}>
                   <strong>Tổng chi phí tiện ích</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
@@ -381,6 +400,7 @@ const InitialQuotationDetailManager = () => {
                     Tên khuyến mãi
                   </th>
                   <th className="px-4 py-2 border text-center">Giá trị</th>
+                  <th className="px-4 py-2 border text-center">Tổng giảm</th>
                 </tr>
               </thead>
               <tbody>
@@ -392,11 +412,14 @@ const InitialQuotationDetailManager = () => {
                     <td className="px-4 py-2 border text-center">
                       {promotionInfo.Value.toLocaleString()} VNĐ
                     </td>
+                    <td className="px-4 py-2 border text-center">
+                      {discount.toLocaleString()} VNĐ
+                    </td>
                   </tr>
                 ) : (
                   <tr>
-                    <td className="px-4 py-2 border text-center" colSpan={2}>
-                      Không có khuyến mãi
+                    <td className="px-4 py-2 border text-center " colSpan={3}>
+                      <span className="text-red-600">Không có khuyến mãi</span>
                     </td>
                   </tr>
                 )}
@@ -446,7 +469,8 @@ const InitialQuotationDetailManager = () => {
                       Khuyến mãi ({promotionInfo.Name})
                     </td>
                     <td className="px-4 py-2 border text-center">
-                      -{promotionInfo.Value.toLocaleString()} VNĐ
+                      -{discount.toLocaleString()}
+                      VNĐ
                     </td>
                     <td className="px-4 py-2 border text-center">VNĐ</td>
                   </tr>

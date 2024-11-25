@@ -26,6 +26,7 @@ export interface UtilityInfo {
   Description: string;
   Coefficient: number;
   Quantity: number | null;
+  UnitPrice: number;
   Price: number;
 }
 
