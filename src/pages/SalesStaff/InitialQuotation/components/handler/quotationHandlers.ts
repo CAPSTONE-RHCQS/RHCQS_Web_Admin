@@ -13,16 +13,6 @@ import {
 import { toast } from 'react-toastify';
 import { TableRow } from '../types';
 
-const convertToQuotationUtility = (utility: any): QuotationUtility => {
-  return {
-    utilitiesItemId: utility.Id,
-    coefficient: utility.Coefficient,
-    price: utility.Price,
-    quantity: utility.Quantity,
-    description: utility.Description,
-  };
-};
-
 export const fetchQuotationData = async (
   id: string | undefined,
   setQuotationData: React.Dispatch<
@@ -31,7 +21,7 @@ export const fetchQuotationData = async (
   setVersion: React.Dispatch<React.SetStateAction<number | null>>,
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
   setBatchPayment: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>,
-  setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
+  setUtilityInfos: React.Dispatch<React.SetStateAction<UtilityInfo[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>,
@@ -72,7 +62,7 @@ export const fetchQuotationData = async (
       }
 
       setBatchPayment(data.BatchPaymentInfos);
-      setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
+      setUtilityInfos(data.UtilityInfos);
       setDonGia(data.PackageQuotationList.UnitPackageRough);
       setQuantities(
         data.UtilityInfos.map((utility: UtilityInfo) => utility.Quantity),
@@ -88,7 +78,7 @@ export const handleSave = async (
   tableData: TableRow[],
   version: number | null,
   paymentSchedule: BatchPaymentInfo[],
-  utilityInfos: QuotationUtility[],
+  utilityInfos: UtilityInfo[],
   promotionInfo: PromotionInfo | null,
   giaTriHopDong: number,
   totalArea: number,
@@ -183,15 +173,17 @@ export const handleSave = async (
         : []),
     ],
     utilities: utilityInfos.map((utility, index) => ({
-      utilitiesItemId: utility.utilitiesItemId,
-      coefficient: utility.coefficient,
+      utilitiesItemId: utility.Id,
+      coefficient: utility.Coefficient,
       price: utilityPrices[index],
-      quantity: utility.quantity,
-      description: utility.description,
+      quantity: utility.Quantity,
+      description: utility.Description,
     })),
-    promotions: isInvalidPromotion
-      ? null
-      : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
+    promotions:
+      isInvalidPromotion ||
+      (promotionInfo.Id === '' && promotionInfo.Value === 0)
+        ? null
+        : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
     batchPayments: paymentSchedule.map((payment) => ({
       numberOfBatch: payment.NumberOfBatch,
       price: (parseFloat(payment.Percents) / 100) * giaTriHopDong,

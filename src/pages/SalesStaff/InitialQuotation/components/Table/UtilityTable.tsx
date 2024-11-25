@@ -5,26 +5,18 @@ import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { getUtilityByName } from '../../../../../api/Utility/UtilityApi';
 import { QuotationUtility } from '../../../../../types/InitialQuotationTypes';
 import { Utility } from '../../../../../types/SearchContainNameTypes';
+import { UtilityInfo } from '../../../../../types/FinalQuotationTypes';
 
 interface UtilityTableProps {
-  utilityInfos: QuotationUtility[];
+  utilityInfos: UtilityInfo[];
   totalRough: number;
-  setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>;
+  setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
   isEditing: boolean;
   onPriceChange: (prices: number[]) => void;
   quantities: (number | null)[];
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
+  setTotalUtilities: React.Dispatch<React.SetStateAction<number>>;
 }
-
-const convertToQuotationUtility = (utility: Utility): QuotationUtility => {
-  return {
-    utilitiesItemId: utility.UtilityItemId || utility.UtilitySectionId,
-    coefficient: utility.Coefficient,
-    price: utility.UnitPrice || 0,
-    quantity: utility.Quantity || null,
-    description: utility.Name,
-  };
-};
 
 const UtilityTable: React.FC<UtilityTableProps> = ({
   utilityInfos,
@@ -34,6 +26,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   onPriceChange,
   quantities,
   setQuantities,
+  setTotalUtilities,
 }) => {
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
@@ -44,21 +37,22 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
       const quantity = quantities[index] || 0;
       return (
         total +
-        (utility.coefficient === 0
-          ? utility.price * quantity
-          : utility.coefficient * totalRough)
+        (utility.Coefficient === 0
+          ? utility.UnitPrice * quantity
+          : utility.Coefficient * totalRough)
       );
     }, 0);
     setTotalUtilityCost(totalCost);
+    setTotalUtilities(totalCost);
 
     const prices = utilityInfos.map((utility, index) => {
       const quantity = quantities[index] || 0;
-      return utility.coefficient === 0
-        ? utility.price * quantity
-        : utility.coefficient * totalRough;
+      return utility.Coefficient === 0
+        ? utility.Price * quantity
+        : utility.Coefficient * totalRough;
     });
     onPriceChange(prices);
-  }, [utilityInfos, quantities, totalRough, onPriceChange]);
+  }, [utilityInfos, quantities, totalRough, onPriceChange, setTotalUtilities]);
 
   const handleDeleteRow = (index: number) => {
     const newData = utilityInfos.filter((_, i) => i !== index);
@@ -83,12 +77,14 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
       const newData = utilityInfos.map((info, index) =>
         index === selectedRowIndex
           ? {
-              ...convertToQuotationUtility(utility),
-              description: utility.Name,
+              Id: utility.UtilityItemId || utility.UtilitySectionId,
+              Description: utility.Name,
+              Coefficient: utility.Coefficient,
+              UnitPrice: utility.UnitPrice,
             }
           : info,
       );
-
+      console.log('new', newData);
       setUtilityInfos(newData);
       setSearchResults([]);
       setSelectedRowIndex(null);
@@ -130,7 +126,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               <td className="px-4 py-2 border text-left">
                 <input
                   type="text"
-                  value={utility.description}
+                  value={utility.Description}
                   onChange={(e) => handleSearchAndEdit(e.target.value, index)}
                   className="w-full text-left"
                   disabled={!isEditing}
@@ -150,12 +146,10 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                 )}
               </td>
               <td className="px-2 py-2 border text-center w-20">
-                {utility.coefficient !== 0
-                  ? utility.coefficient.toString()
-                  : ''}
+                {utility.Coefficient !== 0 ? utility.Coefficient : ''}
               </td>
               <td className="px-2 py-2 border text-center w-24">
-                {utility.coefficient === 0 ? (
+                {utility.Coefficient === 0 ? (
                   <input
                     type="number"
                     min="0"
@@ -167,21 +161,18 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                     disabled={!isEditing}
                   />
                 ) : (
-                  <span>-</span>
+                  <span></span>
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
-                <span>
-                  {utility.coefficient === 0
-                    ? utility.price.toLocaleString()
-                    : ''}
-                </span>
+                {utility.UnitPrice ? utility.UnitPrice.toLocaleString() : ''}
               </td>
               <td className="px-4 py-2 border text-center">
-                {(utility.coefficient === 0
-                  ? utility.price * (quantities[index] || 0)
-                  : utility.coefficient * totalRough
-                ).toLocaleString('vi-VN')}
+                <span>
+                  {utility.Coefficient === 0
+                    ? utility.Price.toLocaleString()
+                    : (utility.Coefficient * totalRough).toLocaleString()}
+                </span>
               </td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">

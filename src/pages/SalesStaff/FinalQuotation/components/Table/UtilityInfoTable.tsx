@@ -21,18 +21,18 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   onPriceChange,
 }) => {
   const [editableUtilities, setEditableUtilities] = useState(
-    utilities.map(util => ({
+    utilities.map((util) => ({
       ...util,
       Quantity: util.Quantity ?? null,
-    }))
+    })),
   );
 
   useEffect(() => {
     setEditableUtilities(
-      utilities.map(util => ({
+      utilities.map((util) => ({
         ...util,
         Quantity: util.Quantity ?? null,
-      }))
+      })),
     );
   }, [utilities]);
 
@@ -119,8 +119,12 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
             <th className="px-2 py-2 border text-center font-semibold w-24">
               Số lượng
             </th>
-            <th className="px-4 py-2 border text-center font-semibold">Đơn giá</th>
-            <th className="px-4 py-2 border text-center font-semibold">Giá trị thanh toán</th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Đơn giá
+            </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Giá trị thanh toán
+            </th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -159,7 +163,9 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                   <input
                     type="number"
                     value={util.Quantity ?? ''}
-                    onChange={(e) => handleQuantityChange(index, e.target.value)}
+                    onChange={(e) =>
+                      handleQuantityChange(index, e.target.value)
+                    }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={!isEditing}
                   />
