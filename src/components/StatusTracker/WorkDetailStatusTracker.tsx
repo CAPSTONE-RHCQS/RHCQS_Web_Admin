@@ -7,6 +7,7 @@ import {
   FaEdit,
   FaClipboard,
   FaBan,
+  FaClock,
 } from 'react-icons/fa';
 
 interface WorkDetailStatusTrackerProps {
@@ -14,6 +15,7 @@ interface WorkDetailStatusTrackerProps {
 }
 
 const statusMapping: Record<string, string> = {
+  Pending: 'Đang chờ',
   Processing: 'Đang xử lý',
   Reviewing: 'Chờ xác nhận từ quản lý',
   Updating: 'Đang chỉnh sửa',
@@ -25,6 +27,7 @@ const statusMapping: Record<string, string> = {
 };
 
 const statuses = [
+  { label: 'Đang chờ', icon: <FaClock /> },
   { label: 'Đang xử lý', icon: <FaCog /> },
   { label: 'Chờ xác nhận từ quản lý', icon: <FaUser /> },
   { label: 'Đang chỉnh sửa', icon: <FaEdit /> },

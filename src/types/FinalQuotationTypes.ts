@@ -10,7 +10,7 @@ export interface BatchPaymentInfo {
   PaymentDate: string;
   PaymentPhase: string;
   Unit: string;
-  Percents: string;
+  Percents: number;
   Description: string;
   NumberOfBatch: number;
 }
@@ -70,6 +70,7 @@ export interface UtilityInfo {
   Price: number;
   UnitPrice: number;
   Unit: string;
+  Quantity: number | null;
 }
 
 export interface ConstructionDetail {
@@ -103,6 +104,7 @@ export interface PackageQuotationList {
 export interface FinalQuotationDetail {
   Id: string;
   AccountName: string;
+  Address: string;
   ProjectId: string;
   InitailQuotationId: string;
   InitailQuotationVersion: number;

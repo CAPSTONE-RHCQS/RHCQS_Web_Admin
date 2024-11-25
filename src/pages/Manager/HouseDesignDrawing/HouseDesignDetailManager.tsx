@@ -45,9 +45,8 @@ const HouseDesignDetailManager: React.FC = () => {
       const designData = response.data;
       setDesignDetail(designData);
 
-      // Set the default selected version based on VersionPresent
       const defaultVersion = designData.Versions.find(
-        (version) => version.Version === designData.VersionPresent
+        (version) => version.Version === designData.VersionPresent,
       );
       if (defaultVersion) {
         setSelectedVersionId(defaultVersion.Id);
