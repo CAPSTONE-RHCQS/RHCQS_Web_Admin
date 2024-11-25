@@ -248,7 +248,7 @@ const ContractDetailStaff = () => {
                     {batch.Price} {contractDetail.UnitPrice}
                   </td>
                   <td className="px-4 py-2 border">
-                    {batch.InvoiceImage !== 'Hình ảnh chuyển khoản chưa có' ? (
+                    {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
                       <img
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
