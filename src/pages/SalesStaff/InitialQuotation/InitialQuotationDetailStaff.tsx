@@ -21,7 +21,7 @@ import ActionButtons from './components/ActionButtons';
 import QuotationSummary from './QuotationSummary';
 import {
   InitialQuotationResponse,
-  QuotationUtility,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import ChatBox from '../../../components/ChatBox';
 
@@ -35,7 +35,7 @@ const InitialQuotationDetailStaff = () => {
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [batchPayment, setBatchPayment] = useState<any[]>([]);
-  const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [version, setVersion] = useState<number | null>(null);
@@ -95,7 +95,7 @@ const InitialQuotationDetailStaff = () => {
     totalArea * quotationData.PackageQuotationList.UnitPackageRough;
 
   const totalUtilities = utilityInfos.reduce(
-    (total, utility) => total + utility.price,
+    (total, utility) => total + utility.Price,
     0,
   );
 

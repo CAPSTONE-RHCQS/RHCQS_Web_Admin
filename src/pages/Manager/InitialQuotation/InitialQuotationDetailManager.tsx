@@ -124,7 +124,7 @@ const InitialQuotationDetailManager = () => {
   );
 
   const thanhTien = totalDienTich * donGia;
-  const discount = promotionInfo.Value * quotationData.Area;
+  const discount = promotionInfo?.Value * quotationData.Area;
 
   const handleDownload = () => {
     alert('Tải về hợp đồng');
@@ -324,7 +324,7 @@ const InitialQuotationDetailManager = () => {
                   </td>
                   <td className="px-4 py-2 border text-center">=</td>
                   <td className="px-4 py-2 border text-center">
-                    <strong> {thanhTien.toLocaleString()} đồng</strong>
+                    <strong> {thanhTien.toLocaleString()} VNĐ</strong>
                   </td>
                 </tr>
               </tbody>
@@ -450,7 +450,7 @@ const InitialQuotationDetailManager = () => {
                     Phần Thô Tiết Kiệm
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {thanhTien.toLocaleString()} VNĐ
+                    {thanhTien.toLocaleString()}
                   </td>
                   <td className="px-4 py-2 border text-center">VNĐ</td>
                 </tr>
@@ -459,7 +459,7 @@ const InitialQuotationDetailManager = () => {
                     Tùy chọn & Tiện ích
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {totalUtilityCost.toLocaleString()} VNĐ
+                    {totalUtilityCost.toLocaleString()}
                   </td>
                   <td className="px-4 py-2 border text-center">VNĐ</td>
                 </tr>
@@ -470,9 +470,8 @@ const InitialQuotationDetailManager = () => {
                     </td>
                     <td className="px-4 py-2 border text-center">
                       -{discount.toLocaleString()}
-                      VNĐ
                     </td>
-                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                    <td className="px-4 py-2 border text-center"></td>
                   </tr>
                 )}
                 <tr>
@@ -491,22 +490,11 @@ const InitialQuotationDetailManager = () => {
           </div>
         </div>
 
-        <div className="mt-4">
-          <div className="mb-4">
-            <strong className="text-xl text-secondary">
-              {sectionStart + 3}. CÁC THỎA THUẬN KHÁC:
-            </strong>
-          </div>
-          <p className="text-gray-700 whitespace-pre-line">
-            {quotationData.OthersAgreement || ''}
-          </p>
-        </div>
-
         <div className="flex items-center mt-4 mb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <strong className="text-xl text-secondary">
-                {sectionStart + 4}. CÁC ĐỢT THANH TOÁN:
+                {sectionStart + 3}. CÁC ĐỢT THANH TOÁN:
               </strong>
             </div>
           </div>
@@ -576,6 +564,17 @@ const InitialQuotationDetailManager = () => {
               </tr>
             </tbody>
           </table>
+        </div>
+
+        <div className="mt-4">
+          <div className="mb-4">
+            <strong className="text-xl text-secondary">
+              {sectionStart + 4}. CÁC THỎA THUẬN KHÁC:
+            </strong>
+          </div>
+          <p className="text-gray-700 whitespace-pre-line">
+            {quotationData.OthersAgreement || ''}
+          </p>
         </div>
 
         <div className="mt-4 w-1/3">

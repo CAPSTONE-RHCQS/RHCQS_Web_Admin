@@ -70,6 +70,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
+  const [totalUtility, setTotalUtility] = useState<number>(0);
 
   const previousSearchNameRef = useRef<string>('');
 
@@ -395,6 +396,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
         onPriceChange={onPriceChange}
         quantities={quantities}
         setQuantities={setQuantities}
+        setTotalUtilities={setTotalUtility}
       />
 
       <div className="mt-4">
@@ -430,7 +432,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
         <ContractValueSummaryTable
           totalArea={totalArea}
           totalRough={totalRough}
-          totalUtilities={totalUtilities}
+          totalUtilities={totalUtility}
           promotionInfo={promotionInfo}
           updateGiaTriHopDong={setGiaTriHopDong}
         />

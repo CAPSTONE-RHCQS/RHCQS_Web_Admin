@@ -4,6 +4,7 @@ import {
   BatchPaymentInfo,
   InitialQuotationResponse,
   PromotionInfo,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
 import UtilityTable from './components/Table/UtilityTable';
@@ -28,7 +29,7 @@ interface QuotationSummaryProps {
   donGia: number;
   totalRough: number;
   utilityInfos: any[];
-  setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
+  setUtilityInfos: React.Dispatch<React.SetStateAction<UtilityInfo[]>>;
   totalUtilities: number;
   promotionInfo: PromotionInfo | null;
   setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
@@ -71,6 +72,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
   const previousSearchNameRef = useRef<string>('');
+  const [totalUtility, setTotalUtility] = useState<number>(0);
 
   const fetchPromotions = useCallback(async () => {
     const { IdPackageFinished, IdPackageRough } =
@@ -154,6 +156,8 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         utilitiesItemId: '',
         coefficient: 0,
         price: 0,
+        unitPrice: 0,
+        quantity: 0,
         description: '',
       },
     ]);
@@ -394,6 +398,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         onPriceChange={onPriceChange}
         quantities={quantities}
         setQuantities={setQuantities}
+        setTotalUtilities={setTotalUtility}
       />
 
       <div className="mt-4">
@@ -429,7 +434,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         <ContractValueSummaryTable
           totalArea={totalArea}
           totalRough={totalRough}
-          totalUtilities={totalUtilities}
+          totalUtilities={totalUtility}
           promotionInfo={promotionInfo}
           updateGiaTriHopDong={setGiaTriHopDong}
         />
