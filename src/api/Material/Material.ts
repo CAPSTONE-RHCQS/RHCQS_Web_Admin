@@ -4,10 +4,11 @@ import requestWebRHCQS from '../../utils/axios';
 
 export async function getMaterialByName(
   name: string,
+  packageId: string,
 ): Promise<GetMaterialByNameResponse> {
   try {
     const response = await requestWebRHCQS.get('/Material/name', {
-      params: { name },
+      params: { name, packageId },
       headers: {
         accept: 'text/plain',
       },

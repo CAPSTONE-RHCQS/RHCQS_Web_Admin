@@ -166,6 +166,7 @@ const FinalQuotationDetailStaff = () => {
         UnitPrice: 0,
         Price: 0,
         Unit: '',
+        Quantity: null,
         Description: '',
       };
       const updatedUtilities = [...quotationDetail.UtilityInfos, newUtility];
@@ -410,6 +411,7 @@ const FinalQuotationDetailStaff = () => {
         {showDetailedItems && (
           <FinalQuotationTable
             items={quotationDetail.FinalQuotationItems}
+            quotationPackage={quotationDetail.PackageQuotationList}
             onItemsChange={handleFinalQuotationItemsChange}
             isEditing={isEditing}
           />

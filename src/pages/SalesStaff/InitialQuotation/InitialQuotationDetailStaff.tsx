@@ -44,6 +44,7 @@ const InitialQuotationDetailStaff = () => {
   );
   const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
   const [isPanelVisible, setIsPanelVisible] = useState(true);
+  const [quantities, setQuantities] = useState<(number | null)[]>([]);
 
   const navigate = useNavigate();
 
@@ -58,6 +59,7 @@ const InitialQuotationDetailStaff = () => {
         setUtilityInfos,
         setDonGia,
         setPromotionInfo,
+        setQuantities,
       );
     };
 
@@ -210,6 +212,8 @@ const InitialQuotationDetailStaff = () => {
         othersAgreement={othersAgreement}
         setOthersAgreement={setOthersAgreement}
         onPriceChange={setUtilityPrices}
+        quantities={quantities}
+        setQuantities={setQuantities}
       />
     </>
   );

@@ -21,6 +21,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
 }) => {
   const [editedPayments, setEditedPayments] = useState(payments);
 
+  const today = new Date().toISOString().split('T')[0];
+
   useEffect(() => {
     const formattedPayments = payments.map((payment) => ({
       ...payment,
@@ -33,7 +35,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   useEffect(() => {
     const updatedPayments = editedPayments.map((payment) => ({
       ...payment,
-      Price: (parseFloat(payment.Percents) / 100) * totalPrice,
+      Price: (payment.Percents / 100) * totalPrice,
     }));
     setEditedPayments(updatedPayments);
     onPaymentsChange(updatedPayments);
@@ -52,7 +54,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
 
   const calculateTotalPercents = () => {
     return editedPayments.reduce(
-      (total, payment) => total + parseFloat(payment.Percents),
+      (total, payment) => total + payment.Percents,
       0,
     );
   };
@@ -60,7 +62,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   const calculateTotalPrice = () => {
     return editedPayments.reduce(
       (total, payment) =>
-        total + (parseFloat(payment.Percents) / 100) * totalPrice,
+        total + (payment.Percents / 100) * totalPrice,
       0,
     );
   };
@@ -99,7 +101,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center">
                 {(
-                  (parseFloat(payment.Percents) / 100) *
+                  (payment.Percents / 100) *
                   totalPrice
                 ).toLocaleString()}{' '}
                 {payment.Unit}
@@ -111,6 +113,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     type="date"
                     ref={(el) => (dateRefs.current[index] = el)}
                     value={payment.PaymentDate || ''}
+                    min={today}
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentDate', e.target.value)
                     }
@@ -128,6 +131,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       (dateRefs.current[index + editedPayments.length] = el)
                     }
                     value={payment.PaymentPhase || ''}
+                    min={today}
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentPhase', e.target.value)
                     }

@@ -211,7 +211,7 @@ const ContractDetailManager = () => {
             },
             {
               icon: <FaInfoCircle />,
-              label: 'Hợp đồng đã ký',
+              label: 'Báo giá chi tiết',
               value: (
                 <a
                   href={contractDetail.Quotation.File}

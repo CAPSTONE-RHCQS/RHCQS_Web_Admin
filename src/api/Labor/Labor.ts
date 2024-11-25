@@ -4,10 +4,12 @@ import requestWebRHCQS from '../../utils/axios';
 
 export async function getLaborByName(
   name: string,
+  packageId: string,
 ): Promise<GetLaborByNameResponse> {
   try {
+    console.log('pk', packageId);
     const response = await requestWebRHCQS.get('/Labor/name', {
-      params: { name },
+      params: { name, packageId },
       headers: {
         accept: 'text/plain',
       },

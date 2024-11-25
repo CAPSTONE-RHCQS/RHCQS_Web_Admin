@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { FinalQuotationItem } from '../../../../../types/FinalQuotationTypes';
+import {
+  FinalQuotationItem,
+  PackageQuotationList,
+} from '../../../../../types/FinalQuotationTypes';
 import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
 import { getLaborByName } from '../../../../../api/Labor/Labor';
 import { getMaterialByName } from '../../../../../api/Material/Material';
@@ -7,6 +10,8 @@ import {
   Construction,
   Labor,
   Material,
+  GetLaborByNameResponse,
+  GetMaterialByNameResponse,
 } from '../../../../../types/SearchContainNameTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -19,12 +24,14 @@ import {
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
+  quotationPackage: PackageQuotationList;
   onItemsChange: (updatedItems: FinalQuotationItem[]) => void;
   isEditing: boolean;
 }
 
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   items,
+  quotationPackage,
   onItemsChange,
   isEditing,
 }) => {
@@ -88,17 +95,29 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     try {
       const searchType = searchTypes[`${index}-${qItemIndex}`] || 'Labor';
-      let results;
-      if (searchType === 'Labor') {
-        results = await getLaborByName(name);
+      let results: GetLaborByNameResponse | GetMaterialByNameResponse;
+      const constructionType = updatedItems[index].Type;
+      const packageId =
+        constructionType === 'ROUGH'
+          ? quotationPackage.IdPackageRough
+          : constructionType === 'FINISHED'
+          ? quotationPackage.IdPackageFinished
+          : null;
+
+      if (packageId) {
+        if (searchType === 'Labor') {
+          results = await getLaborByName(name, packageId);
+        } else {
+          results = await getMaterialByName(name, packageId);
+        }
+        setSearchResults((prev) => ({
+          ...prev,
+          [`item-${index}-${qItemIndex}`]: results,
+        }));
+        setSelectedItemIndex(index);
       } else {
-        results = await getMaterialByName(name);
+        console.error('Invalid packageId:', packageId);
       }
-      setSearchResults((prev) => ({
-        ...prev,
-        [`item-${index}-${qItemIndex}`]: results,
-      }));
-      setSelectedItemIndex(index);
     } catch (error) {
       console.error('Error fetching data by name:', error);
     }
@@ -112,6 +131,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         ConstructionId: construction.Id,
         SubConstructionId: construction.SubConstructionId || null,
         ContructionName: construction.Name,
+        Type: construction.Type,
       };
       onItemsChange(updatedItems);
       setSearchResults((prev) => ({

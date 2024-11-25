@@ -12,6 +12,8 @@ interface UtilityTableProps {
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>;
   isEditing: boolean;
   onPriceChange: (prices: number[]) => void;
+  quantities: (number | null)[];
+  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
 const convertToQuotationUtility = (utility: Utility): QuotationUtility => {
@@ -19,6 +21,7 @@ const convertToQuotationUtility = (utility: Utility): QuotationUtility => {
     utilitiesItemId: utility.UtilityItemId || utility.UtilitySectionId,
     coefficient: utility.Coefficient,
     price: utility.UnitPrice || 0,
+    quantity: utility.Quantity || null,
     description: utility.Name,
   };
 };
@@ -29,11 +32,12 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   setUtilityInfos,
   isEditing,
   onPriceChange,
+  quantities,
+  setQuantities,
 }) => {
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
   const [totalUtilityCost, setTotalUtilityCost] = useState<number>(0);
-  const [quantities, setQuantities] = useState<(number | null)[]>([]);
 
   useEffect(() => {
     const totalCost = utilityInfos.reduce((total, utility, index) => {
@@ -113,12 +117,8 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
         <thead>
           <tr>
             <th className="px-4 py-2 border text-center">Mô tả</th>
-            <th className="px-2 py-2 border text-center w-20">
-              Hệ số
-            </th>
-            <th className="px-2 py-2 border text-center w-24">
-              Số lượng
-            </th>
+            <th className="px-2 py-2 border text-center w-20">Hệ số</th>
+            <th className="px-2 py-2 border text-center w-24">Số lượng</th>
             <th className="px-4 py-2 border text-center">Đơn giá</th>
             <th className="px-4 py-2 border text-center">Giá</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
@@ -172,7 +172,9 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center">
                 <span>
-                  {utility.coefficient === 0 ? utility.price.toLocaleString() : ''}
+                  {utility.coefficient === 0
+                    ? utility.price.toLocaleString()
+                    : ''}
                 </span>
               </td>
               <td className="px-4 py-2 border text-center">

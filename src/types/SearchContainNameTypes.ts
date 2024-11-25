@@ -2,6 +2,7 @@ export interface Construction {
   Id: string;
   SubConstructionId: string | null;
   Name: string;
+  Type: string;
   Price: number;
   Coefficient: number;
 }
@@ -13,6 +14,7 @@ export interface Utility {
   UtilityItemId: string;
   Name: string;
   Coefficient: number;
+  Quantity: number;
   UnitPrice: number | null;
 }
 

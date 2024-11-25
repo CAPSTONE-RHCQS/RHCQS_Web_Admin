@@ -20,12 +20,20 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   totalRough,
   onPriceChange,
 }) => {
-  const [editableUtilities, setEditableUtilities] = useState(utilities);
-  const [quantities, setQuantities] = useState<number[]>([]);
+  const [editableUtilities, setEditableUtilities] = useState(
+    utilities.map(util => ({
+      ...util,
+      Quantity: util.Quantity ?? null,
+    }))
+  );
 
   useEffect(() => {
-    setEditableUtilities(utilities);
-    setQuantities(new Array(utilities.length).fill(0));
+    setEditableUtilities(
+      utilities.map(util => ({
+        ...util,
+        Quantity: util.Quantity ?? null,
+      }))
+    );
   }, [utilities]);
 
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
@@ -54,10 +62,12 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
     }
   };
 
-  const handleQuantityChange = (index: number, value: number) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] = value;
-    setQuantities(newQuantities);
+  const handleQuantityChange = (index: number, value: string) => {
+    const updatedUtilities = [...editableUtilities];
+    const numericValue = value === '' ? null : Number(value);
+    updatedUtilities[index].Quantity = numericValue;
+    setEditableUtilities(updatedUtilities);
+    onUtilitiesChange(updatedUtilities);
   };
 
   const handleUtilitySelect = (utility: Utility) => {
@@ -79,23 +89,23 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   };
 
   const calculateTotalPrice = () => {
-    return editableUtilities.reduce((total, util, index) => {
+    return editableUtilities.reduce((total, util) => {
       const price =
         util.Coefficient !== 0
           ? util.Coefficient * totalRough
-          : util.Price * (quantities[index] || 0);
+          : util.Price * (util.Quantity || 0);
       return total + price;
     }, 0);
   };
 
   useEffect(() => {
-    const prices = editableUtilities.map((util, index) => {
+    const prices = editableUtilities.map((util) => {
       return util.Coefficient !== 0
         ? util.Coefficient * totalRough
-        : util.Price * (quantities[index] || 0);
+        : util.Price * (util.Quantity || 0);
     });
     onPriceChange(prices);
-  }, [editableUtilities, quantities, totalRough, onPriceChange]);
+  }, [editableUtilities, totalRough, onPriceChange]);
 
   return (
     <div className="overflow-x-auto mb-4">
@@ -116,7 +126,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         </thead>
         <tbody>
           {editableUtilities.map((util, index) => (
-            <tr key={util.Id} className="hover:bg-gray-50">
+            <tr key={util.Id || index} className="hover:bg-gray-50">
               <td className="px-4 py-2 border text-left">
                 <input
                   type="text"
@@ -148,10 +158,8 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                 {util.Coefficient === 0 ? (
                   <input
                     type="number"
-                    value={quantities[index] || ''}
-                    onChange={(e) =>
-                      handleQuantityChange(index, Number(e.target.value))
-                    }
+                    value={util.Quantity ?? ''}
+                    onChange={(e) => handleQuantityChange(index, e.target.value)}
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     disabled={!isEditing}
                   />
@@ -168,7 +176,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                 <span>
                   {(util.Coefficient !== 0
                     ? util.Coefficient * totalRough
-                    : util.Price * (quantities[index] || 0)
+                    : util.Price * (util.Quantity || 0)
                   ).toLocaleString()}
                 </span>
               </td>

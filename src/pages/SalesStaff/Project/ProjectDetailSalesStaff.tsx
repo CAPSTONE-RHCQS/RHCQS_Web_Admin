@@ -125,6 +125,9 @@ const ProjectDetailSalesStaff = () => {
 
   const isFinalized = isAnyInitialInfoFinalized(projectDetail.InitialInfo);
 
+  const isContractDesignEnabled =
+    projectDetail.Type === 'TEMPLATE' || projectDetail.Type === 'HAVE_DRAWING';
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -156,13 +159,15 @@ const ProjectDetailSalesStaff = () => {
                     <FaEdit className="mr-2" />
                     Chỉnh sửa hợp đồng
                   </Link>
-                  <div
-                    onClick={handleCreateContractDesign}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                  >
-                    <FaFileContract className="mr-2" />
-                    Tạo hợp đồng thiết kế
-                  </div>
+                  {!isContractDesignEnabled && (
+                    <div
+                      onClick={handleCreateContractDesign}
+                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                    >
+                      <FaFileContract className="mr-2" />
+                      Tạo hợp đồng thiết kế
+                    </div>
+                  )}
                   <div
                     onClick={handleCreateConstructionContract}
                     className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
@@ -362,15 +367,17 @@ const ProjectDetailSalesStaff = () => {
             >
               Báo giá chi tiết
             </AccordionHeader>
-            {projectDetail.FinalInfo &&
-            projectDetail.FinalInfo.length === 0 &&
-            isFinalized &&
-            projectDetail.ContractInfo.some(
-              (info) => info.Status === 'Finished',
-            ) &&
-            projectDetail.HouseDesignDrawingInfo.some(
-              (info) => info.Type === 'DIENNUOC' && info.Status === 'Accepted',
-            ) ? (
+            {(projectDetail.FinalInfo &&
+              projectDetail.FinalInfo.length === 0 &&
+              isFinalized &&
+              projectDetail.ContractInfo.some(
+                (info) => info.Status === 'Finished',
+              ) &&
+              projectDetail.HouseDesignDrawingInfo.some(
+                (info) =>
+                  info.Type === 'DIENNUOC' && info.Status === 'Accepted',
+              )) ||
+            isContractDesignEnabled ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
                 onClick={() =>

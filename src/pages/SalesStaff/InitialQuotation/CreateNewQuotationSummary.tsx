@@ -41,6 +41,8 @@ interface QuotationSummaryProps {
   othersAgreement: string;
   setOthersAgreement: React.Dispatch<React.SetStateAction<string>>;
   onPriceChange: (prices: number[]) => void;
+  quantities: (number | null)[];
+  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
 const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
@@ -63,6 +65,8 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalPercentage,
   totalAmount,
   onPriceChange,
+  quantities,
+  setQuantities,
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
@@ -384,11 +388,13 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
       </div>
 
       <UtilityTable
-        totalRough={totalRough}
         utilityInfos={utilityInfos}
+        totalRough={totalRough}
         setUtilityInfos={setUtilityInfos}
         isEditing={isEditing}
         onPriceChange={onPriceChange}
+        quantities={quantities}
+        setQuantities={setQuantities}
       />
 
       <div className="mt-4">

@@ -4,6 +4,7 @@ import {
   QuotationUtility,
   PromotionInfo,
   BatchPaymentInfo,
+  UtilityInfo,
 } from '../../../../../types/InitialQuotationTypes';
 import {
   getInitialQuotation,
@@ -17,6 +18,7 @@ const convertToQuotationUtility = (utility: any): QuotationUtility => {
     utilitiesItemId: utility.Id,
     coefficient: utility.Coefficient,
     price: utility.Price,
+    quantity: utility.Quantity,
     description: utility.Description,
   };
 };
@@ -32,6 +34,7 @@ export const fetchQuotationData = async (
   setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
+  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>,
 ) => {
   if (id) {
     try {
@@ -71,6 +74,9 @@ export const fetchQuotationData = async (
       setBatchPayment(data.BatchPaymentInfos);
       setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
       setDonGia(data.PackageQuotationList.UnitPackageRough);
+      setQuantities(
+        data.UtilityInfos.map((utility: UtilityInfo) => utility.Quantity),
+      );
     } catch (error) {
       console.error('Error fetching quotation data:', error);
     }
@@ -180,6 +186,7 @@ export const handleSave = async (
       utilitiesItemId: utility.utilitiesItemId,
       coefficient: utility.coefficient,
       price: utilityPrices[index],
+      quantity: utility.quantity,
       description: utility.description,
     })),
     promotions: isInvalidPromotion

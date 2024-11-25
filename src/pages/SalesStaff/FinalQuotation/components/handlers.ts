@@ -50,7 +50,10 @@ export const handleSeva = async (
       })),
       utilities: quotationDetail.UtilityInfos.map((util) => ({
         utilitiesItemId: util.utilitiesItemId || util.utilitiesSectionId,
+        coefficient: util.Coefficient,
         price: util.Price,
+        description: util.Description,
+        quantity: util.Quantity || null,
       })),
       finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
         constructionId: item.ConstructionId,
@@ -139,7 +142,10 @@ export const hanldCreateNew = async (
       })),
       utilities: quotationDetail.UtilityInfos.map((util) => ({
         utilitiesItemId: util.utilitiesItemId || util.utilitiesSectionId,
+        coefficient: util.Coefficient,
         price: util.Price,
+        description: util.Description,
+        quantity: util.Quantity || null,
       })),
       finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
         constructionId: item.ConstructionId,

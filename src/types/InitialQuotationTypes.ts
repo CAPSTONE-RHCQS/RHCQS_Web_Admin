@@ -25,6 +25,7 @@ export interface UtilityInfo {
   Id: string;
   Description: string;
   Coefficient: number;
+  Quantity: number | null;
   Price: number;
 }
 
@@ -92,6 +93,7 @@ export interface QuotationUtility {
   coefficient: number;
   price: number;
   description: string;
+  quantity: number | null;
 }
 
 export interface Promotion {

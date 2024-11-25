@@ -201,7 +201,7 @@ const ContractDetailStaff = () => {
           {contractDetail.Quotation.File !== 'Không có file' && (
             <div className="mb-4 text-lg flex items-center">
               <FaInfoCircle className="mr-2" />
-              <span className="font-semibold">Hợp đồng đã ký:</span>
+              <span className="font-semibold">Báo giá chi tiết:</span>
               <a
                 href={contractDetail.Quotation.File}
                 target="_blank"

@@ -16,7 +16,10 @@ export interface EquipmentItemRequest {
 
 export interface UtilityRequest {
   utilitiesItemId: string;
+  coefficient: number;
   price: number;
+  description: string;
+  quantity: number | null;
 }
 
 export interface QuotationItemRequest {
