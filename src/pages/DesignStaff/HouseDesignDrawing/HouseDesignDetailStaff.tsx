@@ -19,6 +19,7 @@ import {
   FiFileText,
   FiLayers,
   FiPenTool,
+  FiPhoneCall,
   FiType,
 } from 'react-icons/fi';
 
@@ -137,8 +138,8 @@ const HouseDesignDetailStaff: React.FC = () => {
                 <strong className="mr-2">Bước:</strong> {designDetail.Step}
               </p>
               <p className="flex items-center">
-                <FiType className="mr-2" />
-                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+                <FiPhoneCall className="mr-2" />
+                {designDetail.StaffName}
               </p>
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />
@@ -285,8 +286,8 @@ const HouseDesignDetailStaff: React.FC = () => {
                       ></path>
                     </svg>
                     <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Nhấn để tải lên</span> hoặc
-                      kéo thả
+                      <span className="font-semibold">Nhấn để tải lên</span>{' '}
+                      hoặc kéo thả
                     </p>
                     <p className="text-xs text-gray-500">PDF (MAX. 10MB)</p>
                   </div>
@@ -300,7 +301,9 @@ const HouseDesignDetailStaff: React.FC = () => {
                   />
                 </label>
               </div>
-              {uploading && <p className="mt-2 text-blue-500">Đang tải lên...</p>}
+              {uploading && (
+                <p className="mt-2 text-blue-500">Đang tải lên...</p>
+              )}
             </div>
             <button
               onClick={handleSubmitDesign}

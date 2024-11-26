@@ -14,6 +14,7 @@ import {
   FiLayers,
   FiType,
   FiCalendar,
+  FiPhoneCall,
 } from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
@@ -73,7 +74,15 @@ const HouseDesignDetailManager: React.FC = () => {
         type: approvalType,
         reason,
       });
-      toast.success('Design approved successfully!');
+
+      if (approvalType === 'Approved') {
+        toast.success('Chấp nhận bản vẽ thành công');
+      } else if (approvalType === 'Rejected') {
+        toast.success('Từ chối bản vẽ thành công');
+      } else {
+        toast.success('Xét duyệt thành công');
+      }
+
       setIsModalOpen(false);
       fetchDesignDetail();
     } catch (error) {
@@ -152,8 +161,8 @@ const HouseDesignDetailManager: React.FC = () => {
                 <strong className="mr-2">Bước:</strong> {designDetail.Step}
               </p>
               <p className="flex items-center">
-                <FiType className="mr-2" />
-                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+                <FiPhoneCall className="mr-2" />
+                {designDetail.StaffName}
               </p>
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />

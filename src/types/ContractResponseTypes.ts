@@ -38,3 +38,25 @@ export interface ContractDesignResponse {
   Quotation: Quotation;
   BatchPayment: BatchPayment[];
 }
+
+export interface BatchPaymentRequest {
+  NumberOfBatches: number;
+  Price: number;
+  PaymentDate: string;
+  PaymentPhase: string;
+  Percents: number;
+  Description: string;
+}
+
+export interface FinalToContractResponse {
+  ProjectId: string;
+  Type: string;
+  StartDate: string | null;
+  EndDate: string | null;
+  ValidityPeriod: number | null;
+  TaxCode: string | null;
+  ContractValue: number;
+  UrlFile: string | null;
+  Note: string | null;
+  BatchPaymentRequests: BatchPaymentRequest[];
+}

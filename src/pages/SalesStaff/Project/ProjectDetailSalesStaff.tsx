@@ -278,7 +278,7 @@ const ProjectDetailSalesStaff = () => {
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
                 onClick={() => navigate(`/create-initial-quote/${id}`)}
               >
-                Khởi tạo báo giá
+                Khởi tạo báo giá sơ bộ
               </button>
             ) : (
               <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">
@@ -373,7 +373,7 @@ const ProjectDetailSalesStaff = () => {
                   navigate(`/create-new-final-quotation-staff/${id}`)
                 }
               >
-                Khởi tạo báo giá
+                Khởi tạo báo giá chi tiết
               </button>
             ) : (
               <AccordionBody className="mb-7 pt-0 text-base font-normal font-montserrat">

@@ -89,7 +89,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               Ngày thanh toán
             </th>
             <th className="px-4 py-2 border text-center font-semibold">
-              Giai đoạn thanh toán
+              Ngày đáo hạn
             </th>
           </tr>
         </thead>

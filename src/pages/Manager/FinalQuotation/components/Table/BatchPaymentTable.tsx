@@ -25,9 +25,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({ payments }) => {
             <th className="px-4 py-2 border text-center">Giá</th>
             <th className="px-4 py-2 border text-center">Đơn vị</th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">
-              Giai đoạn thanh toán
-            </th>
+            <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
           </tr>
         </thead>
         <tbody>

@@ -32,6 +32,7 @@ const ContractDetailManager = () => {
     useState<ContractDesignResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const fetchContractDetail = async () => {
     if (contractId) {
@@ -60,13 +61,14 @@ const ContractDetailManager = () => {
     }
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (index: number) => {
     if (
       contractId &&
       selectedFile &&
       contractDetail &&
       selectedBatch !== null
     ) {
+      setIsUploading(true);
       try {
         const paymentId = contractDetail.BatchPayment[selectedBatch].PaymentId;
         if (
@@ -89,8 +91,18 @@ const ContractDetailManager = () => {
         } else {
           toast.error('Tải lên thất bại!');
         }
+      } finally {
+        setIsUploading(false);
       }
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   if (!contractDetail) {
@@ -110,6 +122,108 @@ const ContractDetailManager = () => {
 
   const mappedStatus = statusMap[contractDetail.Status] || 'Đang xử lý';
 
+  const attachment = contractDetail.UrlFile
+    ? {
+        icon: <FaPaperclip />,
+        label: 'Hợp đồng đã ký',
+        value: (
+          <a
+            href={contractDetail.UrlFile}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-500 hover:underline ml-2"
+          >
+            <FaFileDownload className="inline-block mr-1" /> Tải xuống
+          </a>
+        ),
+      }
+    : null;
+
+  const details = [
+    {
+      icon: <FaFileDownload />,
+      label: 'Mã hợp đồng',
+      value: contractDetail.ContractCode,
+    },
+    {
+      icon: <FaUser />,
+      label: 'Tên khách hàng',
+      value: contractDetail.CustomerName,
+    },
+    {
+      icon: <FaCalendarAlt />,
+      label: 'Ngày bắt đầu',
+      value: formatDate(contractDetail.StartDate),
+    },
+    {
+      icon: <FaCalendarAlt />,
+      label: 'Ngày kết thúc',
+      value: formatDate(contractDetail.EndDate),
+    },
+    {
+      icon: <FaClock />,
+      label: 'Thời hạn hiệu lực',
+      value: `${contractDetail.ValidityPeriod} ngày`,
+    },
+    {
+      icon: <FaRulerCombined />,
+      label: 'Diện tích',
+      value: `${contractDetail.Area} m²`,
+    },
+    {
+      icon: <FaMoneyBillWave />,
+      label: 'Giá trị hợp đồng',
+      value: `${contractDetail.ContractValue.toLocaleString()} ${
+        contractDetail.UnitPrice
+      }`,
+    },
+    {
+      icon: <FaBoxOpen />,
+      label: 'Gói thô',
+      value: `${contractDetail.RoughPackagePrice.toLocaleString()} ${
+        contractDetail.UnitPrice
+      }`,
+    },
+    {
+      icon: <FaBox />,
+      label: 'Gói hoàn thiện',
+      value: `${contractDetail.FinishedPackagePrice.toLocaleString()} ${
+        contractDetail.UnitPrice
+      }`,
+    },
+    attachment,
+    {
+      icon: <FaStickyNote />,
+      label: 'Ghi chú',
+      value: contractDetail.Note || '',
+    },
+    {
+      icon: <FaInfoCircle />,
+      label: 'Mã số thuế',
+      value: contractDetail.TaxCode || '',
+    },
+    {
+      icon: <FaInfoCircle />,
+      label:
+        contractDetail.Name ===
+        'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+          ? 'Bảng báo giá sơ bộ nhà ở dân dụng'
+          : contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng'
+          ? 'Bảng báo giá chi tiết nhà ở dân dụng'
+          : 'Báo giá chi tiết',
+      value: (
+        <a
+          href={contractDetail.Quotation.File}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline ml-2"
+        >
+          <FaFileDownload className="inline-block mr-1" /> Tải xuống
+        </a>
+      ),
+    },
+  ].filter(Boolean);
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -125,112 +239,22 @@ const ContractDetailManager = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold">{contractDetail.Name}</h2>
           <span className="text-gray-500 text-sm">
-            Tạo lúc {new Date(contractDetail.StartDate).toLocaleString()}
+            Tạo lúc {formatDate(contractDetail.StartDate)}
           </span>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {[
-            {
-              icon: <FaFileDownload />,
-              label: 'Mã hợp đồng',
-              value: contractDetail.ContractCode,
-            },
-            {
-              icon: <FaUser />,
-              label: 'Tên khách hàng',
-              value: contractDetail.CustomerName,
-            },
-            {
-              icon: <FaCalendarAlt />,
-              label: 'Ngày bắt đầu',
-              value: new Date(contractDetail.StartDate).toLocaleDateString(),
-            },
-            {
-              icon: <FaCalendarAlt />,
-              label: 'Ngày kết thúc',
-              value: new Date(contractDetail.EndDate).toLocaleDateString(),
-            },
-            {
-              icon: <FaClock />,
-              label: 'Thời hạn hiệu lực',
-              value: `${contractDetail.ValidityPeriod} ngày`,
-            },
-            {
-              icon: <FaRulerCombined />,
-              label: 'Diện tích',
-              value: `${contractDetail.Area} m²`,
-            },
-            {
-              icon: <FaMoneyBillWave />,
-              label: 'Giá trị hợp đồng',
-              value: contractDetail.ContractValue || 'Chưa xác định',
-            },
-            {
-              icon: <FaInfoCircle />,
-              label: 'Trạng thái',
-              value: contractDetail.Status,
-            },
-            {
-              icon: <FaBoxOpen />,
-              label: 'Gói thô',
-              value: `${contractDetail.RoughPackagePrice} ${contractDetail.UnitPrice}`,
-            },
-            {
-              icon: <FaBox />,
-              label: 'Gói hoàn thiện',
-              value: `${contractDetail.FinishedPackagePrice} ${contractDetail.UnitPrice}`,
-            },
-            {
-              icon: <FaFileContract />,
-              label: 'Loại hợp đồng',
-              value: contractDetail.Type,
-            },
-            {
-              icon: <FaPaperclip />,
-              label: 'Tệp đính kèm',
-              value: (
-                <a
-                  href={contractDetail.UrlFile}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline ml-2"
-                >
-                  <FaFileDownload className="inline-block mr-1" /> Tải xuống
-                </a>
-              ),
-            },
-            {
-              icon: <FaStickyNote />,
-              label: 'Ghi chú',
-              value: contractDetail.Note || '',
-            },
-            {
-              icon: <FaInfoCircle />,
-              label: 'Mã số thuế',
-              value: contractDetail.TaxCode || '',
-            },
-            {
-              icon: <FaInfoCircle />,
-              label: 'Báo giá chi tiết',
-              value: (
-                <a
-                  href={contractDetail.Quotation.File}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-500 hover:underline ml-2"
-                >
-                  <FaFileDownload className="inline-block mr-1" /> Tải xuống
-                </a>
-              ),
-            },
-          ].map((item, index) => (
+          {details.map((item, index) => (
             <div
               key={index}
               className="mb-4 text-lg flex items-center bg-gray-100 p-4 rounded-lg shadow-sm"
             >
-              {item.icon}
-              <span className="font-semibold ml-2">{item.label}:</span>
-              <span className="text-gray-700 ml-2">{item.value}</span>
+              {item && (
+                <>
+                  {item.icon}
+                  <span className="font-semibold ml-2">{item.label}:</span>
+                  <span className="text-gray-700 ml-2">{item.value}</span>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -242,6 +266,12 @@ const ContractDetailManager = () => {
                 <th className="px-4 py-2 border text-center">Đợt</th>
                 <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">
+                  Ngày thanh toán
+                </th>
+                <th className="px-4 py-2 border text-center">
+                  Giai đoạn thanh toán
+                </th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
               </tr>
             </thead>
@@ -251,7 +281,13 @@ const ContractDetailManager = () => {
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
                   <td className="px-4 py-2 border">
-                    {batch.Price} {contractDetail.UnitPrice}
+                    {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentDate)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentPhase)}
                   </td>
                   <td className="px-4 py-2 border">
                     {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
@@ -273,10 +309,11 @@ const ContractDetailManager = () => {
                           className="ml-2"
                         />
                         <button
-                          onClick={handleUpload}
+                          onClick={() => handleUpload(index)}
                           className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                          disabled={isUploading}
                         >
-                          <FaUpload />
+                          {isUploading ? 'Đang tải lên...' : <FaUpload />}
                         </button>
                       </>
                     </td>

@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { postConstructionContract } from '../../../api/Construction/ConstructionApi';
+import {
+  postConstructionContract,
+  getFinalToContractConstruction,
+} from '../../../api/Construction/ConstructionApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { BatchPaymentRequest } from '../../../types/ContractResponseTypes';
 
 const CreateConstructionContract = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -11,17 +15,56 @@ const CreateConstructionContract = () => {
   const [contractDetails, setContractDetails] = useState({
     startDate: '',
     endDate: '',
-    validityPeriod: '',
     taxCode: '',
     contractValue: '',
-    urlFile: '',
+    urlFile: null,
     note: '',
   });
 
+  const [batchPayments, setBatchPayments] = useState<BatchPaymentRequest[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchBatchPayments = async () => {
+      if (projectId) {
+        try {
+          const data = await getFinalToContractConstruction(projectId);
+          setBatchPayments(data.BatchPaymentRequests);
+          setContractDetails((prevDetails) => ({
+            ...prevDetails,
+            contractValue: data.ContractValue.toString(),
+          }));
+        } catch (error) {
+          console.error('Error fetching batch payments:', error);
+        }
+      }
+    };
+
+    fetchBatchPayments();
+  }, [projectId]);
 
   const handleChangeContractDetails = (field: string, value: string) => {
     setContractDetails({ ...contractDetails, [field]: value });
+  };
+
+  const calculateValidityPeriod = () => {
+    const { startDate, endDate } = contractDetails;
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const diffTime = Math.abs(end.getTime() - start.getTime());
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+      return diffDays;
+    }
+    return 0;
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -32,7 +75,7 @@ const CreateConstructionContract = () => {
       projectId: projectId || '',
       startDate: contractDetails.startDate,
       endDate: contractDetails.endDate,
-      validityPeriod: parseInt(contractDetails.validityPeriod, 10),
+      validityPeriod: calculateValidityPeriod(),
       taxCode: contractDetails.taxCode,
       contractValue: parseFloat(contractDetails.contractValue),
       urlFile: contractDetails.urlFile,
@@ -41,7 +84,6 @@ const CreateConstructionContract = () => {
 
     try {
       const response = await postConstructionContract(requestBody);
-      console.log('Contract created successfully:', response);
       toast.success('Tạo hợp đồng thi công thành công!');
       navigate(`/project-detail-staff/${projectId}`);
     } catch (error: any) {
@@ -53,6 +95,8 @@ const CreateConstructionContract = () => {
       setIsSubmitting(false);
     }
   };
+
+  const today = new Date().toISOString().split('T')[0];
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -70,6 +114,7 @@ const CreateConstructionContract = () => {
                 onChange={(e) =>
                   handleChangeContractDetails('startDate', e.target.value)
                 }
+                min={today} // Ngăn chọn ngày trong quá khứ
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
               />
@@ -84,6 +129,7 @@ const CreateConstructionContract = () => {
                 onChange={(e) =>
                   handleChangeContractDetails('endDate', e.target.value)
                 }
+                min={contractDetails.startDate || today} // Ngăn chọn ngày trước ngày bắt đầu
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
               />
@@ -93,13 +139,10 @@ const CreateConstructionContract = () => {
                 Thời hạn hiệu lực:
               </label>
               <input
-                type="number"
-                value={contractDetails.validityPeriod}
-                onChange={(e) =>
-                  handleChangeContractDetails('validityPeriod', e.target.value)
-                }
+                type="text"
+                value={calculateValidityPeriod().toString()}
+                readOnly
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
               />
             </div>
           </div>
@@ -123,25 +166,11 @@ const CreateConstructionContract = () => {
                 Giá trị hợp đồng (VNĐ):
               </label>
               <input
-                type="number"
-                value={contractDetails.contractValue}
-                onChange={(e) =>
-                  handleChangeContractDetails('contractValue', e.target.value)
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                URL file:
-              </label>
-              <input
                 type="text"
-                value={contractDetails.urlFile}
-                onChange={(e) =>
-                  handleChangeContractDetails('urlFile', e.target.value)
-                }
+                value={parseFloat(
+                  contractDetails.contractValue,
+                ).toLocaleString()}
+                readOnly
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
               />
             </div>
@@ -159,17 +188,52 @@ const CreateConstructionContract = () => {
             required
           />
         </div>
-
-        <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
-            disabled={isSubmitting}
-          >
-            Lưu
-          </button>
-        </div>
       </form>
+
+      <h3 className="text-xl font-bold mt-8 mb-4">
+        Các đợt thanh toán Hợp đồng thi công
+      </h3>
+      <table className="min-w-full bg-white border border-gray-200">
+        <thead>
+          <tr>
+            <th className="px-4 py-2 border text-center">Đợt</th>
+            <th className="px-4 py-2 border text-center">Mô tả</th>
+            <th className="px-4 py-2 border text-center">Phần trăm</th>
+            <th className="px-4 py-2 border text-center">Giá</th>
+            <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
+            <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
+          </tr>
+        </thead>
+        <tbody>
+          {batchPayments.map((batch, index) => (
+            <tr key={index} className="text-center">
+              <td className="px-4 py-2 border">{batch.NumberOfBatches}</td>
+              <td className="px-4 py-2 border">{batch.Description}</td>
+              <td className="px-4 py-2 border">{batch.Percents}%</td>
+              <td className="px-4 py-2 border">
+                {batch.Price.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border">
+                {formatDate(batch.PaymentDate)}
+              </td>
+              <td className="px-4 py-2 border">
+                {formatDate(batch.PaymentPhase)}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div className="mt-6 flex justify-end">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+          disabled={isSubmitting}
+        >
+          Lưu
+        </button>
+      </div>
     </div>
   );
 };

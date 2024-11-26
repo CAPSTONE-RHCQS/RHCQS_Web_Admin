@@ -25,11 +25,14 @@ const HouseDesignDrawingEmployeeList: React.FC<
     null,
   );
   const [loading, setLoading] = useState<boolean>(true);
+  const [page, setPage] = useState<number>(1);
+  const [size] = useState<number>(8);
 
   useEffect(() => {
     const fetchEmployees = async () => {
+      setLoading(true);
       try {
-        const data = await getAvailableDesignStaff();
+        const data = await getAvailableDesignStaff(page, size);
         const formattedEmployees = data.map((item: any) => ({
           id: item.Id,
           avatar: item.ImgUrl,
@@ -45,13 +48,7 @@ const HouseDesignDrawingEmployeeList: React.FC<
       }
     };
     fetchEmployees();
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      setSelectedEmployeeId(null);
-    };
-  }, []);
+  }, [page, size]);
 
   const handleSelect = (id: string) => {
     setSelectedEmployeeId(id);
@@ -59,6 +56,14 @@ const HouseDesignDrawingEmployeeList: React.FC<
     if (selectedEmployee) {
       onSelectEmployee(id, selectedEmployee);
     }
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) => prevPage + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 1));
   };
 
   return (
@@ -100,6 +105,21 @@ const HouseDesignDrawingEmployeeList: React.FC<
                   isSelected={selectedEmployeeId === employee.id}
                 />
               ))}
+            </div>
+            <div className="flex justify-between mt-4">
+              <button
+                onClick={handlePreviousPage}
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+                disabled={page === 1}
+              >
+                Trang trước
+              </button>
+              <button
+                onClick={handleNextPage}
+                className="bg-gray-300 text-black px-4 py-2 rounded"
+              >
+                Trang sau
+              </button>
             </div>
           </div>
         )}

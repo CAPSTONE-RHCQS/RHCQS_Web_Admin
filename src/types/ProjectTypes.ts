@@ -29,6 +29,7 @@ export interface ContractInfo {
   Name: string;
   Status: string;
   Note: string | null;
+  FileContract: string | null;
 }
 
 export interface ProjectDetail {

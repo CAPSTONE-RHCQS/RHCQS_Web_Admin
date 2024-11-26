@@ -9,6 +9,7 @@ export const createContractDesign = async (
   data: CreateContractDesignRequest,
 ) => {
   try {
+    console.log('Create Contract', data);
     const response = await requestWebRHCQS.post('/contract/design', data, {
       headers: {
         accept: 'text/plain',
@@ -98,7 +99,7 @@ export const paymentContractConstruction = async (
     formData.append('files', file, file.name);
 
     const response = await requestWebRHCQS.put(
-      `/contract/construction/confirm?paymentId=${paymentId}`,
+      `/contract/design/confirm?paymentId=${paymentId}`,
       formData,
       {
         headers: {

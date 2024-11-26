@@ -23,12 +23,15 @@ import {
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
   const [contractDetail, setContractDetail] =
     useState<ContractDesignResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const fetchContractDetail = async () => {
@@ -55,12 +58,17 @@ const ContractDetailStaff = () => {
 
   const handleUpload = async () => {
     if (contractId && selectedFile) {
+      setIsUploading(true);
       try {
         await signContractCompletion(contractId, selectedFile);
-        alert('Tải lên thành công!');
+        toast.success('Tải lên thành công!');
+        const data = await getContractDesignById(contractId);
+        setContractDetail(data);
       } catch (error) {
         console.error('Error uploading signed contract:', error);
-        alert('Tải lên thất bại!');
+        toast.error('Tải lên thất bại!');
+      } finally {
+        setIsUploading(false);
       }
     }
   };
@@ -149,11 +157,6 @@ const ContractDetailStaff = () => {
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
-            <FaInfoCircle className="mr-2" />
-            <span className="font-semibold">Trạng thái:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Status}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
             <FaBoxOpen className="mr-2" />
             <span className="font-semibold">Gói thô:</span>
             <span className="text-gray-700 ml-2">
@@ -167,23 +170,20 @@ const ContractDetailStaff = () => {
               {contractDetail.FinishedPackagePrice} {contractDetail.UnitPrice}
             </span>
           </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaFileContract className="mr-2" />
-            <span className="font-semibold">Loại hợp đồng:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Type}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaPaperclip className="mr-2" />
-            <span className="font-semibold">Tệp đính kèm:</span>
-            <a
-              href={contractDetail.UrlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline ml-2"
-            >
-              <FaFileDownload className="inline-block mr-1" /> Tải xuống
-            </a>
-          </div>
+          {contractDetail.UrlFile && (
+            <div className="mb-4 text-lg flex items-center">
+              <FaPaperclip className="mr-2" />
+              <span className="font-semibold">Hợp đồng đã ký:</span>
+              <a
+                href={contractDetail.UrlFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
+            </div>
+          )}
           <div className="mb-4 text-lg flex items-center">
             <FaInfoCircle className="mr-2" />
             <span className="font-semibold">Mã số thuế:</span>
@@ -198,10 +198,17 @@ const ContractDetailStaff = () => {
               {contractDetail.Note || ''}
             </span>
           </div>
-          {contractDetail.Quotation.File !== 'Không có file' && (
+          {contractDetail.Quotation.File !== '' && (
             <div className="mb-4 text-lg flex items-center">
               <FaInfoCircle className="mr-2" />
-              <span className="font-semibold">Báo giá chi tiết:</span>
+              <span className="font-semibold">
+                {contractDetail.Name ===
+                'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+                  ? 'Bảng báo giá sơ bộ nhà ở dân dụng'
+                  : contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng'
+                  ? 'Bảng báo giá chi tiết nhà ở dân dụng'
+                  : ''}
+              </span>
               <a
                 href={contractDetail.Quotation.File}
                 target="_blank"
@@ -214,7 +221,7 @@ const ContractDetailStaff = () => {
           )}
         </div>
 
-        {contractDetail.Status === 'Processing' && (
+        {contractDetail.UrlFile === null && (
           <div className="mb-4 text-lg flex items-center">
             <FaUpload className="mr-2" />
             <span className="font-semibold">Tải lên Hợp đồng đã ký:</span>
@@ -222,8 +229,9 @@ const ContractDetailStaff = () => {
             <button
               onClick={handleUpload}
               className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+              disabled={isUploading}
             >
-              Tải lên
+              {isUploading ? 'Đang tải lên...' : 'Tải lên'}
             </button>
           </div>
         )}

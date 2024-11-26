@@ -31,7 +31,7 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
               Tổng giá trị xây dựng
             </td>
             <td className="px-4 py-2 border text-center">
-              {totalConstructionValue.toLocaleString()} VNĐ
+              {totalConstructionValue.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
@@ -40,21 +40,21 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
               Tùy chọn & Tiện ích
             </td>
             <td className="px-4 py-2 border text-center">
-              {totalUtilities.toLocaleString()} VNĐ
+              {totalUtilities.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
           <tr>
             <td className="px-4 py-2 border text-center">Chi Phí Thiết bị</td>
             <td className="px-4 py-2 border text-center">
-              {totalEquipmentCost.toLocaleString()} VNĐ
+              {totalEquipmentCost.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
           <tr>
             <td className="px-4 py-2 border text-center">Khuyến mãi</td>
             <td className="px-4 py-2 border text-center">
-              {totalDiscount.toLocaleString()} VNĐ
+              -{totalDiscount.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">VNĐ</td>
           </tr>
