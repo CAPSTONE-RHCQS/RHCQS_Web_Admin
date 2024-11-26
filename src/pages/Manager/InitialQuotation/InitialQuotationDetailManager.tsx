@@ -478,7 +478,7 @@ const InitialQuotationDetailManager = () => {
                     <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
+                    <strong>{totalAmount.toLocaleString()} VNĐ</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
                     <strong>VNĐ</strong>

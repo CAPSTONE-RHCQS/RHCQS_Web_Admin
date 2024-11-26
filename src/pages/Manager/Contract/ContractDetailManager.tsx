@@ -269,9 +269,7 @@ const ContractDetailManager = () => {
                 <th className="px-4 py-2 border text-center">
                   Ngày thanh toán
                 </th>
-                <th className="px-4 py-2 border text-center">
-                  Giai đoạn thanh toán
-                </th>
+                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
               </tr>
             </thead>

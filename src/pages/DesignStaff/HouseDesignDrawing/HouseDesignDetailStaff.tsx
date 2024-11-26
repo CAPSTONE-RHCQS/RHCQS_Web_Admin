@@ -6,11 +6,8 @@ import { createDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersion
 import { ClipLoader } from 'react-spinners';
 import { CreateDesignRequest } from '../../../types/HouseDesignVersionTypes';
 import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
-import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import * as pdfjsLib from 'pdfjs-dist';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
@@ -23,8 +20,6 @@ import {
   FiType,
 } from 'react-icons/fi';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
-
 const HouseDesignDetailStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
@@ -35,8 +30,6 @@ const HouseDesignDetailStaff: React.FC = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null,
   );
-
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const fetchDesignDetail = useCallback(async () => {
     if (!id) {
@@ -315,13 +308,6 @@ const HouseDesignDetailStaff: React.FC = () => {
           </div>
         )}
       </div>
-      {fileUrl && (
-        <div className="mt-6">
-          <div className="border rounded-lg w-full max-w-4xl mx-auto">
-            <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
-          </div>
-        </div>
-      )}
     </>
   );
 };

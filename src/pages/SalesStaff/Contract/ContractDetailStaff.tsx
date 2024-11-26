@@ -73,6 +73,14 @@ const ContractDetailStaff = () => {
     }
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   if (!contractDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -89,6 +97,13 @@ const ContractDetailStaff = () => {
   };
 
   const mappedStatus = statusMap[contractDetail.Status] || 'Đang xử lý';
+
+  const contractTemplateUrl =
+    contractDetail.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1732348518/Contract/Hop_dong_thiet_ke_a30cfe5d-d683-482b-8172-9eb2292dc75e.pdf'
+      : contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1731897883/Contract/Hop_dong_thi_cong_17e47746-0598-4caa-801e-261e01da1f9e.pdf'
+      : null;
 
   return (
     <>
@@ -153,21 +168,23 @@ const ContractDetailStaff = () => {
             <FaMoneyBillWave className="mr-2" />
             <span className="font-semibold">Giá trị hợp đồng:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.ContractValue || 'Chưa xác định'}
+              {contractDetail.ContractValue.toLocaleString() || ''} VNĐ
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBoxOpen className="mr-2" />
-            <span className="font-semibold">Gói thô:</span>
+            <span className="font-semibold">Giá trị thi công thô:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.RoughPackagePrice} {contractDetail.UnitPrice}
+              {contractDetail.RoughPackagePrice.toLocaleString()}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBox className="mr-2" />
-            <span className="font-semibold">Gói hoàn thiện:</span>
+            <span className="font-semibold">Giá trị thi công hoàn thiện:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.FinishedPackagePrice} {contractDetail.UnitPrice}
+              {contractDetail.FinishedPackagePrice.toLocaleString()}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
           {contractDetail.UrlFile && (
@@ -219,6 +236,20 @@ const ContractDetailStaff = () => {
               </a>
             </div>
           )}
+          {contractTemplateUrl && (
+            <div className="mb-4 text-lg flex items-center">
+              <FaFileContract className="mr-2" />
+              <span className="font-semibold">Bản hợp đồng mẫu:</span>
+              <a
+                href={contractTemplateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
+            </div>
+          )}
         </div>
 
         {contractDetail.UrlFile === null && (
@@ -244,6 +275,10 @@ const ContractDetailStaff = () => {
                 <th className="px-4 py-2 border text-center">Đợt</th>
                 <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">
+                  Ngày thanh toán
+                </th>
+                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
               </tr>
             </thead>
@@ -253,7 +288,13 @@ const ContractDetailStaff = () => {
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
                   <td className="px-4 py-2 border">
-                    {batch.Price} {contractDetail.UnitPrice}
+                    {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentDate)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentPhase)}
                   </td>
                   <td className="px-4 py-2 border">
                     {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (

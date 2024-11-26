@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { approveDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
