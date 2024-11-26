@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ClipLoader } from 'react-spinners';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
+import { FaDownload } from 'react-icons/fa';
 import {
   getMaterialList,
   getMaterialSectionList,
   createMaterialSection,
+  importExcelMaterial,
 } from '../../../api/Material/Material';
 import { MaterialItem, MaterialSectionItem } from '../../../types/Material';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
@@ -31,6 +33,7 @@ const MaterialSectionList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
+  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     setPageInput(page.toString());
@@ -117,6 +120,40 @@ const MaterialSectionList: React.FC = () => {
     }).format(price);
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      handleFileUpload(e.target.files[0]);
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setAlertMessage(null);
+    setAlertType('success');
+
+    try {
+      await importExcelMaterial(formData);
+      setAlertMessage('Tải lên tệp Excel thành công');
+      setAlertType('success');
+      setFile(null);
+      handleRefresh();
+    } catch (error: any) {
+      console.error('Error importing excel material:', error);
+      const errorMessage = error || 'Tải lên tệp Excel thất bại';
+      setAlertMessage(errorMessage);
+      setAlertType('error');
+      formData.delete('file');
+    }
+  };
+
+  const handleCloseAlert = () => {
+    setAlertMessage(null);
+    setAlertType('success');
+  };
+
   return (
     <>
       <div>
@@ -133,6 +170,18 @@ const MaterialSectionList: React.FC = () => {
               >
                 + Thêm vật tư
               </button>
+              <button
+                onClick={() => document.getElementById('fileInput')?.click()}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaDownload className="text-lg" />
+              </button>
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
               <ArrowPathIcon
                 onClick={handleRefresh}
                 className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
@@ -165,7 +214,7 @@ const MaterialSectionList: React.FC = () => {
               Trang trước
             </button>
             <span>
-              Trang 
+              Trang
               <input
                 type="text"
                 value={pageInput}
@@ -201,7 +250,7 @@ const MaterialSectionList: React.FC = () => {
         <Alert
           message={alertMessage}
           type={alertType}
-          onClose={() => setAlertMessage(null)}
+          onClose={handleCloseAlert}
         />
       )}
     </>

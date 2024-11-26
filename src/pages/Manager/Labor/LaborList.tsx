@@ -4,10 +4,11 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 // import LaborTable from './component/Table/LaborTable';
 import Alert from '../../../components/Alert';
-import { createLabor, getLabor } from '../../../api/Labor/Labor';
+import { createLabor, getLabor, importExcelLabor } from '../../../api/Labor/Labor';
 import { LaborItem } from '../../../types/Labor';
 import LaborTable from './component/Table/LaborTable';
 import CreateLabor from './component/Create/CreateLabor';
+import { FaDownload } from 'react-icons/fa';
 
 const LaborList: React.FC = () => {
   const [dataLabor, setDataLabor] = useState<LaborItem[]>([]);
@@ -22,6 +23,8 @@ const LaborList: React.FC = () => {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
@@ -84,6 +87,35 @@ const LaborList: React.FC = () => {
     }
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setFile(e.target.files[0]);
+      handleFileUpload(e.target.files[0]);
+    }
+  };
+
+  const handleFileUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    setAlertMessage(null);
+    setAlertType('success');
+
+    try {
+      await importExcelLabor(formData);
+      setAlertMessage('Tải lên tệp Excel thành công');
+      setAlertType('success');
+      setFile(null);
+      handleRefresh();
+    } catch (error: any) {
+      console.error('Error importing excel labor:', error);
+      const errorMessage = error || 'Tải lên tệp Excel thất bại';
+      setAlertMessage(errorMessage);
+      setAlertType('error');
+      formData.delete('file');
+    }
+  };
+
   return (
     <>
       <div>
@@ -100,6 +132,18 @@ const LaborList: React.FC = () => {
               >
                 + Thêm nhân công
               </button>
+              <button
+                onClick={() => document.getElementById('fileInput')?.click()}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaDownload className="text-lg" />
+              </button>
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
               <ArrowPathIcon
                 onClick={handleRefresh}
                 className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"

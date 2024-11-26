@@ -170,7 +170,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               <td className="px-4 py-2 border text-center">
                 <span>
                   {utility.Coefficient === 0
-                    ? utility.Price.toLocaleString()
+                    ? (utility.Price || 0).toLocaleString()
                     : (utility.Coefficient * totalRough).toLocaleString()}
                 </span>
               </td>

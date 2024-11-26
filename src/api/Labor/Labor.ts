@@ -59,3 +59,18 @@ export async function updateLabor(id: string, data: any): Promise<any> {
     throw new Error('Failed to update labor');
   }
 }
+
+export async function importExcelLabor(data: any) {
+  try {
+    const response = await requestWebRHCQS.post('/labor/import-excel', data, {
+      headers: {
+        accept: 'text/plain',
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('Error importing excel material:', error.response.data.Error);
+    throw error.response.data.Error || 'Failed to import excel material';
+  }
+}
