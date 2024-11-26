@@ -313,7 +313,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
           <ConstructionAreaTable
             tableData={tableData}
-            isEditing={isEditing}
+            isEditing={quotationData.ProjectType !== "TEMPLATE"} 
             handleInputChange={(e, index, field) => {
               const newData = [...tableData];
               newData[index] = { ...newData[index], [field]: e.target.value };

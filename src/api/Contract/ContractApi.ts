@@ -59,6 +59,7 @@ export const signContractCompletion = async (
         },
       },
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error signing contract completion:', error);

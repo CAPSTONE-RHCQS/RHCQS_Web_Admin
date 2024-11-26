@@ -22,7 +22,7 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
 }) => {
   return (
     <div className="flex justify-end space-x-2">
-      {!isFinalized && (
+      {isFinalized && (
         <>
           <button
             onClick={handleEditToggle}
@@ -58,4 +58,4 @@ const ButtonGroup: React.FC<ButtonGroupProps> = ({
   );
 };
 
-export default ButtonGroup; 
+export default ButtonGroup;

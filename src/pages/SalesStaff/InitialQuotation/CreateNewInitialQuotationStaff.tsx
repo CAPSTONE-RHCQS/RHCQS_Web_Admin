@@ -7,10 +7,10 @@ import {
   handleSave,
 } from './components/handler/quotationHandlersCreateNew';
 import { TableRow } from './components/types';
-import ActionButtons from './components/ActionButtons';
+import CreateNewActionButtons from './components/CreateNewActionButtons';
 import {
   InitialQuotationResponse,
-  QuotationUtility,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import {
   FaChevronLeft,
@@ -19,7 +19,6 @@ import {
   FaFileInvoiceDollar,
   FaRulerCombined,
 } from 'react-icons/fa';
-import ChatBox from '../../../components/ChatBox';
 import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 
 const InitialQuotationDetailStaff = () => {
@@ -32,7 +31,7 @@ const InitialQuotationDetailStaff = () => {
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
   const [batchPayment, setBatchPayment] = useState<any[]>([]);
-  const [utilityInfos, setUtilityInfos] = useState<QuotationUtility[]>([]);
+  const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
   const [othersAgreement, setOthersAgreement] = useState<string>(
@@ -89,7 +88,7 @@ const InitialQuotationDetailStaff = () => {
     totalArea * quotationData.PackageQuotationList.UnitPackageRough;
 
   const totalUtilities = utilityInfos.reduce(
-    (total, utility) => total + utility.price,
+    (total, utility) => total + utility.Price,
     0,
   );
 
@@ -148,7 +147,7 @@ const InitialQuotationDetailStaff = () => {
         </div>
       </div>
 
-      <ActionButtons
+      <CreateNewActionButtons
         isEditing={isEditing}
         isSaving={isSaving}
         handleEditToggle={handleEditToggle}

@@ -30,7 +30,7 @@ export const fetchQuotationData = async (
   >,
   setTableData: React.Dispatch<React.SetStateAction<TableRow[]>>,
   setPaymentSchedule: React.Dispatch<React.SetStateAction<BatchPaymentInfo[]>>,
-  setUtilityInfos: React.Dispatch<React.SetStateAction<QuotationUtility[]>>,
+  setUtilityInfos: React.Dispatch<React.SetStateAction<UtilityInfo[]>>,
   setDonGia: React.Dispatch<React.SetStateAction<number>>,
   setPromotionInfo: React.Dispatch<React.SetStateAction<any>>,
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>,
@@ -72,7 +72,7 @@ export const fetchQuotationData = async (
       }
 
       setPaymentSchedule(data.BatchPaymentInfos);
-      setUtilityInfos(data.UtilityInfos.map(convertToQuotationUtility));
+      setUtilityInfos(data.UtilityInfos);
       setDonGia(data.PackageQuotationList.UnitPackageRough);
       setQuantities(
         data.UtilityInfos.map((utility: UtilityInfo) => utility.Quantity),
@@ -87,7 +87,7 @@ export const handleSave = async (
   quotationData: InitialQuotationResponse | null,
   tableData: TableRow[],
   paymentSchedule: BatchPaymentInfo[],
-  utilityInfos: QuotationUtility[],
+  utilityInfos: UtilityInfo[],
   promotionInfo: PromotionInfo | null,
   giaTriHopDong: number,
   totalArea: number,
@@ -182,11 +182,11 @@ export const handleSave = async (
         : []),
     ],
     utilities: utilityInfos.map((utility, index) => ({
-      utilitiesItemId: utility.utilitiesItemId,
-      coefficient: utility.coefficient,
+      utilitiesItemId: utility.Id,
+      coefficient: utility.Coefficient,
       price: utilityPrices[index],
-      quantity: utility.quantity,
-      description: utility.description,
+      quantity: utility.Quantity,
+      description: utility.Description,
     })),
     promotions: isInvalidPromotion
       ? null

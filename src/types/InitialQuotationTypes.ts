@@ -52,6 +52,7 @@ export interface BatchPaymentInfo {
 export interface InitialQuotationResponse {
   Id: string;
   AccountName: string;
+  ProjectType: string;
   Address: string;
   ProjectId: string;
   Area: number;

@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { BatchPaymentInfo } from '../../../../../types/InitialQuotationTypes';
+import { toast } from 'react-toastify';
 
 interface BatchPaymentTableProps {
   batchPayment: BatchPaymentInfo[];
@@ -23,6 +24,25 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   handleDeletePayment,
 }) => {
   const today = new Date().toISOString().split('T')[0];
+
+  const handlePercentsChange = (index: number, value: string) => {
+    const newPercents = parseFloat(value) || 0;
+    const currentTotal = batchPayment.reduce(
+      (total, row) => total + (parseFloat(row.Percents) || 0),
+      0,
+    );
+
+    if (
+      currentTotal -
+        (parseFloat(batchPayment[index].Percents) || 0) +
+        newPercents <=
+      100
+    ) {
+      handlePaymentChange(index, 'Percents', newPercents);
+    } else {
+      toast.error('Tổng phần trăm không được vượt quá 100%');
+    }
+  };
 
   return (
     <div className="overflow-x-auto mb-4">
@@ -66,8 +86,8 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     <input
                       type="text"
                       value={row.Percents || ''}
-                      onChange={(e) =>
-                        handlePaymentChange(index, 'Percents', e.target.value)
+                      onChange={
+                        (e) => handlePercentsChange(index, e.target.value) // Sử dụng hàm mới
                       }
                       className="w-7 bg-transparent text-right"
                     />

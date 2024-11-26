@@ -26,8 +26,12 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   useEffect(() => {
     const formattedPayments = payments.map((payment) => ({
       ...payment,
-      PaymentDate: payment.PaymentDate ? new Date(payment.PaymentDate).toISOString().split('T')[0] : '',
-      PaymentPhase: payment.PaymentPhase ? new Date(payment.PaymentPhase).toISOString().split('T')[0] : '',
+      PaymentDate: payment.PaymentDate
+        ? new Date(payment.PaymentDate).toISOString().split('T')[0]
+        : '',
+      PaymentPhase: payment.PaymentPhase
+        ? new Date(payment.PaymentPhase).toISOString().split('T')[0]
+        : '',
     }));
     setEditedPayments(formattedPayments);
   }, [payments]);
@@ -61,8 +65,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
 
   const calculateTotalPrice = () => {
     return editedPayments.reduce(
-      (total, payment) =>
-        total + (payment.Percents / 100) * totalPrice,
+      (total, payment) => total + (payment.Percents / 100) * totalPrice,
       0,
     );
   };
@@ -100,10 +103,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 {`${payment.Percents}%`}
               </td>
               <td className="px-4 py-2 border text-center">
-                {(
-                  (payment.Percents / 100) *
-                  totalPrice
-                ).toLocaleString()}{' '}
+                {((payment.Percents / 100) * totalPrice).toLocaleString()}{' '}
                 {payment.Unit}
               </td>
               <td className="px-4 py-2 border text-center">{payment.Unit}</td>
@@ -119,8 +119,10 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                ) : payment.PaymentDate ? (
+                  new Date(payment.PaymentDate).toLocaleDateString()
                 ) : (
-                  payment.PaymentDate ? new Date(payment.PaymentDate).toLocaleDateString() : ''
+                  ''
                 )}
               </td>
               <td className="px-4 py-2 border text-center">
@@ -137,8 +139,10 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     }
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
+                ) : payment.PaymentPhase ? (
+                  new Date(payment.PaymentPhase).toLocaleDateString()
                 ) : (
-                  payment.PaymentPhase ? new Date(payment.PaymentPhase).toLocaleDateString() : ''
+                  ''
                 )}
               </td>
             </tr>
