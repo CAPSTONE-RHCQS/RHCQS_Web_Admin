@@ -62,6 +62,18 @@ const CreateContractDesign = () => {
     }
   }, [contractDetails.startDate, contractDetails.endDate]);
 
+  useEffect(() => {
+    setBatchPayments((prevBatchPayments) =>
+      prevBatchPayments.map((payment) => {
+        const percentValue = parseFloat(payment.percents) / 100;
+        return {
+          ...payment,
+          price: contractDetails.contractValue * percentValue,
+        };
+      }),
+    );
+  }, [contractDetails.contractValue]);
+
   const handleBatchPaymentChange = (
     index: number,
     field: keyof BatchPaymentRequest,

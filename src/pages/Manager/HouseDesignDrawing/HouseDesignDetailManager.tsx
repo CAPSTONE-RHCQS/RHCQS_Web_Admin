@@ -111,38 +111,21 @@ const HouseDesignDetailManager: React.FC = () => {
             Chi tiết bản vẽ thiết kế
           </h2>
           {isSelectable && (
-            <div
-              onMouseEnter={showMenu}
-              onMouseLeave={hideMenu}
-              className="relative"
-            >
-              <FiMoreVertical className="text-xl text-black dark:text-white cursor-pointer" />
-              {menuVisible && (
-                <div
-                  className="absolute right-2 top-2 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
-                  style={{ opacity: menuVisible ? 1 : 0 }}
-                >
-                  <div className="py-2">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (selectedVersionId) {
-                          setIsModalOpen(true);
-                        } else {
-                          toast.error(
-                            'Vui lòng chọn một phiên bản trước khi phê duyệt.',
-                          );
-                        }
-                      }}
-                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
-                    >
-                      <FaCheck className="mr-2" />
-                      Phê duyệt bản vẽ
-                    </a>
-                  </div>
-                </div>
-              )}
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectedVersionId) {
+                    setIsModalOpen(true);
+                  } else {
+                    toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
+                  }
+                }}
+                className="flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-lg text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
+              >
+                <FaCheck className="mr-2" />
+                Phê duyệt bản vẽ
+              </button>
             </div>
           )}
         </div>

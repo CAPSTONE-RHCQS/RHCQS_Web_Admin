@@ -136,7 +136,7 @@ const CreateConstructionContract = () => {
             </div>
             <div className="mb-4">
               <label className="block text-lg font-medium mb-2">
-                Thời hạn hiệu lực:
+                Thời hạn hiệu lực (Ngày):
               </label>
               <input
                 type="text"
