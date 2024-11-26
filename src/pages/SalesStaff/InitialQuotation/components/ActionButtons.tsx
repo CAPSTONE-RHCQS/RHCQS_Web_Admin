@@ -27,26 +27,27 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   return (
     <div className="flex justify-end space-x-2">
-      {quotationData.Status === 'Processing' && (
-        <>
-          {isEditing && (
+      {quotationData.Status === 'Processing' ||
+        (quotationData.Status === 'Rejected' && (
+          <>
+            {isEditing && (
+              <button
+                onClick={handleEditToggle}
+                disabled={isSaving}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+              >
+                Hủy
+              </button>
+            )}
             <button
-              onClick={handleEditToggle}
+              onClick={isEditing ? handleSave : handleEditToggle}
               disabled={isSaving}
               className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
             >
-              Hủy
+              {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
             </button>
-          )}
-          <button
-            onClick={isEditing ? handleSave : handleEditToggle}
-            disabled={isSaving}
-            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-          >
-            {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
-          </button>
-        </>
-      )}
+          </>
+        ))}
       <button
         onClick={handleDownload}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"

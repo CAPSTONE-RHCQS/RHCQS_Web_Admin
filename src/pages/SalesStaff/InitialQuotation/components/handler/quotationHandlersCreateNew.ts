@@ -96,6 +96,7 @@ export const handleSave = async (
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
   utilityPrices: number[],
+  quantities: (number | null)[]
 ) => {
   if (!quotationData) return;
 
@@ -143,6 +144,8 @@ export const handleSave = async (
     promotionInfo.Id === '00000000-0000-0000-0000-000000000000' ||
     promotionInfo.Value === 0;
 
+  console.log('Quantities in handleSave:', quantities);
+
   const requestData: UpdateInitialQuotationRequest = {
     accountName: quotationData.AccountName,
     address: quotationData.Address,
@@ -185,7 +188,7 @@ export const handleSave = async (
       utilitiesItemId: utility.Id,
       coefficient: utility.Coefficient,
       price: utilityPrices[index],
-      quantity: utility.Quantity,
+      quantity: quantities[index] || 0,
       description: utility.Description,
     })),
     promotions: isInvalidPromotion
@@ -200,6 +203,8 @@ export const handleSave = async (
       paymentPhase: payment.PaymentPhase || '',
     })),
   };
+
+  console.log('Request Data:', requestData);
 
   try {
     setIsSaving(true);

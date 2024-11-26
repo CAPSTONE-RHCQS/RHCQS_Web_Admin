@@ -87,6 +87,7 @@ export const handleSave = async (
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
   utilityPrices: number[],
+  quantities: (number | null)[],
 ) => {
   if (!quotationData) return;
 
@@ -176,7 +177,7 @@ export const handleSave = async (
       utilitiesItemId: utility.Id,
       coefficient: utility.Coefficient,
       price: utilityPrices[index],
-      quantity: utility.Quantity,
+      quantity: quantities[index] || 0, 
       description: utility.Description,
     })),
     promotions:

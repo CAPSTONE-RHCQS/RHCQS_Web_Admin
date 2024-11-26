@@ -151,7 +151,8 @@ const InitialQuotationDetailStaff = () => {
         isEditing={isEditing}
         isSaving={isSaving}
         handleEditToggle={handleEditToggle}
-        handleSave={() =>
+        handleSave={() => {
+          console.log('Quantities before save:', quantities);
           handleSave(
             quotationData,
             tableData,
@@ -165,8 +166,9 @@ const InitialQuotationDetailStaff = () => {
             navigate,
             setIsSaving,
             utilityPrices,
-          )
-        }
+            quantities
+          );
+        }}
       />
       <CreateNewQuotationSummary
         quotationData={quotationData}
