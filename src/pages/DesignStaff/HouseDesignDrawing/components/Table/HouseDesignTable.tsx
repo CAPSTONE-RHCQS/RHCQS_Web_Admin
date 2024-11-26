@@ -2,7 +2,6 @@ import React from 'react';
 import { ClipLoader } from 'react-spinners';
 import { useNavigate } from 'react-router-dom';
 import { FaEye } from 'react-icons/fa';
-import { statusStyles } from '../../HouseDesignList';
 
 export interface HouseDesignTableProps {
   data: Array<{
@@ -22,7 +21,6 @@ export interface HouseDesignTableProps {
   onEditSuccess: () => void;
 }
 
-// Định nghĩa icon SVG cho các bước với màu nền đồng bộ
 const stepIcon = (
   <svg
     width="24"

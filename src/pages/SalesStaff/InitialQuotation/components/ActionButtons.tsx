@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import React from 'react';
 import { FaDownload, FaShareAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -24,30 +25,30 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const handleShare = () => {
     toast.info('Chia sẻ hợp đồng');
   };
-
+  console.log('coc', quotationData.Status);
   return (
     <div className="flex justify-end space-x-2">
-      {quotationData.Status === 'Processing' ||
-        (quotationData.Status === 'Rejected' && (
-          <>
-            {isEditing && (
-              <button
-                onClick={handleEditToggle}
-                disabled={isSaving}
-                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-              >
-                Hủy
-              </button>
-            )}
+      {(quotationData.Status === 'Processing' ||
+        quotationData.Status === 'Rejected') && (
+        <>
+          {isEditing && (
             <button
-              onClick={isEditing ? handleSave : handleEditToggle}
+              onClick={handleEditToggle}
               disabled={isSaving}
               className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
             >
-              {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
+              Hủy
             </button>
-          </>
-        ))}
+          )}
+          <button
+            onClick={isEditing ? handleSave : handleEditToggle}
+            disabled={isSaving}
+            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+          >
+            {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
+          </button>
+        </>
+      )}
       <button
         onClick={handleDownload}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"

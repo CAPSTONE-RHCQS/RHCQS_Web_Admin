@@ -99,7 +99,7 @@ export const paymentContractConstruction = async (
     formData.append('files', file, file.name);
 
     const response = await requestWebRHCQS.put(
-      `/contract/design/confirm?paymentId=${paymentId}`,
+      `/contract/construction/confirm?paymentId=${paymentId}`,
       formData,
       {
         headers: {

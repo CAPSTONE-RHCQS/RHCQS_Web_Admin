@@ -138,7 +138,9 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
     if (field === 'Name') {
       setSearchName(value);
     }
-    if (promotionInfo) {
+    if (field === 'Name' && value === '') {
+      setPromotionInfo(null);
+    } else if (promotionInfo) {
       setPromotionInfo({ ...promotionInfo, [field]: value });
     } else {
       setPromotionInfo({
