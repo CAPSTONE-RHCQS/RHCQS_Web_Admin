@@ -26,6 +26,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
     );
   }, 0);
 
+  const totalConstructionValue = totalLaborCost + totalRoughCost;
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
@@ -98,6 +100,32 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             </td>
             <td className="px-4 py-2 border text-center font-bold">
               {totalRoughCost.toLocaleString()} VNĐ
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 className="text-lg font-bold mt-4">GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG TRƯỚC THUẾ:</h3>
+      <table className="min-w-full bg-white border border-gray-200 mt-2">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
+            <th className="px-4 py-2 border text-center">Tổng giá vật tư thô</th>
+            <th className="px-4 py-2 border text-center">+</th>
+            <th className="px-4 py-2 border text-center">Tổng giá trị xây dựng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="px-4 py-2 border text-center">
+              {totalLaborCost.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center">
+              {totalRoughCost.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center">+</td>
+            <td className="px-4 py-2 border text-center">
+              {totalConstructionValue.toLocaleString()} VNĐ
             </td>
           </tr>
         </tbody>

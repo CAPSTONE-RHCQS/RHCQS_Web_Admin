@@ -25,6 +25,7 @@ import {
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
   quotationPackage: PackageQuotationList;
+  projectType: string;
   onItemsChange: (updatedItems: FinalQuotationItem[]) => void;
   isEditing: boolean;
 }
@@ -32,6 +33,7 @@ interface FinalQuotationTableProps {
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   items,
   quotationPackage,
+  projectType,
   onItemsChange,
   isEditing,
 }) => {
@@ -68,6 +70,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   };
 
   const handleNameChange = async (index: number, name: string) => {
+    if (projectType === 'TEMPLATE') return;
+
     const updatedItems = [...items];
     updatedItems[index].ContructionName = name;
     onItemsChange(updatedItems);
@@ -211,6 +215,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   };
 
   const handleDeleteConstruction = (index: number) => {
+    if (projectType === 'TEMPLATE') return;
+
     const updatedItems = [...items];
     updatedItems.splice(index, 1);
     onItemsChange(updatedItems);
@@ -234,6 +240,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     return { totalLabor, totalRough };
   };
+
+  const { totalLabor, totalRough } = calculateColumnTotals();
+  const totalConstruction = totalLabor + totalRough;
 
   return (
     <div className="overflow-x-auto">
@@ -274,12 +283,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                 >
                   {isEditing ? (
                     <>
-                      <button
-                        onClick={() => handleDeleteConstruction(index)}
-                        className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full shadow hover:bg-red-600 transition duration-300"
-                      >
-                        <FontAwesomeIcon icon={faTimes} size="xs" />
-                      </button>
+                      {projectType !== 'TEMPLATE' && (
+                        <button
+                          onClick={() => handleDeleteConstruction(index)}
+                          className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full shadow hover:bg-red-600 transition duration-300"
+                        >
+                          <FontAwesomeIcon icon={faTimes} size="xs" />
+                        </button>
+                      )}
                       <textarea
                         value={item.ContructionName}
                         onChange={(e) => {
@@ -499,6 +510,38 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               {calculateColumnTotals().totalRough.toLocaleString()} VNĐ
             </td>
             {isEditing && <td className="px-4 py-2 border text-center"></td>}
+          </tr>
+        </tbody>
+      </table>
+
+      <h3 className="text-lg font-bold mt-4">
+        GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG TRƯỚC THUẾ:
+      </h3>
+      <table className="min-w-full bg-white border border-gray-200 mt-2">
+        <thead className="bg-gray-100">
+          <tr>
+            <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
+            <th className="px-4 py-2 border text-center">
+              Tổng giá vật tư thô
+            </th>
+            <th className="px-4 py-2 border text-center">+</th>
+            <th className="px-4 py-2 border text-center">
+              Tổng giá trị xây dựng
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="px-4 py-2 border text-center">
+              {totalLabor.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center">
+              {totalRough.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center">+</td>
+            <td className="px-4 py-2 border text-center">
+              {totalConstruction.toLocaleString()} VNĐ
+            </td>
           </tr>
         </tbody>
       </table>

@@ -62,7 +62,7 @@ export interface PromotionInfo {
 
 export interface UtilityInfo {
   Id: string;
-  utilitiesItemId: string;
+  utilitiesItemId: string | null;
   utilitiesSectionId: string;
   Name: string;
   Description: string;
@@ -111,13 +111,13 @@ export interface FinalQuotationDetail {
   HouseDrawingVersionInf: HouseDrawingVersionInfo[];
   ProjectType: string;
   ProjectAddress: string;
-  Discount: number;
+  Discount: number | null;
   TotalPrice: number;
-  Note: string;
+  Note: string | null;
   OthersAgreement: string;
   Version: number;
   InsDate: string;
-  UpsDate: string;
+  UpsDate: string | null;
   Status: string;
   Deflag: boolean;
   ReasonReject: string | null;
