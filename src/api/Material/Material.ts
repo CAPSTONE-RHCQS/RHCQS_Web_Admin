@@ -68,7 +68,7 @@ export async function getMaterialById(id: string) {
 
 export async function createMaterialSection(data: any) {
   try {
-    const response = await requestWebRHCQS.post('/materialsection', data, );
+    const response = await requestWebRHCQS.post('/materialsection', data,);
     return response.data;
   } catch (error) {
     console.error('Error creating material section:', error);
@@ -143,3 +143,17 @@ export async function updateMaterial(id: string, data: any) {
   }
 }
 
+export async function importExcelMaterial(data: any) {
+  try {
+    const response = await requestWebRHCQS.post('/material/import-excel', data, {
+      headers: {
+        accept: 'text/plain',
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error('Error importing excel material:', error.response.data.Error);
+    throw error.response.data.Error || 'Failed to import excel material';
+  }
+}
