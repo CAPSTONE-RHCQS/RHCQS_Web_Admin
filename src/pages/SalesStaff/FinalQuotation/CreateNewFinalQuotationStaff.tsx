@@ -479,6 +479,7 @@ const CreateNewFinalQuotationStaff = () => {
             isEditing={isEditing}
             onUtilitiesChange={handleUtilitiesChange}
             totalRough={totalRough}
+            projectType={quotationDetail.ProjectType}
             onPriceChange={handlePriceChange}
           />
         )}

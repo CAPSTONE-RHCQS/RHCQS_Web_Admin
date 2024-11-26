@@ -58,7 +58,7 @@ const InitialQuotationDetailManager = () => {
               : item.SubCoefficient || 0;
           return {
             stt: index + 1,
-            hangMuc: item.Name,
+            hangMuc: item.SubConstruction || item.Name,
             dTich: item.Area.toString(),
             heSo: coefficient.toString(),
             dienTich: (item.Area * coefficient).toString(),
@@ -289,7 +289,6 @@ const InitialQuotationDetailManager = () => {
 
         <ConstructionAreaTable
           tableData={tableData}
-          handleInputChange={handleInputChange}
           totalDienTich={totalDienTich}
         />
 

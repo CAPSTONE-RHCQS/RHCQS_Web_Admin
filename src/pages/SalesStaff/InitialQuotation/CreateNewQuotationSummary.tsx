@@ -399,6 +399,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         quantities={quantities}
         setQuantities={setQuantities}
         setTotalUtilities={setTotalUtility}
+        projectType={quotationData.ProjectType}
       />
 
       <div className="mt-4">

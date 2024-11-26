@@ -415,7 +415,7 @@ const FinalQuotationDetailStaff = () => {
                   <FaChevronDown className="ml-2 text-secondary" />
                 )}
               </h3>
-              {isEditing && quotationDetail?.ProjectType !== "TEMPLATE" && (
+              {isEditing && quotationDetail?.ProjectType !== 'TEMPLATE' && (
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -473,6 +473,7 @@ const FinalQuotationDetailStaff = () => {
             totalRough={totalRough}
             utilities={quotationDetail.UtilityInfos}
             isEditing={isEditing}
+            projectType={quotationDetail.ProjectType}
             onUtilitiesChange={handleUtilitiesChange}
             onPriceChange={handlePriceChange}
           />

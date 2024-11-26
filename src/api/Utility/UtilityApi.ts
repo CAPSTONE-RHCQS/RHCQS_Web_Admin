@@ -79,10 +79,12 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
 
 export async function getUtilityByName(
   name: string,
+  projectType: string,
 ): Promise<GetUtilityByNameResponse> {
   try {
+    console.log('Getting utility', name, projectType);
     const response = await requestWebRHCQS.get('/utilities/contain/name', {
-      params: { name },
+      params: { name, projectType },
       headers: {
         accept: 'text/plain',
       },

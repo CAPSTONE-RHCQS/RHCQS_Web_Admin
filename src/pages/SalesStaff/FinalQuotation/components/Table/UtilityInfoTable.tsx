@@ -10,6 +10,7 @@ interface UtilityInfoTableProps {
   isEditing: boolean;
   onUtilitiesChange: (updatedUtilities: UtilityInfo[]) => void;
   totalRough: number;
+  projectType: string;
   onPriceChange: (prices: number[]) => void;
 }
 
@@ -18,6 +19,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   isEditing,
   onUtilitiesChange,
   totalRough,
+  projectType,
   onPriceChange,
 }) => {
   const [editableUtilities, setEditableUtilities] = useState(
@@ -53,7 +55,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
 
     if (field === 'Name' && typeof value === 'string') {
       try {
-        const results = await getUtilityByName(value);
+        const results = await getUtilityByName(value, projectType);
         setSearchResults(results);
         setSelectedUtilityIndex(index);
       } catch (error) {

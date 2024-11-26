@@ -16,6 +16,7 @@ interface UtilityTableProps {
   quantities: (any | null)[];
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   setTotalUtilities: React.Dispatch<React.SetStateAction<number>>;
+  projectType: string;
 }
 
 const UtilityTable: React.FC<UtilityTableProps> = ({
@@ -27,6 +28,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   quantities,
   setQuantities,
   setTotalUtilities,
+  projectType,
 }) => {
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
@@ -64,7 +66,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
     if (!isEditing) return;
     handleEditUtility(index, 'description', value);
     try {
-      const results = await getUtilityByName(value);
+      const results = await getUtilityByName(value, projectType);
       setSearchResults(results);
       setSelectedRowIndex(index);
     } catch (error) {
