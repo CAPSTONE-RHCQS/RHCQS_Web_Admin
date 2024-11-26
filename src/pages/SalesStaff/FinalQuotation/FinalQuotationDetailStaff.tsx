@@ -317,7 +317,7 @@ const FinalQuotationDetailStaff = () => {
       <ButtonGroup
         isEditing={isEditing}
         isSaving={isSaving}
-        isFinalized={quotationDetail.Status === 'Finalized'}
+        isFinalized={quotationDetail.Status === 'Processing'}
         handleSave={handleSave}
         handleEditToggle={handleEditToggle}
         handleDownload={handleDownload}

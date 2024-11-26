@@ -7,7 +7,6 @@ interface ActionButtonsProps {
   isSaving: boolean;
   handleEditToggle: () => void;
   handleSave: () => void;
-  quotationData: { Status: string };
 }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
@@ -15,7 +14,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   isSaving,
   handleEditToggle,
   handleSave,
-  quotationData,
 }) => {
   const handleDownload = () => {
     toast.info('Tải về hợp đồng');
@@ -27,26 +25,23 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
 
   return (
     <div className="flex justify-end space-x-2">
-      {quotationData.Status === 'Processing' && (
-        <>
-          {isEditing && (
-            <button
-              onClick={handleEditToggle}
-              disabled={isSaving}
-              className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-            >
-              Hủy
-            </button>
-          )}
-          <button
-            onClick={isEditing ? handleSave : handleEditToggle}
-            disabled={isSaving}
-            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-          >
-            {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
-          </button>
-        </>
+      {isEditing && (
+        <button
+          onClick={handleEditToggle}
+          disabled={isSaving}
+          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+        >
+          Hủy
+        </button>
       )}
+      <button
+        onClick={isEditing ? handleSave : handleEditToggle}
+        disabled={isSaving}
+        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
+      >
+        {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
+      </button>
+
       <button
         onClick={handleDownload}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"

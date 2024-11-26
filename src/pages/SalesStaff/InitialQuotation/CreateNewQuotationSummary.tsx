@@ -4,6 +4,7 @@ import {
   BatchPaymentInfo,
   InitialQuotationResponse,
   PromotionInfo,
+  UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import { TableRow } from './components/types';
 import UtilityTable from './components/Table/UtilityTable';
@@ -28,7 +29,7 @@ interface QuotationSummaryProps {
   donGia: number;
   totalRough: number;
   utilityInfos: any[];
-  setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
+  setUtilityInfos: React.Dispatch<React.SetStateAction<UtilityInfo[]>>;
   totalUtilities: number;
   promotionInfo: PromotionInfo | null;
   setPromotionInfo: React.Dispatch<React.SetStateAction<PromotionInfo | null>>;
@@ -45,7 +46,7 @@ interface QuotationSummaryProps {
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
 }
 
-const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
+const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   quotationData,
   setQuotationData,
   tableData,
@@ -70,9 +71,8 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
-  const [totalUtility, setTotalUtility] = useState<number>(0);
-
   const previousSearchNameRef = useRef<string>('');
+  const [totalUtility, setTotalUtility] = useState<number>(0);
 
   const fetchPromotions = useCallback(async () => {
     const { IdPackageFinished, IdPackageRough } =
@@ -156,6 +156,8 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
         utilitiesItemId: '',
         coefficient: 0,
         price: 0,
+        unitPrice: 0,
+        quantity: 0,
         description: '',
       },
     ]);
@@ -311,7 +313,7 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
 
           <ConstructionAreaTable
             tableData={tableData}
-            isEditing={isEditing}
+            isEditing={quotationData.ProjectType !== 'TEMPLATE'}
             handleInputChange={(e, index, field) => {
               const newData = [...tableData];
               newData[index] = { ...newData[index], [field]: e.target.value };
@@ -566,4 +568,4 @@ const CreateNewQuotationSummary: React.FC<QuotationSummaryProps> = ({
   );
 };
 
-export default CreateNewQuotationSummary;
+export default QuotationSummary;

@@ -188,6 +188,7 @@ const InitialQuotationDetailStaff = () => {
             utilityPrices,
           )
         }
+        quotationData={quotationData}
       />
       <QuotationSummary
         quotationData={quotationData}

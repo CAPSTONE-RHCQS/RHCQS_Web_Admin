@@ -106,6 +106,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
               value={quotationData.PackageQuotationList.PackageRough}
               onChange={(e) => handleInputChange(e, 'ROUGH')}
               className="border rounded px-2 py-1 w-full mb-2"
+              disabled={quotationData.ProjectType === 'TEMPLATE'}
             />
             {searchResultsRough.length > 0 && (
               <ul className="border rounded mt-2">
@@ -120,6 +121,14 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                 ))}
               </ul>
             )}
+            {quotationData.PackageQuotationList.PackageRough &&
+              quotationData.PackageQuotationList.IdPackageRough && (
+                <p className="mt-2">
+                  {quotationData.PackageQuotationList.PackageRough} -{' '}
+                  {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+                  đồng
+                </p>
+              )}
           </div>
           <div className="mb-4">
             <label className="block font-semibold mb-1">
@@ -144,6 +153,14 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                 ))}
               </ul>
             )}
+            {quotationData.PackageQuotationList.PackageFinished &&
+              quotationData.PackageQuotationList.IdPackageFinished && (
+                <p className="mt-2">
+                  {quotationData.PackageQuotationList.PackageFinished} -{' '}
+                  {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                  đồng
+                </p>
+              )}
           </div>
         </>
       ) : (

@@ -95,7 +95,6 @@ const CreateContractDesign = () => {
       })),
     };
 
-
     try {
       const response = await createContractDesign(requestBody);
       console.log('Contract created successfully:', response);
@@ -154,7 +153,6 @@ const CreateContractDesign = () => {
                   handleChangeContractDetails('urlFile', e.target.value)
                 }
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
               />
             </div>
             <div className="mb-4">
