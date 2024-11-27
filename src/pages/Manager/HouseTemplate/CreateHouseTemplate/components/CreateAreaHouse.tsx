@@ -105,7 +105,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
               (item) => item.Name === result.Name,
             ),
         );
-        newAreas[index].searchResults = filteredResults;
+        newAreas[index].searchResults = filteredResults as ConstructionSearchResponse[];
         onAreaDataChange(newAreas);
       } catch (error) {
         console.error('Error fetching search results:', error);

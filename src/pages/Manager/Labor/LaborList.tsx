@@ -121,8 +121,8 @@ const LaborList: React.FC = () => {
       <div>
         <Breadcrumb pageName="Quản lý lao động" />
         <div className="bg-white p-4 rounded shadow ">
-          <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <span className="text-lg text-black dark:text-white">
+          <div className="flex items-center justify-between mb-8 mt-4">
+            <span className="text-lg font-medium text-black dark:text-white">
               Tổng số lao động: {totalLabor}
             </span>
             <div className="flex space-x-2">

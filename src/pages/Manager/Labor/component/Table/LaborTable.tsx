@@ -29,6 +29,7 @@ const LaborTable: React.FC<LaborTableProps> = ({
     Deflag: true,
     Type: '',
   });
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const handleInputChange = (field: string, value: any) => {
     setInputValue((prev) => ({ ...prev, [field]: value }));
@@ -67,18 +68,44 @@ const LaborTable: React.FC<LaborTableProps> = ({
   };
 
   const formatPrice = (price: number) => {
-    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    return price.toLocaleString('vi-VN', {
+      style: 'currency',
+      currency: 'VND',
+    });
+  };
+
+  const translateType = (type: string) => {
+    switch (type) {
+      case 'Finished':
+        return 'Hoàn thiện';
+      case 'Rough':
+        return 'Thô';
+      default:
+        return type;
+    }
   };
 
   return (
     <>
+      <div className="mb-4">
+        <div className="font-regular text-black dark:text-white mb-2">
+          Tìm kiếm nhân công
+        </div>
+        <input
+          type="text"
+          placeholder="Tìm kiếm nhân công..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border p-2 w-1/3 rounded-md focus:outline-none"
+        />
+      </div>
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">
             {['Tên nhân công', 'Giá', 'Ngày tạo', 'Loại', ''].map((header) => (
               <th
                 key={header}
-                className="py-4 px-4 font-medium text-black dark:text-white"
+                className="py-4 px-4 font-bold text-black dark:text-white"
               >
                 {header}
               </th>
@@ -86,32 +113,36 @@ const LaborTable: React.FC<LaborTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {dataLabor.map((item, index) => (
-            <React.Fragment key={index}>
-              <tr className="cursor-pointer">
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center">
-                  {item.Name}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {formatPrice(item.Price)}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {formatDate(item.InsDate || '')}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  {item.Type}
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-                  <div
-                    className="flex justify-center relative"
-                    onClick={() => handleEditClick(item)}
-                  >
-                    <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
-                  </div>
-                </td>
-              </tr>
-            </React.Fragment>
-          ))}
+          {dataLabor
+            .filter((item) =>
+              item.Name.toLowerCase().includes(searchTerm.toLowerCase()),
+            )
+            .map((item, index) => (
+              <React.Fragment key={index}>
+                <tr className="cursor-pointer">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center font-semibold text-black dark:text-white">
+                    {item.Name}
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-semibold text-primaryGreenButton">
+                    {formatPrice(item.Price)}
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    {formatDate(item.InsDate || '')}
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                    {translateType(item.Type)}
+                  </td>
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
+                    <div
+                      className="flex justify-center relative"
+                      onClick={() => handleEditClick(item)}
+                    >
+                      <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
+                    </div>
+                  </td>
+                </tr>
+              </React.Fragment>
+            ))}
         </tbody>
       </table>
 
