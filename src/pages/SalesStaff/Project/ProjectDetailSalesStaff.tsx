@@ -366,7 +366,14 @@ const ProjectDetailSalesStaff = () => {
               )) ||
             (projectDetail.FinalInfo.length === 0 &&
               isContractDesignEnabled &&
-              isFinalized) ? (
+              isFinalized &&
+              projectDetail.ContractInfo.some(
+                (info) => info.Status === 'Finished',
+              ) &&
+              projectDetail.HouseDesignDrawingInfo.some(
+                (info) =>
+                  info.Type === 'DIENNUOC' && info.Status === 'Accepted',
+              )) ? (
               <button
                 className="mb-4 bg-primaryGreenButton text-white px-4 py-2 rounded hover:bg-secondaryGreenButton transition-colors duration-200 font-montserrat"
                 onClick={() =>
