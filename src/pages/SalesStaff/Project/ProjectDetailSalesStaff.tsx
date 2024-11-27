@@ -367,9 +367,6 @@ const ProjectDetailSalesStaff = () => {
             (projectDetail.FinalInfo.length === 0 &&
               isContractDesignEnabled &&
               isFinalized &&
-              projectDetail.ContractInfo.some(
-                (info) => info.Status === 'Finished',
-              ) &&
               projectDetail.HouseDesignDrawingInfo.some(
                 (info) =>
                   info.Type === 'DIENNUOC' && info.Status === 'Finalized',
