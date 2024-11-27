@@ -193,6 +193,8 @@ const CreateNewFinalQuotationStaff = () => {
       setShowEquipmentCosts(true);
       setShowDetailedItems(true);
       setShowUtilities(true);
+      setShowPromotions(true);
+      setShowContractValueSummary(true);
     }
   };
 

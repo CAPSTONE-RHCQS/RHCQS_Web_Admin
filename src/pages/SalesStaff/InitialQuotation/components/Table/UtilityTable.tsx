@@ -114,11 +114,22 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
-            <th className="px-4 py-2 border text-center">Mô tả</th>
-            <th className="px-2 py-2 border text-center w-20">Hệ số</th>
-            <th className="px-2 py-2 border text-center w-24">Số lượng</th>
-            <th className="px-4 py-2 border text-center">Đơn giá</th>
-            <th className="px-4 py-2 border text-center">Giá</th>
+            <th className="px-4 py-2 border text-center w-300">Mô tả</th>
+            <th className="px-2 py-2 border text-center w-30">Hệ số</th>
+            <th className="px-2 py-2 border text-center w-30">Số lượng</th>
+            <th
+              className="px-2 py-1 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Đơn giá
+            </th>
+            <th
+              className="px-2 py-1 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Giá trị thanh toán
+            </th>
+            <th className="px-2 py-1 border text-center w-40">Đơn vị</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -130,7 +141,10 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                   type="text"
                   value={utility.Description}
                   onChange={(e) => handleSearchAndEdit(e.target.value, index)}
-                  className="w-full text-left"
+                  className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  style={{
+                    border: '1px solid #ccc',
+                  }}
                   disabled={!isEditing}
                 />
                 {selectedRowIndex === index && searchResults.length > 0 && (
@@ -159,17 +173,26 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                     onChange={(e) =>
                       handleQuantityChange(index, Number(e.target.value))
                     }
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                     disabled={!isEditing}
                   />
                 ) : (
                   <span></span>
                 )}
               </td>
-              <td className="px-4 py-2 border text-center">
+              <td
+                className="px-2 py-1 border text-center"
+                style={{ maxWidth: '80px' }}
+              >
                 {utility.UnitPrice ? utility.UnitPrice.toLocaleString() : ''}
               </td>
-              <td className="px-4 py-2 border text-center">
+              <td
+                className="px-2 py-1 border text-center"
+                style={{ maxWidth: '80px' }}
+              >
                 <span>
                   {utility.Coefficient === 0
                     ? (
@@ -178,6 +201,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                     : (utility.Coefficient * totalRough).toLocaleString()}
                 </span>
               </td>
+              <td className="px-2 py-1 border text-center">VNĐ</td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">
                   <div className="flex justify-center items-center">
@@ -200,6 +224,9 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               <strong>{`${totalUtilityCost.toLocaleString(
                 'vi-VN',
               )} VNĐ`}</strong>
+            </td>
+            <td className="px-4 py-2 border text-center">
+              <strong>VNĐ</strong>
             </td>
           </tr>
         </tbody>

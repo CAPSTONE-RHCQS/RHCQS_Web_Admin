@@ -127,6 +127,9 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
             <th className="px-4 py-2 border text-center font-semibold">
               Giá trị thanh toán
             </th>
+            <th className="px-4 py-2 border text-center font-semibold">
+              Đơn vị
+            </th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>
@@ -140,7 +143,10 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Name', e.target.value)
                   }
-                  className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full text-left rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                  style={{
+                    border: '1px solid #ccc',
+                  }}
                   disabled={!isEditing}
                 />
                 {selectedUtilityIndex === index && searchResults.length > 0 && (
@@ -168,7 +174,10 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                     onChange={(e) =>
                       handleQuantityChange(index, e.target.value)
                     }
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                     disabled={!isEditing}
                   />
                 ) : (
@@ -190,6 +199,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
                   ).toLocaleString()}
                 </span>
               </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center align-middle">
                   <button
@@ -215,6 +225,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
             <td className="px-4 py-2 border text-center font-bold">
               {calculateTotalPrice().toLocaleString()} VNĐ
             </td>
+            <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
             {isEditing && <td className="px-4 py-2 border text-center"></td>}
           </tr>
         </tbody>

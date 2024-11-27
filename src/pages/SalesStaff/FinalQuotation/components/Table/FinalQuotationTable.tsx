@@ -76,6 +76,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     updatedItems[index].ContructionName = name;
     onItemsChange(updatedItems);
 
+    if (name.trim() === '') {
+      setSearchResults((prev) => ({
+        ...prev,
+        [`construction-${index}`]: [],
+      }));
+      return;
+    }
+
     try {
       const results = await getConstructionByName(name);
       setSearchResults((prev) => ({
@@ -95,7 +103,25 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   ) => {
     const updatedItems = [...items];
     updatedItems[index].QuotationItems[qItemIndex].Name = name;
-    onItemsChange(updatedItems);
+
+    if (name.trim() === '') {
+      updatedItems[index].QuotationItems[qItemIndex] = {
+        ...updatedItems[index].QuotationItems[qItemIndex],
+        UnitPriceLabor: null,
+        UnitPriceRough: null,
+        TotalPriceLabor: null,
+        TotalPriceRough: null,
+        LaborId: null,
+        MaterialId: null,
+        Weight: 0,
+      };
+      setSearchResults((prev) => ({
+        ...prev,
+        [`item-${index}-${qItemIndex}`]: [],
+      }));
+      onItemsChange(updatedItems);
+      return;
+    }
 
     try {
       const searchType = searchTypes[`${index}-${qItemIndex}`] || 'Labor';
@@ -189,9 +215,19 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       Name: '',
       UnitPriceLabor: null,
       UnitPriceRough: null,
+      TotalPriceLabor: null,
+      TotalPriceRough: null,
+      Weight: 0,
+      Unit: '',
       LaborId: null,
       MaterialId: null,
     };
+
+    setSearchResults((prev) => ({
+      ...prev,
+      [`item-${index}-${qItemIndex}`]: [],
+    }));
+
     onItemsChange(updatedItems);
   };
 
@@ -249,7 +285,6 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       <table className="min-w-full bg-white border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center">Tên công trình</th>
             <th className="px-4 py-2 border text-center">Tên hạng mục</th>
             <th
               className="px-4 py-2 border text-center"
@@ -263,50 +298,69 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             >
               Số lượng
             </th>
-            <th className="px-4 py-2 border text-center">Đơn giá nhân công</th>
-            <th className="px-4 py-2 border text-center">Đơn giá vật tư thô</th>
-            <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
-            <th className="px-4 py-2 border text-center">
-              Tổng giá vật tư thô
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Đơn giá nhân công
             </th>
-            {isEditing && <th className="px-4 py-2 border text-center"></th>}
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Đơn giá vật tư thô
+            </th>
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Tổng giá nhân công
+            </th>
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '80px' }}
+            >
+              Tổng giá vật tư
+            </th>
+            {isEditing && (
+              <th
+                className="px-2 py-2 border text-center"
+                style={{ width: '50px' }}
+              ></th>
+            )}
           </tr>
         </thead>
         <tbody>
           {items.map((item, index) => (
             <React.Fragment key={item.Id}>
-              <tr className="hover:bg-gray-50">
+              <tr>
                 <td
-                  className="px-4 py-2 border text-center whitespace-normal overflow-visible relative"
-                  style={{ maxWidth: '500px', verticalAlign: 'middle' }}
-                  rowSpan={item.QuotationItems.length + 1}
+                  colSpan={isEditing ? 8 : 7}
+                  className="px-4 py-2 border text-left font-bold relative"
+                  style={{ fontSize: '1.1em', verticalAlign: 'middle' }}
                 >
                   {isEditing ? (
                     <>
-                      {projectType !== 'TEMPLATE' && (
-                        <button
-                          onClick={() => handleDeleteConstruction(index)}
-                          className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full shadow hover:bg-red-600 transition duration-300"
-                        >
-                          <FontAwesomeIcon icon={faTimes} size="xs" />
-                        </button>
-                      )}
                       <textarea
                         value={item.ContructionName}
                         onChange={(e) => {
                           handleNameChange(index, e.target.value);
                           adjustTextareaHeight(e.target);
                         }}
-                        className="w-full text-center whitespace-normal overflow-visible mt-8"
+                        className="w-full text-left"
                         style={{
-                          maxWidth: '500px',
                           resize: 'none',
-                          display: 'flex',
-                          alignItems: 'center',
+                          overflow: 'hidden',
                           overflowWrap: 'break-word',
                           wordBreak: 'break-word',
+                          fontSize: '1.1em',
+                          padding: '5px',
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          height: 'auto',
                         }}
-                        rows={3}
+                        rows={1}
+                        placeholder="Điền tên công trình..."
                         ref={(textarea) => {
                           if (textarea) adjustTextareaHeight(textarea);
                         }}
@@ -337,22 +391,19 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                               ))}
                           </ul>
                         )}
+                      {projectType !== 'TEMPLATE' && (
+                        <button
+                          onClick={() => handleDeleteConstruction(index)}
+                          className="absolute top-3 right-6 bg-red-500 text-white w-6 h-6 flex items-center justify-center rounded-full shadow hover:bg-red-600 transition duration-300"
+                        >
+                          <FontAwesomeIcon icon={faTimes} size="xs" />
+                        </button>
+                      )}
                     </>
                   ) : (
                     item.ContructionName
                   )}
                 </td>
-
-                {isEditing && (
-                  <td colSpan={7} className="px-4 py-2 border text-center">
-                    <button
-                      onClick={() => handleAddQuotationItem(index)}
-                      className="text-blue-500 hover:text-blue-700"
-                    >
-                      <FontAwesomeIcon icon={faPlus} /> Thêm hạng mục
-                    </button>
-                  </td>
-                )}
               </tr>
               {item.QuotationItems.map((quotationItem, qItemIndex) => (
                 <tr
@@ -388,13 +439,20 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                             );
                             adjustTextareaHeight(e.target);
                           }}
-                          className="w-full text-center"
+                          className="w-full text-left"
                           style={{
                             resize: 'none',
+                            overflow: 'hidden',
                             overflowWrap: 'break-word',
                             wordBreak: 'break-word',
+                            border: '1px solid #ccc',
+                            borderRadius: '4px',
+                            padding: '5px',
+                            height: 'auto',
+                            fontWeight: 'bold',
                           }}
                           rows={1}
+                          placeholder="Điền tên hạng mục..."
                           ref={(textarea) => {
                             if (textarea) adjustTextareaHeight(textarea);
                           }}
@@ -460,6 +518,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                           calculateTotalPrices(index, qItemIndex);
                         }}
                         className="w-full text-center"
+                        style={{
+                          border: '1px solid #ccc',
+                          borderRadius: '4px',
+                          padding: '5px',
+                        }}
                       />
                     ) : (
                       quotationItem.Weight
@@ -467,22 +530,22 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {quotationItem.UnitPriceLabor
-                      ? `${quotationItem.UnitPriceLabor.toLocaleString()} VNĐ`
+                      ? `${quotationItem.UnitPriceLabor.toLocaleString()}`
                       : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {quotationItem.UnitPriceRough
-                      ? `${quotationItem.UnitPriceRough.toLocaleString()} VNĐ`
+                      ? `${quotationItem.UnitPriceRough.toLocaleString()}`
                       : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {quotationItem.TotalPriceLabor
-                      ? `${quotationItem.TotalPriceLabor.toLocaleString()} VNĐ`
+                      ? `${quotationItem.TotalPriceLabor.toLocaleString()}`
                       : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {quotationItem.TotalPriceRough
-                      ? `${quotationItem.TotalPriceRough.toLocaleString()} VNĐ`
+                      ? `${quotationItem.TotalPriceRough.toLocaleString()}`
                       : ''}
                   </td>
                   {isEditing && (
@@ -497,10 +560,22 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                   )}
                 </tr>
               ))}
+              {isEditing && (
+                <tr>
+                  <td colSpan={7} className="px-4 py-2 text-center">
+                    <button
+                      onClick={() => handleAddQuotationItem(index)}
+                      className="text-blue-500 hover:text-blue-700"
+                    >
+                      <FontAwesomeIcon icon={faPlus} /> Thêm hạng mục
+                    </button>
+                  </td>
+                </tr>
+              )}
             </React.Fragment>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={6} className="px-4 py-2 border text-center font-bold">
+            <td colSpan={5} className="px-4 py-2 border text-center font-bold">
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">

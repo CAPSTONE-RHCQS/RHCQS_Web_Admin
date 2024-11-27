@@ -87,7 +87,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
           {tableData.map((item, index) => (
             <tr key={item.uniqueId || index}>
               <td className="px-4 py-2 border text-center">{item.stt}</td>
-              <td className="px-4 py-2 border text-center border-2 border-green-300">
+              <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
                     type="text"
@@ -96,7 +96,10 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                       handleInputChange(e, index, 'hangMuc');
                       handleSearch(e.target.value, index);
                     }}
-                    className="w-full text-left"
+                    className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                   />
                 ) : (
                   <span>{item.hangMuc}</span>
@@ -117,13 +120,16 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                     </ul>
                   )}
               </td>
-              <td className="px-4 py-2 border text-center border-2 border-green-300">
+              <td className="px-4 py-2 border text-center">
                 {isEditing ? (
                   <input
                     type="text"
                     value={item.dTich}
                     onChange={(e) => handleInputChange(e, index, 'dTich')}
-                    className="w-full text-center"
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                   />
                 ) : (
                   <span>{item.dTich}</span>

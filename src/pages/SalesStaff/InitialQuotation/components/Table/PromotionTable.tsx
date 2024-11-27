@@ -44,7 +44,10 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
                     onChange={(e) =>
                       handlePromotionChange('Name', e.target.value)
                     }
-                    className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full p-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                     list="promotion-suggestions"
                   />
                 ) : (

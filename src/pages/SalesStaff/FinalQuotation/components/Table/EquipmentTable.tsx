@@ -156,13 +156,14 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                     handleInputChange(index, 'Name', e.target.value);
                     autoResizeTextarea(e);
                   }}
-                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                  className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none border border-gray-300"
                   disabled={!isEditing}
                   rows={1}
                   style={{
                     overflow: 'hidden',
                     minHeight: '60px',
                     resize: 'vertical',
+                    border: '1px solid #ccc',
                   }}
                 />
               </td>
@@ -173,7 +174,10 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Unit', e.target.value)
                   }
-                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                  style={{
+                    border: '1px solid #ccc',
+                  }}
                   disabled={!isEditing}
                 />
               </td>
@@ -184,7 +188,10 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                   onChange={(e) =>
                     handleInputChange(index, 'Quantity', Number(e.target.value))
                   }
-                  className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                  style={{
+                    border: '1px solid #ccc',
+                  }}
                   disabled={!isEditing}
                 />
               </td>
@@ -200,7 +207,10 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                         Number(e.target.value),
                       )
                     }
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                     disabled={!isEditing}
                   />
                 ) : (
@@ -216,7 +226,9 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center align-middle">
                 <span>
-                  {(item.Quantity * item.UnitOfMaterial).toLocaleString('vi-VN')}
+                  {(item.Quantity * item.UnitOfMaterial).toLocaleString(
+                    'vi-VN',
+                  )}
                 </span>
               </td>
               <td className="px-4 py-2 border text-center align-middle">
@@ -233,6 +245,7 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({
                     overflow: 'hidden',
                     minHeight: '60px',
                     resize: 'vertical',
+                    border: '1px solid #ccc',
                   }}
                 />
               </td>

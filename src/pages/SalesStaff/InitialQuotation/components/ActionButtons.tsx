@@ -25,7 +25,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const handleShare = () => {
     toast.info('Chia sẻ hợp đồng');
   };
-  console.log('coc', quotationData.Status);
   return (
     <div className="flex justify-end space-x-2">
       {(quotationData.Status === 'Processing' ||

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
-  FaUser,
+  FaHome,
   FaMapMarkerAlt,
   FaRulerCombined,
   FaHistory,
@@ -36,6 +36,23 @@ import {
   isAnyFinalInfoFinalized,
 } from '../../../utils/projectUtils';
 import ArrowIcon from '../../../SVG/ArrowIcon';
+
+const getTypeInVietnamese = (type: string) => {
+  switch (type) {
+    case 'TEMPLATE':
+      return 'Mẫu nhà';
+    case 'FINISHED':
+      return 'Hoàn thiện';
+    case 'ROUGH':
+      return 'Thô';
+    case 'ALL':
+      return 'Thô & Hoàn thiện';
+    case 'HAVE_DRAWING':
+      return 'Sẵn bản thiết kế';
+    default:
+      return 'Khác';
+  }
+};
 
 const ProjectDetailSalesStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -228,7 +245,14 @@ const ProjectDetailSalesStaff = () => {
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2 text-secondary" />
+          <FaHome className="mr-2 text-secondary" />
+          <span className="font-semibold">Phân loại dự án</span>
+          <span className="text-gray-700 ml-2">
+            {getTypeInVietnamese(projectDetail.Type)}
+          </span>
+        </div>
+        <div className="mb-2 text-lg flex items-center">
+          <FaHome className="mr-2 text-secondary" />
           <span className="font-semibold">Tên khách hàng:</span>
           <span className="text-gray-700 ml-2">
             {projectDetail.AccountName}

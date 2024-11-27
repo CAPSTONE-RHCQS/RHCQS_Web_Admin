@@ -19,7 +19,7 @@ const PromotionTable: React.FC<PromotionTableProps> = ({
               Khuyến mãi
             </th>
             <th className="px-4 py-2 border text-center font-semibold">
-              Giá trị
+              Giá trị giảm
             </th>
           </tr>
         </thead>

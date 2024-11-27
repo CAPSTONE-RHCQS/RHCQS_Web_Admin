@@ -72,7 +72,10 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     onChange={(e) =>
                       handlePaymentChange(index, 'Description', e.target.value)
                     }
-                    className="w-full text-left"
+                    className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    style={{
+                      border: '1px solid #ccc',
+                    }}
                   />
                 ) : (
                   row.Description
@@ -84,10 +87,13 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     <input
                       type="text"
                       value={row.Percents || ''}
-                      onChange={
-                        (e) => handlePercentsChange(index, e.target.value) // Sử dụng hàm mới
+                      onChange={(e) =>
+                        handlePercentsChange(index, e.target.value)
                       }
-                      className="w-7 bg-transparent text-right"
+                      className="w-12 bg-transparent text-right border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      style={{
+                        border: '1px solid #ccc',
+                      }}
                     />
                   ) : (
                     `${row.Percents || 0}`
