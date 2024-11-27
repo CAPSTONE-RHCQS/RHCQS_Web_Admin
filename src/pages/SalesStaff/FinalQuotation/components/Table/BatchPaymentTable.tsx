@@ -27,10 +27,10 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
     const formattedPayments = payments.map((payment) => ({
       ...payment,
       PaymentDate: payment.PaymentDate
-        ? new Date(payment.PaymentDate).toISOString().split('T')[0]
+        ? new Date(payment.PaymentDate).toLocaleDateString('en-CA')
         : '',
       PaymentPhase: payment.PaymentPhase
-        ? new Date(payment.PaymentPhase).toISOString().split('T')[0]
+        ? new Date(payment.PaymentPhase).toLocaleDateString('en-CA')
         : '',
     }));
     setEditedPayments(formattedPayments);
