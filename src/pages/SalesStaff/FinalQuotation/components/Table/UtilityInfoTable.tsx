@@ -79,7 +79,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         ...updatedUtilities[selectedUtilityIndex],
         Name: utility.Name,
         Coefficient: utility.Coefficient,
-        Price: utility.UnitPrice || 0,
+        UnitPrice: utility.UnitPrice || 0,
         utilitiesItemId: utility.UtilityItemId,
         utilitiesSectionId: utility.UtilitySectionId,
       };
@@ -104,7 +104,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
     const prices = editableUtilities.map((util) => {
       return util.Coefficient !== 0
         ? util.Coefficient * totalRough
-        : util.Price * (util.Quantity || 0);
+        : util.UnitPrice * (util.Quantity || 0);
     });
     onPriceChange(prices);
   }, [editableUtilities, totalRough, onPriceChange]);
