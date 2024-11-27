@@ -27,11 +27,14 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import ChatBox from '../../../components/ChatBox';
 import PromotionTable from './components/Table/PromotionTable';
+import ContractValueSummary from './components/Table/ContractValueSummary';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
+  const [showContractValueSummary, setShowContractValueSummary] =
+    useState(false);
   const [showBatchPayments, setShowBatchPayments] = useState(false);
   const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
   const [showDetailedItems, setShowDetailedItems] = useState(false);
@@ -42,6 +45,10 @@ const FinalQuotationDetailManager = () => {
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(true);
   const [showPromotions, setShowPromotions] = useState(false);
+  const [totalConstructionValue, setTotalConstructionValue] = useState(0);
+  const [totalUtilities, setTotalUtilities] = useState(0);
+  const [totalEquipmentCost, setTotalEquipmentCost] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
 
   const fetchQuotationDetail = async () => {
     if (id) {
@@ -63,6 +70,46 @@ const FinalQuotationDetailManager = () => {
   useEffect(() => {
     fetchQuotationDetail();
   }, [id]);
+
+  useEffect(() => {
+    if (quotationDetail) {
+      const totalConstruction = quotationDetail.FinalQuotationItems.reduce(
+        (acc, item) =>
+          acc +
+          item.QuotationItems.reduce(
+            (subAcc, qItem) =>
+              subAcc +
+              (qItem.TotalPriceLabor || 0) +
+              (qItem.TotalPriceRough || 0),
+            0,
+          ),
+        0,
+      );
+
+      const totalUtilities = quotationDetail.UtilityInfos.reduce(
+        (total, util) => total + (util.Price || 0),
+        0,
+      );
+
+      const totalEquipment = quotationDetail.EquipmentItems.reduce(
+        (total, item) => total + (item.Quantity * item.UnitOfMaterial || 0),
+        0,
+      );
+
+      const totalDiscount = quotationDetail.Discount ?? 0;
+
+      setTotalConstructionValue(totalConstruction);
+      setTotalUtilities(totalUtilities);
+      setTotalEquipmentCost(totalEquipment);
+      setTotalDiscount(totalDiscount);
+    }
+  }, [quotationDetail]);
+
+  const totalContractValue =
+    totalConstructionValue +
+    totalUtilities +
+    totalEquipmentCost -
+    totalDiscount;
 
   const handleApprove = async () => {
     if (!id) {
@@ -278,6 +325,30 @@ const FinalQuotationDetailManager = () => {
         {showPromotions && (
           <PromotionTable
             promotionInfo={quotationDetail.PromotionInfo}
+            discount={quotationDetail.Discount}
+          />
+        )}
+
+        <hr className="my-4 border-gray-300" />
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
+          onClick={() => setShowContractValueSummary(!showContractValueSummary)}
+        >
+          5. Tổng hợp giá trị hợp đồng:
+          {showContractValueSummary ? (
+            <FaChevronUp className="ml-2 text-secondary" />
+          ) : (
+            <FaChevronDown className="ml-2 text-secondary" />
+          )}
+        </h3>
+        {showContractValueSummary && (
+          <ContractValueSummary
+            totalConstructionValue={totalConstructionValue}
+            totalUtilities={totalUtilities}
+            totalEquipmentCost={totalEquipmentCost}
+            totalDiscount={totalDiscount}
+            totalContractValue={totalContractValue}
           />
         )}
 
@@ -287,7 +358,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
-          5. Các đợt thanh toán:
+          6. Các đợt thanh toán:
           {showBatchPayments ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (

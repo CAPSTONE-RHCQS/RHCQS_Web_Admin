@@ -6,11 +6,8 @@ import { createDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersion
 import { ClipLoader } from 'react-spinners';
 import { CreateDesignRequest } from '../../../types/HouseDesignVersionTypes';
 import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
-import { Viewer } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
-import * as pdfjsLib from 'pdfjs-dist';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
@@ -19,10 +16,9 @@ import {
   FiFileText,
   FiLayers,
   FiPenTool,
+  FiPhoneCall,
   FiType,
 } from 'react-icons/fi';
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
 
 const HouseDesignDetailStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -34,8 +30,6 @@ const HouseDesignDetailStaff: React.FC = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null,
   );
-
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   const fetchDesignDetail = useCallback(async () => {
     if (!id) {
@@ -137,8 +131,8 @@ const HouseDesignDetailStaff: React.FC = () => {
                 <strong className="mr-2">Bước:</strong> {designDetail.Step}
               </p>
               <p className="flex items-center">
-                <FiType className="mr-2" />
-                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+                <FiPhoneCall className="mr-2" />
+                {designDetail.StaffName}
               </p>
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />
@@ -285,8 +279,8 @@ const HouseDesignDetailStaff: React.FC = () => {
                       ></path>
                     </svg>
                     <p className="mb-2 text-sm text-gray-500">
-                      <span className="font-semibold">Nhấn để tải lên</span> hoặc
-                      kéo thả
+                      <span className="font-semibold">Nhấn để tải lên</span>{' '}
+                      hoặc kéo thả
                     </p>
                     <p className="text-xs text-gray-500">PDF (MAX. 10MB)</p>
                   </div>
@@ -300,7 +294,9 @@ const HouseDesignDetailStaff: React.FC = () => {
                   />
                 </label>
               </div>
-              {uploading && <p className="mt-2 text-blue-500">Đang tải lên...</p>}
+              {uploading && (
+                <p className="mt-2 text-blue-500">Đang tải lên...</p>
+              )}
             </div>
             <button
               onClick={handleSubmitDesign}
@@ -312,13 +308,6 @@ const HouseDesignDetailStaff: React.FC = () => {
           </div>
         )}
       </div>
-      {fileUrl && (
-        <div className="mt-6">
-          <div className="border rounded-lg w-full max-w-4xl mx-auto">
-            <Viewer fileUrl={fileUrl} plugins={[defaultLayoutPluginInstance]} />
-          </div>
-        </div>
-      )}
     </>
   );
 };

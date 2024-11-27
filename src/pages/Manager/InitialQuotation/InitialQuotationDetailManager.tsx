@@ -58,7 +58,7 @@ const InitialQuotationDetailManager = () => {
               : item.SubCoefficient || 0;
           return {
             stt: index + 1,
-            hangMuc: item.Name,
+            hangMuc: item.SubConstruction || item.Name,
             dTich: item.Area.toString(),
             heSo: coefficient.toString(),
             dienTich: (item.Area * coefficient).toString(),
@@ -289,7 +289,6 @@ const InitialQuotationDetailManager = () => {
 
         <ConstructionAreaTable
           tableData={tableData}
-          handleInputChange={handleInputChange}
           totalDienTich={totalDienTich}
         />
 
@@ -479,7 +478,7 @@ const InitialQuotationDetailManager = () => {
                     <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
+                    <strong>{totalAmount.toLocaleString()} VNĐ</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
                     <strong>VNĐ</strong>
@@ -515,9 +514,7 @@ const InitialQuotationDetailManager = () => {
                 <th className="px-4 py-2 border text-center">
                   Ngày thanh toán
                 </th>
-                <th className="px-4 py-2 border text-center">
-                  Giai đoạn thanh toán
-                </th>
+                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
               </tr>
             </thead>
             <tbody>

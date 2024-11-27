@@ -15,6 +15,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({ utilities }) => {
           <tr>
             <th className="px-4 py-2 border text-center">Tên</th>
             <th className="px-4 py-2 border text-center">Hệ số</th>
+            <th className="px-4 py-2 border text-center">Số lượng</th>
             <th className="px-4 py-2 border text-center">Giá</th>
           </tr>
         </thead>
@@ -23,17 +24,22 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({ utilities }) => {
             <tr key={util.Id}>
               <td className="px-4 py-2 border text-left">{util.Name}</td>
               <td className="px-4 py-2 border text-center">
-                {util.Coefficient}
+                {util.Coefficient !== 0 ? util.Coefficient : ''}
               </td>
-              <td className="px-4 py-2 border text-center">{util.Price}</td>
+              <td className="px-4 py-2 border text-center">
+                {util.Quantity ?? ''}
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {util.Price.toLocaleString()}
+              </td>
             </tr>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={2} className="px-4 py-2 border text-center font-bold">
+            <td colSpan={3} className="px-4 py-2 border text-center font-bold">
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">
-              {totalPrice.toLocaleString()}
+              {totalPrice.toLocaleString()} VNĐ
             </td>
           </tr>
         </tbody>

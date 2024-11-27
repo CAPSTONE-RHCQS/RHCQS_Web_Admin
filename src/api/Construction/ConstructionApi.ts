@@ -1,6 +1,7 @@
 import { GetConstructionByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 import axios from 'axios';
+import { FinalToContractResponse } from '../../types/ContractResponseTypes';
 
 export interface SubConstructionRequest {
   id: string;
@@ -38,11 +39,10 @@ export interface ConstructionContractRequest {
   validityPeriod: number;
   taxCode: string;
   contractValue: number;
-  urlFile: string;
+  urlFile: string | null;
   note: string;
 }
 
-// Search
 export interface ConstructionSearchResponse {
   Id: string;
   SubConstructionId: string;
@@ -132,7 +132,6 @@ export const postConstructionContract = async (
   }
 };
 
-
 export async function getConstructionByName(
   name: string,
 ): Promise<GetConstructionByNameResponse> {
@@ -149,3 +148,23 @@ export async function getConstructionByName(
     throw new Error('Failed to fetch construction by name');
   }
 }
+
+export const getFinalToContractConstruction = async (
+  projectId: string,
+): Promise<FinalToContractResponse> => {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/contract/final-to-contract/construction`,
+      {
+        params: { projectId },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching final to contract construction:', error);
+    throw error;
+  }
+};

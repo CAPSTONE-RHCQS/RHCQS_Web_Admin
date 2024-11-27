@@ -88,16 +88,19 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
             <tr key={item.uniqueId || index}>
               <td className="px-4 py-2 border text-center">{item.stt}</td>
               <td className="px-4 py-2 border text-center border-2 border-green-300">
-                <input
-                  type="text"
-                  value={item.hangMuc}
-                  onChange={(e) => {
-                    handleInputChange(e, index, 'hangMuc');
-                    handleSearch(e.target.value, index);
-                  }}
-                  className="w-full text-left"
-                  disabled={!isEditing}
-                />
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={item.hangMuc}
+                    onChange={(e) => {
+                      handleInputChange(e, index, 'hangMuc');
+                      handleSearch(e.target.value, index);
+                    }}
+                    className="w-full text-left"
+                  />
+                ) : (
+                  <span>{item.hangMuc}</span>
+                )}
                 {isEditing &&
                   selectedRowIndex === index &&
                   searchResults.length > 0 && (
@@ -115,20 +118,19 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   )}
               </td>
               <td className="px-4 py-2 border text-center border-2 border-green-300">
-                <input
-                  type="text"
-                  value={item.dTich}
-                  onChange={(e) => handleInputChange(e, index, 'dTich')}
-                  className="w-full text-center"
-                  disabled={!isEditing}
-                />
+                {isEditing ? (
+                  <input
+                    type="text"
+                    value={item.dTich}
+                    onChange={(e) => handleInputChange(e, index, 'dTich')}
+                    className="w-full text-center"
+                  />
+                ) : (
+                  <span>{item.dTich}</span>
+                )}
               </td>
-              <td className="px-4 py-2 border text-center">
-                {item.heSo}
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {item.dienTich}
-              </td>
+              <td className="px-4 py-2 border text-center">{item.heSo}</td>
+              <td className="px-4 py-2 border text-center">{item.dienTich}</td>
               <td className="px-4 py-2 border text-center">{item.donVi}</td>
               {isEditing && (
                 <td className="px-4 py-2 border text-center">

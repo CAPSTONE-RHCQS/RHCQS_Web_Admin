@@ -26,6 +26,7 @@ interface HouseDesign {
 }
 
 const statusMap: { [key: string]: string } = {
+  Pending: 'Đang chờ',
   Processing: 'Đang xử lý',
   Reviewing: 'Chờ xác nhận từ quản lý',
   Updating: 'Đang chỉnh sửa',
@@ -43,6 +44,11 @@ export const statusStyles: {
     icon: JSX.Element;
   };
 } = {
+  Pending: {
+    backgroundColor: '#0084ff',
+    borderColor: '#0084ff',
+    icon: <FaSyncAlt className="text-white" />,
+  },
   Processing: {
     backgroundColor: '#FFA500',
     borderColor: '#FFD700',

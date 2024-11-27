@@ -11,17 +11,11 @@ interface TableRow {
 
 interface ConstructionAreaTableProps {
   tableData: TableRow[];
-  handleInputChange: (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-    field: keyof TableRow,
-  ) => void;
   totalDienTich: number;
 }
 
 const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
   tableData,
-  handleInputChange,
   totalDienTich,
 }) => {
   return (

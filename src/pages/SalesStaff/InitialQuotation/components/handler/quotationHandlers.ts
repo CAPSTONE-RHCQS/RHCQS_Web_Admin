@@ -87,6 +87,7 @@ export const handleSave = async (
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
   utilityPrices: number[],
+  quantities: (number | null)[],
 ) => {
   if (!quotationData) return;
 
@@ -134,6 +135,17 @@ export const handleSave = async (
     promotionInfo.Id === '00000000-0000-0000-0000-000000000000' ||
     promotionInfo.Value === 0;
 
+  const updatedUtilityInfos = utilityInfos.map((utility, index) => {
+    const price = utility.Coefficient !== 0
+      ? totalRough * utility.Coefficient
+      : (utility.UnitPrice || 0) * (quantities[index] || 0);
+
+    return {
+      ...utility,
+      price,
+    };
+  });
+
   const requestData: UpdateInitialQuotationRequest = {
     accountName: quotationData.AccountName,
     address: quotationData.Address,
@@ -172,11 +184,11 @@ export const handleSave = async (
           ]
         : []),
     ],
-    utilities: utilityInfos.map((utility, index) => ({
+    utilities: updatedUtilityInfos.map((utility, index) => ({
       utilitiesItemId: utility.Id,
       coefficient: utility.Coefficient,
-      price: utilityPrices[index],
-      quantity: utility.Quantity,
+      price: utility.price,
+      quantity: quantities[index] || 0,
       description: utility.Description,
     })),
     promotions:

@@ -23,12 +23,15 @@ import {
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
   const [contractDetail, setContractDetail] =
     useState<ContractDesignResponse | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     const fetchContractDetail = async () => {
@@ -55,14 +58,27 @@ const ContractDetailStaff = () => {
 
   const handleUpload = async () => {
     if (contractId && selectedFile) {
+      setIsUploading(true);
       try {
         await signContractCompletion(contractId, selectedFile);
-        alert('Tải lên thành công!');
+        toast.success('Tải lên thành công!');
+        const data = await getContractDesignById(contractId);
+        setContractDetail(data);
       } catch (error) {
         console.error('Error uploading signed contract:', error);
-        alert('Tải lên thất bại!');
+        toast.error('Tải lên thất bại!');
+      } finally {
+        setIsUploading(false);
       }
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   if (!contractDetail) {
@@ -81,6 +97,13 @@ const ContractDetailStaff = () => {
   };
 
   const mappedStatus = statusMap[contractDetail.Status] || 'Đang xử lý';
+
+  const contractTemplateUrl =
+    contractDetail.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1732348518/Contract/Hop_dong_thiet_ke_a30cfe5d-d683-482b-8172-9eb2292dc75e.pdf'
+      : contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1731897883/Contract/Hop_dong_thi_cong_17e47746-0598-4caa-801e-261e01da1f9e.pdf'
+      : null;
 
   return (
     <>
@@ -145,45 +168,39 @@ const ContractDetailStaff = () => {
             <FaMoneyBillWave className="mr-2" />
             <span className="font-semibold">Giá trị hợp đồng:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.ContractValue || 'Chưa xác định'}
+              {contractDetail.ContractValue.toLocaleString() || ''} VNĐ
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
-            <FaInfoCircle className="mr-2" />
-            <span className="font-semibold">Trạng thái:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Status}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
             <FaBoxOpen className="mr-2" />
-            <span className="font-semibold">Gói thô:</span>
+            <span className="font-semibold">Giá trị thi công thô:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.RoughPackagePrice} {contractDetail.UnitPrice}
+              {contractDetail.RoughPackagePrice.toLocaleString()}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBox className="mr-2" />
-            <span className="font-semibold">Gói hoàn thiện:</span>
+            <span className="font-semibold">Giá trị thi công hoàn thiện:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.FinishedPackagePrice} {contractDetail.UnitPrice}
+              {contractDetail.FinishedPackagePrice.toLocaleString()}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaFileContract className="mr-2" />
-            <span className="font-semibold">Loại hợp đồng:</span>
-            <span className="text-gray-700 ml-2">{contractDetail.Type}</span>
-          </div>
-          <div className="mb-4 text-lg flex items-center">
-            <FaPaperclip className="mr-2" />
-            <span className="font-semibold">Tệp đính kèm:</span>
-            <a
-              href={contractDetail.UrlFile}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-500 hover:underline ml-2"
-            >
-              <FaFileDownload className="inline-block mr-1" /> Tải xuống
-            </a>
-          </div>
+          {contractDetail.UrlFile && (
+            <div className="mb-4 text-lg flex items-center">
+              <FaPaperclip className="mr-2" />
+              <span className="font-semibold">Hợp đồng đã ký:</span>
+              <a
+                href={contractDetail.UrlFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
+            </div>
+          )}
           <div className="mb-4 text-lg flex items-center">
             <FaInfoCircle className="mr-2" />
             <span className="font-semibold">Mã số thuế:</span>
@@ -198,10 +215,17 @@ const ContractDetailStaff = () => {
               {contractDetail.Note || ''}
             </span>
           </div>
-          {contractDetail.Quotation.File !== 'Không có file' && (
+          {contractDetail.Quotation.File !== '' && (
             <div className="mb-4 text-lg flex items-center">
               <FaInfoCircle className="mr-2" />
-              <span className="font-semibold">Báo giá chi tiết:</span>
+              <span className="font-semibold">
+                {contractDetail.Name ===
+                'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
+                  ? 'Bảng báo giá sơ bộ nhà ở dân dụng'
+                  : contractDetail.Name === 'Hợp đồng thi công nhà ở dân dụng'
+                  ? 'Bảng báo giá chi tiết nhà ở dân dụng'
+                  : ''}
+              </span>
               <a
                 href={contractDetail.Quotation.File}
                 target="_blank"
@@ -212,9 +236,23 @@ const ContractDetailStaff = () => {
               </a>
             </div>
           )}
+          {contractTemplateUrl && (
+            <div className="mb-4 text-lg flex items-center">
+              <FaFileContract className="mr-2" />
+              <span className="font-semibold">Bản hợp đồng mẫu:</span>
+              <a
+                href={contractTemplateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:underline ml-2"
+              >
+                <FaFileDownload className="inline-block mr-1" /> Tải xuống
+              </a>
+            </div>
+          )}
         </div>
 
-        {contractDetail.Status === 'Processing' && (
+        {contractDetail.UrlFile === null && (
           <div className="mb-4 text-lg flex items-center">
             <FaUpload className="mr-2" />
             <span className="font-semibold">Tải lên Hợp đồng đã ký:</span>
@@ -222,8 +260,9 @@ const ContractDetailStaff = () => {
             <button
               onClick={handleUpload}
               className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+              disabled={isUploading}
             >
-              Tải lên
+              {isUploading ? 'Đang tải lên...' : 'Tải lên'}
             </button>
           </div>
         )}
@@ -236,6 +275,10 @@ const ContractDetailStaff = () => {
                 <th className="px-4 py-2 border text-center">Đợt</th>
                 <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">
+                  Ngày thanh toán
+                </th>
+                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
               </tr>
             </thead>
@@ -245,7 +288,13 @@ const ContractDetailStaff = () => {
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
                   <td className="px-4 py-2 border">
-                    {batch.Price} {contractDetail.UnitPrice}
+                    {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentDate)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(batch.PaymentPhase)}
                   </td>
                   <td className="px-4 py-2 border">
                     {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (

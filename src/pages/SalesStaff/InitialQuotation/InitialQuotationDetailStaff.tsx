@@ -186,6 +186,7 @@ const InitialQuotationDetailStaff = () => {
             navigate,
             setIsSaving,
             utilityPrices,
+            quantities,
           )
         }
         quotationData={quotationData}

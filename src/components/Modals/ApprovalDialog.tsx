@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog } from '@headlessui/react';
 
 interface ApprovalDialogProps {
@@ -8,7 +8,7 @@ interface ApprovalDialogProps {
   setApprovalType: (value: string) => void;
   reason: string;
   setReason: (value: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 }
 
 const ApprovalDialog: React.FC<ApprovalDialogProps> = ({
@@ -20,6 +20,17 @@ const ApprovalDialog: React.FC<ApprovalDialogProps> = ({
   setReason,
   onSubmit,
 }) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      await onSubmit();
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose}>
       <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
@@ -53,14 +64,16 @@ const ApprovalDialog: React.FC<ApprovalDialogProps> = ({
             <button
               onClick={onClose}
               className="bg-gray-200 hover:bg-gray-300 px-5 py-3 rounded text-lg transition-colors duration-200"
+              disabled={isSubmitting}
             >
               Hủy
             </button>
             <button
-              onClick={onSubmit}
-              className="bg-primary hover:bg-primary-dark text-white px-5 py-3 rounded text-lg transition-colors duration-200"
+              onClick={handleSubmit}
+              className={`bg-primary hover:bg-primary-dark text-white px-5 py-3 rounded text-lg transition-colors duration-200 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isSubmitting}
             >
-              Xác nhận
+              {isSubmitting ? 'Đang xử lý...' : 'Xác nhận'}
             </button>
           </div>
         </Dialog.Panel>

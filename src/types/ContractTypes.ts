@@ -15,7 +15,7 @@ export interface CreateContractDesignRequest {
   validityPeriod: number;
   taxCode: string;
   contractValue: number;
-  urlFile: string;
+  urlFile: string | null;
   note: string;
   batchPaymentRequests: BatchPaymentRequest[];
 }

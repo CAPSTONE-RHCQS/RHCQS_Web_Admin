@@ -1,5 +1,6 @@
 import requestWebRHCQS from '../../utils/axios';
 import { ProjectDetail } from '../../types/ProjectTypes';
+import { toast } from 'react-toastify';
 
 interface ProjectItem {
   Id: string;
@@ -162,7 +163,6 @@ export const getProjectDetail = async (id: string): Promise<ProjectDetail> => {
 
 export const assignProject = async (accountId: string, projectId: string) => {
   try {
-    console.log('Assigning project', accountId, projectId);
     const response = await requestWebRHCQS.put(
       '/project/assign',
       {
@@ -176,6 +176,7 @@ export const assignProject = async (accountId: string, projectId: string) => {
         },
       },
     );
+    toast.success('Phân công nhân viên báo giá thành công');
     return response.data;
   } catch (error) {
     console.error('Error assigning project:', error);

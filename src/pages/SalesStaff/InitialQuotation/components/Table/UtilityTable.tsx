@@ -13,9 +13,10 @@ interface UtilityTableProps {
   setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
   isEditing: boolean;
   onPriceChange: (prices: number[]) => void;
-  quantities: (number | null)[];
+  quantities: (any | null)[];
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   setTotalUtilities: React.Dispatch<React.SetStateAction<number>>;
+  projectType: string;
 }
 
 const UtilityTable: React.FC<UtilityTableProps> = ({
@@ -27,6 +28,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   quantities,
   setQuantities,
   setTotalUtilities,
+  projectType,
 }) => {
   const [searchResults, setSearchResults] = useState<Utility[]>([]);
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
@@ -64,7 +66,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
     if (!isEditing) return;
     handleEditUtility(index, 'description', value);
     try {
-      const results = await getUtilityByName(value);
+      const results = await getUtilityByName(value, projectType);
       setSearchResults(results);
       setSelectedRowIndex(index);
     } catch (error) {
@@ -84,7 +86,6 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
             }
           : info,
       );
-      console.log('new', newData);
       setUtilityInfos(newData);
       setSearchResults([]);
       setSelectedRowIndex(null);
@@ -104,6 +105,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   const handleQuantityChange = (index: number, value: number) => {
     const newQuantities = [...quantities];
     newQuantities[index] = value || null;
+    console.log('Updated Quantities:', newQuantities);
     setQuantities(newQuantities);
   };
 
@@ -170,7 +172,9 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               <td className="px-4 py-2 border text-center">
                 <span>
                   {utility.Coefficient === 0
-                    ? utility.Price.toLocaleString()
+                    ? (
+                        (utility.UnitPrice || 0) * (quantities[index] || 0)
+                      ).toLocaleString()
                     : (utility.Coefficient * totalRough).toLocaleString()}
                 </span>
               </td>

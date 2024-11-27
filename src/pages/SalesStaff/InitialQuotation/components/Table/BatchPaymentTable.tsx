@@ -56,9 +56,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
               Giá trị thanh toán (VNĐ)
             </th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">
-              Giai đoạn thanh toán
-            </th>
+            <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
             {isEditing && <th className="px-4 py-2 border text-center"></th>}
           </tr>
         </thead>

@@ -3,9 +3,13 @@ import { PromotionInfo } from '../../../../../types/FinalQuotationTypes';
 
 interface PromotionTableProps {
   promotionInfo: PromotionInfo | null;
+  discount: number | null;
 }
 
-const PromotionTable: React.FC<PromotionTableProps> = ({ promotionInfo }) => {
+const PromotionTable: React.FC<PromotionTableProps> = ({
+  promotionInfo,
+  discount,
+}) => {
   if (!promotionInfo) {
     return <div>Không có khuyến mãi</div>;
   }
@@ -29,7 +33,7 @@ const PromotionTable: React.FC<PromotionTableProps> = ({ promotionInfo }) => {
               {promotionInfo.Name || 'Không có'}
             </td>
             <td className="px-4 py-2 border text-center">
-              {(promotionInfo.Value ?? 0).toLocaleString()} VNĐ
+              {discount?.toLocaleString()} VNĐ
             </td>
           </tr>
         </tbody>

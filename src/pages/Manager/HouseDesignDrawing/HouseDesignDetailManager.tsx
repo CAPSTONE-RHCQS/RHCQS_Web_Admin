@@ -3,8 +3,6 @@ import { useParams } from 'react-router-dom';
 import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { approveDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
-import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -14,6 +12,7 @@ import {
   FiLayers,
   FiType,
   FiCalendar,
+  FiPhoneCall,
 } from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
@@ -73,7 +72,15 @@ const HouseDesignDetailManager: React.FC = () => {
         type: approvalType,
         reason,
       });
-      toast.success('Design approved successfully!');
+
+      if (approvalType === 'Approved') {
+        toast.success('Chấp nhận bản vẽ thành công');
+      } else if (approvalType === 'Rejected') {
+        toast.success('Từ chối bản vẽ thành công');
+      } else {
+        toast.success('Xét duyệt thành công');
+      }
+
       setIsModalOpen(false);
       fetchDesignDetail();
     } catch (error) {
@@ -104,38 +111,21 @@ const HouseDesignDetailManager: React.FC = () => {
             Chi tiết bản vẽ thiết kế
           </h2>
           {isSelectable && (
-            <div
-              onMouseEnter={showMenu}
-              onMouseLeave={hideMenu}
-              className="relative"
-            >
-              <FiMoreVertical className="text-xl text-black dark:text-white cursor-pointer" />
-              {menuVisible && (
-                <div
-                  className="absolute right-2 top-2 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out"
-                  style={{ opacity: menuVisible ? 1 : 0 }}
-                >
-                  <div className="py-2">
-                    <a
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        if (selectedVersionId) {
-                          setIsModalOpen(true);
-                        } else {
-                          toast.error(
-                            'Vui lòng chọn một phiên bản trước khi phê duyệt.',
-                          );
-                        }
-                      }}
-                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
-                    >
-                      <FaCheck className="mr-2" />
-                      Phê duyệt bản vẽ
-                    </a>
-                  </div>
-                </div>
-              )}
+            <div className="relative">
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  if (selectedVersionId) {
+                    setIsModalOpen(true);
+                  } else {
+                    toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
+                  }
+                }}
+                className="flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-lg text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"
+              >
+                <FaCheck className="mr-2" />
+                Phê duyệt bản vẽ
+              </button>
             </div>
           )}
         </div>
@@ -152,8 +142,8 @@ const HouseDesignDetailManager: React.FC = () => {
                 <strong className="mr-2">Bước:</strong> {designDetail.Step}
               </p>
               <p className="flex items-center">
-                <FiType className="mr-2" />
-                <strong className="mr-2">Loại:</strong> {designDetail.Type}
+                <FiPhoneCall className="mr-2" />
+                {designDetail.StaffName}
               </p>
               <p className="flex items-center">
                 <FiCalendar className="mr-2" />

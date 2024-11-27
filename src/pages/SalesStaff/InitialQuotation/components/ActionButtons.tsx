@@ -1,3 +1,4 @@
+import { Console } from 'console';
 import React from 'react';
 import { FaDownload, FaShareAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
@@ -24,10 +25,11 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   const handleShare = () => {
     toast.info('Chia sẻ hợp đồng');
   };
-
+  console.log('coc', quotationData.Status);
   return (
     <div className="flex justify-end space-x-2">
-      {quotationData.Status === 'Processing' && (
+      {(quotationData.Status === 'Processing' ||
+        quotationData.Status === 'Rejected') && (
         <>
           {isEditing && (
             <button

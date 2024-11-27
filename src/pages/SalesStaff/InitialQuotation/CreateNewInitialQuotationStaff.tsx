@@ -26,7 +26,7 @@ const InitialQuotationDetailStaff = () => {
   const [quotationData, setQuotationData] =
     useState<InitialQuotationResponse | null>(null);
   const [showChat, setShowChat] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [giaTriHopDong, setGiaTriHopDong] = useState<number>(0);
   const [tableData, setTableData] = useState<TableRow[]>([]);
@@ -151,7 +151,7 @@ const InitialQuotationDetailStaff = () => {
         isEditing={isEditing}
         isSaving={isSaving}
         handleEditToggle={handleEditToggle}
-        handleSave={() =>
+        handleSave={() => {
           handleSave(
             quotationData,
             tableData,
@@ -165,8 +165,9 @@ const InitialQuotationDetailStaff = () => {
             navigate,
             setIsSaving,
             utilityPrices,
-          )
-        }
+            quantities,
+          );
+        }}
       />
       <CreateNewQuotationSummary
         quotationData={quotationData}

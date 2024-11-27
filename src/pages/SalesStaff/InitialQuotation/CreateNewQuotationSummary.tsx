@@ -138,7 +138,9 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
     if (field === 'Name') {
       setSearchName(value);
     }
-    if (promotionInfo) {
+    if (field === 'Name' && value === '') {
+      setPromotionInfo(null);
+    } else if (promotionInfo) {
       setPromotionInfo({ ...promotionInfo, [field]: value });
     } else {
       setPromotionInfo({
@@ -300,7 +302,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                   Diện tích xây dựng theo phương án thiết kế:
                 </strong>
               </div>
-              {isEditing && (
+              {isEditing && quotationData.ProjectType !== 'TEMPLATE' && (
                 <button
                   onClick={addConstructionRow}
                   className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
@@ -313,7 +315,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
           <ConstructionAreaTable
             tableData={tableData}
-            isEditing={quotationData.ProjectType !== 'TEMPLATE'}
+            isEditing={isEditing && quotationData.ProjectType !== 'TEMPLATE'}
             handleInputChange={(e, index, field) => {
               const newData = [...tableData];
               newData[index] = { ...newData[index], [field]: e.target.value };
@@ -399,6 +401,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         quantities={quantities}
         setQuantities={setQuantities}
         setTotalUtilities={setTotalUtility}
+        projectType={quotationData.ProjectType}
       />
 
       <div className="mt-4">

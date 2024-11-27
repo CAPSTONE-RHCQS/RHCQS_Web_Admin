@@ -10,6 +10,7 @@ interface UtilityInfoTableProps {
   isEditing: boolean;
   onUtilitiesChange: (updatedUtilities: UtilityInfo[]) => void;
   totalRough: number;
+  projectType: string;
   onPriceChange: (prices: number[]) => void;
 }
 
@@ -18,6 +19,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
   isEditing,
   onUtilitiesChange,
   totalRough,
+  projectType,
   onPriceChange,
 }) => {
   const [editableUtilities, setEditableUtilities] = useState(
@@ -53,7 +55,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
 
     if (field === 'Name' && typeof value === 'string') {
       try {
-        const results = await getUtilityByName(value);
+        const results = await getUtilityByName(value, projectType);
         setSearchResults(results);
         setSelectedUtilityIndex(index);
       } catch (error) {
@@ -77,7 +79,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
         ...updatedUtilities[selectedUtilityIndex],
         Name: utility.Name,
         Coefficient: utility.Coefficient,
-        Price: utility.UnitPrice || 0,
+        UnitPrice: utility.UnitPrice || 0,
         utilitiesItemId: utility.UtilityItemId,
         utilitiesSectionId: utility.UtilitySectionId,
       };
@@ -93,7 +95,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
       const price =
         util.Coefficient !== 0
           ? util.Coefficient * totalRough
-          : util.Price * (util.Quantity || 0);
+          : util.UnitPrice * (util.Quantity || 0);
       return total + price;
     }, 0);
   };
@@ -102,7 +104,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
     const prices = editableUtilities.map((util) => {
       return util.Coefficient !== 0
         ? util.Coefficient * totalRough
-        : util.Price * (util.Quantity || 0);
+        : util.UnitPrice * (util.Quantity || 0);
     });
     onPriceChange(prices);
   }, [editableUtilities, totalRough, onPriceChange]);
@@ -175,14 +177,16 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center">
                 <span>
-                  {util.Coefficient === 0 ? util.Price.toLocaleString() : ''}
+                  {util.Coefficient === 0
+                    ? util.UnitPrice.toLocaleString()
+                    : ''}
                 </span>
               </td>
               <td className="px-4 py-2 border text-center">
                 <span>
                   {(util.Coefficient !== 0
                     ? util.Coefficient * totalRough
-                    : util.Price * (util.Quantity || 0)
+                    : util.UnitPrice * (util.Quantity || 0)
                   ).toLocaleString()}
                 </span>
               </td>
