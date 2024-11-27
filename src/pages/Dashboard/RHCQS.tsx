@@ -44,12 +44,7 @@ const RHCQS: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats
-          title="Tổng số dự án"
-          total={totalProject}
-          rate="0.43%"
-          levelUp
-        >
+        <CardDataStats title="Tổng số dự án" total={totalProject}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -68,12 +63,7 @@ const RHCQS: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats
-          title="Nhân viên tư vấn"
-          total={totalSaleStaffAccount}
-          rate="4.35%"
-          levelUp
-        >
+        <CardDataStats title="Nhân viên tư vấn" total={totalSaleStaffAccount}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -99,8 +89,6 @@ const RHCQS: React.FC = () => {
         <CardDataStats
           title="Nhân viên thiết kế"
           total={totalDesignerStaffAccount}
-          rate="2.59%"
-          levelUp
         >
           <svg
             className="fill-primary dark:fill-white"
@@ -124,12 +112,7 @@ const RHCQS: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats
-          title="Khách hàng"
-          total={totalCustomerAccount}
-          rate="0.95%"
-          levelDown
-        >
+        <CardDataStats title="Khách hàng" total={totalCustomerAccount}>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -155,10 +138,10 @@ const RHCQS: React.FC = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-        <MapOne />
+        {/* <ChartOne /> */}
+        {/* <ChartTwo /> */}
+        {/* <ChartThree /> */}
+        {/* <MapOne /> */}
         <div className="col-span-12 xl:col-span-8"></div>
       </div>
     </>
