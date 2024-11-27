@@ -246,21 +246,13 @@ const FinalQuotationDetailStaff = () => {
 
   const handleSave = async () => {
     if (quotationDetail) {
-      const emptyDateIndex = quotationDetail.BatchPaymentInfos.findIndex(
-        (payment) => !payment.PaymentDate || !payment.PaymentPhase,
-      );
-
-      if (emptyDateIndex !== -1) {
-        toast.error('Tất cả các trường ngày phải được điền.');
-        dateRefs.current[emptyDateIndex]?.focus();
-        return;
-      }
-
       const updatedQuotationDetail = {
         ...quotationDetail,
         UtilityInfos: quotationDetail.UtilityInfos.map((util, index) => ({
           ...util,
-          Price: utilityPrices[index],
+          Price: util.Coefficient !== 0
+            ? util.Coefficient * totalRough
+            : util.UnitPrice * (util.Quantity || 0),
         })),
       };
 
