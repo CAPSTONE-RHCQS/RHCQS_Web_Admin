@@ -95,7 +95,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
       const price =
         util.Coefficient !== 0
           ? util.Coefficient * totalRough
-          : util.Price * (util.Quantity || 0);
+          : util.UnitPrice * (util.Quantity || 0);
       return total + price;
     }, 0);
   };
@@ -177,7 +177,9 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
               </td>
               <td className="px-4 py-2 border text-center">
                 <span>
-                  {util.Coefficient === 0 ? util.Price.toLocaleString() : ''}
+                  {util.Coefficient === 0
+                    ? util.UnitPrice.toLocaleString()
+                    : ''}
                 </span>
               </td>
               <td className="px-4 py-2 border text-center">
