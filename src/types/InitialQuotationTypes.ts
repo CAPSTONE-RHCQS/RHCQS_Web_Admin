@@ -41,7 +41,7 @@ export interface BatchPaymentInfo {
   PaymentId: string;
   Status: string;
   Description: string;
-  Percents: string;
+  Percents: number;
   Price: number;
   Unit: string;
   InsDate: string | null;

@@ -136,9 +136,10 @@ export const handleSave = async (
     promotionInfo.Value === 0;
 
   const updatedUtilityInfos = utilityInfos.map((utility, index) => {
-    const price = utility.Coefficient !== 0
-      ? totalRough * utility.Coefficient
-      : (utility.UnitPrice || 0) * (quantities[index] || 0);
+    const price =
+      utility.Coefficient !== 0
+        ? totalRough * utility.Coefficient
+        : (utility.UnitPrice || 0) * (quantities[index] || 0);
 
     return {
       ...utility,
@@ -198,8 +199,8 @@ export const handleSave = async (
         : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
     batchPayments: paymentSchedule.map((payment) => ({
       numberOfBatch: payment.NumberOfBatch,
-      price: (parseFloat(payment.Percents) / 100) * giaTriHopDong,
-      percents: parseFloat(payment.Percents),
+      price: (payment.Percents / 100) * giaTriHopDong,
+      percents: payment.Percents,
       description: payment.Description,
       paymentDate: payment.PaymentDate || '',
       paymentPhase: payment.PaymentPhase || '',

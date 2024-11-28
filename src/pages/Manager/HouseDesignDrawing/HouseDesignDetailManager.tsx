@@ -6,11 +6,9 @@ import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
-  FiMoreVertical,
   FiFileText,
   FiPenTool,
   FiLayers,
-  FiType,
   FiCalendar,
   FiPhoneCall,
 } from 'react-icons/fi';
@@ -24,7 +22,6 @@ const HouseDesignDetailManager: React.FC = () => {
   const [designDetail, setDesignDetail] =
     useState<HouseDesignDetailResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [approvalType, setApprovalType] = useState<string>('Approved');
   const [reason, setReason] = useState<string>('');
@@ -60,9 +57,6 @@ const HouseDesignDetailManager: React.FC = () => {
   useEffect(() => {
     fetchDesignDetail();
   }, [id]);
-
-  const showMenu = () => setMenuVisible(true);
-  const hideMenu = () => setMenuVisible(false);
 
   const handleApproveDesign = async () => {
     if (!selectedVersionId) return;
@@ -118,7 +112,9 @@ const HouseDesignDetailManager: React.FC = () => {
                   if (selectedVersionId) {
                     setIsModalOpen(true);
                   } else {
-                    toast.error('Vui lòng chọn một phiên bản trước khi phê duyệt.');
+                    toast.error(
+                      'Vui lòng chọn một phiên bản trước khi phê duyệt.',
+                    );
                   }
                 }}
                 className="flex items-center px-4 py-2 bg-white border border-gray-200 rounded-lg shadow-lg text-gray-800 hover:bg-gray-100 hover:text-green-600 transition-colors duration-200"

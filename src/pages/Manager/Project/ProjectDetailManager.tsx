@@ -75,6 +75,7 @@ const ProjectDetailManager = () => {
   const [showEmployeeListModal, setShowEmployeeListModal] = useState(false);
   const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
   const [open, setOpen] = useState(0);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
 
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
@@ -229,9 +230,12 @@ const ProjectDetailManager = () => {
       contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
   );
 
-  console.log('isInitialInfoFinalized', isInitialInfoFinalized);
   const resetSelectedEmployees = () => {
     setSelectedEmployees({});
+  };
+
+  const resetSelectedEmployeeId = () => {
+    setSelectedEmployeeId(null);
   };
 
   return (
@@ -347,7 +351,9 @@ const ProjectDetailManager = () => {
         <div className="mb-2 text-lg flex items-center">
           <FaHome className="mr-2 text-secondary" />
           <span className="font-semibold">Phân loại dự án:</span>
-          <span className="text-gray-700 ml-2">{getTypeInVietnamese(projectDetail.Type)}</span>
+          <span className="text-gray-700 ml-2">
+            {getTypeInVietnamese(projectDetail.Type)}
+          </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaUser className="mr-2 text-secondary" />
@@ -468,12 +474,14 @@ const ProjectDetailManager = () => {
               setShowEmployeeDialog={setShowEmployeeDialog}
               selectedEmployees={selectedEmployees}
               resetSelectedEmployees={resetSelectedEmployees}
+              resetSelectedEmployeeId={resetSelectedEmployeeId}
             />
           )}
           {showEmployeeDialog && (
             <HouseDesignDrawingEmployeeList
               onSelectEmployee={handleSelectEmployee}
               onClose={handleCloseEmployeeDialog}
+              selectedEmployees={selectedEmployees}
             />
           )}
           {/* <!-- Thiết kế bản vẽ --> */}

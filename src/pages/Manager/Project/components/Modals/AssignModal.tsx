@@ -9,6 +9,7 @@ interface AssignModalProps {
   setShowEmployeeDialog: (show: boolean) => void;
   selectedEmployees: { [key: string]: any };
   resetSelectedEmployees: () => void;
+  resetSelectedEmployeeId: () => void;
 }
 
 const AssignModal: React.FC<AssignModalProps> = ({
@@ -18,12 +19,19 @@ const AssignModal: React.FC<AssignModalProps> = ({
   setShowEmployeeDialog,
   selectedEmployees,
   resetSelectedEmployees,
+  resetSelectedEmployeeId,
 }) => {
   const categories = ['Phối cảnh', 'Kiến trúc', 'Kết cấu', 'Điện nước'];
 
   const handleClose = () => {
     resetSelectedEmployees();
     onClose();
+  };
+
+  const handleCategorySelect = (category: string) => {
+    setCurrentCategory(category);
+    resetSelectedEmployeeId();
+    setShowEmployeeDialog(true);
   };
 
   return (
@@ -45,27 +53,28 @@ const AssignModal: React.FC<AssignModalProps> = ({
           Phân công nhân viên thiết kế
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {categories.map((category) => (
-            <div key={category} className="mb-4">
-              <EmployeeCard
-                avatar={selectedEmployees[category]?.avatar || ''}
-                name={truncateName(
-                  selectedEmployees[category]?.name || 'Phân công',
-                  15,
+          {categories.map((category) => {
+            const employee = selectedEmployees[category];
+            const isDuplicate = Object.values(selectedEmployees).filter(emp => emp?.id === employee?.id).length > 1;
+
+            return (
+              <div key={category} className="mb-4">
+                {!isDuplicate && (
+                  <EmployeeCard
+                    avatar={employee?.avatar || ''}
+                    name={truncateName(employee?.name || 'Phân công', 15)}
+                    roles={employee?.roles || []}
+                    phone={employee?.phone || 'Số điện thoại'}
+                    onSelect={() => handleCategorySelect(category)}
+                    isSelected={!!employee}
+                  />
                 )}
-                roles={selectedEmployees[category]?.roles || []}
-                phone={selectedEmployees[category]?.phone || 'Số điện thoại'}
-                onSelect={() => {
-                  setCurrentCategory(category);
-                  setShowEmployeeDialog(true);
-                }}
-                isSelected={!!selectedEmployees[category]}
-              />
-              <div className="text-center mt-2 text-lg font-bold text-gray-600">
-                {category}
+                <div className="text-center mt-2 text-lg font-bold text-gray-600">
+                  {category}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
         <div className="mt-4 flex justify-end">
           <button

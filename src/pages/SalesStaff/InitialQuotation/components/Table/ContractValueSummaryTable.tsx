@@ -34,7 +34,9 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
         </thead>
         <tbody>
           <tr>
-            <td className="px-4 py-2 border text-left">Phần Thô Tiết Kiệm</td>
+            <td className="px-4 py-2 border text-left">
+              Giá trị báo giá xây dựng (trước thuế)
+            </td>
             <td className="px-4 py-2 border text-center">
               {totalRough.toLocaleString()}
             </td>

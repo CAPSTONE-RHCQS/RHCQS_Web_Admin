@@ -28,14 +28,12 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
   const handlePercentsChange = (index: number, value: string) => {
     const newPercents = parseFloat(value) || 0;
     const currentTotal = batchPayment.reduce(
-      (total, row) => total + (parseFloat(row.Percents) || 0),
+      (total, row) => total + (row.Percents || 0),
       0,
     );
 
     if (
-      currentTotal -
-        (parseFloat(batchPayment[index].Percents) || 0) +
-        newPercents <=
+      currentTotal - (batchPayment[index].Percents || 0) + newPercents <=
       100
     ) {
       handlePaymentChange(index, 'Percents', newPercents);
@@ -43,6 +41,24 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
       toast.error('Tổng phần trăm không được vượt quá 100%');
     }
   };
+
+  const initialBatchPayment =
+    batchPayment.length > 0
+      ? batchPayment
+      : [
+          {
+            NumberOfBatch: 1,
+            PaymentId: 'default-id',  
+            Status: 'Pending',
+            Description: '',
+            Percents: 0,
+            Price: 0,
+            Unit: 'VNĐ',
+            InsDate: null,
+            PaymentDate: today,
+            PaymentPhase: today,
+          },
+        ];
 
   return (
     <div className="overflow-x-auto mb-4">
@@ -61,7 +77,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {batchPayment.map((row, index) => (
+          {initialBatchPayment.map((row, index) => (
             <tr key={row.PaymentId}>
               <td className="px-4 py-2 border text-center">{index + 1}</td>
               <td className="px-4 py-2 border text-left">
@@ -102,10 +118,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 </div>
               </td>
               <td className="px-4 py-2 border text-center">
-                {(
-                  (parseFloat(row.Percents || '0') / 100) *
-                  giaTriHopDong
-                ).toLocaleString()}{' '}
+                {(((row.Percents || 0) / 100) * giaTriHopDong).toLocaleString()}{' '}
                 VNĐ
               </td>
               <td className="px-4 py-2 border text-center">

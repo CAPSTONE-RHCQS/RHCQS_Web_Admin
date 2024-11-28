@@ -3,6 +3,8 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import EmployeeCard from '../Employee/EmployeeCard';
 import { getAvailableDesignStaff } from '../../../../../api/AssignTask/AssignTask';
 import { truncateName } from '../../../../../utils/stringUtils';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface Employee {
   id: string;
@@ -15,11 +17,12 @@ interface Employee {
 interface HouseDesignDrawingEmployeeListProps {
   onSelectEmployee: (id: string, employeeData: Employee) => void;
   onClose: () => void;
+  selectedEmployees: { [key: string]: Employee };
 }
 
 const HouseDesignDrawingEmployeeList: React.FC<
   HouseDesignDrawingEmployeeListProps
-> = ({ onSelectEmployee, onClose }) => {
+> = ({ onSelectEmployee, onClose, selectedEmployees = {} }) => {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
@@ -51,6 +54,11 @@ const HouseDesignDrawingEmployeeList: React.FC<
   }, [page, size]);
 
   const handleSelect = (id: string) => {
+    if (selectedEmployees && Object.values(selectedEmployees).some(emp => emp.id === id)) {
+      toast.error('Nhân viên này đã được chọn cho một loại bản vẽ khác.');
+      return;
+    }
+
     setSelectedEmployeeId(id);
     const selectedEmployee = employees.find((employee) => employee.id === id);
     if (selectedEmployee) {

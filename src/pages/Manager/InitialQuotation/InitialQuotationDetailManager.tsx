@@ -139,7 +139,7 @@ const InitialQuotationDetailManager = () => {
   };
 
   const totalPercentage = paymentSchedule.reduce(
-    (total, row) => total + parseFloat(row.Percents),
+    (total, row) => total + row.Percents,
     0,
   );
 
@@ -348,7 +348,8 @@ const InitialQuotationDetailManager = () => {
                 <th className="px-4 py-2 border text-center">Hệ số</th>
                 <th className="px-4 py-2 border text-center">Số lượng</th>
                 <th className="px-4 py-2 border text-center">Đơn Giá</th>
-                <th className="px-4 py-2 border text-center">Giá</th>
+                <th className="px-4 py-2 border text-center">Giá trị thanh toán</th>
+                <th className="px-4 py-2 border text-center">Đơn vị</th>
               </tr>
             </thead>
             <tbody>
@@ -361,7 +362,10 @@ const InitialQuotationDetailManager = () => {
                     {utility.Coefficient !== 0 ? utility.Coefficient : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    {utility.Quantity !== 0 || null ? utility.Quantity : ''}
+                    {utility.Coefficient === 0 &&
+                    (utility.Quantity !== 0 || null)
+                      ? utility.Quantity
+                      : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {utility.UnitPrice !== 0
@@ -371,6 +375,7 @@ const InitialQuotationDetailManager = () => {
                   <td className="px-4 py-2 border text-center">
                     {utility.Price.toLocaleString()}
                   </td>
+                  <td className="px-4 py-2 border text-center">VNĐ</td>
                 </tr>
               ))}
               <tr>
@@ -379,6 +384,9 @@ const InitialQuotationDetailManager = () => {
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  <strong>VNĐ</strong>
                 </td>
               </tr>
             </tbody>
@@ -446,7 +454,7 @@ const InitialQuotationDetailManager = () => {
               <tbody>
                 <tr>
                   <td className="px-4 py-2 border text-left">
-                    Phần Thô Tiết Kiệm
+                    Giá trị báo giá xây dựng (trước thuế)
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {thanhTien.toLocaleString()}
@@ -509,8 +517,8 @@ const InitialQuotationDetailManager = () => {
                   Đợt
                 </th>
                 <th className="px-4 py-2 border text-left">Nội dung</th>
-                <th className="px-4 py-2 border text-center">T-Toán (%)</th>
-                <th className="px-4 py-2 border text-center">Số tiền</th>
+                <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
+                <th className="px-4 py-2 border text-center">Giá trị thanh toán (VNĐ)</th>
                 <th className="px-4 py-2 border text-center">
                   Ngày thanh toán
                 </th>
