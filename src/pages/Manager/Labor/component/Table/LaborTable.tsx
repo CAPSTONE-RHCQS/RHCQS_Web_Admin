@@ -120,7 +120,7 @@ const LaborTable: React.FC<LaborTableProps> = ({
             .map((item, index) => (
               <React.Fragment key={index}>
                 <tr className="cursor-pointer">
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center font-semibold text-red-500 dark:text-white">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center font-semibold text-red-500 dark:text-white uppercase">
                     {item.Name}
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-semibold text-primaryGreenButton">

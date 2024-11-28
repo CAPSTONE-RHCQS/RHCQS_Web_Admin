@@ -119,7 +119,7 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
           {dataSupplier.map((item, index) => (
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-red-500 dark:text-white">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-red-500 dark:text-white uppercase">
                   {item.Name}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 font-semibold dark:border-strokedark text-primaryGreenButton">
