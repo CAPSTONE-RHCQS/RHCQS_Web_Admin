@@ -65,7 +65,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     materialDetail: MaterialRequest,
   ) => {
     await updateMaterial(id, materialDetail);
-    setAlertMessage('Sửa vật liệu thành công');
+    setAlertMessage('Sửa vật tư thành công');
     setAlertType('success');
     refreshData();
     setSelectedMaterialId(null);
@@ -95,12 +95,12 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           name: inputNameValue,
           code: inputCodeValue,
         });
-        setAlertMessage('Sửa vật liệu thành công');
+        setAlertMessage('Sửa vật tưthành công');
         setAlertType('success');
         refreshData();
       }
     } catch (error) {
-      setAlertMessage('Sửa vật liệu thất bại');
+      setAlertMessage('Sửa vật tưthất bại');
       setAlertType('error');
     } finally {
       setTimeout(() => {
@@ -119,12 +119,20 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     refreshData();
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
+
   return (
     <>
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            {['Tên', 'Ngày tạo', ''].map((header) => (
+            {['Loại vật tư', 'Mã vật tư', 'Ngày tạo', ''].map((header) => (
               <th
                 key={header}
                 className="py-4 px-4 font-bold text-black dark:text-white"
@@ -139,17 +147,25 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
                 <td
-                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center"
+                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center font-bold uppercase"
                   onClick={() => toggleOpenItem(index)}
                 >
-                  <span className="font-medium">{item.Name}</span>
+                  <span className="font-bold text-red-500 dark:text-white">
+                    {item.Name}
+                  </span>
                   <ChevronDownIcon className="w-4 h-4 ml-2 text-gray-500" />
+                </td>
+                <td
+                  className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-primaryGreenButton dark:text-white"
+                  onClick={() => toggleOpenItem(index)}
+                >
+                  {item.Code}
                 </td>
                 <td
                   className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
                   onClick={() => toggleOpenItem(index)}
                 >
-                  {new Date(item.InsDate).toLocaleDateString()}
+                  {formatDate(item.InsDate)}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
                   <div className="flex justify-center relative" ref={editRef}>
@@ -194,23 +210,24 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
               </tr>
               {openItems.has(index) && (
                 <tr>
-                  <td
-                    colSpan={3}
-                    className="border-b border-[#eee] py-5 px-4 dark:border-strokedark"
-                  >
+                  <td colSpan={3} className=" py-5 px-4">
                     <table className="w-full table-auto">
                       <thead>
-                        <tr className="bg-gray-100 text-left dark:bg-meta-5">
-                          {['Tên', 'Giá', 'Đơn vị', 'Nhà cung cấp', ''].map(
-                            (header) => (
-                              <th
-                                key={header}
-                                className="py-2 px-4 font-medium text-black dark:text-white"
-                              >
-                                {header}
-                              </th>
-                            ),
-                          )}
+                        <tr className="bg-gray-2 text-left dark:bg-meta-4 text-center">
+                          {[
+                            'Tên vật liệu',
+                            'Giá',
+                            'Đơn vị',
+                            'Nhà cung cấp',
+                            '',
+                          ].map((header) => (
+                            <th
+                              key={header}
+                              className="border-b border-[#eee] py-2 px-20 font-bold text-gray-250 dark:text-white"
+                            >
+                              {header}
+                            </th>
+                          ))}
                         </tr>
                       </thead>
                       <tbody>
@@ -221,19 +238,19 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
-                              <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white text-left">
                                 {material.Name}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
                                 {formatPrice(material.Price ?? 0)}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                              <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center">
                                 {material.Unit}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                              <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center uppercase">
                                 {material.SupplierName}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-4 dark:border-strokedark">
+                              <td className="border-b border-[#eee] py-5 px-20 dark:border-strokedark">
                                 <FaEye
                                   className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6"
                                   title="Xem chi tiết"
@@ -245,8 +262,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                             </tr>
                           ))}
                         {dataMaterial.filter(
-                          (material) =>
-                            material.MaterialSectionId === item.Id,
+                          (material) => material.MaterialSectionId === item.Id,
                         ).length === 0 && (
                           <tr>
                             <td

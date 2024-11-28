@@ -23,7 +23,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
       try {
         const detail = await getMaterialById(id);
         setMaterialDetail(detail);
-        console.log(detail);
+        console.log('detail', detail);
       } catch (error) {
         console.error('Failed to fetch material detail:', error);
       }
@@ -60,6 +60,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
       Description: materialDetail.Description,
       IsAvailable: materialDetail.IsAvailable,
       UnitPrice: materialDetail.UnitPrice,
+      Code: materialDetail.Code,
       Image: newImageFile || materialDetail.Image,
     };
 
@@ -237,9 +238,17 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           <strong className="font-bold">Phần vật liệu:</strong>
           <input
             type="text"
-            value={materialDetail.MaterialSectionType}
+            value={materialDetail.MaterialType}
             className="border p-2 w-full rounded font-regular"
             readOnly
+          />
+        </div>
+        <div className="mb-4">
+          <strong className="font-bold">Mã code:</strong>
+          <input
+            type="text"
+            value={materialDetail.Code}
+            className="border p-2 w-full rounded font-regular"
           />
         </div>
         <div className="mb-4">
