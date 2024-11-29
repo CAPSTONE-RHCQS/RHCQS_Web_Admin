@@ -1,6 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
 import { Link } from 'react-router-dom';
+import {
+  FaClock,
+  FaSpinner,
+  FaUserCheck,
+  FaBan,
+  FaTimes,
+  FaUser,
+  FaCheckCircle,
+} from 'react-icons/fa';
 
 interface InitialInfoTableProps {
   quoteData: {
@@ -33,32 +42,42 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     };
   }, []);
 
-  const statusColorMap: { [key: string]: string } = {
-    Pending: '#FFA500',
-    Processing: '#0000FF',
-    Reviewing: '#FFD700',
-    Approved: '#008000',
-    Finalized: '#4B0082',
-    Rejected: '#FF0000',
-    Ended: '#808080',
+  const statusMap: {
+    [key: string]: { label: string; icon: JSX.Element; color: string };
+  } = {
+    Pending: { label: 'Chờ xử lý', icon: <FaClock />, color: '#2196F3' },
+    Processing: { label: 'Đang xử lý', icon: <FaSpinner />, color: '#FFA500' },
+    Reviewing: {
+      label: 'Chờ xác nhận quản lý',
+      icon: <FaUser />,
+      color: '#9370DB',
+    },
+    Approved: {
+      label: 'Quản lý đã xác nhận',
+      icon: <FaUserCheck />,
+      color: '#5BABAC',
+    },
+    Rejected: {
+      label: 'Từ chối báo giá SB',
+      icon: <FaTimes />,
+      color: '#FF6347',
+    },
+    Finalized: {
+      label: 'Hoàn thành',
+      icon: <FaCheckCircle />,
+      color: '#32CD32',
+    },
+    Ended: { label: 'Đã đóng', icon: <FaBan />, color: '#EF5350' },
   };
 
-  const statusLabelMap: { [key: string]: string } = {
-    Pending: 'Chờ xử lý',
-    Processing: 'Đang xử lý',
-    Reviewing: 'Chờ xác nhận từ quản lý',
-    Approved: 'Đã xác nhận',
-    Finalized: 'Đã hoàn thành',
-    Rejected: 'Từ chối báo giá SB',
-    Ended: 'Đã đóng',
-  };
-
-  const getStatusStyle = (status: string) => {
-    return statusColorMap[status] || 'text-gray-500';
-  };
-
-  const getStatusLabel = (status: string) => {
-    return statusLabelMap[status] || 'Không xác định';
+  const getStatusInfo = (status: string) => {
+    return (
+      statusMap[status] || {
+        label: 'Không xác định',
+        icon: <FaTimes />,
+        color: 'text-gray-500',
+      }
+    );
   };
 
   return (
@@ -84,53 +103,58 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
         </tr>
       </thead>
       <tbody>
-        {quoteData.map((item, index) => (
-          <tr key={item.Id}>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {index + 1}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Version}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {new Date(item.InsDate).toLocaleString()}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.AccountName}
-            </td>
-            <td
-              className={`border-b border-[#eee] py-5 px-4 dark:border-strokedark`}
-            >
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
-                style={{ backgroundColor: getStatusStyle(item.Status) }}
-              >
-                {getStatusLabel(item.Status)}
-              </span>
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-              <FiMoreVertical
-                className="cursor-pointer"
-                onClick={() => toggleRowMenu(item.Id)}
-              />
-              {activeMenu === item.Id && (
-                <div
-                  ref={menuRef}
-                  className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+        {quoteData.map((item, index) => {
+          return (
+            <tr key={item.Id}>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {index + 1}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {item.Version}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {new Date(item.InsDate).toLocaleString()}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {item.AccountName}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                <span
+                  className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                  style={{
+                    backgroundColor: getStatusInfo(item.Status).color,
+                  }}
                 >
-                  <div className="py-2">
-                    <Link
-                      to={`/initial-quotation-detail-manager/${item.Id}`}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Xem chi tiết
-                    </Link>
+                  {getStatusInfo(item.Status).icon}
+                  <span className="ml-2">
+                    {getStatusInfo(item.Status).label}
+                  </span>
+                </span>
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
+                <FiMoreVertical
+                  className="cursor-pointer"
+                  onClick={() => toggleRowMenu(item.Id)}
+                />
+                {activeMenu === item.Id && (
+                  <div
+                    ref={menuRef}
+                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                  >
+                    <div className="py-2">
+                      <Link
+                        to={`/initial-quotation-detail-manager/${item.Id}`}
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        Xem chi tiết
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              )}
-            </td>
-          </tr>
-        ))}
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );

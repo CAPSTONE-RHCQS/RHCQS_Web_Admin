@@ -1,18 +1,62 @@
 import React from 'react';
-import { FaSpinner, FaClipboardCheck, FaCheck, FaBan } from 'react-icons/fa';
+import {
+  FaSpinner,
+  FaCheck,
+  FaBan,
+  FaUser,
+  FaClock,
+  FaCheckCircle,
+  FaUserCheck,
+  FaTimes,
+} from 'react-icons/fa';
 
 interface InitialQuotationStatusTrackerProps {
   currentStatus: string;
 }
 
 const statuses = [
-  { label: 'Chờ xử lý', icon: <FaSpinner /> },
-  { label: 'Đang xử lý', icon: <FaSpinner /> },
-  { label: 'Chờ xác nhận từ quản lý', icon: <FaClipboardCheck /> },
-  { label: 'Đã xác nhận', icon: <FaCheck /> },
-  { label: 'Đã hoàn thành', icon: <FaCheck /> },
-  { label: 'Từ chối báo giá SB', icon: <FaBan /> },
-  { label: 'Đã đóng', icon: <FaBan /> },
+  {
+    label: 'Chờ xử lý',
+    icon: <FaClock />,
+    bgColor: '#2196F3',
+    labelColor: '#2196F3',
+  },
+  {
+    label: 'Đang xử lý',
+    icon: <FaSpinner />,
+    bgColor: '#FFA500',
+    labelColor: '#FFA500',
+  },
+  {
+    label: 'Chờ xác nhận quản lý',
+    icon: <FaUser />,
+    bgColor: '#9370DB',
+    labelColor: '#9370DB',
+  },
+  {
+    label: 'Quản lý đã xác nhận',
+    icon: <FaUserCheck />,
+    bgColor: '#5BABAC',
+    labelColor: '#5BABAC',
+  },
+  {
+    label: 'Từ chối báo giá SB',
+    icon: <FaTimes />,
+    bgColor: '#FF6347',
+    labelColor: '#FF6347',
+  },
+  {
+    label: 'Hoàn thành',
+    icon: <FaCheckCircle />,
+    bgColor: '#32CD32',
+    labelColor: '#32CD32',
+  },
+  {
+    label: 'Đã đóng',
+    icon: <FaBan />,
+    bgColor: '#EF5350',
+    labelColor: '#EF5350',
+  },
 ];
 
 const InitialQuotationStatusTracker: React.FC<
@@ -24,28 +68,40 @@ const InitialQuotationStatusTracker: React.FC<
 
   return (
     <div className="py-3 flex items-center justify-center w-full">
-      <div className="w-full max-w-4xl flex items-center justify-between px-4">
+      <div className="w-full max-w-6xl flex items-center justify-between px-1">
         {statuses.map((status, index) => (
           <React.Fragment key={index}>
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center px-1">
               <div
-                className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
-                  index <= currentIndex
-                    ? 'bg-primary text-white'
-                    : 'bg-customGray text-gray-700'
+                className={`flex flex-col items-center transition-transform transform ${
+                  index === currentIndex ? 'scale-125' : 'hover:scale-110'
                 }`}
               >
-                {status.icon}
+                <div
+                  className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
+                    index === currentIndex
+                      ? 'ring-4 ring-offset-2 ring-blue-'
+                      : ''
+                  }}`}
+                  style={{
+                    backgroundColor:
+                      index <= currentIndex ? status.bgColor : '#E5E5E5',
+                    color: index <= currentIndex ? '#FFFFFF' : '#gray-700',
+                  }}
+                >
+                  {status.icon}
+                </div>
+                <span
+                  className="mt-2 text-xs md:text-sm"
+                  style={{
+                    color:
+                      index <= currentIndex ? status.labelColor : '#gray-700',
+                    fontWeight: index <= currentIndex ? 'bold' : 'normal',
+                  }}
+                >
+                  {status.label}
+                </span>
               </div>
-              <span
-                className={`mt-2 text-xs md:text-sm ${
-                  index <= currentIndex
-                    ? 'text-primary font-semibold'
-                    : 'text-gray-700'
-                }`}
-              >
-                {status.label}
-              </span>
             </div>
             {index < statuses.length - 1 && (
               <div

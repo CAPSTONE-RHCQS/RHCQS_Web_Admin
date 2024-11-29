@@ -31,7 +31,8 @@ import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
 import HouseDesignList from './pages/DesignStaff/HouseDesignDrawing/HouseDesignList.tsx';
 import HouseTemplateList from './pages/Manager/HouseTemplate/HouseTemplateList.tsx';
 import HouseTemplateDetail from './pages/Manager/HouseTemplate/HouseTemplateDetail.tsx';
-import HouseDesignDetailStaff from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetailStaff.tsx';
+import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailDesignStaff.tsx';
+import HouseDesignDetailDesignStaff from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetailDesignStaff.tsx';
 import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDesignDetailManager.tsx';
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
 import AddImageHouse from './pages/Manager/HouseTemplate/CreateHouseTemplate/AddImageHouse.tsx';
@@ -278,20 +279,11 @@ function App() {
               }
             />
             <Route
-              path="/createpost"
+              path="/house-design-detail-salesstaff/:id"
               element={
                 <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Create Post | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreatePost />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/postlist"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Post list | RHCQS - Residential Housing Construction Quotation System" />
-                  <PostList />
+                  <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+                  <HouseDesignDetailDesignStaff />
                 </PrivateRoute>
               }
             />
@@ -378,11 +370,11 @@ function App() {
               }
             />
             <Route
-              path="/house-design-detail-staff/:id"
+              path="/house-design-detail-designstaff/:id"
               element={
                 <PrivateRoute allowedRoles={['DesignStaff']}>
                   <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignDetailStaff />
+                  <HouseDesignDetailDesignStaff />
                 </PrivateRoute>
               }
             />

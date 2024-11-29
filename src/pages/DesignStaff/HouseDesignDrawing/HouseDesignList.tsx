@@ -8,7 +8,12 @@ import {
   FaCheckCircle,
   FaTimesCircle,
   FaEdit,
-  FaEye,
+  FaPaintBrush,
+  FaClock,
+  FaCheck,
+  FaBan,
+  FaPaintRoller,
+  FaUser,
 } from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
@@ -27,12 +32,13 @@ interface HouseDesign {
 
 const statusMap: { [key: string]: string } = {
   Pending: 'Đang chờ',
-  Processing: 'Đang xử lý',
-  Reviewing: 'Chờ xác nhận từ quản lý',
+  Processing: 'Đang thiết kế',
+  Reviewing: 'Chờ xác nhận quản lý',
+  Approved: 'Quản lý đã xác nhận',
+  Rejected: 'Bị từ chối',
   Updating: 'Đang chỉnh sửa',
   Updated: 'Đã chỉnh sửa',
-  Approved: 'Quản lý đã xác nhận',
-  Accepted: 'Đã xác nhận',
+  Accepted: 'Chấp nhận bản vẽ',
   Finalized: 'Đã hoàn thành',
   Canceled: 'Đã đóng',
 };
@@ -40,54 +46,48 @@ const statusMap: { [key: string]: string } = {
 export const statusStyles: {
   [key: string]: {
     backgroundColor: string;
-    borderColor: string;
     icon: JSX.Element;
   };
 } = {
   Pending: {
-    backgroundColor: '#0084ff',
-    borderColor: '#0084ff',
-    icon: <FaSyncAlt className="text-white" />,
+    backgroundColor: '#2196F3',
+    icon: <FaClock className="text-white" />,
   },
   Processing: {
     backgroundColor: '#FFA500',
-    borderColor: '#FFD700',
-    icon: <FaSyncAlt className="text-white" />,
+    icon: <FaPaintBrush className="text-white" />,
+  },
+  Reviewing: {
+    backgroundColor: '#9370DB',
+    icon: <FaUser className="text-white" />,
+  },
+  Approved: {
+    backgroundColor: '#5BABAC',
+    icon: <FaCheckCircle className="text-white" />,
   },
   Rejected: {
     backgroundColor: '#FF6347',
-    borderColor: '#FF0000',
     icon: <FaTimesCircle className="text-white" />,
   },
   Updating: {
     backgroundColor: '#1E90FF',
-    borderColor: '#007BFF',
     icon: <FaEdit className="text-white" />,
   },
-  Reviewing: {
-    backgroundColor: '#9370DB',
-    borderColor: '#800080',
-    icon: <FaSyncAlt className="text-white" />,
-  },
-  Approved: {
-    backgroundColor: '#32CD32',
-    borderColor: '#008000',
-    icon: <FaCheckCircle className="text-white" />,
+  Updated: {
+    backgroundColor: '#E81E63',
+    icon: <FaPaintRoller className="text-white" />,
   },
   Accepted: {
-    backgroundColor: '#32CD32',
-    borderColor: '#008000',
-    icon: <FaCheckCircle className="text-white" />,
-  },
-  Canceled: {
-    backgroundColor: '#A9A9A9',
-    borderColor: '#808080',
-    icon: <FaTimesCircle className="text-white" />,
+    backgroundColor: '#C0CA33',
+    icon: <FaCheck className="text-white" />,
   },
   Finalized: {
     backgroundColor: '#32CD32',
-    borderColor: '#008000',
     icon: <FaCheckCircle className="text-white" />,
+  },
+  Canceled: {
+    backgroundColor: '#EF5350',
+    icon: <FaBan className="text-white" />,
   },
 };
 

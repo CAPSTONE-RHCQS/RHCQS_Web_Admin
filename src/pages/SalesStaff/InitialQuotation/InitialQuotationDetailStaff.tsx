@@ -17,7 +17,6 @@ import {
   handleSave,
 } from './components/handler/quotationHandlers';
 import { TableRow } from './components/types';
-import ActionButtons from './components/ActionButtons';
 import QuotationSummary from './QuotationSummary';
 import {
   InitialQuotationResponse,
@@ -167,30 +166,6 @@ const InitialQuotationDetailStaff = () => {
           currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
         />
       </div>
-      <ActionButtons
-        isEditing={isEditing}
-        isSaving={isSaving}
-        handleEditToggle={handleEditToggle}
-        handleSave={() =>
-          handleSave(
-            quotationData,
-            tableData,
-            version,
-            batchPayment,
-            utilityInfos,
-            promotionInfo,
-            giaTriHopDong,
-            totalArea,
-            totalRough,
-            totalUtilities,
-            navigate,
-            setIsSaving,
-            utilityPrices,
-            quantities,
-          )
-        }
-        quotationData={quotationData}
-      />
       <QuotationSummary
         quotationData={quotationData}
         setQuotationData={setQuotationData}
@@ -216,6 +191,26 @@ const InitialQuotationDetailStaff = () => {
         onPriceChange={setUtilityPrices}
         quantities={quantities}
         setQuantities={setQuantities}
+        isSaving={isSaving}
+        handleEditToggle={handleEditToggle}
+        handleSave={() =>
+          handleSave(
+            quotationData,
+            tableData,
+            version,
+            batchPayment,
+            utilityInfos,
+            promotionInfo,
+            giaTriHopDong,
+            totalArea,
+            totalRough,
+            totalUtilities,
+            navigate,
+            setIsSaving,
+            utilityPrices,
+            quantities,
+          )
+        }
       />
     </>
   );

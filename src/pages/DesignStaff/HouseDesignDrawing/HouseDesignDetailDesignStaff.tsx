@@ -20,7 +20,7 @@ import {
   FiType,
 } from 'react-icons/fi';
 
-const HouseDesignDetailStaff: React.FC = () => {
+const HouseDesignDetailSalesStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
     useState<HouseDesignDetailResponse | null>(null);
@@ -312,4 +312,4 @@ const HouseDesignDetailStaff: React.FC = () => {
   );
 };
 
-export default HouseDesignDetailStaff;
+export default HouseDesignDetailSalesStaff;

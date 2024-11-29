@@ -13,7 +13,6 @@ export interface HouseDesignTableProps {
     InsDate: string;
     style: {
       backgroundColor: string;
-      borderColor: string;
       icon: JSX.Element;
     };
   }>;
@@ -41,7 +40,7 @@ const HouseDesignTable: React.FC<HouseDesignTableProps> = ({
   const navigate = useNavigate();
 
   const viewDetails = (id: string) => {
-    navigate(`/house-design-detail-staff/${id}`);
+    navigate(`/house-design-detail-designstaff/${id}`);
     onEditSuccess();
   };
 

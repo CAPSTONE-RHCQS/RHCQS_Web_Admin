@@ -1,6 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FaEye } from 'react-icons/fa';
+import {
+  FaEye,
+  FaClock,
+  FaCog,
+  FaEdit,
+  FaCheckCircle,
+  FaBan,
+  FaCheck,
+  FaPaintBrush,
+  FaPaintRoller,
+  FaUser,
+  FaUserCheck,
+  FaTimes,
+} from 'react-icons/fa';
 
 interface HouseDesignDrawingInfoTableProps {
   designData: {
@@ -13,36 +26,48 @@ interface HouseDesignDrawingInfoTableProps {
   }[];
 }
 
-const statusColorMap: { [key: string]: string } = {
-  Pending: '#A9A9A9',
-  Processing: '#FFA500',
-  Rejected: '#FF0000',
-  Updating: '#1E90FF',
-  Reviewing: '#FFD700',
-  Approved: '#008000',
-  Accepted: '#32CD32',
-  Canceled: '#808080',
-  Finalized: '#4B0082',
+const statusMap: {
+  [key: string]: { color: string; label: string; icon: JSX.Element };
+} = {
+  Pending: { color: '#2196F3', label: 'Đang chờ', icon: <FaClock /> },
+  Processing: {
+    color: '#FFA500',
+    label: 'Đang thiết kế',
+    icon: <FaPaintBrush />,
+  },
+  Reviewing: {
+    color: '#9370DB',
+    label: 'Chờ xác nhận quản lý',
+    icon: <FaUser />,
+  },
+  Approved: {
+    color: '#5BABAC',
+    label: 'Quản lý đã xác nhận',
+    icon: <FaUserCheck />,
+  },
+  Rejected: { color: '#FF6347', label: 'Bị từ chối', icon: <FaTimes /> },
+  Updating: { color: '#1E90FF', label: 'Đang chỉnh sửa', icon: <FaEdit /> },
+  Updated: { color: '#E81E63', label: 'Đã chỉnh sửa', icon: <FaPaintRoller /> },
+  Accepted: { color: '#C0CA33', label: 'Chấp nhận bản vẽ', icon: <FaCheck /> },
+  Finalized: {
+    color: '#32CD32',
+    label: 'Đã hoàn thành',
+    icon: <FaCheckCircle />,
+  },
+  Canceled: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
 };
 
-const statusLabelMap: { [key: string]: string } = {
-  Pending: 'Đang chờ',
-  Processing: 'Đang xử lý',
-  Rejected: 'Bị từ chối',
-  Updating: 'Đang chỉnh sửa',
-  Reviewing: 'Chờ xác nhận từ quản lý',
-  Approved: 'Quản lý đã xác nhận',
-  Accepted: 'Đã xác nhận',
-  Canceled: 'Đã đóng',
-  Finalized: 'Đã hoàn thành',
-};
-
-const getStatusStyle = (status: string | null) => {
-  return status ? statusColorMap[status] || 'text-gray-500' : 'text-gray-500';
-};
-
-const getStatusLabel = (status: string | null) => {
-  return status ? statusLabelMap[status] || 'Không xác định' : 'Không xác định';
+const getStatusInfo = (status: string | null) => {
+  if (!status) {
+    return { color: 'text-gray-500', label: 'Không xác định', icon: <FaCog /> };
+  }
+  return (
+    statusMap[status] || {
+      color: 'text-gray-500',
+      label: 'Không xác định',
+      icon: <FaCog />,
+    }
+  );
 };
 
 const HouseDesignDrawingInfoTable: React.FC<
@@ -88,10 +113,15 @@ const HouseDesignDrawingInfoTable: React.FC<
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                 <span
-                  className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
-                  style={{ backgroundColor: getStatusStyle(item.Status) }}
+                  className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                  style={{
+                    backgroundColor: getStatusInfo(item.Status).color,
+                  }}
                 >
-                  {getStatusLabel(item.Status)}
+                  {getStatusInfo(item.Status).icon}
+                  <span className="ml-2">
+                    {getStatusInfo(item.Status).label}
+                  </span>
                 </span>
               </td>
               <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">

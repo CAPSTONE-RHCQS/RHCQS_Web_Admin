@@ -34,9 +34,9 @@ export const getStatusLabelInitalQuoteDetail = (status: string) => {
   const statusLabelMap: { [key: string]: string } = {
     Pending: 'Chờ xử lý',
     Processing: 'Đang xử lý',
-    Reviewing: 'Chờ xác nhận từ quản lý',
-    Approved: 'Đã xác nhận',
-    Finalized: 'Đã hoàn thành',
+    Reviewing: 'Chờ xác nhận quản lý',
+    Approved: 'Quản lý đã xác nhận',
+    Finalized: 'Hoàn thành',
     Rejected: 'Từ chối báo giá SB',
     Ended: 'Đã đóng',
   };

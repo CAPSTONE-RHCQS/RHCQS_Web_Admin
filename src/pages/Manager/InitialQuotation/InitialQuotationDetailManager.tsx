@@ -101,23 +101,6 @@ const InitialQuotationDetailManager = () => {
     );
   }
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index: number,
-    field: keyof TableRow,
-  ) => {
-    const newData = [...tableData];
-    newData[index] = { ...newData[index], [field]: e.target.value };
-
-    if (field === 'dTich') {
-      newData[index].dienTich = (
-        parseFloat(newData[index].dTich) * parseFloat(newData[index].heSo)
-      ).toString();
-    }
-
-    setTableData(newData);
-  };
-
   const totalDienTich = tableData.reduce(
     (total, row) => total + parseFloat(row.dienTich),
     0,
@@ -220,27 +203,29 @@ const InitialQuotationDetailManager = () => {
             Phê duyệt
           </button>
         )}
-        <button
-          onClick={handleDownload}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-        >
-          <FaDownload className="text-lg" />
-        </button>
-
-        <button
-          onClick={handleShare}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-        >
-          <FaShareAlt className="text-lg" />
-        </button>
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-bold text-primary">
             Thông tin báo giá sơ bộ
           </h2>
           <div className="text-right">
+            <div className="flex justify-end space-x-2">
+              <button
+                onClick={handleDownload}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaDownload className="text-lg" />
+              </button>
+              <button
+                onClick={handleShare}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaShareAlt className="text-lg" />
+              </button>
+            </div>
+
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
               {quotationData.Version || ''}
@@ -348,7 +333,9 @@ const InitialQuotationDetailManager = () => {
                 <th className="px-4 py-2 border text-center">Hệ số</th>
                 <th className="px-4 py-2 border text-center">Số lượng</th>
                 <th className="px-4 py-2 border text-center">Đơn Giá</th>
-                <th className="px-4 py-2 border text-center">Giá trị thanh toán</th>
+                <th className="px-4 py-2 border text-center">
+                  Giá trị thanh toán
+                </th>
                 <th className="px-4 py-2 border text-center">Đơn vị</th>
               </tr>
             </thead>
@@ -518,7 +505,9 @@ const InitialQuotationDetailManager = () => {
                 </th>
                 <th className="px-4 py-2 border text-left">Nội dung</th>
                 <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
-                <th className="px-4 py-2 border text-center">Giá trị thanh toán (VNĐ)</th>
+                <th className="px-4 py-2 border text-center">
+                  Giá trị thanh toán (VNĐ)
+                </th>
                 <th className="px-4 py-2 border text-center">
                   Ngày thanh toán
                 </th>

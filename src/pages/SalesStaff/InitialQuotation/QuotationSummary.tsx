@@ -16,6 +16,7 @@ import { getPromotionByName } from '../../../api/Promotion/PromotionApi';
 import { Promotion } from '../../../types/SearchContainNameTypes';
 import OthersAgreementEditor from './components/Table/OthersAgreementEditor';
 import PromotionTable from './components/Table/PromotionTable';
+import ActionButtons from './components/ActionButtons';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -44,6 +45,9 @@ interface QuotationSummaryProps {
   onPriceChange: (prices: number[]) => void;
   quantities: (number | null)[];
   setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
+  isSaving: boolean;
+  handleEditToggle: () => void;
+  handleSave: () => void;
 }
 
 const QuotationSummary: React.FC<QuotationSummaryProps> = ({
@@ -68,6 +72,9 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   onPriceChange,
   quantities,
   setQuantities,
+  isSaving,
+  handleEditToggle,
+  handleSave,
 }) => {
   const [searchName, setSearchName] = useState<string>('');
   const [promotionList, setPromotionList] = useState<Promotion[]>([]);
@@ -228,11 +235,18 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between mb-4">
         <h2 className="text-2xl font-bold text-primary">
           Thông tin báo giá sơ bộ
         </h2>
         <div className="text-right">
+          <ActionButtons
+            isEditing={isEditing}
+            isSaving={isSaving}
+            handleEditToggle={handleEditToggle}
+            handleSave={handleSave}
+            quotationData={quotationData}
+          />
           <span className="font-semibold">Phiên bản:</span>
           <span className="text-gray-700 ml-2">{quotationData.Version}</span>
           <div className="text-gray-500 text-sm">

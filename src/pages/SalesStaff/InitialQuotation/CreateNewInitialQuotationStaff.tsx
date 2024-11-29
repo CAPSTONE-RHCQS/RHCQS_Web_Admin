@@ -7,7 +7,7 @@ import {
   handleSave,
 } from './components/handler/quotationHandlersCreateNew';
 import { TableRow } from './components/types';
-import CreateNewActionButtons from './components/CreateNewActionButtons';
+import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 import {
   InitialQuotationResponse,
   UtilityInfo,
@@ -19,7 +19,6 @@ import {
   FaFileInvoiceDollar,
   FaRulerCombined,
 } from 'react-icons/fa';
-import CreateNewQuotationSummary from './CreateNewQuotationSummary';
 
 const InitialQuotationDetailStaff = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -147,28 +146,6 @@ const InitialQuotationDetailStaff = () => {
         </div>
       </div>
 
-      <CreateNewActionButtons
-        isEditing={isEditing}
-        isSaving={isSaving}
-        handleEditToggle={handleEditToggle}
-        handleSave={() => {
-          handleSave(
-            quotationData,
-            tableData,
-            batchPayment,
-            utilityInfos,
-            promotionInfo,
-            giaTriHopDong,
-            totalArea,
-            totalRough,
-            totalUtilities,
-            navigate,
-            setIsSaving,
-            utilityPrices,
-            quantities,
-          );
-        }}
-      />
       <CreateNewQuotationSummary
         quotationData={quotationData}
         setQuotationData={setQuotationData}
@@ -194,6 +171,25 @@ const InitialQuotationDetailStaff = () => {
         onPriceChange={setUtilityPrices}
         quantities={quantities}
         setQuantities={setQuantities}
+        isSaving={isSaving}
+        handleEditToggle={handleEditToggle}
+        handleSave={() => {
+          handleSave(
+            quotationData,
+            tableData,
+            batchPayment,
+            utilityInfos,
+            promotionInfo,
+            giaTriHopDong,
+            totalArea,
+            totalRough,
+            totalUtilities,
+            navigate,
+            setIsSaving,
+            utilityPrices,
+            quantities,
+          );
+        }}
       />
     </>
   );
