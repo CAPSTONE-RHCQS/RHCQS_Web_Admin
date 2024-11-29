@@ -188,20 +188,6 @@ const FinalQuotationDetailManager = () => {
       />
 
       <div className="flex justify-end space-x-2 mb-4">
-        <button
-          onClick={handleDownload}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-        >
-          <FaDownload className="text-lg" />
-        </button>
-
-        <button
-          onClick={handleShare}
-          className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-        >
-          <FaShareAlt className="text-lg" />
-        </button>
-
         {quotationDetail.Status === 'Reviewing' && (
           <button
             onClick={() => setIsModalOpen(true)}
@@ -224,11 +210,26 @@ const FinalQuotationDetailManager = () => {
       />
 
       <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-bold text-primary">
             Thông tin báo giá chi tiết
           </h2>
           <div className="text-right">
+            <div className="flex justify-end space-x-2 mb-4">
+              <button
+                onClick={handleDownload}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaDownload className="text-lg" />
+              </button>
+
+              <button
+                onClick={handleShare}
+                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+              >
+                <FaShareAlt className="text-lg" />
+              </button>
+            </div>
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
               {quotationDetail.Version}

@@ -338,24 +338,24 @@ const FinalQuotationDetailStaff = () => {
         currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
       />
 
-      <ButtonGroup
-        isEditing={isEditing}
-        isSaving={isSaving}
-        isFinalized={
-          quotationDetail.Status === 'Processing' ||
-          quotationDetail.Status === 'Rejected'
-        }
-        handleSave={handleSave}
-        handleEditToggle={handleEditToggle}
-        handleDownload={handleDownload}
-        handleShare={handleShare}
-      />
       <div className="p-6 bg-white rounded-lg shadow-md">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between mb-4">
           <h2 className="text-2xl font-bold text-primary">
             Thông tin báo giá chi tiết
           </h2>
           <div className="text-right">
+            <ButtonGroup
+              isEditing={isEditing}
+              isSaving={isSaving}
+              isFinalized={
+                quotationDetail.Status === 'Processing' ||
+                quotationDetail.Status === 'Rejected'
+              }
+              handleSave={handleSave}
+              handleEditToggle={handleEditToggle}
+              handleDownload={handleDownload}
+              handleShare={handleShare}
+            />
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
               {quotationDetail.Version}
