@@ -117,18 +117,18 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
             disabled
           >
             {[
-              'cuộn',
-              'viên',
+              'Cuộn',
+              'Viên',
               'm2',
-              'máy',
-              'bộ',
-              'cái',
-              'thùng',
-              'ống',
-              'bao',
-              'can',
-              'md',
-              'kg',
+              'Máy',
+              'Bộ',
+              'Cái',
+              'Thùng',
+              'Ống',
+              'Bao',
+              'Can',
+              'Md',
+              'Kg',
             ].map((unit) => (
               <option key={unit} value={unit}>
                 {unit}
@@ -210,7 +210,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           />
         </div>
         <div className="mb-4">
-          <strong className="font-bold">Có sẵn:</strong>
+          <strong className="font-bold">Trạng thái:</strong>
           <select
             value={materialDetail.IsAvailable ? 'true' : 'false'}
             onChange={(e) =>
@@ -238,7 +238,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           <strong className="font-bold">Phần vật liệu:</strong>
           <input
             type="text"
-            value={materialDetail.MaterialType}
+            value={materialDetail.MaterialSectionName}
             className="border p-2 w-full rounded font-regular"
             readOnly
           />
@@ -248,6 +248,9 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           <input
             type="text"
             value={materialDetail.Code}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Code: e.target.value })
+            }
             className="border p-2 w-full rounded font-regular"
           />
         </div>
@@ -295,7 +298,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
                 ></path>
               </svg>
             ) : (
-              "Lưu"
+              'Lưu'
             )}
           </button>
         </div>

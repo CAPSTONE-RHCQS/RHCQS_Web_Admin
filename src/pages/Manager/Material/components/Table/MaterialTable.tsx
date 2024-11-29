@@ -91,10 +91,11 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
   const handleSave = async () => {
     try {
       if (currentEditId) {
-        await updateMaterialSection(currentEditId, {
+        const response = await updateMaterialSection(currentEditId, {
           name: inputNameValue,
           code: inputCodeValue,
         });
+        console.log(response, inputNameValue, inputCodeValue);
         setAlertMessage('Sửa vật tưthành công');
         setAlertType('success');
         refreshData();
@@ -210,7 +211,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
               </tr>
               {openItems.has(index) && (
                 <tr>
-                  <td colSpan={3} className=" py-5 px-4">
+                  <td colSpan={4} className="py-5 px-4">
                     <table className="w-full table-auto">
                       <thead>
                         <tr className="bg-gray-2 text-left dark:bg-meta-4 text-center">
@@ -223,7 +224,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           ].map((header) => (
                             <th
                               key={header}
-                              className="border-b border-[#eee] py-2 px-20 font-bold text-gray-250 dark:text-white"
+                              className="border-b border-[#eee] py-2 px-20 font-bold text-gray-250 dark:text-white text-sm"
                             >
                               {header}
                             </th>
@@ -238,7 +239,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
-                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white text-left">
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white">
                                 {material.Name}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
@@ -267,7 +268,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           <tr>
                             <td
                               colSpan={5}
-                              className="py-2 px-4 text-center text-gray-500"
+                              className="py-2 px-4 text-center text-gray-500 text-sm"
                             >
                               Chưa có vật tư
                             </td>
