@@ -28,6 +28,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import ChatBox from '../../../components/ChatBox';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
+import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -182,7 +183,9 @@ const FinalQuotationDetailManager = () => {
         />
       )}
 
-      <FinalQuotationStatus currentStatus={quotationDetail.Status} />
+      <FinalQuotationStatus
+        currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
+      />
 
       <div className="flex justify-end space-x-2 mb-4">
         <button

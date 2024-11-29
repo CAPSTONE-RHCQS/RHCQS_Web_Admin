@@ -40,7 +40,7 @@ const statuses = [
     labelColor: '#5BABAC',
   },
   {
-    label: 'Từ chối báo giá SB',
+    label: 'Từ chối báo giá',
     icon: <FaTimes />,
     bgColor: '#FF6347',
     labelColor: '#FF6347',

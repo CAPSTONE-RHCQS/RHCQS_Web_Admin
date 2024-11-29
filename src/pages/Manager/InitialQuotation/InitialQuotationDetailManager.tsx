@@ -189,9 +189,7 @@ const InitialQuotationDetailManager = () => {
         )}
 
         <InitialQuotationStatusTracker
-          currentStatus={getStatusLabelInitalQuoteDetail(
-            quotationData.Status || '',
-          )}
+          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
         />
       </div>
       <div className="flex justify-end space-x-2">

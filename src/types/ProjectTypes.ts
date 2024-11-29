@@ -21,7 +21,7 @@ export interface FinalInfo {
   AccountName: string;
   Version: number | null;
   InsDate: string | null;
-  Status: string | null;
+  Status: string;
 }
 
 export interface ContractInfo {

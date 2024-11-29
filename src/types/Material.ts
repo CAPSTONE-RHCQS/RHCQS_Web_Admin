@@ -51,6 +51,7 @@ export interface MaterialRequest {
     Unit: string
     Size: string
     Shape: string
+    Code: string
     Description: string
     IsAvailable: boolean
     UnitPrice: string

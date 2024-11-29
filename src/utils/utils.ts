@@ -36,8 +36,21 @@ export const getStatusLabelInitalQuoteDetail = (status: string) => {
     Processing: 'Đang xử lý',
     Reviewing: 'Chờ xác nhận quản lý',
     Approved: 'Quản lý đã xác nhận',
+    Rejected: 'Từ chối báo giá',
     Finalized: 'Hoàn thành',
-    Rejected: 'Từ chối báo giá SB',
+    Ended: 'Đã đóng',
+  };
+  return statusLabelMap[status] || 'Không xác định';
+};
+
+export const getStatusLabelFinalQuoteDetail = (status: string) => {
+  const statusLabelMap: { [key: string]: string } = {
+    Pending: 'Chờ xử lý',
+    Processing: 'Đang xử lý',
+    Reviewing: 'Chờ xác nhận quản lý',
+    Approved: 'Quản lý đã xác nhận',
+    Rejected: 'Từ chối báo giá',
+    Finalized: 'Hoàn thành',
     Ended: 'Đã đóng',
   };
   return statusLabelMap[status] || 'Không xác định';

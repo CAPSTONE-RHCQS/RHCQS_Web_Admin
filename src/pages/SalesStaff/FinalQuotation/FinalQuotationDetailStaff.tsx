@@ -30,6 +30,7 @@ import ChatBox from '../../../components/ChatBox';
 import { toast } from 'react-toastify';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
+import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -333,7 +334,9 @@ const FinalQuotationDetailStaff = () => {
           note={quotationDetail.Note}
         />
       )}
-      <FinalQuotationStatus currentStatus={quotationDetail.Status} />
+      <FinalQuotationStatus
+        currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
+      />
 
       <ButtonGroup
         isEditing={isEditing}

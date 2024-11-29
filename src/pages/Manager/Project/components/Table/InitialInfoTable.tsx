@@ -58,7 +58,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
       color: '#5BABAC',
     },
     Rejected: {
-      label: 'Từ chối báo giá SB',
+      label: 'Từ chối báo giá',
       icon: <FaTimes />,
       color: '#FF6347',
     },

@@ -7,8 +7,8 @@ import {
   FaUserCheck,
   FaBan,
   FaTimes,
-  FaUber,
   FaCheckCircle,
+  FaUser,
 } from 'react-icons/fa';
 
 interface InitialInfoTableProps {
@@ -49,7 +49,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
     Processing: { label: 'Đang xử lý', icon: <FaSpinner />, color: '#FFA500' },
     Reviewing: {
       label: 'Chờ xác nhận quản lý',
-      icon: <FaUber />,
+      icon: <FaUser />,
       color: '#9370DB',
     },
     Approved: {
@@ -58,7 +58,7 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
       color: '#5BABAC',
     },
     Rejected: {
-      label: 'Từ chối báo giá SB',
+      label: 'Từ chối báo giá',
       icon: <FaTimes />,
       color: '#FF6347',
     },

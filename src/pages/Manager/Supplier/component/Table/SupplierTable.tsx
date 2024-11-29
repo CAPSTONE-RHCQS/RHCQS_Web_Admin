@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { PencilIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
-import { SupplierItem, UpdateSupplierRequest } from '../../../../../types/Supplier';
+import {
+  SupplierItem,
+  UpdateSupplierRequest,
+} from '../../../../../types/Supplier';
 import { updateSupplier } from '../../../../../api/Supplier/Supplier';
 import EditSupplier from '../Edit/EditSuplier';
 
@@ -116,10 +119,10 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
           {dataSupplier.map((item, index) => (
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-medium">
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-red-500 dark:text-white uppercase">
                   {item.Name}
                 </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                <td className="border-b border-[#eee] py-5 px-4 font-semibold dark:border-strokedark text-primaryGreenButton">
                   {item.ShortDescription}
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
