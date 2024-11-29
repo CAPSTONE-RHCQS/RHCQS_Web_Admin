@@ -39,7 +39,7 @@ const statusMap: { [key: string]: string } = {
   Updating: 'Đang chỉnh sửa',
   Updated: 'Đã chỉnh sửa',
   Accepted: 'Chấp nhận bản vẽ',
-  Finalized: 'Đã hoàn thành',
+  Finalized: 'Hoàn thành',
   Canceled: 'Đã đóng',
 };
 

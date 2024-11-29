@@ -51,7 +51,7 @@ const statusMap: {
   Accepted: { color: '#C0CA33', label: 'Chấp nhận bản vẽ', icon: <FaCheck /> },
   Finalized: {
     color: '#32CD32',
-    label: 'Đã hoàn thành',
+    label: 'Hoàn thành',
     icon: <FaCheckCircle />,
   },
   Canceled: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
