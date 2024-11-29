@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import {
   FaCheck,
-  FaSpinner,
   FaFileContract,
-  FaClipboardCheck,
-  FaHourglassHalf,
   FaBan,
   FaEye,
   FaBoxOpen,
+  FaHome,
+  FaUser,
+  FaSignature,
 } from 'react-icons/fa';
 import RejectionModal from '../../../../../components/Modals/RejectionModal';
 import SortIcon from '../../../../../components/Buttonicons/SortIcon';
@@ -28,32 +28,38 @@ interface ProjectTableSalesStaffProps {
   error: string | null;
 }
 
-const getStatusStyle = (status: string) => {
-  switch (status) {
-    case 'Processing':
-      return { backgroundColor: '#FFB347', icon: <FaSpinner /> };
-    case 'Designed':
-      return { backgroundColor: '#4D4DFF', icon: <FaClipboardCheck /> };
-    case 'Reviewing':
-      return { backgroundColor: '#4D4DFF', icon: <FaHourglassHalf /> };
-    case 'Signed Contract':
-      return { backgroundColor: '#4CAF50', icon: <FaFileContract /> };
-    case 'Finalized':
-      return { backgroundColor: '#4CAF50', icon: <FaCheck /> };
-    case 'Ended':
-      return { backgroundColor: '#FF6666', icon: <FaBan /> };
-    default:
-      return { backgroundColor: '#B0B0B0', icon: null };
-  }
+const statusMap: Record<
+  string,
+  { label: string; icon: JSX.Element; color: string }
+> = {
+  Processing: { label: 'Đang xử lý', icon: <FaHome />, color: '#5BABAC' },
+  Designed: {
+    label: 'Đã thiết kế',
+    icon: <FaFileContract />,
+    color: '#E91E63',
+  },
+  Reviewing: {
+    label: 'Chờ xác nhận',
+    icon: <FaUser />,
+    color: '#2196F3',
+  },
+  'Signed Contract': {
+    label: 'Đã ký hợp đồng',
+    icon: <FaSignature />,
+    color: '#9C27B0',
+  },
+  Finalized: { label: 'Hoàn thành', icon: <FaCheck />, color: '#4CAF50' },
+  Ended: { label: 'Đã chấm dứt', icon: <FaBan />, color: '#F44336' },
 };
 
-const statusTranslationMap: { [key: string]: string } = {
-  Processing: 'Đang xử lý',
-  Designed: 'Đã thiết kế',
-  Reviewing: 'Chờ xác nhận',
-  'Signed Contract': 'Đã ký hợp đồng',
-  Finalized: 'Hoàn thành',
-  Ended: 'Đã chấm dứt',
+const getStatusInfo = (status: string) => {
+  return (
+    statusMap[status] || {
+      label: 'Không xác định',
+      icon: null,
+      color: '#B0B0B0',
+    }
+  );
 };
 
 const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
@@ -99,53 +105,50 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
             </tr>
           </thead>
           <tbody>
-            {data.map((item) => (
-              <tr
-                key={item.id}
-                className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              >
-                {columns.map((column) => (
-                  <td
-                    key={column.key}
-                    className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
-                  >
-                    {column.key === 'status' ? (
-                      <span
-                        className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
-                        style={{
-                          backgroundColor: getStatusStyle(item[column.key])
-                            .backgroundColor,
-                        }}
-                      >
-                        {getStatusStyle(item[column.key]).icon}
-                        <span className="ml-2">
-                          {statusTranslationMap[item[column.key]] ||
-                            item[column.key]}
+            {data.map((item) => {
+              const { label, icon, color } = getStatusInfo(item.status);
+              return (
+                <tr
+                  key={item.id}
+                  className="border-b border-gray-300 dark:border-strokedark hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                >
+                  {columns.map((column) => (
+                    <td
+                      key={column.key}
+                      className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
+                    >
+                      {column.key === 'status' ? (
+                        <span
+                          className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                          style={{ backgroundColor: color }}
+                        >
+                          {icon}
+                          <span className="ml-2">{label}</span>
                         </span>
-                      </span>
-                    ) : column.key === 'projectId' ? (
-                      <strong style={{ color: '#FF5733' }}>
-                        {item[column.key]}
-                      </strong>
-                    ) : column.key === 'category' ? (
-                      <span className="text-primaryGreenButton">
-                        {item[column.key]}
-                      </span>
-                    ) : (
-                      item[column.key]
-                    )}
+                      ) : column.key === 'projectId' ? (
+                        <strong style={{ color: '#FF5733' }}>
+                          {item[column.key]}
+                        </strong>
+                      ) : column.key === 'category' ? (
+                        <span className="text-primaryGreenButton">
+                          {item[column.key]}
+                        </span>
+                      ) : (
+                        item[column.key]
+                      )}
+                    </td>
+                  ))}
+                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                    <button
+                      onClick={() => handleViewDetails(item.id)}
+                      className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
+                    >
+                      <FaEye className="text-xl" />
+                    </button>
                   </td>
-                ))}
-                <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
-                  <button
-                    onClick={() => handleViewDetails(item.id)}
-                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-2"
-                  >
-                    <FaEye className="text-xl" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}

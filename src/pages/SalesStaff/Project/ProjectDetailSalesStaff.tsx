@@ -99,12 +99,6 @@ const ProjectDetailSalesStaff = () => {
     setMenuVisible(false);
   };
 
-  const handleMenuItemClick = (item: string) => {
-    if (item === 'history') {
-      setShowHistory(true);
-    }
-  };
-
   const handleCloseHistory = () => {
     setShowHistory(false);
   };

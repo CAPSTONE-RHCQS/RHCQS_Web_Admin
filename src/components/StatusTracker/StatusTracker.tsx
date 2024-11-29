@@ -6,44 +6,59 @@ import {
   FaCheck,
   FaFileContract,
   FaBan,
+  FaSignature,
 } from 'react-icons/fa';
 
 interface StatusTrackerProps {
   currentStatus: string;
 }
 
-const statuses = [
-  { label: 'Đang xử lý', icon: <FaHome /> },
-  { label: 'Đã thiết kế', icon: <FaFileContract /> },
-  { label: 'Chờ xác nhận', icon: <FaUser /> },
-  { label: 'Đã ký hợp đồng', icon: <FaCog /> },
-  { label: 'Hoàn thành', icon: <FaCheck /> },
-  { label: 'Đã chấm dứt', icon: <FaBan /> },
-];
-
-type StatusLabel =
-  | 'Đang xử lý'
-  | 'Đã thiết kế'
-  | 'Chờ xác nhận'
-  | 'Đã ký hợp đồng'
-  | 'Hoàn thành'
-  | 'Đã chấm dứt';
-
-const statusColors: Record<StatusLabel, { bg: string; text: string }> = {
-  'Đang xử lý': { bg: 'bg-primary', text: 'text-primary' },
-  'Đã thiết kế': { bg: 'bg-pink-500', text: 'text-pink-500' },
-  'Chờ xác nhận': { bg: 'bg-blue-500', text: 'text-blue-500' },
-  'Đã ký hợp đồng': { bg: 'bg-purple-500', text: 'text-purple-500' },
-  'Hoàn thành': { bg: 'bg-green-500', text: 'text-green-500' },
-  'Đã chấm dứt': { bg: 'bg-red-500', text: 'text-red-500' },
+const statusMap: Record<
+  string,
+  { label: string; icon: JSX.Element; bg: string; text: string }
+> = {
+  'Đang xử lý': {
+    label: 'Đang xử lý',
+    icon: <FaHome />,
+    bg: 'bg-primary',
+    text: 'text-primary',
+  },
+  'Đã thiết kế': {
+    label: 'Đã thiết kế',
+    icon: <FaFileContract />,
+    bg: 'bg-pink-500',
+    text: 'text-pink-500',
+  },
+  'Chờ xác nhận': {
+    label: 'Chờ xác nhận',
+    icon: <FaUser />,
+    bg: 'bg-blue-500',
+    text: 'text-blue-500',
+  },
+  'Đã ký hợp đồng': {
+    label: 'Đã ký hợp đồng',
+    icon: <FaSignature />,
+    bg: 'bg-purple-500',
+    text: 'text-purple-500',
+  },
+  'Hoàn thành': {
+    label: 'Hoàn thành',
+    icon: <FaCheck />,
+    bg: 'bg-green-500',
+    text: 'text-green-500',
+  },
+  'Đã chấm dứt': {
+    label: 'Đã chấm dứt',
+    icon: <FaBan />,
+    bg: 'bg-red-500',
+    text: 'text-red-500',
+  },
 };
 
 const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
-  const currentIndex = statuses.findIndex(
-    (status) => status.label === currentStatus,
-  );
+  const currentIndex = Object.keys(statusMap).indexOf(currentStatus);
 
-  let filteredStatuses = statuses.filter((status) => {
+  let filteredStatuses = Object.values(statusMap).filter((status) => {
     if (status.label === 'Đã chấm dứt') {
       return status.label === currentStatus;
     }
@@ -51,7 +66,7 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
   });
 
   if (currentStatus !== 'Đã chấm dứt') {
-    const completedStatus = statuses.find(status => status.label === 'Hoàn thành');
+    const completedStatus = statusMap['Hoàn thành'];
     if (completedStatus) {
       filteredStatuses.push(completedStatus);
     }
@@ -71,10 +86,12 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
                 <div
                   className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center ${
                     index <= currentIndex
-                      ? `${statusColors[status.label as StatusLabel].bg} text-white`
+                      ? `${status.bg} text-white`
                       : 'bg-customGray text-gray-700'
                   } ${
-                    index === currentIndex ? 'ring-4 ring-offset-2 ring-blue-300' : ''
+                    index === currentIndex
+                      ? 'ring-4 ring-offset-2 ring-blue-300'
+                      : ''
                   }`}
                   title={status.label}
                 >
@@ -82,9 +99,7 @@ const StatusTracker: React.FC<StatusTrackerProps> = ({ currentStatus }) => {
                 </div>
                 <span
                   className={`mt-2 text-xs md:text-sm ${
-                    index <= currentIndex
-                      ? statusColors[status.label as StatusLabel].text
-                      : 'text-gray-700'
+                    index <= currentIndex ? status.text : 'text-gray-700'
                   } font-semibold`}
                 >
                   {status.label}
