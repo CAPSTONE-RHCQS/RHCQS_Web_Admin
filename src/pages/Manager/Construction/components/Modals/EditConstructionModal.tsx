@@ -84,7 +84,10 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         JSON.stringify(subRequests) !==
           JSON.stringify(construction.SubConstructionItems)
       ) {
-        await putConstruction(construction.Id, constructionData);
+        await putConstruction(construction.Id, {
+          ...constructionData,
+          Name: name,
+        });
         toast.success('Chỉnh sửa thành công!');
         onEditSuccess();
       } else {
@@ -109,7 +112,7 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">
-          Chỉnh sửa Construction
+          Chỉnh sửa hạng mục
         </h2>
         <div className="grid grid-cols-4 gap-4 mb-6">
           <input
@@ -141,74 +144,76 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
             onChange={(e) => setType(e.target.value)}
             className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
           >
-            <option value="ROUGH">ROUGH</option>
-            <option value="FINISH">FINISH</option>
+            <option value="ROUGH">Thô</option>
+            <option value="FINISH">Hoàn thiện</option>
           </select>
         </div>
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Sub Constructions</h3>
-          {subConstructions.map((sub, index) => (
-            <div
-              key={index}
-              className="mb-2 grid grid-cols-4 gap-4 items-center"
-            >
-              <input
-                type="text"
-                placeholder="Tên Mục Con"
-                value={sub.Name}
-                onChange={(e) =>
-                  handleSubConstructionChange(index, 'Name', e.target.value)
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
-                required
-              />
-              <input
-                type="number"
-                placeholder="Hệ số"
-                value={sub.Coefficient}
-                onChange={(e) =>
-                  handleSubConstructionChange(
-                    index,
-                    'Coefficient',
-                    Number(e.target.value),
-                  )
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
-                required
-              />
-              <input
-                type="text"
-                placeholder="Đơn vị"
-                value={sub.Unit}
-                onChange={(e) =>
-                  handleSubConstructionChange(index, 'Unit', e.target.value)
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
-                required
-              />
-              <button
-                type="button"
-                onClick={() => handleDeleteSubConstruction(index)}
-                className="text-red-500 hover:text-red-700"
+        {subConstructions.length > 0 && (
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold mb-2">Hạng mục con</h3>
+            {subConstructions.map((sub, index) => (
+              <div
+                key={index}
+                className="mb-2 grid grid-cols-4 gap-4 items-center"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth={1.5}
-                  stroke="currentColor"
-                  className="w-6 h-6"
+                <input
+                  type="text"
+                  placeholder="Tên Mục Con"
+                  value={sub.Name}
+                  onChange={(e) =>
+                    handleSubConstructionChange(index, 'Name', e.target.value)
+                  }
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Hệ số"
+                  value={sub.Coefficient}
+                  onChange={(e) =>
+                    handleSubConstructionChange(
+                      index,
+                      'Coefficient',
+                      Number(e.target.value),
+                    )
+                  }
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Đơn vị"
+                  value={sub.Unit}
+                  onChange={(e) =>
+                    handleSubConstructionChange(index, 'Unit', e.target.value)
+                  }
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDeleteSubConstruction(index)}
+                  className="text-red-500 hover:text-red-700"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-            </div>
-          ))}
-        </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                    className="w-6 h-6"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M6 18L18 6M6 6l12 12"
+                    />
+                  </svg>
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
         <div className="flex justify-end">
           <button
             onClick={onClose}

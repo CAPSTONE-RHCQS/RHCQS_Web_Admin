@@ -84,7 +84,7 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
               {['Tên', 'Hệ số', 'Đơn vị', 'Ngày tạo', ''].map((header) => (
                 <th
                   key={header}
-                  className="py-4 px-4 font-medium text-black dark:text-white"
+                  className="py-4 px-4 text-black dark:text-white font-bold"
                 >
                   {header}
                 </th>
@@ -98,8 +98,8 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                   onClick={() => toggleOpenItem(index)}
                   className="cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
-                    <div className="flex items-center">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark flex items-center font-bold uppercase">
+                    <div className="flex items-center font-bold text-red-500 dark:text-white uppercase">
                       {item.Name}
                       {item.SubConstructionItems &&
                         item.SubConstructionItems.length > 0 && (
@@ -107,18 +107,18 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                         )}
                     </div>
                   </td>
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-primaryGreenButton dark:text-white">
                     {item.Coefficient}
                   </td>
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-black">
                     {item.Unit}
                   </td>
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     {new Date(item.InsDate).toLocaleDateString()}
                   </td>
-                  <td className="border-b border-gray-300 py-5 px-4 dark:border-strokedark">
+                  <td className=" border-b border-[#eee] py-5 px-4 dark:border-strokedark ">
                     <PencilIcon
-                      className="w-4 h-4 text-blue-500 cursor-pointer hover:text-blue-600 transition"
+                      className="w-4 h-4 text-primaryGreenButton cursor-pointer hover:text-secondaryGreenButton transition"
                       onClick={() => openEditModal(item.Id)}
                     />
                   </td>
@@ -129,11 +129,11 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                     <tr>
                       <td
                         colSpan={4}
-                        className="border-b border-gray-300 py-5 px-4 dark:border-strokedark"
+                        className="py-5 px-4 dark:border-strokedark"
                       >
                         <table className="w-full table-auto">
                           <thead>
-                            <tr className="bg-gray-100 text-left dark:bg-meta-5">
+                            <tr className="bg-gray-200 text-left dark:bg-meta-4 text-sm">
                               {[
                                 'Tên Mục Con',
                                 'Hệ số',
@@ -142,7 +142,7 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                               ].map((header) => (
                                 <th
                                   key={header}
-                                  className="py-2 px-4 font-medium text-black dark:text-white"
+                                  className="border-b border-[#eee] py-2 px-20 font-bold text-gray-250 dark:text-white text-sm"
                                 >
                                   {header}
                                 </th>
@@ -167,16 +167,16 @@ const ConstructionTable: React.FC<ConstructionTableProps> = ({
                                       : ''
                                   }`}
                                 >
-                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white">
                                     {subItem.Name}
                                   </td>
-                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white">
                                     {subItem.Coefficient}
                                   </td>
-                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white">
                                     {subItem.Unit}
                                   </td>
-                                  <td className="border-b border-gray-300 py-2 px-4 dark:border-strokedark">
+                                  <td className="border-b border-[#eee] py-2 px-20 font-regular text-black dark:text-white">
                                     {new Date(
                                       subItem.InsDate,
                                     ).toLocaleDateString()}
