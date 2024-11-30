@@ -253,7 +253,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                               </td>
                               <td className="border-b border-[#eee] py-5 px-20 dark:border-strokedark">
                                 <FaEye
-                                  className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6"
+                                  className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6 cursor-pointer"
                                   title="Xem chi tiết"
                                   onClick={() =>
                                     handleViewDetail(material.Id.toString())

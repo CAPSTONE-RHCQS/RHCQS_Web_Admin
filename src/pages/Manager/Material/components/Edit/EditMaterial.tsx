@@ -252,6 +252,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
               setMaterialDetail({ ...materialDetail, Code: e.target.value })
             }
             className="border p-2 w-full rounded font-regular"
+            readOnly
           />
         </div>
         <div className="mb-4">
