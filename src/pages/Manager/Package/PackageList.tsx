@@ -30,7 +30,7 @@ const PackageList: React.FC = () => {
   }, []);
 
   const getPackageTypeName = (packageTypeId: string): string => {
-    switch (packageTypeId.toUpperCase()) {
+    switch (packageTypeId) {
       case 'E4F968ED-74B2-4164-A8BE-3F83220BE61D':
         return 'Phần thô';
       case '313B205D-8DBD-438C-9935-8B460F3B7237':
@@ -41,7 +41,7 @@ const PackageList: React.FC = () => {
   };
 
   const getPackageTypeIcon = (packageTypeId: string) => {
-    switch (packageTypeId.toUpperCase()) {
+    switch (packageTypeId) {
       case 'E4F968ED-74B2-4164-A8BE-3F83220BE61D':
         return <FaHammer className="text-blue-500" />;
       case '313B205D-8DBD-438C-9935-8B460F3B7237':
