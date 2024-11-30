@@ -1,28 +1,15 @@
 export interface Package {
   Id: string;
-  PackageTypeId: string;
   PackageName: string;
   Unit: string;
   Price: number;
   Status: string;
   InsDate: string;
   UpsDate: string | null;
-  PackageDetails: PackageDetail[];
-  PackageHouses: PackageHouse[];
-  PackageType: {
-    Id: string;
-    Name: string;
-    InsDate: string | null;
-  };
-}
-
-export interface PackageDetail {
-  Id: string;
-  Action: string | null;
-  Type: string;
-  InsDate: string;
   PackageLabors: PackageLabor[];
   PackageMaterials: PackageMaterial[];
+  PackageHouses: PackageHouse[];
+  PackageType: string;
 }
 
 export interface PackageLabor {
@@ -30,27 +17,28 @@ export interface PackageLabor {
   LaborId: string;
   NameOfLabor: string;
   Type: string;
-  TotalPrice: number;
-  InsDate: string | null;
+  Price: number;
+  InsDate: string;
 }
 
 export interface PackageMaterial {
   Id: string;
   MaterialSectionId: string;
   MaterialSectionName: string;
-  MaterialName: string | null;
+  MaterialName: string;
+  Type: string;
   Price: number;
-  Unit: string | null;
+  Unit: string;
   Size: string | null;
   Shape: string | null;
   ImgUrl: string | null;
   Description: string | null;
-  InsDate: string | null;
+  InsDate: string;
 }
 
 export interface PackageHouse {
   Id: string;
   DesignTemplateId: string;
-  ImgUrl: string;
+  ImgUrl: string | null;
   InsDate: string;
 }

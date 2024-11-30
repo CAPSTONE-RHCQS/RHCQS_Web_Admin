@@ -45,6 +45,8 @@ import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff
 import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
 import LaborList from './pages/Manager/Labor/LaborList.tsx';
 import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
+import ProjectDetailDesignStaff from './pages/DesignStaff/Project/ProjectDetailDesignStaff.tsx';
+import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,6 +114,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
                   <PackageList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/package-detail-manager/:id"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
+                  <PackageDetail />
                 </PrivateRoute>
               }
             />
