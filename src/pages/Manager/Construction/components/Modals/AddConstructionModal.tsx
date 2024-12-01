@@ -87,6 +87,7 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
 
       const constructionData = {
         name,
+        Name: name,
         coefficient,
         unit,
         type,

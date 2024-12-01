@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import useFetchConstructions from '../../../hooks/useFetchConstructions';
 import ConstructionTable from './components/Table/ConstructionTable';
@@ -7,10 +7,15 @@ import AddConstructionModal from './components/Modals/AddConstructionModal';
 
 const ConstructionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageInput, setPageInput] = useState<string>(currentPage.toString());
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { totalPages, totalConstructions, isLoading, constructions } =
     useFetchConstructions(currentPage, refreshKey);
+
+  useEffect(() => {
+    setPageInput(currentPage.toString());
+  }, [currentPage]);
 
   const handlePageChange = (newPage: number) => {
     if (newPage > 0 && newPage <= totalPages) {
@@ -26,6 +31,20 @@ const ConstructionList: React.FC = () => {
     handleRefresh();
   };
 
+  const handlePageInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPage = e.target.value;
+    setPageInput(newPage);
+  };
+
+  const handlePageInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      const newPage = parseInt(pageInput, 10);
+      if (!isNaN(newPage) && newPage >= 1 && newPage <= totalPages) {
+        setCurrentPage(newPage);
+      }
+    }
+  };
+
   return (
     <>
       <Breadcrumb pageName="Quản lý hạng mục" />
@@ -34,15 +53,15 @@ const ConstructionList: React.FC = () => {
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
             <span className="text-lg text-black dark:text-white">
-              Tổng số Hạng mục: {totalConstructions}
+              Tổng số hạng mục: {totalConstructions}
             </span>
           </div>
           <div className="flex items-center">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mr-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              className="px-4 py-2 text-primary font-bold"
             >
-              Thêm mới
+              + Thêm hạng mục mới
             </button>
             <ArrowPathIcon
               onClick={handleRefresh}
@@ -66,7 +85,15 @@ const ConstructionList: React.FC = () => {
             Trang trước
           </button>
           <span>
-            Trang {currentPage} / {totalPages}
+            Trang
+            <input
+              type="text"
+              value={pageInput}
+              onChange={handlePageInputChange}
+              onKeyDown={handlePageInputKeyDown}
+              className="w-12 text-center border rounded mx-2"
+            />
+            / {totalPages}
           </span>
           <button
             onClick={() => handlePageChange(currentPage + 1)}
