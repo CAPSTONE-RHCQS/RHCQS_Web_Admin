@@ -129,6 +129,28 @@ export const getProjectDetail = async (id: string): Promise<ProjectDetail> => {
   }
 };
 
+export const getProjectDetailDesignStaff = async (
+  id: string,
+): Promise<ProjectDetail> => {
+  try {
+    const response = await requestWebRHCQS.get<ProjectDetail>(
+      `/project/desgin-staff`,
+      {
+        params: {
+          id,
+        },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching project detail:', error);
+    throw error;
+  }
+};
+
 // export const postSalesProject = async (page: number, size: number) => {
 //   try {
 //     const token = localStorage.getItem('token');

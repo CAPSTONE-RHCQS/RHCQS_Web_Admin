@@ -7,11 +7,8 @@ import PageTitle from './components/PageTitle';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import DefaultLayout from './layout/DefaultLayout';
-import CreatePost from './pages/BlogPost/CreatePost';
 import InitialQuotationDetailManager from './pages/Manager/InitialQuotation/InitialQuotationDetailManager.tsx';
 import RHCQS from './pages/Dashboard/RHCQS';
-import PostList from './pages/BlogPost/PostList';
-import CreateDesignHouse from './pages/CreateDesignHouse/CreateDesignHouse';
 import AccountList from './pages/Manager/Account/AccountList.tsx';
 import ProjectDetailManager from './pages/Manager/Project/ProjectDetailManager.tsx';
 import CreateContractDesign from './pages/SalesStaff/Contract/CreateContractDesign.tsx';
@@ -31,7 +28,6 @@ import UtilityList from './pages/Manager/Utility/UtilityList.tsx';
 import HouseDesignList from './pages/DesignStaff/HouseDesignDrawing/HouseDesignList.tsx';
 import HouseTemplateList from './pages/Manager/HouseTemplate/HouseTemplateList.tsx';
 import HouseTemplateDetail from './pages/Manager/HouseTemplate/HouseTemplateDetail.tsx';
-import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailDesignStaff.tsx';
 import HouseDesignDetailDesignStaff from './pages/DesignStaff/HouseDesignDrawing/HouseDesignDetailDesignStaff.tsx';
 import HouseDesignDetailManager from './pages/Manager/HouseDesignDrawing/HouseDesignDetailManager.tsx';
 import CreateHouseModel from './pages/Manager/HouseTemplate/CreateHouseTemplate/CreateHouseModel.tsx';
@@ -45,6 +41,8 @@ import ContractDetailStaff from './pages/SalesStaff/Contract/ContractDetailStaff
 import ContractDetailManager from './pages/Manager/Contract/ContractDetailManager.tsx';
 import LaborList from './pages/Manager/Labor/LaborList.tsx';
 import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
+import ProjectDetailDesignStaff from './pages/DesignStaff/Project/ProjectDetailDesignStaff.tsx';
+import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -112,6 +110,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
                   <PackageList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/package-detail-manager/:id"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
+                  <PackageDetail />
                 </PrivateRoute>
               }
             />
@@ -281,7 +288,7 @@ function App() {
             <Route
               path="/house-design-detail-salesstaff/:id"
               element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
+                <PrivateRoute allowedRoles={['SalesStaff', 'DesignStaff']}>
                   <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
                   <HouseDesignDetailDesignStaff />
                 </PrivateRoute>
@@ -379,11 +386,11 @@ function App() {
               }
             />
             <Route
-              path="/createdesignhouse"
+              path="/project-detail-designstaff/:id"
               element={
                 <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="Create Design House | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateDesignHouse />
+                  <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
+                  <ProjectDetailDesignStaff />
                 </PrivateRoute>
               }
             />
