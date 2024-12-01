@@ -71,6 +71,7 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
 
       const constructionData = {
         name,
+        Name: name,
         coefficient,
         unit,
         type,
@@ -84,10 +85,7 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         JSON.stringify(subRequests) !==
           JSON.stringify(construction.SubConstructionItems)
       ) {
-        await putConstruction(construction.Id, {
-          ...constructionData,
-          Name: name,
-        });
+        await putConstruction(construction.Id, constructionData);
         toast.success('Chỉnh sửa thành công!');
         onEditSuccess();
       } else {
