@@ -1,54 +1,12 @@
 import { GetConstructionByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
-import axios from 'axios';
 import { FinalToContractResponse } from '../../types/ContractResponseTypes';
-
-export interface SubConstructionRequest {
-  id: string;
-  name: string;
-  coefficient: number;
-  unit: string;
-}
-
-export interface ConstructionRequest {
-  //Search
-  Name: string;
-
-  name: string;
-  coefficient: number;
-  unit: string;
-  type: string;
-  subRequests: SubConstructionRequest[];
-}
-
-export interface ContractConstructionRequest {
-  projectId: string;
-  startDate: string;
-  endDate: string;
-  validityPeriod: number;
-  taxCode: string;
-  contractValue: number;
-  urlFile: string;
-  note: string;
-}
-
-export interface ConstructionContractRequest {
-  projectId: string;
-  startDate: string;
-  endDate: string;
-  validityPeriod: number;
-  taxCode: string;
-  contractValue: number;
-  urlFile: string | null;
-  note: string;
-}
-
-export interface ConstructionSearchResponse {
-  Id: string;
-  SubConstructionId: string;
-  Name: string;
-  Coefficient: number;
-}
+import axios from 'axios';
+import {
+  ConstructionContractRequest,
+  ConstructionRequest,
+  ConstructionWork,
+} from '../../types/ConstructionTypes';
 
 export const getConstructions = async (page: number, size: number) => {
   try {
@@ -111,27 +69,6 @@ export const putConstruction = async (
   }
 };
 
-export const postConstructionContract = async (
-  contractData: ConstructionContractRequest,
-) => {
-  try {
-    const response = await requestWebRHCQS.post(
-      '/contract/construction',
-      contractData,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          accept: 'text/plain',
-        },
-      },
-    );
-    return response.data;
-  } catch (error) {
-    console.error('Error posting construction contract:', error);
-    throw error;
-  }
-};
-
 export async function getConstructionByName(
   name: string,
 ): Promise<GetConstructionByNameResponse> {
@@ -148,6 +85,27 @@ export async function getConstructionByName(
     throw new Error('Failed to fetch construction by name');
   }
 }
+
+export const searchConstructionWork = async (
+  packageId: string,
+  name: string,
+): Promise<ConstructionWork[]> => {
+  try {
+    const response = await requestWebRHCQS.get<ConstructionWork[]>(
+      `/construction/construction-work/search`,
+      {
+        params: { packageId, name },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching construction work:', error);
+    throw error;
+  }
+};
 
 export const getFinalToContractConstruction = async (
   projectId: string,

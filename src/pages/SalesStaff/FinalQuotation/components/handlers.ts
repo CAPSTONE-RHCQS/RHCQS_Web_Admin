@@ -57,11 +57,17 @@ export const handleSeva = async (
       })),
       finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
         constructionId: item.ConstructionId,
-        subconstructionId: item.SubConstructionId ?? null,
+        subconstructionId: item.SubConstructionId || null,
         quotationItems: item.QuotationItems.map((qItem) => ({
-          laborId: qItem.LaborId ?? null,
-          materialId: qItem.MaterialId ?? null,
+          workTemplateId: qItem.WorkTemplateId || '',
+          unit: qItem.Unit,
           weight: qItem.Weight,
+          unitPriceLabor: qItem.UnitPriceLabor ?? 0,
+          unitPriceRough: qItem.UnitPriceRough ?? 0,
+          unitPriceFinished: qItem.UnitPriceFinished ?? 0,
+          totalPriceLabor: qItem.TotalPriceLabor ?? 0,
+          totalPriceRough: qItem.TotalPriceRough ?? 0,
+          totalPriceFinished: qItem.TotalPriceFinished ?? 0,
           note: qItem.Note || '',
         })),
       })),
@@ -101,91 +107,95 @@ export const hanldCreateNew = async (
   setIsSaving: (value: boolean) => void,
   navigate: (path: string) => void,
 ) => {
-  if (quotationDetail) {
-    const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
-      (item) => item.QuotationItems.length === 0,
-    );
-
-    const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
-      (payment) => !payment.PaymentDate || !payment.PaymentPhase,
-    );
-
-    if (hasEmptyConstruction) {
-      toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
-      return;
-    }
-
-    if (hasEmptyDate) {
-      toast.error('Tất cả các trường ngày phải được điền.');
-      return;
-    }
-
-    const requestData: FinalQuotationRequest = {
-      customerName: quotationDetail.AccountName,
-      address: quotationDetail.ProjectAddress,
-      projectId: quotationDetail.ProjectId,
-      promotionId: quotationDetail.PromotionInfo?.Id || null,
-      note: quotationDetail.Note || '',
-      batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        price: payment.Price,
-        numberOfBatch: payment.NumberOfBatch,
-        paymentDate: payment.PaymentDate,
-        paymentPhase: payment.PaymentPhase,
-      })),
-      equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
-        name: item.Name,
-        unit: item.Unit,
-        quantity: item.Quantity,
-        unitOfMaterial: item.UnitOfMaterial,
-        note: item.Note || '',
-        type: item.Type,
-      })),
-      utilities: quotationDetail.UtilityInfos.map((util) => ({
-        utilitiesItemId: util.utilitiesItemId || util.utilitiesSectionId,
-        coefficient: util.Coefficient,
-        price: util.Price,
-        description: util.Description,
-        quantity: util.Quantity || null,
-      })),
-      finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
-        constructionId: item.ConstructionId,
-        subconstructionId: item.SubConstructionId ?? null,
-        quotationItems: item.QuotationItems.map((qItem) => ({
-          laborId: qItem.LaborId ?? null,
-          materialId: qItem.MaterialId ?? null,
-          weight: qItem.Weight,
-          note: qItem.Note || '',
-        })),
-      })),
-    };
-
-    try {
-      setIsSaving(true);
-      await updateFinalQuotation(requestData);
-      toast.success('Khởi tạo báo giá thành công!');
-      navigate(`/project-detail-staff/${quotationDetail.ProjectId}`);
-      return true;
-    } catch (error) {
-      console.error('Lỗi khi khi khởi tạo báo giá:', error);
-      if (axios.isAxiosError(error)) {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.Error
-        ) {
-          toast.error(`Lỗi: ${error.response.data.Error}`);
-        } else {
-          toast.error('Đã xảy ra lỗi khi cập nhật báo giá.');
-        }
-      } else {
-        toast.error('Đã xảy ra lỗi không xác định.');
-      }
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
+  if (!quotationDetail) {
+    toast.error('Dữ liệu báo giá không hợp lệ.');
+    return false;
   }
-  return false;
+
+  const hasEmptyConstruction = quotationDetail.FinalQuotationItems.some(
+    (item) => item.QuotationItems.length === 0,
+  );
+
+  const hasEmptyDate = quotationDetail.BatchPaymentInfos.some(
+    (payment) => !payment.PaymentDate || !payment.PaymentPhase,
+  );
+
+  if (hasEmptyConstruction) {
+    toast.error('Mỗi công trình phải có ít nhất một hạng mục.');
+    return false;
+  }
+
+  if (hasEmptyDate) {
+    toast.error('Tất cả các trường ngày phải được điền.');
+    return false;
+  }
+
+  const requestData: FinalQuotationRequest = {
+    customerName: quotationDetail.AccountName,
+    address: quotationDetail.ProjectAddress,
+    projectId: quotationDetail.ProjectId,
+    promotionId: quotationDetail.PromotionInfo?.Id || null,
+    note: quotationDetail.Note || '',
+    batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
+      price: payment.Price,
+      numberOfBatch: payment.NumberOfBatch,
+      paymentDate: payment.PaymentDate,
+      paymentPhase: payment.PaymentPhase,
+    })),
+    equipmentItems: quotationDetail.EquipmentItems.map((item) => ({
+      name: item.Name,
+      unit: item.Unit,
+      quantity: item.Quantity,
+      unitOfMaterial: item.UnitOfMaterial,
+      note: item.Note || '',
+      type: item.Type,
+    })),
+    utilities: quotationDetail.UtilityInfos.map((util) => ({
+      utilitiesItemId: util.utilitiesItemId || util.utilitiesSectionId,
+      coefficient: util.Coefficient,
+      price: util.Price,
+      description: util.Description,
+      quantity: util.Quantity || null,
+    })),
+    finalQuotationItems: quotationDetail.FinalQuotationItems.map((item) => ({
+      constructionId: item.ConstructionId,
+      subconstructionId: item.SubConstructionId || null,
+      quotationItems: item.QuotationItems.map((qItem) => ({
+        workTemplateId: qItem.WorkTemplateId || '',
+        unit: qItem.Unit,
+        weight: qItem.Weight,
+        unitPriceLabor: qItem.UnitPriceLabor ?? 0,
+        unitPriceRough: qItem.UnitPriceRough ?? 0,
+        unitPriceFinished: qItem.UnitPriceFinished ?? 0,
+        totalPriceLabor: qItem.TotalPriceLabor ?? 0,
+        totalPriceRough: qItem.TotalPriceRough ?? 0,
+        totalPriceFinished: qItem.TotalPriceFinished ?? 0,
+        note: qItem.Note || '',
+      })),
+    })),
+  };
+
+  try {
+    setIsSaving(true);
+    await updateFinalQuotation(requestData);
+    toast.success('Khởi tạo báo giá thành công!');
+    navigate(`/project-detail-staff/${quotationDetail.ProjectId}`);
+    return true;
+  } catch (error) {
+    console.error('Lỗi khi khởi tạo báo giá:', error);
+    if (axios.isAxiosError(error)) {
+      if (error.response && error.response.data && error.response.data.Error) {
+        toast.error(`Lỗi: ${error.response.data.Error}`);
+      } else {
+        toast.error('Đã xảy ra lỗi khi cập nhật báo giá.');
+      }
+    } else {
+      toast.error('Đã xảy ra lỗi không xác định.');
+    }
+    return false;
+  } finally {
+    setIsSaving(false);
+  }
 };
 
 export const handleEditToggle = (

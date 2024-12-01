@@ -28,9 +28,8 @@ export interface EquipmentItem {
 
 export interface QuotationItem {
   Id: string;
-  LaborId: string | null;
-  MaterialId: string | null;
-  Name: string;
+  WorkTemplateId: string | null;
+  WorkName: string;
   Unit: string;
   Weight: number;
   UnitPriceLabor: number | null;
@@ -49,6 +48,7 @@ export interface FinalQuotationItem {
   ConstructionId: string;
   SubConstructionId: string | null;
   ContructionName: string;
+  Area: number | null;
   Type: string;
   InsDate: string;
   QuotationItems: QuotationItem[];
@@ -106,6 +106,7 @@ export interface FinalQuotationDetail {
   AccountName: string;
   Address: string;
   ProjectId: string;
+  Area: number;
   InitailQuotationId: string;
   InitailQuotationVersion: number;
   HouseDrawingVersionInf: HouseDrawingVersionInfo[];
@@ -114,7 +115,7 @@ export interface FinalQuotationDetail {
   Discount: number | null;
   TotalPrice: number;
   Note: string | null;
-  OthersAgreement: string;
+  OthersAgreement: string | null;
   Version: number;
   InsDate: string;
   UpsDate: string | null;

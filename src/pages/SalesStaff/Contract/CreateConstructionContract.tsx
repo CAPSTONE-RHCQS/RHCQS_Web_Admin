@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  postConstructionContract,
-  getFinalToContractConstruction,
-} from '../../../api/Construction/ConstructionApi';
+import { getFinalToContractConstruction } from '../../../api/Construction/ConstructionApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BatchPaymentRequest } from '../../../types/ContractResponseTypes';
+import { createConstructionContract } from '../../../api/Contract/ContractApi';
 
 const CreateConstructionContract = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -83,7 +81,7 @@ const CreateConstructionContract = () => {
     };
 
     try {
-      const response = await postConstructionContract(requestBody);
+      const response = await createConstructionContract(requestBody);
       toast.success('Tạo hợp đồng thi công thành công!');
       navigate(`/project-detail-staff/${projectId}`);
     } catch (error: any) {

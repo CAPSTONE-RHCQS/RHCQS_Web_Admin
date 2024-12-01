@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import {
   postConstruction,
-  SubConstructionRequest,
 } from '../../../../../api/Construction/ConstructionApi';
+import { SubConstructionRequest } from '../../../../../types/ConstructionTypes';
 
 interface AddConstructionModalProps {
   isOpen: boolean;
