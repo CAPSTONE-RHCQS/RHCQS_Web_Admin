@@ -2,9 +2,9 @@ import { useState, useCallback, useMemo } from 'react';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { FaRegFrown } from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-import ProjectTableSalesStaff from './components/Table/ProjectTableSalesStaff';
 import useProjectsSalesStaff from '../../../hooks/useProjectsSalesStaff';
 import { useNavigate } from 'react-router-dom';
+import ProjectTableSalesStaff from './components/Table/ProjectTableSalesStaff';
 
 const ProjectListSalesStaff = () => {
   const [currentPage, setCurrentPage] = useState(1);
