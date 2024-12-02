@@ -29,6 +29,7 @@ interface QuotationSummaryProps {
   totalArea: number;
   donGia: number;
   totalRough: number;
+  totalFinished: number;
   utilityInfos: any[];
   setUtilityInfos: React.Dispatch<React.SetStateAction<UtilityInfo[]>>;
   totalUtilities: number;
@@ -58,6 +59,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   isEditing,
   totalArea,
   totalRough,
+  totalFinished,
   utilityInfos,
   setUtilityInfos,
   totalUtilities,
@@ -236,9 +238,46 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
       <div className="flex justify-between mb-4">
-        <h2 className="text-2xl font-bold text-primary">
-          Thông tin báo giá sơ bộ
-        </h2>
+        <div>
+          <h2 className="mb-4 text-2xl font-bold text-primary">
+            Thông tin báo giá sơ bộ
+          </h2>
+          <strong className="text-lg font-bold text-secondary">
+            Thông tin khách hàng:
+          </strong>
+          <div className="mt-2 flex items-center">
+            <FaUser className="text-blue-500 mr-2" />
+            <label className="block text-gray-700 font-semibold">
+              Tên khách hàng:
+            </label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={quotationData.AccountName}
+                onChange={handleCustomerNameChange}
+                className="ml-2 border border-gray-300 rounded-md p-2"
+              />
+            ) : (
+              <p className="ml-2">{quotationData.AccountName}</p>
+            )}
+          </div>
+          <div className="mt-2 flex items-center">
+            <FaMapMarkerAlt className="text-blue-500 mr-2" />
+            <label className="block text-gray-700 font-semibold">
+              Địa chỉ thi công:
+            </label>
+            {isEditing ? (
+              <input
+                type="text"
+                value={quotationData.Address}
+                onChange={handleProjectAddressChange}
+                className="ml-2 border border-gray-300 rounded-md p-2"
+              />
+            ) : (
+              <p className="ml-2">{quotationData.Address}</p>
+            )}
+          </div>
+        </div>
         <div className="text-right">
           <ActionButtons
             isEditing={isEditing}
@@ -252,44 +291,6 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <div className="text-gray-500 text-sm">
             Tạo lúc {new Date(quotationData.InsDate).toLocaleString()}
           </div>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <strong className="text-lg font-bold text-secondary">
-          Thông tin tài khoản:
-        </strong>
-        <div className="mt-2 flex items-center">
-          <FaUser className="text-blue-500 mr-2" />
-          <label className="block text-gray-700 font-semibold">
-            Tên khách hàng:
-          </label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={quotationData.AccountName}
-              onChange={handleCustomerNameChange}
-              className="ml-2 border border-gray-300 rounded-md p-2"
-            />
-          ) : (
-            <p className="ml-2">{quotationData.AccountName}</p>
-          )}
-        </div>
-        <div className="mt-2 flex items-center">
-          <FaMapMarkerAlt className="text-blue-500 mr-2" />
-          <label className="block text-gray-700 font-semibold">
-            Địa chỉ thi công:
-          </label>
-          {isEditing ? (
-            <input
-              type="text"
-              value={quotationData.Address}
-              onChange={handleProjectAddressChange}
-              className="ml-2 border border-gray-300 rounded-md p-2"
-            />
-          ) : (
-            <p className="ml-2">{quotationData.Address}</p>
-          )}
         </div>
       </div>
 
@@ -312,7 +313,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <div className="flex items-center mb-4">
             <div className="flex items-center justify-between w-full">
               <div className="flex items-center">
-                <strong className="mt-4 mb-4 text-lg inline-block text-secondary">
+                <strong className="text-lg inline-block text-secondary">
                   Diện tích xây dựng theo phương án thiết kế:
                 </strong>
               </div>
@@ -357,6 +358,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
               <table className="min-w-full bg-white border border-gray-200">
                 <thead>
                   <tr>
+                    <th className="px-4 py-2 border text-center"></th>
                     <th className="px-4 py-2 border text-center">
                       Tổng diện tích xây dựng
                     </th>
@@ -364,10 +366,14 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     <th className="px-4 py-2 border text-center">Đơn giá</th>
                     <th className="px-4 py-2 border text-center">=</th>
                     <th className="px-4 py-2 border text-center">Thành tiền</th>
+                    <th className="px-4 py-2 border text-center">Đơn vị</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
+                    <td className="px-4 py-2 border text-left">
+                      <strong className="text-primary">Phần thô</strong>
+                    </td>
                     <td className="px-4 py-2 border text-center">
                       {totalArea} m²
                     </td>
@@ -379,6 +385,43 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
                       <strong> {totalRough.toLocaleString()} VNĐ</strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+
+                  <tr>
+                    <td className="px-4 py-2 border text-left">
+                      <strong className="text-primary">Phần hoàn thiện</strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {totalArea} m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">x</td>
+                    <td className="px-4 py-2 border text-center">
+                      {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                      đồng/m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">=</td>
+                    <td className="px-4 py-2 border text-center">
+                      <strong> {totalFinished.toLocaleString()} VNĐ</strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      className="px-4 py-2 border text-center font-bold"
+                      colSpan={5}
+                    >
+                      Tổng giá trị báo giá sơ bộ xây dựng trước thuế
+                    </td>
+                    <td className="px-4 py-2 border text-center ">
+                      <strong>
+                        {(totalRough + totalFinished).toLocaleString()} VNĐ
+                      </strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center font-bold">
+                      VNĐ
                     </td>
                   </tr>
                 </tbody>

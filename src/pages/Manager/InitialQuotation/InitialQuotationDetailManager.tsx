@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { FaDownload, FaShareAlt, FaCommentDots } from 'react-icons/fa';
+import {
+  FaDownload,
+  FaShareAlt,
+  FaCommentDots,
+  FaUser,
+  FaMapMarkerAlt,
+} from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
@@ -41,6 +47,8 @@ const InitialQuotationDetailManager = () => {
   const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
   const [donGia, setDonGia] = useState<number>(0);
+  const [unitPackageRough, setUnitPackageRough] = useState<number>(0);
+  const [unitPackageFinished, setUnitPackageFinished] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [type, setType] = useState('Approved');
@@ -82,7 +90,8 @@ const InitialQuotationDetailManager = () => {
         setGiaTriHopDong(giaTriHopDong);
         setPaymentSchedule(data.BatchPaymentInfos);
         setUtilityInfos(data.UtilityInfos);
-        setDonGia(data.PackageQuotationList.UnitPackageRough);
+        setUnitPackageRough(data.PackageQuotationList.UnitPackageRough);
+        setUnitPackageFinished(data.PackageQuotationList.UnitPackageFinished);
       } catch (error) {
         console.error('Error fetching quotation data:', error);
       }
@@ -106,7 +115,7 @@ const InitialQuotationDetailManager = () => {
     0,
   );
 
-  const thanhTien = totalDienTich * donGia;
+  const thanhTien = totalDienTich * (unitPackageRough + unitPackageFinished);
   const discount = promotionInfo?.Value * quotationData.Area;
 
   const handleDownload = () => {
@@ -205,9 +214,29 @@ const InitialQuotationDetailManager = () => {
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between mb-4">
-          <h2 className="text-2xl font-bold text-primary">
-            Thông tin báo giá sơ bộ
-          </h2>
+          <div>
+            <h2 className="mb-4 text-2xl font-bold text-primary">
+              Thông tin báo giá sơ bộ
+            </h2>
+            <strong className="text-lg font-bold text-secondary">
+              Thông tin khách hàng:
+            </strong>
+            <div className="mt-2 flex items-center">
+              <FaUser className="text-blue-500 mr-2" />
+              <label className="block text-gray-700 font-semibold">
+                Tên khách hàng:
+              </label>
+              <p className="ml-2">{quotationData.AccountName}</p>
+            </div>
+            <div className="mt-2 flex items-center">
+              <FaMapMarkerAlt className="text-blue-500 mr-2" />
+              <label className="block text-gray-700 font-semibold">
+                Địa chỉ thi công:
+              </label>
+              <p className="ml-2">{quotationData.Address}</p>
+            </div>
+          </div>
+
           <div className="text-right">
             <div className="flex justify-end space-x-2">
               <button
@@ -250,7 +279,7 @@ const InitialQuotationDetailManager = () => {
             </p>
             {quotationData.PackageQuotationList.PackageFinished &&
               quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-                <p className="mb-2">
+                <p>
                   {quotationData.PackageQuotationList.PackageFinished} -{' '}
                   {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() ||
                     ''}{' '}
@@ -263,7 +292,7 @@ const InitialQuotationDetailManager = () => {
         <div className="flex items-center mb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
-              <strong className="mt-4 mb text-lg inline-block text-secondary">
+              <strong className="text-lg inline-block text-secondary">
                 Diện tích xây dựng theo phương án thiết kế:
               </strong>
             </div>
@@ -286,6 +315,7 @@ const InitialQuotationDetailManager = () => {
             <table className="min-w-full bg-white border border-gray-200">
               <thead>
                 <tr>
+                  <th className="px-4 py-2 border text-center"></th>
                   <th className="px-4 py-2 border text-center">
                     Tổng diện tích xây dựng
                   </th>
@@ -293,20 +323,61 @@ const InitialQuotationDetailManager = () => {
                   <th className="px-4 py-2 border text-center">Đơn giá</th>
                   <th className="px-4 py-2 border text-center">=</th>
                   <th className="px-4 py-2 border text-center">Thành tiền</th>
+                  <th className="px-4 py-2 border text-center">Đơn vị</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
+                  <td className="px-4 py-2 border text-left">
+                    <strong className="text-primary">Phần thô</strong>
+                  </td>
                   <td className="px-4 py-2 border text-center">
                     {totalDienTich} m²
                   </td>
                   <td className="px-4 py-2 border text-center">x</td>
                   <td className="px-4 py-2 border text-center">
-                    {donGia.toLocaleString()} đồng/m²
+                    {unitPackageRough.toLocaleString()} đồng/m²
                   </td>
                   <td className="px-4 py-2 border text-center">=</td>
                   <td className="px-4 py-2 border text-center">
-                    <strong> {thanhTien.toLocaleString()} VNĐ</strong>
+                    <strong>
+                      {(totalDienTich * unitPackageRough).toLocaleString()} VNĐ
+                    </strong>
+                  </td>
+                  <td className="px-4 py-2 border text-center">VNĐ</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-2 border text-left ">
+                    <strong className="text-primary">Phần hoàn thiện</strong>
+                  </td>
+                  <td className="px-4 py-2 border text-center">
+                    {totalDienTich} m²
+                  </td>
+                  <td className="px-4 py-2 border text-center">x</td>
+                  <td className="px-4 py-2 border text-center">
+                    {unitPackageFinished.toLocaleString()} đồng/m²
+                  </td>
+                  <td className="px-4 py-2 border text-center">=</td>
+                  <td className="px-4 py-2 border text-center">
+                    <strong>
+                      {(totalDienTich * unitPackageFinished).toLocaleString()}{' '}
+                      VNĐ
+                    </strong>
+                  </td>
+                  <td className="px-4 py-2 border text-center">VNĐ</td>
+                </tr>
+                <tr>
+                  <td
+                    className="px-4 py-2 border text-center font-bold"
+                    colSpan={5}
+                  >
+                    Tổng giá trị báo giá sơ bộ xây dựng trước thuế
+                  </td>
+                  <td className="px-4 py-2 border text-center ">
+                    <strong>{thanhTien.toLocaleString()} VNĐ</strong>
+                  </td>
+                  <td className="px-4 py-2 border text-center font-bold">
+                    VNĐ
                   </td>
                 </tr>
               </tbody>

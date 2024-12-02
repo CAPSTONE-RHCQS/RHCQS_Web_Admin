@@ -74,6 +74,11 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>
+            <th colSpan={7} className="px-4 py-2 border text-left">
+              <p className="text-primary">Phần thô</p>
+            </th>
+          </tr>
+          <tr>
             <th className="px-4 py-2 border text-center">STT</th>
             <th className="px-4 py-2 border text-center">Hạng mục</th>
             <th className="px-4 py-2 border text-center">D-Tích</th>
@@ -87,7 +92,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
           {tableData.map((item, index) => (
             <tr key={item.uniqueId || index}>
               <td className="px-4 py-2 border text-center">{item.stt}</td>
-              <td className="px-4 py-2 border text-center">
+              <td className="px-4 py-2 border text-left">
                 {isEditing ? (
                   <input
                     type="text"
@@ -164,6 +169,32 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
             <td className="px-4 py-2 border text-center">
               <strong>m²</strong>
             </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <table className="min-w-full bg-white border border-gray-200 mt-4">
+        <thead>
+          <tr>
+            <th colSpan={4} className="px-4 py-2 border text-left">
+              <p className="text-primary">Phần hoàn thiện</p>
+            </th>
+          </tr>
+          <tr>
+            <th className="px-4 py-2 border text-center">STT</th>
+            <th className="px-4 py-2 border text-center">Hạng mục</th>
+            <th className="px-4 py-2 border text-center">Diện Tích</th>
+            <th className="px-4 py-2 border text-center">Đơn vị</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td className="px-4 py-2 border text-center">1</td>
+            <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalArea} m²
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">m²</td>
           </tr>
         </tbody>
       </table>

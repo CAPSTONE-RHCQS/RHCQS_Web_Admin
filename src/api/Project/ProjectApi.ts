@@ -134,7 +134,7 @@ export const getProjectDetailDesignStaff = async (
 ): Promise<ProjectDetail> => {
   try {
     const response = await requestWebRHCQS.get<ProjectDetail>(
-      `/project/desgin-staff`,
+      `/project/design-staff`,
       {
         params: {
           id,

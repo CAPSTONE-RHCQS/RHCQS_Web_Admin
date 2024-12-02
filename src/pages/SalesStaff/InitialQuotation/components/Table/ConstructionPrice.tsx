@@ -116,7 +116,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                     onClick={() => handleSelectPackage(pkg, 'ROUGH')}
                     className="cursor-pointer p-2 hover:bg-gray-200"
                   >
-                    {pkg.PackageName} - {pkg.Price.toLocaleString()} đồng
+                    {pkg.PackageName} - {pkg.Price.toLocaleString()} đồng/m²
                   </li>
                 ))}
               </ul>
@@ -126,11 +126,11 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                 <p className="mt-2">
                   {quotationData.PackageQuotationList.PackageRough} -{' '}
                   {quotationData.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-                  đồng
+                  đồng/m²
                 </p>
               )}
           </div>
-          <div className="mb-4">
+          <div>
             <label className="block font-semibold mb-1">
               Gói Thi Công Hoàn Thiện:
             </label>
@@ -148,7 +148,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                     onClick={() => handleSelectPackage(pkg, 'FINISHED')}
                     className="cursor-pointer p-2 hover:bg-gray-200"
                   >
-                    {pkg.PackageName} - {pkg.Price.toLocaleString()} đồng
+                    {pkg.PackageName} - {pkg.Price.toLocaleString()} đồng/m²
                   </li>
                 ))}
               </ul>
@@ -158,7 +158,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
                 <p className="mt-2">
                   {quotationData.PackageQuotationList.PackageFinished} -{' '}
                   {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
-                  đồng
+                  đồng/m²
                 </p>
               )}
           </div>
@@ -175,7 +175,7 @@ const ConstructionPrice: React.FC<ConstructionPriceProps> = ({
             )}
           {quotationData.PackageQuotationList.IdPackageFinished !== null &&
             quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-              <p className="mb-2">
+              <p>
                 {quotationData.PackageQuotationList.PackageFinished} -{' '}
                 {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
                 đồng/m²

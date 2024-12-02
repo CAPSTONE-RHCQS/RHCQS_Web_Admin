@@ -61,9 +61,9 @@ export const fetchQuotationData = async (
       });
       setTableData(updatedTableData);
 
-      const totalRough = data.TotalRough;
+      const total = data.TotalRough + data.TotalFinished;
       const totalUtilities = data.TotalUtilities;
-      let giaTriHopDong = totalRough + totalUtilities;
+      let giaTriHopDong = total + totalUtilities;
 
       if (data.PromotionInfo) {
         const discountValue = data.PromotionInfo.Value || 0;
@@ -92,10 +92,10 @@ export const handleSave = async (
   giaTriHopDong: number,
   totalArea: number,
   totalRough: number,
+  totalFinished: number,
   totalUtilities: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
-  utilityPrices: number[],
   quantities: (number | null)[],
 ) => {
   if (!quotationData) return;
@@ -168,6 +168,7 @@ export const handleSave = async (
     timeOthers: quotationData.TimeOthers,
     othersAgreement: quotationData.OthersAgreement,
     totalRough: totalRough,
+    totalFinished: totalFinished,
     totalUtilities: totalUtilities,
     items: tableData.map((item) => ({
       name: item.hangMuc,
@@ -206,8 +207,8 @@ export const handleSave = async (
       : { id: promotionInfo.Id, discount: promotionInfo.Value || 0 },
     batchPayments: paymentSchedule.map((payment) => ({
       numberOfBatch: payment.NumberOfBatch,
-      price: (parseFloat(payment.Percents) / 100) * giaTriHopDong,
-      percents: parseFloat(payment.Percents),
+      price: (payment.Percents / 100) * giaTriHopDong,
+      percents: payment.Percents,
       description: payment.Description,
       paymentDate: payment.PaymentDate || '',
       paymentPhase: payment.PaymentPhase || '',
