@@ -20,6 +20,7 @@ import DashboardIcon from '../../SVG/SidebarIcon/DashboardIcon';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack, faTimes } from '@fortawesome/free-solid-svg-icons';
 import LaborManagerIcon from '../../SVG/SidebarIcon/ManagerIcon/LaborManagerIcon';
+import ContructionWorkIcon from '../../SVG/SidebarIcon/ManagerIcon/ContructionWorkIcon';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -138,7 +139,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               {userRole === 'Manager' && (
                 <>
-                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                  <h3
+                    className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${
+                      !isHovered && !sidebarOpen ? 'hidden' : ''
+                    }`}
+                  >
                     Danh sách
                   </h3>
 
@@ -202,7 +207,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
-                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                  <h3
+                    className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${
+                      !isHovered && !sidebarOpen ? 'hidden' : ''
+                    }`}
+                  >
                     Thi công
                   </h3>
                   {/* <!-- Menu Item PackageManager --> */}
@@ -245,6 +254,26 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
+                  {/* <!-- Menu Item ConstructionWorkManager --> */}
+                  <li>
+                    <NavLink
+                      to="/construction-work-list-manager"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname.includes('/construction-work-list-manager') &&
+                        'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <ContructionWorkIcon />
+                      <span
+                        className={`${
+                          !isHovered && !sidebarOpen ? 'hidden' : ''
+                        }`}
+                      >
+                        Công tác hạng mục
+                      </span>
+                    </NavLink>
+                  </li>
+
                   {/* <!-- Menu Item UtilityManager --> */}
                   <li>
                     <NavLink
@@ -265,7 +294,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     </NavLink>
                   </li>
 
-                  <h3 className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${!isHovered && !sidebarOpen ? 'hidden' : ''}`}>
+                  <h3
+                    className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${
+                      !isHovered && !sidebarOpen ? 'hidden' : ''
+                    }`}
+                  >
                     Khác
                   </h3>
 

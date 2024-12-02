@@ -188,18 +188,20 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
             className="border p-2 w-full rounded font-regular"
           >
             {[
-              'Cuộn',
-              'Viên',
+              'm',
+              'cuộn',
+              'viên',
               'm2',
-              'Máy',
-              'Bộ',
-              'Cái',
-              'Thùng',
-              'Ống',
-              'Bao',
-              'Can',
-              'Md',
-              'Kg',
+              'm3',
+              'máy',
+              'bộ',
+              'cái',
+              'thùng',
+              'ống',
+              'bao',
+              'can',
+              'md',
+              'kg',
             ].map((unit) => (
               <option key={unit} value={unit}>
                 {unit}
