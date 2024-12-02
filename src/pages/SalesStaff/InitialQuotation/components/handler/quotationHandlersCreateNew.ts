@@ -147,7 +147,7 @@ export const handleSave = async (
   const updatedUtilityInfos = utilityInfos.map((utility, index) => {
     const price =
       utility.Coefficient !== 0
-        ? totalRough * utility.Coefficient
+        ? (totalRough + totalFinished) * utility.Coefficient
         : (utility.UnitPrice || 0) * (quantities[index] || 0);
 
     return {

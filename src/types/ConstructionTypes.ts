@@ -51,3 +51,4 @@ export interface ConstructionWork {
   MaterialRoughCost: number;
   MaterialFinishedCost: number;
 }
+
