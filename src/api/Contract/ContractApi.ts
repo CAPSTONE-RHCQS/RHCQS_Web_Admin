@@ -4,6 +4,7 @@ import {
 } from '../../types/ContractTypes';
 import requestWebRHCQS from '../../utils/axios';
 import { ContractDesignResponse } from '../../types/ContractResponseTypes';
+import { ConstructionContractRequest } from '../../types/ConstructionTypes';
 
 export const createContractDesign = async (
   data: CreateContractDesignRequest,
@@ -19,6 +20,27 @@ export const createContractDesign = async (
     return response.data;
   } catch (error) {
     console.error('Error creating contract design:', error);
+    throw error;
+  }
+};
+
+export const createConstructionContract = async (
+  contractData: ConstructionContractRequest,
+) => {
+  try {
+    const response = await requestWebRHCQS.post(
+      '/contract/construction',
+      contractData,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error posting construction contract:', error);
     throw error;
   }
 };

@@ -23,9 +23,15 @@ export interface UtilityRequest {
 }
 
 export interface QuotationItemRequest {
-  laborId: string | null;
-  materialId: string | null;
+  unit: string;
+  workTemplateId: string;
   weight: number;
+  unitPriceLabor: number;
+  unitPriceRough: number;
+  unitPriceFinished: number;
+  totalPriceLabor: number;
+  totalPriceRough: number;
+  totalPriceFinished: number;
   note: string;
 }
 

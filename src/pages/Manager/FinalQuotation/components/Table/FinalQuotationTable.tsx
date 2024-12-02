@@ -26,49 +26,85 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
     );
   }, 0);
 
-  const totalConstructionValue = totalLaborCost + totalRoughCost;
+  const totalFinishedCost = items.reduce((total, item) => {
+    return (
+      total +
+      item.QuotationItems.reduce(
+        (subTotal, qItem) => subTotal + (qItem.TotalPriceFinished || 0),
+        0,
+      )
+    );
+  }, 0);
+
+  const totalConstructionValue =
+    totalLaborCost + totalRoughCost + totalFinishedCost;
 
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white border border-gray-200">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-2 border text-center">Tên hạng mục</th>
+            <th className="px-4 py-2 border text-center" rowSpan={2}>
+              Nội dung công việc
+            </th>
             <th
               className="px-4 py-2 border text-center"
               style={{ maxWidth: '75px' }}
+              rowSpan={2}
             >
               Đơn vị
             </th>
             <th
               className="px-4 py-2 border text-center"
               style={{ maxWidth: '75px' }}
+              rowSpan={2}
             >
-              Số lượng
+              Khối lượng
+            </th>
+            <th className="px-4 py-2 border text-center" colSpan={3}>
+              Đơn giá
+            </th>
+            <th className="px-4 py-2 border text-center" colSpan={3}>
+              Thành tiền
+            </th>
+          </tr>
+
+          <tr>
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '150px' }}
+            >
+              Nhân công
             </th>
             <th
               className="px-2 py-2 border text-center"
-              style={{ maxWidth: '80px' }}
+              style={{ maxWidth: '150px' }}
             >
-              Đơn giá nhân công
+              Vật tư thô
             </th>
             <th
               className="px-2 py-2 border text-center"
-              style={{ maxWidth: '80px' }}
+              style={{ maxWidth: '150px' }}
             >
-              Đơn giá vật tư thô
+              Vật tư H.T
             </th>
             <th
               className="px-2 py-2 border text-center"
-              style={{ maxWidth: '80px' }}
+              style={{ maxWidth: '150px' }}
             >
-              Tổng giá nhân công
+              Nhân công
             </th>
             <th
               className="px-2 py-2 border text-center"
-              style={{ maxWidth: '80px' }}
+              style={{ maxWidth: '150px' }}
             >
-              Tổng giá vật tư
+              Vật tư
+            </th>
+            <th
+              className="px-2 py-2 border text-center"
+              style={{ maxWidth: '150px' }}
+            >
+              Vật tư H.T
             </th>
           </tr>
         </thead>
@@ -77,16 +113,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <React.Fragment key={item.Id}>
               <tr>
                 <td
-                  className="px-4 py-2 border text-left font-bold relative"
-                  colSpan={7}
+                  colSpan={10}
+                  className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
                   {item.ContructionName}
                 </td>
               </tr>
               {item.QuotationItems.map((quotationItem) => (
                 <tr key={quotationItem.Id}>
-                  <td className="px-4 py-2 border text-center">
-                    {quotationItem.Name}
+                  <td className="px-4 py-2 border text-left font-bold">
+                    {quotationItem.WorkName}
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {quotationItem.Unit}
@@ -105,6 +141,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                       : ''}
                   </td>
                   <td className="px-4 py-2 border text-center">
+                    {quotationItem.UnitPriceFinished
+                      ? `${quotationItem.UnitPriceFinished.toLocaleString()} `
+                      : ''}
+                  </td>
+                  <td className="px-4 py-2 border text-center">
                     {quotationItem.TotalPriceLabor
                       ? `${quotationItem.TotalPriceLabor.toLocaleString()} `
                       : ''}
@@ -114,12 +155,17 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                       ? `${quotationItem.TotalPriceRough.toLocaleString()} `
                       : ''}
                   </td>
+                  <td className="px-4 py-2 border text-center">
+                    {quotationItem.TotalPriceFinished
+                      ? `${quotationItem.TotalPriceFinished.toLocaleString()} `
+                      : ''}
+                  </td>
                 </tr>
               ))}
             </React.Fragment>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={5} className="px-4 py-2 border text-center font-bold">
+            <td colSpan={6} className="px-4 py-2 border text-center font-bold">
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">
@@ -127,6 +173,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             </td>
             <td className="px-4 py-2 border text-center font-bold">
               {totalRoughCost.toLocaleString()} VNĐ
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {totalFinishedCost.toLocaleString()} VNĐ
             </td>
           </tr>
         </tbody>
@@ -139,10 +188,16 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
         <thead className="bg-gray-100">
           <tr>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
+            <th className="px-4 py-2 border text-center">+</th>
+
             <th className="px-4 py-2 border text-center">
               Tổng giá vật tư thô
             </th>
             <th className="px-4 py-2 border text-center">+</th>
+            <th className="px-4 py-2 border text-center">
+              Tổng giá vật tư hoàn thiện
+            </th>
+            <th className="px-4 py-2 border text-center">=</th>
             <th className="px-4 py-2 border text-center">
               Tổng giá trị xây dựng
             </th>
@@ -151,13 +206,18 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
         <tbody>
           <tr>
             <td className="px-4 py-2 border text-center">
-              {totalLaborCost.toLocaleString()} VNĐ
-            </td>
-            <td className="px-4 py-2 border text-center">
-              {totalRoughCost.toLocaleString()} VNĐ
+              {totalLaborCost.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">+</td>
             <td className="px-4 py-2 border text-center">
+              {totalRoughCost.toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center">+</td>
+            <td className="px-4 py-2 border text-center">
+              {totalFinishedCost.toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center">=</td>
+            <td className="px-4 py-2 border text-center font-bold">
               {totalConstructionValue.toLocaleString()} VNĐ
             </td>
           </tr>
