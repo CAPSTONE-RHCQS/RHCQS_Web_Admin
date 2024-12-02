@@ -114,21 +114,24 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           <select
             value={materialDetail.Unit}
             className="border p-2 w-full rounded font-regular"
-            disabled
           >
             {[
-              'Cuộn',
-              'Viên',
+              'm',
+              'cuộn',
+              'viên',
               'm2',
-              'Máy',
-              'Bộ',
-              'Cái',
-              'Thùng',
-              'Ống',
-              'Bao',
-              'Can',
-              'Md',
-              'Kg',
+              'm3',
+              'máy',
+              'bộ',
+              'cái',
+              'thùng',
+              'ống',
+              'bao',
+              'can',
+              'md',
+              'kg',
+              'cột',
+              'tấn',
             ].map((unit) => (
               <option key={unit} value={unit}>
                 {unit}

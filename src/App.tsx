@@ -43,6 +43,7 @@ import LaborList from './pages/Manager/Labor/LaborList.tsx';
 import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/CreateNewInitialQuotationStaff.tsx';
 import ProjectDetailDesignStaff from './pages/DesignStaff/Project/ProjectDetailDesignStaff.tsx';
 import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
+import ConstructionWorkList from './pages/Manager/ConstructionWork/ConstructionWorkList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -164,6 +165,15 @@ function App() {
                 <PrivateRoute allowedRoles={['Manager']}>
                   <PageTitle title="Construction List | RHCQS - Residential Housing Construction Quotation System" />
                   <ConstructionList />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/construction-work-list-manager"
+              element={
+                <PrivateRoute allowedRoles={['Manager']}>
+                  <PageTitle title="Construction Work List | RHCQS - Residential Housing Construction Quotation System" />
+                  <ConstructionWorkList />
                 </PrivateRoute>
               }
             />
