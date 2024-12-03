@@ -1,4 +1,4 @@
-import { MaterialItem, MaterialListResponse, MaterialSectionItem, MaterialSectionListResponse } from '../../types/Material';
+import { MaterialItem, MaterialListResponse, MaterialSectionItem, MaterialSectionListResponse, SearchMaterialByNameResponse } from '../../types/Material';
 import { GetMaterialByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 
@@ -96,6 +96,22 @@ export async function getMaterialSectionById(id: string): Promise<MaterialSectio
   } catch (error) {
     console.error('Error fetching material section by id:', error);
     throw new Error('Failed to fetch material section by id');
+  }
+}
+
+export async function searchMaterial(
+  name: string,
+): Promise<SearchMaterialByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get(`/material/allname?name=${name}`, {
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw new Error('Failed to fetch construction by name');
   }
 }
 

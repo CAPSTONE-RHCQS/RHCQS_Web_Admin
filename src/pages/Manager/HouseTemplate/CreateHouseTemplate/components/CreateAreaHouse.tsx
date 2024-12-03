@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ConstructionSearchResponse,
   getConstructionByName,
 } from '../../../../../api/Construction/ConstructionApi';
 import { PackageTypeSearchResponse } from '../../../../../api/Package/PackageApi';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
+import { ConstructionSearchResponse } from '../../../../../types/ConstructionTypes';
 
 interface HouseAreaComponentProps {
   searchPackageResults: PackageTypeSearchResponse[];

@@ -57,3 +57,7 @@ export interface MaterialRequest {
     UnitPrice: string
     Image: string
 }
+
+export type SearchMaterialByNameResponse = MaterialItem[]
+
+

@@ -4,7 +4,6 @@ import {
   Resource,
   WorkTemplate,
 } from '../../../../../types/ContructionWork';
-import { FaEdit } from 'react-icons/fa';
 import { PencilIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import { getConstructionWorkById } from '../../../../../api/Construction/ContructionWork';
@@ -26,10 +25,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
   currentEditId,
   refreshData,
 }) => {
-  const [activeEditIndex, setActiveEditIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
-  const [inputNameValue, setInputNameValue] = useState<string>('');
-  const [inputCodeValue, setInputCodeValue] = useState<string>('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const editRef = useRef<HTMLDivElement | null>(null);
@@ -53,20 +49,6 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
       console.error('Error fetching construction work details:', error);
     }
   };
-
-  const handleEditClick = (
-    event: React.MouseEvent,
-    id: string,
-    name: string,
-    code: string,
-  ) => {
-    event.stopPropagation();
-    setInputNameValue(name);
-    setInputCodeValue(code);
-    setIsModalOpen(true);
-    openEditModal(id);
-  };
-
   const handleSave = async () => {};
 
   const handleCancel = () => {
@@ -132,35 +114,15 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                 </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                   <div className="flex justify-center relative" ref={editRef}>
-                    {activeEditIndex === index ? (
-                      <div className="absolute flex space-x-2 mt-[-6px]">
-                        <button
-                          className="cursor-pointer text-blue-500"
-                          onClick={(event) =>
-                            handleEditClick(
-                              event,
-                              item.Id.toString(),
-                              item.WorkName,
-                              item.Code || '',
-                            )
-                          }
-                          title="Chỉnh sửa công việc"
-                        >
-                          <FaEdit className="w-4 h-4" />
-                        </button>
-                      </div>
-                    ) : (
-                      <button
-                        className="cursor-pointer"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          setActiveEditIndex(index);
-                        }}
-                        title="Chỉnh sửa"
-                      >
-                        <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
-                      </button>
-                    )}
+                    <button
+                      className="cursor-pointer"
+                      onClick={(event) => {
+                        event.stopPropagation();
+                      }}
+                      title="Chỉnh sửa"
+                    >
+                      <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
+                    </button>
                   </div>
                 </td>
               </tr>
@@ -195,7 +157,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           <td className="font-bold py-2 px-4 text-center border border-gray-300">
                             Vật tư
                           </td>
-                          <td className="py-2 px-4 text-center border border-gray-300">
+                          <td className="py-2 px-4 text-left border border-gray-300">
                             {resources
                               .filter((resource) => resource.MaterialSectionId)
                               .map((resource) => (
@@ -228,9 +190,11 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             className="py-2 px-4 text-center border border-gray-300"
                             rowSpan={2}
                           >
-                            {workTemplates
-                              .map((template) => template.PackageName)
-                              .join(', ')}
+                            {workTemplates.map((template) => (
+                              <div key={template.PackageName}>
+                                {template.PackageName}
+                              </div>
+                            ))}
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
@@ -249,7 +213,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           <td className="font-bold py-2 px-4 text-center border border-gray-300">
                             Nhân công
                           </td>
-                          <td className="py-2 px-4 text-center border border-gray-300">
+                          <td className="py-2 px-4 text-left border border-gray-300">
                             {resources
                               .filter((resource) => resource.LaborId)
                               .map((resource) => (

@@ -74,3 +74,19 @@ export async function importExcelLabor(data: any) {
     throw error.response.data.Error || 'Failed to import excel material';
   }
 }
+
+export async function searchLabor(
+  name: string,
+): Promise<GetLaborByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get(`/labor/allname?name=${name}`, {
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw new Error('Failed to fetch construction by name');
+  }
+}

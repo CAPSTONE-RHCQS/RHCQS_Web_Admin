@@ -5,30 +5,25 @@ import { FaDownload } from 'react-icons/fa';
 
 import { ConstructionWorkType } from '../../../types/ContructionWork';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
-// import ConstructionWorkTable from './components/Table/ConstructionWorkTable';
 import Alert from '../../../components/Alert';
 import { getConstructionWorks } from '../../../api/Construction/ContructionWork';
 import ConstructionWorkTable from './components/Table/ConstructionWorkTable';
+import CreateContructionWork from './components/Create/CreateContructionWork';
 
 const ConstructionWorkList: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
-  const [dataConstructionWork, setDataConstructionWork] = useState<
-    ConstructionWorkType['Items']
-  >([]);
+  const [dataConstructionWork, setDataConstructionWork] = useState<ConstructionWorkType['Items']>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalConstructionWork, setTotalConstructionWork] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [inputNameValue, setInputNameValue] = useState('');
-  const [inputCodeValue, setInputCodeValue] = useState('');
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
-  const [file, setFile] = useState<File | null>(null);
 
   useEffect(() => {
     setPageInput(page.toString());
@@ -75,7 +70,14 @@ const ConstructionWorkList: React.FC = () => {
     }
   };
 
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    // Logic để lưu công việc xây dựng mới
+    setIsCreateModalOpen(false);
+    setAlertMessage('Công tác hạng mục đã được lưu thành công!');
+    setAlertType('success');
+    handleRefresh();
+  };
+
   const handleCloseAlert = () => {
     setAlertMessage(null);
     setAlertType('success');
@@ -84,18 +86,18 @@ const ConstructionWorkList: React.FC = () => {
   return (
     <>
       <div>
-        <Breadcrumb pageName="Quản lý công việc xây dựng" />
+        <Breadcrumb pageName="Công tác hạng mục" />
         <div className="bg-white p-4 rounded shadow">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <span className="text-lg text-black dark:text-white">
-              Tổng số công việc: {totalConstructionWork}
+              Tổng số công tác hạng mục: {totalConstructionWork}
             </span>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
               >
-                + Thêm công việc
+                + Thêm công tác hạng mục
               </button>
               <button
                 onClick={() => document.getElementById('fileInput')?.click()}
@@ -156,17 +158,13 @@ const ConstructionWorkList: React.FC = () => {
         </div>
       </div>
 
-      {/* {isCreateModalOpen && (
-        <CreateConstructionWork
+      {isCreateModalOpen && (
+        <CreateContructionWork
           isOpen={isCreateModalOpen}
-          inputNameValue={inputNameValue}
-          inputCodeValue={inputCodeValue}
-          onInputNameChange={setInputNameValue}
-          onInputCodeChange={setInputCodeValue}
           onSave={handleSave}
           onCancel={() => setIsCreateModalOpen(false)}
         />
-      )} */}
+      )}
       {alertMessage && (
         <Alert
           message={alertMessage}

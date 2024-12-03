@@ -1,3 +1,5 @@
+import { CreateConstructionWork } from "../../types/ContructionWork";
+import { SearchConstructionWorkItem, SearchConstructionWorkResponse } from "../../types/ContructionWork";
 import requestWebRHCQS from "../../utils/axios";
 
 export const getConstructionWorks = async (page: number, size: number) => {
@@ -39,6 +41,40 @@ export const getPackageConstructionWork = async (id: string) => {
         return response.data;
     } catch (error) {
         console.error('Error fetching constructions:', error);
+        throw error;
+    }
+};
+
+export const searchConstructionWorkItem = async (
+    name: string,
+): Promise<SearchConstructionWorkItem[]> => {
+    try {
+        const response = await requestWebRHCQS.get(
+            `/construction/item-work/search?name=${name}`,
+            {
+                headers: {
+                    accept: 'text/plain',
+                },
+            });
+        console.log(response.data);
+        return response.data as SearchConstructionWorkItem[];
+    } catch (error) {
+        console.error('Error fetching search results:', error);
+        throw error;
+    }
+};
+
+export const createConstructionWork = async (data: CreateConstructionWork) => {
+    try {
+        const response = await requestWebRHCQS.post('/construction-work', data, {
+            headers: {
+                accept: 'text/plain',
+                // 'Content-Type': 'application/json',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating construction work:', error);
         throw error;
     }
 };

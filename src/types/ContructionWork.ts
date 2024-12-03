@@ -50,3 +50,36 @@ export interface PackageConstructionWork {
   TotalCost: number;
   InsDate: any;
 }
+
+export interface CreateConstructionWork {
+  workName: string
+  constructionId: string
+  unit: string
+  code: string
+  resources: CreateConstructionWorkResource[]
+}
+
+export interface CreateConstructionWorkResource {
+  materialSectionId: string | null
+  materialSectionNorm: number | null
+  laborId: string | null
+  laborNorm: number | null
+}
+
+export type CreatePackageConstructionWorkRequest = CreatePackageConstructionWork[]
+
+export interface CreatePackageConstructionWork {
+  constructionWorkId: string
+  packageId: string
+  laborCost: number
+  materialCost: number
+  materialFinishedCost: number
+  totalCost: number
+}
+
+export type SearchConstructionWorkResponse = SearchConstructionWorkItem[]
+
+export interface SearchConstructionWorkItem {
+  Name: string;
+  ConstructionId: string;
+}
