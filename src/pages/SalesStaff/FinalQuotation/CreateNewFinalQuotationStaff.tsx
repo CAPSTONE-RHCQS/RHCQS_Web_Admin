@@ -24,10 +24,11 @@ import {
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import CreateNewButtonGroup from './components/Button/CreateNewButtonGroup';
-import { hanldCreateNew, handleEditToggle } from './components/handlers';
+import { hanldCreateNew } from './components/handlers';
 import { toast } from 'react-toastify';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
+import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 
 const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -41,12 +42,14 @@ const CreateNewFinalQuotationStaff = () => {
   );
   const [totalRough, setTotalRough] = useState(0);
   const [showContractValueSummary, setShowContractValueSummary] =
-    useState(false);
-  const [showBatchPayments, setShowBatchPayments] = useState(false);
-  const [showPromotions, setShowPromotions] = useState(false);
-  const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
-  const [showDetailedItems, setShowDetailedItems] = useState(false);
-  const [showUtilities, setShowUtilities] = useState(false);
+    useState(true);
+  const [showBatchPayments, setShowBatchPayments] = useState(true);
+  const [showPromotions, setShowPromotions] = useState(true);
+  const [showEquipmentCosts, setShowEquipmentCosts] = useState(true);
+  const [showDetailedItems, setShowDetailedItems] = useState(true);
+  const [showConstructionAreaTable, setShowConstructionAreaTable] =
+    useState(true);
+  const [showUtilities, setShowUtilities] = useState(true);
   const navigate = useNavigate();
 
   const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -264,29 +267,6 @@ const CreateNewFinalQuotationStaff = () => {
     }
   };
 
-  const addConstructionRow = () => {
-    if (quotationDetail) {
-      const newConstruction: FinalQuotationItem = {
-        Id: '',
-        ConstructionId: '',
-        ContructionName: '',
-        SubConstructionId: '',
-        Area: 0,
-        Type: '',
-        InsDate: new Date().toISOString(),
-        QuotationItems: [],
-      };
-      const updatedItems = [
-        ...quotationDetail.FinalQuotationItems,
-        newConstruction,
-      ];
-      setQuotationDetail({
-        ...quotationDetail,
-        FinalQuotationItems: updatedItems,
-      });
-    }
-  };
-
   const handleSave = async () => {
     if (quotationDetail) {
       const emptyDateIndex = quotationDetail.BatchPaymentInfos.findIndex(
@@ -416,10 +396,36 @@ const CreateNewFinalQuotationStaff = () => {
           <div className="flex items-center justify-between w-full">
             <div
               className="flex items-center justify-between w-full"
+              onClick={() =>
+                setShowConstructionAreaTable(!showConstructionAreaTable)
+              }
+            >
+              <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
+                1. Tổng diện tích xây dựng theo phương án thiết kế:
+                {showConstructionAreaTable ? (
+                  <FaChevronUp className="ml-2 text-secondary" />
+                ) : (
+                  <FaChevronDown className="ml-2 text-secondary" />
+                )}
+              </h3>
+            </div>
+          </div>
+        </div>
+        {showConstructionAreaTable && (
+          <ConstructionAreaTable
+            initQuotationInfos={quotationDetail.InitQuotationInfos}
+          />
+        )}
+
+        <hr className="my-4 border-gray-300" />
+        <div className="flex items-center mb-4">
+          <div className="flex items-center justify-between w-full">
+            <div
+              className="flex items-center justify-between w-full"
               onClick={() => setShowDetailedItems(!showDetailedItems)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                1. Các hạng mục báo giá chi tiết:
+                2. Các hạng mục báo giá chi tiết:
                 {showDetailedItems ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
@@ -446,7 +452,7 @@ const CreateNewFinalQuotationStaff = () => {
               onClick={() => setShowUtilities(!showUtilities)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                2. Tùy chọn & Tiện ích:
+                3. Tùy chọn & Tiện ích:
                 {showUtilities ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
@@ -486,7 +492,7 @@ const CreateNewFinalQuotationStaff = () => {
               onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                3. Chi Phí Thiết bị:
+                4. Chi Phí Thiết bị:
                 {showEquipmentCosts ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
@@ -512,7 +518,7 @@ const CreateNewFinalQuotationStaff = () => {
               onClick={() => setShowPromotions(!showPromotions)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                4. Khuyến mãi:
+                5. Khuyến mãi:
                 {showPromotions ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
@@ -539,7 +545,7 @@ const CreateNewFinalQuotationStaff = () => {
               }
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                5. Tổng hợp giá trị hợp đồng:
+                6. Tổng hợp giá trị hợp đồng:
                 {showContractValueSummary ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
@@ -567,7 +573,7 @@ const CreateNewFinalQuotationStaff = () => {
               onClick={() => setShowBatchPayments(!showBatchPayments)}
             >
               <h3 className="text-xl font-bold flex items-center cursor-pointer text-primary">
-                6. Các đợt thanh toán:
+                7. Các đợt thanh toán:
                 {showBatchPayments ? (
                   <FaChevronUp className="ml-2 text-secondary" />
                 ) : (
