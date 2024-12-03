@@ -44,8 +44,6 @@ interface QuotationSummaryProps {
   othersAgreement: string;
   setOthersAgreement: React.Dispatch<React.SetStateAction<string>>;
   onPriceChange: (prices: number[]) => void;
-  quantities: (number | null)[];
-  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   isSaving: boolean;
   handleEditToggle: () => void;
   handleSave: () => void;
@@ -62,7 +60,6 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalFinished,
   utilityInfos,
   setUtilityInfos,
-  totalUtilities,
   promotionInfo,
   setPromotionInfo,
   giaTriHopDong,
@@ -72,8 +69,6 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   totalPercentage,
   totalAmount,
   onPriceChange,
-  quantities,
-  setQuantities,
   isSaving,
   handleEditToggle,
   handleSave,
@@ -455,8 +450,6 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         setUtilityInfos={setUtilityInfos}
         isEditing={isEditing}
         onPriceChange={onPriceChange}
-        quantities={quantities}
-        setQuantities={setQuantities}
         setTotalUtilities={setTotalUtility}
         projectType={quotationData.ProjectType}
       />
@@ -494,6 +487,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
         <ContractValueSummaryTable
           totalArea={totalArea}
           totalRough={totalRough}
+          totalFinished={totalFinished}
           totalUtilities={totalUtility}
           promotionInfo={promotionInfo}
           updateGiaTriHopDong={setGiaTriHopDong}

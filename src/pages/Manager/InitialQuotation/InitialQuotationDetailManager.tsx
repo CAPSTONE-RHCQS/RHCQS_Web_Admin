@@ -46,7 +46,6 @@ const InitialQuotationDetailManager = () => {
   );
   const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
-  const [donGia, setDonGia] = useState<number>(0);
   const [unitPackageRough, setUnitPackageRough] = useState<number>(0);
   const [unitPackageFinished, setUnitPackageFinished] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);

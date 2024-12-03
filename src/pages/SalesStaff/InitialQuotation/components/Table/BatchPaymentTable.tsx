@@ -42,157 +42,164 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
     }
   };
 
-  const initialBatchPayment =
-    batchPayment.length > 0
-      ? batchPayment
-      : [
-          {
-            NumberOfBatch: 1,
-            PaymentId: 'default-id',  
-            Status: 'Pending',
-            Description: '',
-            Percents: 0,
-            Price: 0,
-            Unit: 'VNĐ',
-            InsDate: null,
-            PaymentDate: today,
-            PaymentPhase: today,
-          },
-        ];
-
   return (
     <div className="overflow-x-auto mb-4">
-      <table className="min-w-full bg-white border border-gray-200">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border text-center">Đợt</th>
-            <th className="px-4 py-2 border text-center">Nội dung</th>
-            <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
-            <th className="px-4 py-2 border text-center">
-              Giá trị thanh toán (VNĐ)
-            </th>
-            <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
-            <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
-            {isEditing && <th className="px-4 py-2 border text-center"></th>}
-          </tr>
-        </thead>
-        <tbody>
-          {initialBatchPayment.map((row, index) => (
-            <tr key={row.PaymentId}>
-              <td className="px-4 py-2 border text-center">{index + 1}</td>
-              <td className="px-4 py-2 border text-left">
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={row.Description || ''}
-                    onChange={(e) =>
-                      handlePaymentChange(index, 'Description', e.target.value)
-                    }
-                    className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    style={{
-                      border: '1px solid #ccc',
-                    }}
-                  />
-                ) : (
-                  row.Description
-                )}
-              </td>
-              <td className="px-4 py-2 border text-center">
-                <div className="flex items-center justify-center">
+      {batchPayment.length > 0 ? (
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border text-center">Đợt</th>
+              <th className="px-4 py-2 border text-center">Nội dung</th>
+              <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
+              <th className="px-4 py-2 border text-center">
+                Giá trị thanh toán (VNĐ)
+              </th>
+              <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
+              <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
+              {isEditing && <th className="px-4 py-2 border text-center"></th>}
+            </tr>
+          </thead>
+          <tbody>
+            {batchPayment.map((row, index) => (
+              <tr key={row.PaymentId || index}>
+                <td className="px-4 py-2 border text-center">{index + 1}</td>
+                <td className="px-4 py-2 border text-left">
                   {isEditing ? (
                     <input
                       type="text"
-                      value={row.Percents || ''}
+                      value={row.Description || ''}
                       onChange={(e) =>
-                        handlePercentsChange(index, e.target.value)
+                        handlePaymentChange(
+                          index,
+                          'Description',
+                          e.target.value,
+                        )
                       }
-                      className="w-12 bg-transparent text-right border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                       style={{
                         border: '1px solid #ccc',
                       }}
                     />
                   ) : (
-                    `${row.Percents || 0}`
+                    row.Description
                   )}
-                  <span className="ml-0.5">%</span>
-                </div>
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {(((row.Percents || 0) / 100) * giaTriHopDong).toLocaleString()}{' '}
-                VNĐ
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {isEditing ? (
-                  <input
-                    type="date"
-                    value={
-                      row.PaymentDate
-                        ? new Date(row.PaymentDate).toISOString().split('T')[0]
-                        : ''
-                    }
-                    min={today} // Ngăn chọn ngày trong quá khứ
-                    onChange={(e) =>
-                      handlePaymentChange(index, 'PaymentDate', e.target.value)
-                    }
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : row.PaymentDate ? (
-                  new Date(row.PaymentDate).toLocaleDateString()
-                ) : (
-                  ''
-                )}
-              </td>
-              <td className="px-4 py-2 border text-center">
-                {isEditing ? (
-                  <input
-                    type="date"
-                    value={
-                      row.PaymentPhase
-                        ? new Date(row.PaymentPhase).toISOString().split('T')[0]
-                        : ''
-                    }
-                    min={today} // Ngăn chọn ngày trong quá khứ
-                    onChange={(e) =>
-                      handlePaymentChange(index, 'PaymentPhase', e.target.value)
-                    }
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                ) : row.PaymentPhase ? (
-                  new Date(row.PaymentPhase).toLocaleDateString()
-                ) : (
-                  ''
-                )}
-              </td>
-              {isEditing && (
+                </td>
                 <td className="px-4 py-2 border text-center">
-                  <div className="flex justify-center items-center">
-                    <button
-                      onClick={() => handleDeletePayment(index)}
-                      className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full"
-                    >
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
+                  <div className="flex items-center justify-center">
+                    {isEditing ? (
+                      <input
+                        type="text"
+                        value={row.Percents || ''}
+                        onChange={(e) =>
+                          handlePercentsChange(index, e.target.value)
+                        }
+                        className="w-12 bg-transparent text-right border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        style={{
+                          border: '1px solid #ccc',
+                        }}
+                      />
+                    ) : (
+                      `${row.Percents || 0}`
+                    )}
+                    <span className="ml-0.5">%</span>
                   </div>
                 </td>
-              )}
+                <td className="px-4 py-2 border text-center">
+                  {(
+                    ((row.Percents || 0) / 100) *
+                    giaTriHopDong
+                  ).toLocaleString()}{' '}
+                  VNĐ
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  {isEditing ? (
+                    <input
+                      type="date"
+                      value={
+                        row.PaymentDate
+                          ? new Date(row.PaymentDate)
+                              .toISOString()
+                              .split('T')[0]
+                          : ''
+                      }
+                      min={today} // Ngăn chọn ngày trong quá khứ
+                      onChange={(e) =>
+                        handlePaymentChange(
+                          index,
+                          'PaymentDate',
+                          e.target.value,
+                        )
+                      }
+                      className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : row.PaymentDate ? (
+                    new Date(row.PaymentDate).toLocaleDateString()
+                  ) : (
+                    ''
+                  )}
+                </td>
+                <td className="px-4 py-2 border text-center">
+                  {isEditing ? (
+                    <input
+                      type="date"
+                      value={
+                        row.PaymentPhase
+                          ? new Date(row.PaymentPhase)
+                              .toISOString()
+                              .split('T')[0]
+                          : ''
+                      }
+                      min={today} // Ngăn chọn ngày trong quá khứ
+                      onChange={(e) =>
+                        handlePaymentChange(
+                          index,
+                          'PaymentPhase',
+                          e.target.value,
+                        )
+                      }
+                      className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  ) : row.PaymentPhase ? (
+                    new Date(row.PaymentPhase).toLocaleDateString()
+                  ) : (
+                    ''
+                  )}
+                </td>
+                {isEditing && (
+                  <td className="px-4 py-2 border text-center">
+                    <div className="flex justify-center items-center">
+                      <button
+                        onClick={() => handleDeletePayment(index)}
+                        className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full"
+                      >
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  </td>
+                )}
+              </tr>
+            ))}
+            <tr>
+              <td className="px-4 py-2 border text-center" colSpan={2}>
+                <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
+              </td>
+              <td className="px-4 py-2 border text-center">
+                <strong>
+                  {totalPercentage}
+                  <span className="ml-0.5">%</span>
+                </strong>
+              </td>
+              <td className="px-4 py-2 border text-center">
+                <strong>{totalAmount.toLocaleString()} VNĐ</strong>
+              </td>
             </tr>
-          ))}
-          <tr>
-            <td className="px-4 py-2 border text-center" colSpan={2}>
-              <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
-            </td>
-            <td className="px-4 py-2 border text-center">
-              <strong>
-                {totalPercentage}
-                <span className="ml-0.5">%</span>
-              </strong>
-            </td>
-            <td className="px-4 py-2 border text-center">
-              <strong>{totalAmount.toLocaleString()} VNĐ</strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-center text-gray-500">
+          Cần khởi tạo đợt thanh toán...
+        </p>
+      )}
     </div>
   );
 };

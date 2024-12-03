@@ -22,6 +22,9 @@ import {
   FaChevronUp,
   FaPlus,
 } from 'react-icons/fa';
+import { HiHomeModern } from 'react-icons/hi2';
+import { TbHomePlus } from 'react-icons/tb';
+import { FaFileInvoiceDollar } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import CreateNewButtonGroup from './components/Button/CreateNewButtonGroup';
 import { hanldCreateNew } from './components/handlers';
@@ -29,6 +32,8 @@ import { toast } from 'react-toastify';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -325,6 +330,11 @@ const CreateNewFinalQuotationStaff = () => {
   const totalContractValue =
     totalFinalQuotation + totalUtilities + totalEquipment - totalDiscount;
 
+  const handleNavigation = () => {
+    const id = quotationDetail.InitailQuotationId;
+    navigate(`/initial-quotation-detail-staff/${id}`);
+  };
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
       <CreateNewButtonGroup
@@ -341,32 +351,50 @@ const CreateNewFinalQuotationStaff = () => {
             Thông tin báo giá chi tiết
           </h2>
           <div className="text-right">
-            <span className="font-semibold">Phiên bản:</span>
-            <span className="text-gray-700 ml-2">
-              {quotationDetail.Version}
-            </span>
-            <div className="text-gray-500 text-sm">
-              Tạo lúc {new Date(quotationDetail.InsDate).toLocaleString()}
+            <div
+              className="text-gray-500 text-sm mt-2 cursor-pointer hover:text-blue-500 flex items-center"
+              onClick={handleNavigation}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+              <span className="font-semibold">Thông tin báo giá sơ bộ</span>
+              <span className="text-gray-700 ml-2">
+                (Phiên bản {quotationDetail.InitailQuotationVersion})
+              </span>
             </div>
           </div>
         </div>
 
         <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2 text-secondary" />
-          <span className="font-semibold">Tên khách hàng:</span>
-          {isEditing ? (
-            <input
-              type="text"
-              value={quotationDetail.AccountName}
-              onChange={handleCustomerNameChange}
-              className="ml-2 border border-gray-300 rounded-md p-2"
-            />
-          ) : (
-            <span className="text-gray-700 ml-2">
-              {quotationDetail.AccountName}
-            </span>
-          )}
+          <HiHomeModern className="mr-2 text-secondary" />
+          <span className="font-semibold">Công trình:</span>
+          <span className="text-gray-700 ml-2">Nhà ở Dân dụng</span>
         </div>
+
+        <div className="mb-2 text-lg flex items-center">
+          <TbHomePlus className="mr-2 text-secondary" />
+          <span className="font-semibold">Hạng mục:</span>
+          <span className="text-gray-700 ml-2">
+            {quotationDetail.ProjectType}
+          </span>
+        </div>
+
+        <div className="mb-2 text-lg flex items-center">
+          <FaFileInvoiceDollar className="mr-2 text-secondary" />
+          <span className="font-semibold mr-2">Đơn giá thi công:</span>
+          <div className="flex flex-col">
+            <span className="text-gray-700">
+              {quotationDetail.PackageQuotationList.PackageRough || 'N/A'} -{' '}
+              {quotationDetail.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+              đồng/m²
+            </span>
+            <span className="text-gray-700">
+              {quotationDetail.PackageQuotationList.PackageFinished || 'N/A'} -{' '}
+              {quotationDetail.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+              đồng/m²
+            </span>
+          </div>
+        </div>
+
         <div className="mb-2 text-lg flex items-center">
           <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
@@ -383,9 +411,27 @@ const CreateNewFinalQuotationStaff = () => {
             </span>
           )}
         </div>
+
+        <div className="mb-2 text-lg flex items-center">
+          <FaUser className="mr-2 text-secondary" />
+          <span className="font-semibold">Chủ đầu tư:</span>
+          {isEditing ? (
+            <input
+              type="text"
+              value={quotationDetail.AccountName}
+              onChange={handleCustomerNameChange}
+              className="ml-2 border border-gray-300 rounded-md p-2"
+            />
+          ) : (
+            <span className="text-gray-700 ml-2">
+              {quotationDetail.AccountName}
+            </span>
+          )}
+        </div>
+
         <div className="mb-2 text-lg flex items-center">
           <FaMoneyBillWave className="mr-2 text-secondary" />
-          <span className="font-semibold">Tổng chi phí:</span>
+          <span className="font-semibold">Tổng giá trị dự toán:</span>
           <span className="text-gray-700 ml-2">
             {calculateTotalPrice(quotationDetail).toLocaleString()} VNĐ
           </span>

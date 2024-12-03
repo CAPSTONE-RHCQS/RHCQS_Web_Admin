@@ -193,8 +193,6 @@ const InitialQuotationDetailStaff = () => {
         othersAgreement={othersAgreement}
         setOthersAgreement={setOthersAgreement}
         onPriceChange={setUtilityPrices}
-        quantities={quantities}
-        setQuantities={setQuantities}
         isSaving={isSaving}
         handleEditToggle={handleEditToggle}
         handleSave={() =>
