@@ -1,12 +1,11 @@
 import { GetConstructionByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 import { FinalToContractResponse } from '../../types/ContractResponseTypes';
-import axios from 'axios';
 import {
-  ConstructionContractRequest,
   ConstructionRequest,
   ConstructionWork,
 } from '../../types/ConstructionTypes';
+import { ConstructionTypeResponse } from '../../types/ConstructionTypeResponse';
 
 export const getConstructions = async (page: number, size: number) => {
   try {
@@ -88,13 +87,14 @@ export async function getConstructionByName(
 
 export const searchConstructionWork = async (
   packageId: string,
+  constructionItemId: string,
   name: string,
 ): Promise<ConstructionWork[]> => {
   try {
     const response = await requestWebRHCQS.get<ConstructionWork[]>(
       `/construction/construction-work/search`,
       {
-        params: { packageId, name },
+        params: { packageId, constructionItemId, name },
         headers: {
           accept: 'text/plain',
         },
@@ -123,6 +123,26 @@ export const getFinalToContractConstruction = async (
     return response.data;
   } catch (error) {
     console.error('Error fetching final to contract construction:', error);
+    throw error;
+  }
+};
+
+export const getConstructionByType = async (
+  type: string,
+): Promise<ConstructionTypeResponse[]> => {
+  try {
+    const response = await requestWebRHCQS.get<ConstructionTypeResponse[]>(
+      `/construction/type`,
+      {
+        params: { type },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by type ${type}:`, error);
     throw error;
   }
 };

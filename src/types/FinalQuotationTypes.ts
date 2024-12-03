@@ -101,10 +101,16 @@ export interface PackageQuotationList {
   Unit: string;
 }
 
+export interface InitQuotationInfo {
+  ConstructionName: string;
+  Area: number;
+}
+
 export interface FinalQuotationDetail {
   Id: string;
   AccountName: string;
-  Address: string;
+  PhoneNumber: string;
+  Email: string;
   ProjectId: string;
   Area: number;
   InitailQuotationId: string;
@@ -122,6 +128,7 @@ export interface FinalQuotationDetail {
   Status: string;
   Deflag: boolean;
   ReasonReject: string | null;
+  InitQuotationInfos: InitQuotationInfo[];
   PackageQuotationList: PackageQuotationList;
   BatchPaymentInfos: BatchPaymentInfo[];
   EquipmentItems: EquipmentItem[];

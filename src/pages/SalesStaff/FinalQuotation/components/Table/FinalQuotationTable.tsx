@@ -5,9 +5,11 @@ import {
   QuotationItem,
 } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faClose, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { searchConstructionWork } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionWork } from '../../../../../types/ConstructionTypes';
+import { getConstructionByType } from '../../../../../api/Construction/ConstructionApi';
+import { ConstructionTypeResponse } from '../../../../../types/ConstructionTypeResponse';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -27,6 +29,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     constructionIndex: number;
     qItemIndex: number;
   } | null>(null);
+  const [constructionOptions, setConstructionOptions] = useState<
+    ConstructionTypeResponse[]
+  >([]);
+  const [selectedRoughConstruction, setSelectedRoughConstruction] = useState<
+    string | null
+  >(null);
+  const [selectedFinishedConstruction, setSelectedFinishedConstruction] =
+    useState<string | null>(null);
 
   const textareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const weightInputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -42,6 +52,25 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       });
     });
   }, [items]);
+
+  useEffect(() => {
+    const fetchConstructionOptions = async () => {
+      try {
+        const roughConstructions = await getConstructionByType('WORK_ROUGH');
+        const finishedConstructions = await getConstructionByType(
+          'WORK_FINISHED',
+        );
+        setConstructionOptions([
+          ...roughConstructions,
+          ...finishedConstructions,
+        ]);
+      } catch (error) {
+        console.error('Error fetching construction options:', error);
+      }
+    };
+
+    fetchConstructionOptions();
+  }, []);
 
   const handleAddNewItem = (constructionIndex: number) => {
     const newItem: QuotationItem = {
@@ -74,13 +103,28 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       newValue;
     setSelectedItem({ constructionIndex, qItemIndex });
 
-    // Gọi API tìm kiếm với IdPackageRough
     try {
-      const results = await searchConstructionWork(
-        quotationPackage.IdPackageRough || '',
-        newValue,
-      );
-      setSearchResults(results);
+      const constructionItemId = items[constructionIndex].ConstructionId;
+      const constructionType = items[constructionIndex].Type;
+
+      const packageId =
+        constructionType === 'WORK_ROUGH'
+          ? quotationPackage.IdPackageRough
+          : quotationPackage.IdPackageFinished;
+
+      if (packageId) {
+        const results = await searchConstructionWork(
+          packageId,
+          constructionItemId,
+          newValue,
+        );
+        setSearchResults(results);
+      } else {
+        console.warn(
+          'Package ID is not available for the construction type:',
+          constructionType,
+        );
+      }
     } catch (error) {
       console.error('Error searching construction work:', error);
     }
@@ -132,6 +176,57 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     onItemsChange(updatedItems);
   };
 
+  const handleCreateRoughConstruction = () => {
+    if (selectedRoughConstruction) {
+      const construction = roughConstructionOptions.find(
+        (c) => c.Id === selectedRoughConstruction,
+      );
+      if (construction) {
+        const newItem: FinalQuotationItem = {
+          Id: '',
+          ConstructionId: construction.Id,
+          SubConstructionId: null,
+          ContructionName: construction.Name,
+          Area: null,
+          Type: construction.Type,
+          InsDate: new Date().toISOString(),
+          QuotationItems: [],
+        };
+        onItemsChange([...items, newItem]);
+        setSelectedRoughConstruction(null);
+      }
+    }
+  };
+
+  const handleCreateFinishedConstruction = () => {
+    if (selectedFinishedConstruction) {
+      const construction = finishedConstructionOptions.find(
+        (c) => c.Id === selectedFinishedConstruction,
+      );
+      if (construction) {
+        const newItem: FinalQuotationItem = {
+          Id: '',
+          ConstructionId: construction.Id,
+          SubConstructionId: null,
+          ContructionName: construction.Name,
+          Area: null,
+          Type: construction.Type,
+          InsDate: new Date().toISOString(),
+          QuotationItems: [],
+        };
+        onItemsChange([...items, newItem]);
+        setSelectedFinishedConstruction(null);
+      }
+    }
+  };
+
+  const handleDeleteConstruction = (constructionIndex: number) => {
+    const updatedItems = items.filter(
+      (_, index) => index !== constructionIndex,
+    );
+    onItemsChange(updatedItems);
+  };
+
   const calculateTotals = () => {
     let totalLabor = 0;
     let totalRough = 0;
@@ -150,8 +245,68 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
   const totals = calculateTotals();
 
+  const roughConstructionOptions = constructionOptions.filter(
+    (construction) => construction.Type === 'WORK_ROUGH',
+  );
+
+  const finishedConstructionOptions = constructionOptions.filter(
+    (construction) => construction.Type === 'WORK_FINISHED',
+  );
+
   return (
     <div>
+      {isEditing && (
+        <div className="flex flex-col md:flex-row items-center mb-4 space-y-2 md:space-y-0 md:space-x-4">
+          <div className="flex items-center space-x-2">
+            <select
+              value={selectedRoughConstruction || ''}
+              onChange={(e) => setSelectedRoughConstruction(e.target.value)}
+              className="border p-2"
+            >
+              <option value="" disabled>
+                Chọn công trình Thô
+              </option>
+              {roughConstructionOptions.map((construction) => (
+                <option key={construction.Id} value={construction.Id}>
+                  {construction.Name}
+                </option>
+              ))}
+            </select>
+            <button
+              className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+              onClick={handleCreateRoughConstruction}
+              disabled={!selectedRoughConstruction}
+            >
+              <FontAwesomeIcon icon={faPlus} /> Tạo công trình Thô
+            </button>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <select
+              value={selectedFinishedConstruction || ''}
+              onChange={(e) => setSelectedFinishedConstruction(e.target.value)}
+              className="border p-2"
+            >
+              <option value="" disabled>
+                Chọn công trình Hoàn thiện
+              </option>
+              {finishedConstructionOptions.map((construction) => (
+                <option key={construction.Id} value={construction.Id}>
+                  {construction.Name}
+                </option>
+              ))}
+            </select>
+            <button
+              className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+              onClick={handleCreateFinishedConstruction}
+              disabled={!selectedFinishedConstruction}
+            >
+              <FontAwesomeIcon icon={faPlus} /> Tạo công trình Hoàn thiện
+            </button>
+          </div>
+        </div>
+      )}
+
       <table className="min-w-full bg-white border border-gray-200 mt-2">
         <thead className="bg-gray-100">
           <tr>
@@ -227,9 +382,19 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               <tr>
                 <td
                   colSpan={isEditing ? 10 : 9}
-                  className="px-4 py-2 border text-left font-bold bg-gray-200"
+                  className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
-                  {item.ContructionName}
+                  <div className="flex items-center">
+                    <span>{item.ContructionName}</span>
+                    {isEditing && (
+                      <button
+                        className="text-red-500 hover:text-red-700 ml-2"
+                        onClick={() => handleDeleteConstruction(itemIndex)}
+                      >
+                        <FontAwesomeIcon icon={faClose} />
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
               {item.QuotationItems.map((qItem, qItemIndex) => (

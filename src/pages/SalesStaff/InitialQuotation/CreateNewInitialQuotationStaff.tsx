@@ -86,6 +86,9 @@ const InitialQuotationDetailStaff = () => {
   const totalRough =
     totalArea * quotationData.PackageQuotationList.UnitPackageRough;
 
+  const totalFinished =
+    totalArea * quotationData.PackageQuotationList.UnitPackageFinished;
+
   const totalUtilities = utilityInfos.reduce(
     (total, utility) => total + utility.Price,
     0,
@@ -155,6 +158,7 @@ const InitialQuotationDetailStaff = () => {
         totalArea={totalArea}
         donGia={donGia}
         totalRough={totalRough}
+        totalFinished={totalFinished}
         utilityInfos={utilityInfos}
         setUtilityInfos={setUtilityInfos}
         totalUtilities={totalUtilities}
@@ -183,11 +187,11 @@ const InitialQuotationDetailStaff = () => {
             giaTriHopDong,
             totalArea,
             totalRough,
+            totalFinished,
             totalUtilities,
             navigate,
             setIsSaving,
             utilityPrices,
-            quantities,
           );
         }}
       />

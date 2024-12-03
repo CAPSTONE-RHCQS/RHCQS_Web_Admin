@@ -39,6 +39,8 @@ export interface ProjectDetail {
   Avatar: string;
   AccountName: string;
   Address: string;
+  PhoneNumber: string | null;
+  Mail: string;
   Area: number;
   Type: string;
   Status: string;
@@ -48,6 +50,7 @@ export interface ProjectDetail {
   StaffName: string;
   StaffPhone: string;
   StaffAvatar: string;
+  IsDrawing: boolean;
   InitialInfo: InitialInfo[];
   HouseDesignDrawingInfo: HouseDesignDrawingInfo[];
   FinalInfo: FinalInfo[];

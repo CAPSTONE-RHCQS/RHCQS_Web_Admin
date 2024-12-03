@@ -37,7 +37,6 @@ export interface QuotationItemRequest {
 
 export interface FinalQuotationItemRequest {
   constructionId: string;
-  subconstructionId: string | null;
   quotationItems: QuotationItemRequest[];
 }
 
@@ -45,7 +44,6 @@ export interface FinalQuotationRequest {
   customerName: string;
   address: string;
   projectId: string;
-  promotionId: string | null;
   note: string;
   batchPaymentInfos: BatchPaymentInfoRequest[];
   equipmentItems: EquipmentItemRequest[];

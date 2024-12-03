@@ -29,23 +29,26 @@ import ChatBox from '../../../components/ChatBox';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
 import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
+import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
   const [quotationDetail, setQuotationDetail] =
     useState<FinalQuotationDetailType | null>(null);
   const [showContractValueSummary, setShowContractValueSummary] =
-    useState(false);
-  const [showBatchPayments, setShowBatchPayments] = useState(false);
-  const [showEquipmentCosts, setShowEquipmentCosts] = useState(false);
-  const [showDetailedItems, setShowDetailedItems] = useState(false);
-  const [showUtilities, setShowUtilities] = useState(false);
+    useState(true);
+  const [showBatchPayments, setShowBatchPayments] = useState(true);
+  const [showEquipmentCosts, setShowEquipmentCosts] = useState(true);
+  const [showDetailedItems, setShowDetailedItems] = useState(true);
+  const [showConstructionAreaTable, setShowConstructionAreaTable] =
+    useState(true);
+  const [showUtilities, setShowUtilities] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showChat, setShowChat] = useState(false);
   const [approvalType, setApprovalType] = useState('Approved');
   const [reason, setReason] = useState('');
   const [loading, setLoading] = useState(true);
-  const [showPromotions, setShowPromotions] = useState(false);
+  const [showPromotions, setShowPromotions] = useState(true);
   const [totalConstructionValue, setTotalConstructionValue] = useState(0);
   const [totalUtilities, setTotalUtilities] = useState(0);
   const [totalEquipmentCost, setTotalEquipmentCost] = useState(0);
@@ -266,9 +269,30 @@ const FinalQuotationDetailManager = () => {
 
         <h3
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
+          onClick={() =>
+            setShowConstructionAreaTable(!showConstructionAreaTable)
+          }
+        >
+          1. Tổng diện tích xây dựng theo phương án thiết kế:
+          {showConstructionAreaTable ? (
+            <FaChevronUp className="ml-2 text-secondary" />
+          ) : (
+            <FaChevronDown className="ml-2 text-secondary" />
+          )}
+        </h3>
+        {showConstructionAreaTable && (
+          <ConstructionAreaTable
+            initQuotationInfos={quotationDetail.InitQuotationInfos}
+          />
+        )}
+
+        <hr className="my-4 border-gray-300" />
+
+        <h3
+          className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowDetailedItems(!showDetailedItems)}
         >
-          1. Các hạng mục báo giá chi tiết:
+          2. Các hạng mục báo giá chi tiết:
           {showDetailedItems ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (
@@ -285,7 +309,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowUtilities(!showUtilities)}
         >
-          2. Tùy chọn & Tiện ích:
+          3. Tùy chọn & Tiện ích:
           {showUtilities ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (
@@ -302,7 +326,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowEquipmentCosts(!showEquipmentCosts)}
         >
-          3. Chi Phí Thiết bị:
+          4. Chi Phí Thiết bị:
           {showEquipmentCosts ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (
@@ -319,7 +343,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowPromotions(!showPromotions)}
         >
-          4. Khuyến mãi:
+          5. Khuyến mãi:
           {showPromotions ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (
@@ -339,7 +363,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowContractValueSummary(!showContractValueSummary)}
         >
-          5. Tổng hợp giá trị hợp đồng:
+          6. Tổng hợp giá trị hợp đồng:
           {showContractValueSummary ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (
@@ -362,7 +386,7 @@ const FinalQuotationDetailManager = () => {
           className="text-xl font-bold mb-4 flex items-center cursor-pointer text-primary"
           onClick={() => setShowBatchPayments(!showBatchPayments)}
         >
-          6. Các đợt thanh toán:
+          7. Các đợt thanh toán:
           {showBatchPayments ? (
             <FaChevronUp className="ml-2 text-secondary" />
           ) : (

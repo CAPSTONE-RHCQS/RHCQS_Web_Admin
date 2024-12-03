@@ -66,6 +66,7 @@ export interface InitialQuotationResponse {
   Deflag: boolean;
   Note: string | null;
   TotalRough: number;
+  TotalFinished: number;
   TotalUtilities: number;
   Discount: number;
   Unit: string;
@@ -123,6 +124,7 @@ export interface UpdateInitialQuotationRequest {
   timeOthers: number;
   othersAgreement: string;
   totalRough: number;
+  totalFinished: number;
   totalUtilities: number;
   items: Item[];
   packages: Package[];

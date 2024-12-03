@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaMapMarkerAlt, FaRulerCombined } from 'react-icons/fa';
+import {
+  FaHome,
+  FaMailBulk,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaRulerCombined,
+  FaUser,
+} from 'react-icons/fa';
 import ContactCard from '../../../components/ContactCard';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
@@ -13,9 +20,7 @@ import {
   AccordionHeader,
   Dialog,
 } from '@material-tailwind/react';
-import {
-  getProjectDetailDesignStaff,
-} from '../../../api/Project/ProjectApi';
+import { getProjectDetailDesignStaff } from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
 import InitialInfoTable from './components/Table/InitialInfoTable';
@@ -168,13 +173,6 @@ const ProjectDetailDesignStaff = () => {
           </span>
         </div>
         <div className="mb-2 text-lg flex items-center">
-          <FaHome className="mr-2 text-secondary" />
-          <span className="font-semibold">Tên khách hàng:</span>
-          <span className="text-gray-700 ml-2">
-            {projectDetail.AccountName}
-          </span>
-        </div>
-        <div className="mb-2 text-lg flex items-center">
           <FaMapMarkerAlt className="mr-2 text-secondary" />
           <span className="font-semibold">Địa chỉ thi công:</span>
           <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
@@ -183,6 +181,23 @@ const ProjectDetailDesignStaff = () => {
           <FaRulerCombined className="mr-2 text-secondary" />
           <span className="font-semibold">Diện tích xây dựng:</span>
           <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
+        </div>
+        <div className="mb-2 text-lg flex items-center">
+          <FaUser className="mr-2 text-secondary" />
+          <span className="font-semibold">Tên khách hàng:</span>
+          <span className="text-gray-700 ml-2">
+            {projectDetail.AccountName}
+          </span>
+        </div>
+        <div className="mb-2 text-lg flex items-center">
+          <FaPhone className="mr-2 text-secondary" />
+          <span className="font-semibold">Số điện thoại:</span>
+          <span className="text-gray-700 ml-2">{projectDetail.Phone}</span>
+        </div>
+        <div className="mb-2 text-lg flex items-center">
+          <FaMailBulk className="mr-2 text-secondary" />
+          <span className="font-semibold">Địa chỉ email:</span>
+          <span className="text-gray-700 ml-2">{projectDetail.Mail}</span>
         </div>
 
         {/* <!-- Báo giá sơ bộ--> */}
