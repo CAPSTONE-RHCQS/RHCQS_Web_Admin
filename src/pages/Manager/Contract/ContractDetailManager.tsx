@@ -173,21 +173,21 @@ const ContractDetailManager = () => {
     {
       icon: <FaMoneyBillWave />,
       label: 'Giá trị hợp đồng',
-      value: `${contractDetail.ContractValue.toLocaleString()} ${
+      value: `${contractDetail.ContractValue !== null ? contractDetail.ContractValue.toLocaleString() : 'N/A'} ${
         contractDetail.UnitPrice
       }`,
     },
     {
       icon: <FaBoxOpen />,
       label: 'Gói thô',
-      value: `${contractDetail.RoughPackagePrice.toLocaleString()} ${
+      value: `${contractDetail.RoughPackagePrice !== null ? contractDetail.RoughPackagePrice.toLocaleString() : 'N/A'} ${
         contractDetail.UnitPrice
       }`,
     },
     {
       icon: <FaBox />,
       label: 'Gói hoàn thiện',
-      value: `${contractDetail.FinishedPackagePrice.toLocaleString()} ${
+      value: `${contractDetail.FinishedPackagePrice !== null ? contractDetail.FinishedPackagePrice.toLocaleString() : 'N/A'} ${
         contractDetail.UnitPrice
       }`,
     },
