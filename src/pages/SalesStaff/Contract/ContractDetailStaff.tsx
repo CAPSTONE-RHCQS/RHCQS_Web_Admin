@@ -168,23 +168,21 @@ const ContractDetailStaff = () => {
             <FaMoneyBillWave className="mr-2" />
             <span className="font-semibold">Giá trị hợp đồng:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.ContractValue.toLocaleString() || ''} VNĐ
+              {contractDetail.ContractValue !== null ? contractDetail.ContractValue.toLocaleString() : 'N/A'} VNĐ
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBoxOpen className="mr-2" />
             <span className="font-semibold">Giá trị thi công thô:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.RoughPackagePrice.toLocaleString()}{' '}
-              {contractDetail.UnitPrice}
+              {contractDetail.RoughPackagePrice !== null ? contractDetail.RoughPackagePrice.toLocaleString() : 'N/A'} {contractDetail.UnitPrice}
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBox className="mr-2" />
             <span className="font-semibold">Giá trị thi công hoàn thiện:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.FinishedPackagePrice.toLocaleString()}{' '}
-              {contractDetail.UnitPrice}
+              {contractDetail.FinishedPackagePrice !== null ? contractDetail.FinishedPackagePrice.toLocaleString() : 'N/A'} {contractDetail.UnitPrice}
             </span>
           </div>
           {contractDetail.UrlFile && (
