@@ -9,12 +9,16 @@ import Alert from '../../../components/Alert';
 import { getConstructionWorks } from '../../../api/Construction/ContructionWork';
 import ConstructionWorkTable from './components/Table/ConstructionWorkTable';
 import CreateContructionWork from './components/Create/CreateContructionWork';
+import { CreateConstructionWork as CreateConstructionWorkType } from '../../../types/ContructionWork';
+import CreatePackageConstructionWork from './components/Create/CreatePackageConstructionWork';
 
 const ConstructionWorkList: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
-  const [dataConstructionWork, setDataConstructionWork] = useState<ConstructionWorkType['Items']>([]);
+  const [dataConstructionWork, setDataConstructionWork] = useState<
+    ConstructionWorkType['Items']
+  >([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalConstructionWork, setTotalConstructionWork] = useState(0);
@@ -24,6 +28,7 @@ const ConstructionWorkList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
+  const [constructionResponse, setConstructionResponse] = useState<string>('');
 
   useEffect(() => {
     setPageInput(page.toString());
@@ -70,9 +75,9 @@ const ConstructionWorkList: React.FC = () => {
     }
   };
 
-  const handleSave = async () => {
-    // Logic để lưu công việc xây dựng mới
+  const handleSave = async (response: string) => {
     setIsCreateModalOpen(false);
+    setConstructionResponse(response);
     setAlertMessage('Công tác hạng mục đã được lưu thành công!');
     setAlertType('success');
     handleRefresh();
@@ -171,6 +176,22 @@ const ConstructionWorkList: React.FC = () => {
           onError={handleError}
         />
       )}
+
+      {constructionResponse && (
+        <CreatePackageConstructionWork
+          isOpen={!!constructionResponse}
+          onSave={() => {
+            setConstructionResponse('');
+            setAlertMessage('Công tác hạng mục tạo thành công!');
+            handleRefresh();
+            setAlertType('success');
+          }}
+          onCancel={() => setConstructionResponse('')}
+          constructionData={constructionResponse}
+          onError={handleError}
+        />
+      )}
+
       {alertMessage && (
         <Alert
           message={alertMessage}

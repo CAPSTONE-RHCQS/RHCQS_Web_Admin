@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
-import {
-  getConstructionByName,
-  searchConstructionWork,
-} from '../../../../../api/Construction/ConstructionApi';
-import { ConstructionSearchResponse } from '../../../../../types/ConstructionTypes';
-import {
-  searchMaterial,
-  searchMaterialSection,
-} from '../../../../../api/Material/Material';
+import { searchMaterialSection } from '../../../../../api/Material/Material';
 import { searchLabor } from '../../../../../api/Labor/Labor';
 import { MaterialItem } from '../../../../../types/Material';
 import { LaborItem } from '../../../../../types/Labor';
@@ -21,9 +13,9 @@ import {
 } from '../../../../../api/Construction/ContructionWork';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 
-interface CreateConstructionWorkProps {
+export interface CreateConstructionWorkProps {
   isOpen: boolean;
-  onSave: () => void;
+  onSave: (response: string) => void;
   onCancel: () => void;
   onError: (errorMessage: string) => void;
 }
@@ -49,15 +41,10 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   const [construction, setConstruction] = useState('');
   const [inputCodeValue, setInputCodeValue] = useState('');
   const [unit, setUnit] = useState('m');
-  const [materialSectionName, setMaterialSectionName] = useState('');
-  const [laborName, setLaborName] = useState('');
+  const [constructionResponse, setConstructionResponse] = useState<string>('');
   const [constructionSearchResults, setConstructionSearchResults] = useState<
     SearchConstructionWorkItem[]
   >([]);
-  const [materialSearchResults, setMaterialSearchResults] = useState<
-    MaterialItem[]
-  >([]);
-  const [laborSearchResults, setLaborSearchResults] = useState<LaborItem[]>([]);
   const [selectedConstructionId, setSelectedConstructionId] =
     useState<string>('');
   const [materialResources, setMaterialResources] = useState<Resource[]>([
@@ -127,9 +114,13 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     try {
       const response = await createConstructionWork(constructionData);
       console.log('Construction created successfully:', response);
-      onSave();
+      setConstructionResponse(response);
+      onSave(response);
     } catch (error: any) {
-      console.error('Error creating construction work:', error.response.data.Error);
+      console.error(
+        'Error creating construction work:',
+        error.response.data.Error,
+      );
       onError(error.response.data.Error);
     }
   };
@@ -185,38 +176,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     setConstruction(name);
     setSelectedConstructionId(id);
     setConstructionSearchResults([]);
-  };
-
-  const handleSelectMaterial = (name: string, id: string) => {
-    setMaterialSectionName(name);
-    setMaterialResources((prevResources) => [
-      ...prevResources,
-      {
-        materialSectionId: id,
-        materialSectionNorm: 0,
-        laborId: null,
-        laborNorm: null,
-        materialName: '',
-        materialSearchResults: [],
-      },
-    ]);
-    setMaterialSearchResults([]);
-  };
-
-  const handleSelectLabor = (name: string, id: string) => {
-    setLaborName(name);
-    setLaborResources((prevResources) => [
-      ...prevResources,
-      {
-        materialSectionId: null,
-        materialSectionNorm: null,
-        laborId: id,
-        laborNorm: 0,
-        laborName: '',
-        laborSearchResults: [],
-      },
-    ]);
-    setLaborSearchResults([]);
   };
 
   const addMaterialResource = () => {

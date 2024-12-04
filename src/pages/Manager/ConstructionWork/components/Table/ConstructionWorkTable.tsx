@@ -7,6 +7,7 @@ import {
 import { PencilIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import { getConstructionWorkById } from '../../../../../api/Construction/ContructionWork';
+import CreatePackageConstructionWork from '../Create/CreatePackageConstructionWork';
 
 interface ConstructionWorkTableProps {
   dataConstructionWork: ConstructionWorkItem[];
@@ -49,10 +50,17 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
       console.error('Error fetching construction work details:', error);
     }
   };
-  const handleSave = async () => {};
+  const handleSave = async () => {
+    refreshData();
+  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+
+  const handleError = (errorMessage: string) => {
+    setAlertMessage(errorMessage);
+    setAlertType('error');
   };
 
   const formatDate = (dateString: string) => {
@@ -118,6 +126,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                       className="cursor-pointer"
                       onClick={(event) => {
                         event.stopPropagation();
+                        setIsModalOpen(true);
                       }}
                       title="Chỉnh sửa"
                     >
@@ -274,6 +283,15 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
           ))}
         </tbody>
       </table>
+
+      {isModalOpen && (
+        <CreatePackageConstructionWork
+          isOpen={isModalOpen}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          onError={handleError}
+        />
+      )}
 
       {alertMessage && (
         <Alert

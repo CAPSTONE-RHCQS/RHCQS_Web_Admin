@@ -115,6 +115,25 @@ export async function searchMaterial(
   }
 }
 
+export async function searchMaterialByPackageId(
+  name: string,
+  packageId: string,
+): Promise<SearchMaterialByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/material/name?packageId=${packageId}&name=${name}`,
+      {
+        headers: {
+          accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw new Error('Failed to fetch construction by name');
+  }
+}
+
 export async function searchMaterialSection(name: string) {
   try {
     const response = await requestWebRHCQS.get(`/materialsection/name?name=${name}`);
