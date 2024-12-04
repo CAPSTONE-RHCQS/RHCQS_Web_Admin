@@ -78,6 +78,11 @@ const ConstructionWorkList: React.FC = () => {
     handleRefresh();
   };
 
+  const handleError = (errorMessage: string) => {
+    setAlertMessage(errorMessage);
+    setAlertType('error');
+  };
+
   const handleCloseAlert = () => {
     setAlertMessage(null);
     setAlertType('success');
@@ -163,6 +168,7 @@ const ConstructionWorkList: React.FC = () => {
           isOpen={isCreateModalOpen}
           onSave={handleSave}
           onCancel={() => setIsCreateModalOpen(false)}
+          onError={handleError}
         />
       )}
       {alertMessage && (

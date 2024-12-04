@@ -11,13 +11,21 @@ import {
 import { searchLabor } from '../../../../../api/Labor/Labor';
 import { MaterialItem } from '../../../../../types/Material';
 import { LaborItem } from '../../../../../types/Labor';
-import { CreateConstructionWork as CreateConstructionWorkType, SearchConstructionWorkItem } from '../../../../../types/ContructionWork';
-import { createConstructionWork, searchConstructionWorkItem } from '../../../../../api/Construction/ContructionWork';
+import {
+  CreateConstructionWork as CreateConstructionWorkType,
+  SearchConstructionWorkItem,
+} from '../../../../../types/ContructionWork';
+import {
+  createConstructionWork,
+  searchConstructionWorkItem,
+} from '../../../../../api/Construction/ContructionWork';
+import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 
 interface CreateConstructionWorkProps {
   isOpen: boolean;
   onSave: () => void;
   onCancel: () => void;
+  onError: (errorMessage: string) => void;
 }
 
 interface Resource {
@@ -35,6 +43,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   isOpen,
   onSave,
   onCancel,
+  onError,
 }) => {
   const [workName, setWorkName] = useState('');
   const [construction, setConstruction] = useState('');
@@ -49,13 +58,56 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     MaterialItem[]
   >([]);
   const [laborSearchResults, setLaborSearchResults] = useState<LaborItem[]>([]);
-  const [selectedConstructionId, setSelectedConstructionId] = useState<
-    string
-  >('');
-  const [materialResources, setMaterialResources] = useState<Resource[]>([]);
-  const [laborResources, setLaborResources] = useState<Resource[]>([]);
+  const [selectedConstructionId, setSelectedConstructionId] =
+    useState<string>('');
+  const [materialResources, setMaterialResources] = useState<Resource[]>([
+    {
+      materialSectionId: '',
+      materialSectionNorm: 0,
+      laborId: null,
+      laborNorm: null,
+      materialName: '',
+      materialSearchResults: [],
+    },
+  ]);
+  const [laborResources, setLaborResources] = useState<Resource[]>([
+    {
+      materialSectionId: null,
+      materialSectionNorm: null,
+      laborId: '',
+      laborNorm: 0,
+      laborName: '',
+      laborSearchResults: [],
+    },
+  ]);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  const validateFields = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!workName) newErrors.workName = 'Tên công tác không được để trống.';
+    if (!construction)
+      newErrors.construction = 'Tên hạng mục không được để trống.';
+    if (!inputCodeValue)
+      newErrors.inputCodeValue = 'Mã công tác không được để trống.';
+    if (materialResources.some((resource) => !resource.materialName)) {
+      newErrors.materialResources = 'Tên vật tư không được để trống.';
+    }
+    if (materialResources.some((resource) => !resource.materialSectionNorm)) {
+      newErrors.materialResources = 'Định mức vật tư không được để trống.';
+    }
+    if (laborResources.some((resource) => !resource.laborName)) {
+      newErrors.laborResources = 'Tên nhân công không được để trống.';
+    }
+    if (laborResources.some((resource) => !resource.laborNorm)) {
+      newErrors.laborResources = 'Định mức nhân công không được để trống.';
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSave = async () => {
+    if (!validateFields()) return;
+
     const combinedResources = [...materialResources, ...laborResources];
 
     const constructionData: CreateConstructionWorkType = {
@@ -76,8 +128,9 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
       const response = await createConstructionWork(constructionData);
       console.log('Construction created successfully:', response);
       onSave();
-    } catch (error) {
-      console.error('Error creating construction work:', error);
+    } catch (error: any) {
+      console.error('Error creating construction work:', error.response.data.Error);
+      onError(error.response.data.Error);
     }
   };
 
@@ -99,8 +152,14 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     try {
       const resultsMaterial = await searchMaterialSection(name);
       const newResources = [...materialResources];
+      const filteredResults = resultsMaterial.filter(
+        (item: MaterialItem) =>
+          !materialResources.some(
+            (resource) => resource.materialSectionId === item.Id,
+          ),
+      );
       newResources[index].materialSearchResults =
-        resultsMaterial as MaterialItem[];
+        filteredResults as MaterialItem[];
       setMaterialResources(newResources);
     } catch (error) {
       console.error('Error fetching material search results:', error);
@@ -111,7 +170,11 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     try {
       const resultsLabor = await searchLabor(name);
       const newResources = [...laborResources];
-      newResources[index].laborSearchResults = resultsLabor as LaborItem[];
+      const filteredResults = resultsLabor.filter(
+        (item) =>
+          !laborResources.some((resource) => resource.laborId === item.Id),
+      );
+      newResources[index].laborSearchResults = filteredResults as LaborItem[];
       setLaborResources(newResources);
     } catch (error) {
       console.error('Error fetching labor search results:', error);
@@ -185,46 +248,116 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   };
 
   const removeMaterialResource = (index: number) => {
-    setMaterialResources((prevResources) =>
-      prevResources.filter((_, i) => i !== index),
-    );
+    if (materialResources.length > 1) {
+      setMaterialResources((prevResources) =>
+        prevResources.filter((_, i) => i !== index),
+      );
+    }
   };
 
   const removeLaborResource = (index: number) => {
-    setLaborResources((prevResources) =>
-      prevResources.filter((_, i) => i !== index),
-    );
+    if (laborResources.length > 1) {
+      setLaborResources((prevResources) =>
+        prevResources.filter((_, i) => i !== index),
+      );
+    }
+  };
+
+  const handleChange = (field: string, value: string, index?: number) => {
+    switch (field) {
+      case 'workName':
+        setWorkName(value);
+        if (errors.workName) {
+          setErrors((prevErrors) => ({ ...prevErrors, workName: '' }));
+        }
+        break;
+      case 'construction':
+        setConstruction(value);
+        if (errors.construction) {
+          setErrors((prevErrors) => ({ ...prevErrors, construction: '' }));
+        }
+        handleSearchConstruction(value);
+        break;
+      case 'inputCodeValue':
+        setInputCodeValue(value);
+        if (errors.inputCodeValue) {
+          setErrors((prevErrors) => ({ ...prevErrors, inputCodeValue: '' }));
+        }
+        break;
+      case 'materialName':
+        if (index !== undefined) {
+          const newResources = [...materialResources];
+          newResources[index].materialName = value;
+          setMaterialResources(newResources);
+          if (errors.materialResources) {
+            setErrors((prevErrors) => ({
+              ...prevErrors,
+              materialResources: '',
+            }));
+          }
+          handleSearchMaterial(value, index);
+        }
+        break;
+      case 'materialSectionNorm':
+        if (index !== undefined) {
+          const newResources = [...materialResources];
+          newResources[index].materialSectionNorm = Number(value);
+          setMaterialResources(newResources);
+        }
+        break;
+      case 'laborName':
+        if (index !== undefined) {
+          const newResources = [...laborResources];
+          newResources[index].laborName = value;
+          setLaborResources(newResources);
+          if (errors.laborResources) {
+            setErrors((prevErrors) => ({ ...prevErrors, laborResources: '' }));
+          }
+          handleSearchLabor(value, index);
+        }
+        break;
+      case 'laborNorm':
+        if (index !== undefined) {
+          const newResources = [...laborResources];
+          newResources[index].laborNorm = Number(value);
+          setLaborResources(newResources);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
-        <div className="flex justify-between items-center mb-4">
-          <h1 className="text-lg font-bold">Tạo mới công trình</h1>
+      <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
+        <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
+          <h1 className="text-2xl">Tạo mới công tác</h1>
         </div>
-        <strong className="font-bold">Tên công trình:</strong>
+        <strong className="font-bold">Tên công tác:</strong>
         <input
           type="text"
           value={workName}
-          onChange={(e) => setWorkName(e.target.value)}
+          onChange={(e) => handleChange('workName', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập tên công trình"
+          placeholder="Nhập tên công tác"
         />
+        {errors.workName && <p className="text-red-500">{errors.workName}</p>}
         <strong className="font-bold">Tên hạng mục:</strong>
         <input
           type="text"
           value={construction}
-          onChange={(e) => {
-            setConstruction(e.target.value);
-            handleSearchConstruction(e.target.value);
-          }}
-          className="border p-2 mb-4 w-full rounded font-regular"
+          onChange={(e) => handleChange('construction', e.target.value)}
+          className="relative border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập tên hạng mục"
         />
+        {errors.construction && (
+          <p className="text-red-500">{errors.construction}</p>
+        )}
         {constructionSearchResults.length > 0 && (
-          <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/2 z-10">
+          <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/3 z-10 no-scrollbar flex flex-col">
             <table className="w-full">
               <tbody>
                 {constructionSearchResults.map((result) => (
@@ -246,14 +379,17 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
             </table>
           </div>
         )}
-        <strong className="font-bold">Mã công trình:</strong>
+        <strong className="font-bold">Mã công tác:</strong>
         <input
           type="text"
           value={inputCodeValue}
-          onChange={(e) => setInputCodeValue(e.target.value)}
+          onChange={(e) => handleChange('inputCodeValue', e.target.value)}
           className="border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập mã công trình"
+          placeholder="Nhập mã công tác"
         />
+        {errors.inputCodeValue && (
+          <p className="text-red-500">{errors.inputCodeValue}</p>
+        )}
         <strong className="font-bold">Đơn vị:</strong>
         <select
           name="Unit"
@@ -285,27 +421,32 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
         </select>
 
         <div className="mt-4">
-          <h3 className="font-bold">Phần vật tư:</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold">Phần vật tư:</h3>
+            <button
+              onClick={addMaterialResource}
+              className=" text-primaryGreenButton px-4 py-2 rounded font-bold"
+            >
+              + Thêm Vật Tư
+            </button>
+          </div>
           {materialResources.map((resource, index) => (
-            <div key={index} className="mb-2 mt-2 flex items-center">
+            <div key={index} className="mb-2 mt-2 flex items-center relative">
               <span className="font-bold text-black text-lg mr-2 mb-2">
                 {index + 1}.
               </span>
               <input
                 type="text"
                 value={resource.materialName || ''}
-                onChange={(e) => {
-                  const newResources = [...materialResources];
-                  newResources[index].materialName = e.target.value;
-                  setMaterialResources(newResources);
-                  handleSearchMaterial(e.target.value, index);
-                }}
+                onChange={(e) =>
+                  handleChange('materialName', e.target.value, index)
+                }
                 className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
                 placeholder="Nhập tên vật tư"
               />
               {resource.materialSearchResults &&
                 resource.materialSearchResults.length > 0 && (
-                  <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/2 z-10">
+                  <div className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full z-10 no-scrollbar">
                     <table className="w-full">
                       <tbody>
                         {resource.materialSearchResults.map((result) => (
@@ -332,54 +473,49 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
               <input
                 type="number"
                 value={resource.materialSectionNorm || ''}
-                onChange={(e) => {
-                  const newResources = [...materialResources];
-                  newResources[index].materialSectionNorm = Number(
-                    e.target.value,
-                  );
-                  setMaterialResources(newResources);
-                }}
+                onChange={(e) =>
+                  handleChange('materialSectionNorm', e.target.value, index)
+                }
                 className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                 placeholder="Nhập định mức vật tư"
               />
-              <button
-                onClick={() => removeMaterialResource(index)}
-                className="text-red-500 font-bold mb-2"
-              >
-                Xóa
-              </button>
+              <div className="right-0">
+                <DeleteButton onClick={() => removeMaterialResource(index)} />
+              </div>
             </div>
           ))}
-          <button
-            onClick={addMaterialResource}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
-          >
-            Thêm Vật Tư
-          </button>
+          {errors.materialResources && (
+            <p className="text-red-500">{errors.materialResources}</p>
+          )}
         </div>
 
         <div className="mt-4">
-          <h3 className="font-bold">Phần nhân công:</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="font-bold">Phần nhân công:</h3>
+            <button
+              onClick={addLaborResource}
+              className=" text-primaryGreenButton px-4 py-2 rounded font-bold"
+            >
+              + Thêm Nhân Công
+            </button>
+          </div>
           {laborResources.map((resource, index) => (
-            <div key={index} className="mb-2 mt-2 flex items-center">
+            <div key={index} className="mb-2 mt-2 flex items-center relative">
               <span className="mr-2 mb-2 text-lg font-bold text-black">
                 {index + 1}.
               </span>
               <input
                 type="text"
                 value={resource.laborName || ''}
-                onChange={(e) => {
-                  const newResources = [...laborResources];
-                  newResources[index].laborName = e.target.value;
-                  setLaborResources(newResources);
-                  handleSearchLabor(e.target.value, index);
-                }}
+                onChange={(e) =>
+                  handleChange('laborName', e.target.value, index)
+                }
                 className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
                 placeholder="Nhập tên nhân công"
               />
               {resource.laborSearchResults &&
                 resource.laborSearchResults.length > 0 && (
-                  <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/2 z-10">
+                  <div className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full z-10">
                     <table className="w-full">
                       <tbody>
                         {resource.laborSearchResults.map((result) => (
@@ -405,28 +541,20 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
               <input
                 type="number"
                 value={resource.laborNorm || ''}
-                onChange={(e) => {
-                  const newResources = [...laborResources];
-                  newResources[index].laborNorm = Number(e.target.value);
-                  setLaborResources(newResources);
-                }}
+                onChange={(e) =>
+                  handleChange('laborNorm', e.target.value, index)
+                }
                 className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                 placeholder="Nhập định mức nhân công"
               />
-              <button
-                onClick={() => removeLaborResource(index)}
-                className="text-red-500 font-bold mb-2"
-              >
-                Xóa
-              </button>
+              <div className="right-0">
+                <DeleteButton onClick={() => removeLaborResource(index)} />
+              </div>
             </div>
           ))}
-          <button
-            onClick={addLaborResource}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
-          >
-            Thêm Nhân Công
-          </button>
+          {errors.laborResources && (
+            <p className="text-red-500">{errors.laborResources}</p>
+          )}
         </div>
 
         <div className="flex justify-end space-x-2 mt-4">
