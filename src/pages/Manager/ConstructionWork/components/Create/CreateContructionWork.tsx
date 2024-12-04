@@ -109,7 +109,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
         laborNorm: resource.laborNorm || null,
       })),
     };
-    console.log(constructionData);
 
     try {
       const response = await createConstructionWork(constructionData);

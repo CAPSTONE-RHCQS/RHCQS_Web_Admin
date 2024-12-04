@@ -43,7 +43,6 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
         const response = await getConstructionWorkById(id);
         setResources(response.Resources);
         setWorkTemplates(response.WorkTemplates);
-        console.log(response.WorkTemplates);
         setExpandedId(id);
       }
     } catch (error) {
@@ -191,7 +190,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={workTemplates.length}
+                            rowSpan={2}
                           >
                             {workTemplates.map((template) => (
                               <div
@@ -204,7 +203,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={workTemplates.length}
+                            rowSpan={2}
                           >
                             {workTemplates.map((template) => (
                               <div
@@ -220,7 +219,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={workTemplates.length}
+                            rowSpan={2}
                           >
                             {workTemplates.map((template) => (
                               <div
@@ -236,7 +235,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={workTemplates.length}
+                            rowSpan={2}
                           >
                             {workTemplates.map((template) => (
                               <div

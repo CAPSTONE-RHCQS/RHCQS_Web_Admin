@@ -78,6 +78,21 @@ export const createConstructionWork = async (data: CreateConstructionWork) => {
     }
 };
 
+export const importConstructionWorkByExcel = async (data: any) => {
+    try {
+        const response = await requestWebRHCQS.post('/construction-work/import-file', data, {
+            headers: {
+                accept: 'text/plain',
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error updating construction work:', error.response.data.Error);
+        throw error;
+    }
+};
+
 export const createPackageConstructionWork = async (data: any) => {
     try {
         const response = await requestWebRHCQS.post('/work-template', data, {

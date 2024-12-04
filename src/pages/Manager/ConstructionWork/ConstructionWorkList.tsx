@@ -6,10 +6,9 @@ import { FaDownload } from 'react-icons/fa';
 import { ConstructionWorkType } from '../../../types/ContructionWork';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Alert from '../../../components/Alert';
-import { getConstructionWorks } from '../../../api/Construction/ContructionWork';
+import { getConstructionWorks, importConstructionWorkByExcel } from '../../../api/Construction/ContructionWork';
 import ConstructionWorkTable from './components/Table/ConstructionWorkTable';
 import CreateContructionWork from './components/Create/CreateContructionWork';
-import { CreateConstructionWork as CreateConstructionWorkType } from '../../../types/ContructionWork';
 import CreatePackageConstructionWork from './components/Create/CreatePackageConstructionWork';
 
 const ConstructionWorkList: React.FC = () => {
@@ -93,6 +92,24 @@ const ConstructionWorkList: React.FC = () => {
     setAlertType('success');
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        await importConstructionWorkByExcel(formData);
+        setAlertMessage('Công tác đã được thêm thành công!');
+        setAlertType('success');
+        handleRefresh();
+      } catch (error: any) {
+        setAlertMessage(error.response.data.Error);
+        setAlertType('error');
+      }
+    }
+  };
+
   return (
     <>
       <div>
@@ -115,7 +132,7 @@ const ConstructionWorkList: React.FC = () => {
               >
                 <FaDownload className="text-lg" />
               </button>
-              <input type="file" id="fileInput" style={{ display: 'none' }} />
+              <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
               <ArrowPathIcon
                 onClick={handleRefresh}
                 className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
