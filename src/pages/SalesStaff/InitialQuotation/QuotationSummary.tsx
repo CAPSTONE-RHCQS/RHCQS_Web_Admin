@@ -360,15 +360,16 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 1. DIỆN TÍCH XÂY DỰNG THEO PHƯƠNG ÁN THIẾT KẾ:
               </strong>
             </div>
-            {(isEditing && quotationData.ProjectType !== 'TEMPLATE') ||
-              (quotationData.ProjectType !== 'FINISHED' && (
+            {isEditing &&
+              quotationData.ProjectType !== 'TEMPLATE' &&
+              quotationData.ProjectType !== 'FINISHED' && (
                 <button
                   onClick={addConstructionRow}
                   className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
                 >
                   <FaPlus />
                 </button>
-              ))}
+              )}
           </div>
         </div>
         <ConstructionAreaTable
@@ -419,7 +420,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     </td>
                     <td className="px-4 py-2 border text-center">
                       {totalArea} m²
-                    </td> 
+                    </td>
                     <td className="px-4 py-2 border text-center">x</td>
                     <td className="px-4 py-2 border text-center">
                       {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}

@@ -351,15 +351,16 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                   1. DIỆN TÍCH XÂY DỰNG THEO PHƯƠNG ÁN THIẾT KẾ:
                 </strong>
               </div>
-              {(isEditing && quotationData.ProjectType !== 'TEMPLATE') ||
-                (quotationData.ProjectType !== 'FINISHED' && (
+              {isEditing && 
+                quotationData.ProjectType !== 'TEMPLATE' && 
+                quotationData.ProjectType !== 'FINISHED' && (
                   <button
                     onClick={addConstructionRow}
                     className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
                   >
                     <FaPlus />
                   </button>
-                ))}
+                )}
             </div>
           </div>
           <ConstructionAreaTable
@@ -571,7 +572,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             updateGiaTriHopDong={setGiaTriHopDong}
           />
         </div>
-        <div className="flex items-center mt-4 mb-4">
+        <div className="flex items-center mb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <strong className="text-xl text-secondary">
@@ -625,12 +626,15 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                   <input
                     type="number"
                     value={quotationData.TimeProcessing || ''}
-                    onChange={(e) =>
-                      setQuotationData({
-                        ...quotationData,
-                        TimeProcessing: parseInt(e.target.value) || 0,
-                      })
-                    }
+                    onChange={(e) => {
+                      const newValue = parseInt(e.target.value) || 0;
+                      if (newValue <= 400) {
+                        setQuotationData({
+                          ...quotationData,
+                          TimeProcessing: newValue,
+                        });
+                      }
+                    }}
                     className="w-10 p-1 border rounded text-right"
                   />
                 </>
@@ -651,12 +655,17 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     <input
                       type="number"
                       value={quotationData.TimeRough || ''}
-                      onChange={(e) =>
-                        setQuotationData({
-                          ...quotationData,
-                          TimeRough: parseInt(e.target.value) || 0,
-                        })
-                      }
+                      onChange={(e) => {
+                        const newTimeRough = parseInt(e.target.value) || 0;
+                        const total =
+                          newTimeRough + (quotationData.TimeOthers || 0);
+                        if (total <= 400) {
+                          setQuotationData({
+                            ...quotationData,
+                            TimeRough: newTimeRough,
+                          });
+                        }
+                      }}
                       className="w-10 p-1 border rounded text-right"
                     />
                   </>
@@ -673,12 +682,17 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     <input
                       type="number"
                       value={quotationData.TimeOthers || ''}
-                      onChange={(e) =>
-                        setQuotationData({
-                          ...quotationData,
-                          TimeOthers: parseInt(e.target.value) || 0,
-                        })
-                      }
+                      onChange={(e) => {
+                        const newTimeOthers = parseInt(e.target.value) || 0;
+                        const total =
+                          (quotationData.TimeRough || 0) + newTimeOthers;
+                        if (total <= 400) {
+                          setQuotationData({
+                            ...quotationData,
+                            TimeOthers: newTimeOthers,
+                          });
+                        }
+                      }}
                       className="w-10 p-1 border rounded text-right"
                     />
                   </>
