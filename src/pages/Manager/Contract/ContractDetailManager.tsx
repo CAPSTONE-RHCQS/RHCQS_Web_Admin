@@ -274,7 +274,7 @@ const ContractDetailManager = () => {
               </tr>
             </thead>
             <tbody>
-              {contractDetail.BatchPayment.map((batch, index) => (
+              {contractDetail.BatchPayment?.map((batch, index) => (
                 <tr key={batch.NumberOfBatch} className="text-center">
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
@@ -299,6 +299,50 @@ const ContractDetailManager = () => {
                     )}
                   </td>
                   {batch.InvoiceImage === 'Chưa có hóa đơn' && (
+                    <td className="px-4 py-2 border">
+                      <>
+                        <input
+                          type="file"
+                          onChange={(e) => handleFileChange(e, index)}
+                          className="ml-2"
+                        />
+                        <button
+                          onClick={() => handleUpload(index)}
+                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                          disabled={isUploading}
+                        >
+                          {isUploading ? 'Đang tải lên...' : <FaUpload />}
+                        </button>
+                      </>
+                    </td>
+                  )}
+                </tr>
+              ))}
+              {contractDetail.BatchPaymentAppendices?.map((appendix, index) => (
+                <tr key={appendix.NumberOfBatch} className="text-center">
+                  <td className="px-4 py-2 border">{appendix.NumberOfBatch}</td>
+                  <td className="px-4 py-2 border">{appendix.Description}</td>
+                  <td className="px-4 py-2 border">
+                    {appendix.Price.toLocaleString()} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(appendix.PaymentDate)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(appendix.PaymentPhase)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {appendix.InvoiceImage !== 'Chưa có hóa đơn' ? (
+                      <img
+                        src={appendix.InvoiceImage}
+                        alt={`Invoice for ${appendix.Description}`}
+                        className="w-16 h-16 object-cover mx-auto"
+                      />
+                    ) : (
+                      'Chưa có hóa đơn'
+                    )}
+                  </td>
+                  {appendix.InvoiceImage === 'Chưa có hóa đơn' && (
                     <td className="px-4 py-2 border">
                       <>
                         <input
