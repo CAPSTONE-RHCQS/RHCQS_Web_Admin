@@ -53,13 +53,6 @@ const statuses = [
     textColor: 'text-blue-500',
   },
   {
-    key: 'Updated',
-    label: 'Đã chỉnh sửa',
-    icon: <FaPaintRoller />,
-    backgroundColor: 'bg-pink-500',
-    textColor: 'text-pink-500',
-  },
-  {
     key: 'Accepted',
     label: 'Chấp nhận bản vẽ',
     icon: <FaCheck />,

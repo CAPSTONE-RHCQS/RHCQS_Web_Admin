@@ -37,7 +37,6 @@ const statusMap: { [key: string]: string } = {
   Approved: 'Quản lý đã xác nhận',
   Rejected: 'Bị từ chối',
   Updating: 'Đang chỉnh sửa',
-  Updated: 'Đã chỉnh sửa',
   Accepted: 'Chấp nhận bản vẽ',
   Finalized: 'Hoàn thành',
   Canceled: 'Đã đóng',
@@ -72,10 +71,6 @@ export const statusStyles: {
   Updating: {
     backgroundColor: '#1E90FF',
     icon: <FaEdit className="text-white" />,
-  },
-  Updated: {
-    backgroundColor: '#E81E63',
-    icon: <FaPaintRoller className="text-white" />,
   },
   Accepted: {
     backgroundColor: '#C0CA33',
