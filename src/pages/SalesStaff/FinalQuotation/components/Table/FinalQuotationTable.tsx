@@ -11,6 +11,7 @@ import { ConstructionWork } from '../../../../../types/ConstructionTypes';
 import { getConstructionByType } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionTypeResponse } from '../../../../../types/ConstructionTypeResponse';
 import { getConstructionWork } from '../../../../../api/Construction/ConstructionApi';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -41,6 +42,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
   const textareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const weightInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [visibleItems, setVisibleItems] = useState<boolean[]>(
+    items.map(() => true),
+  );
 
   useEffect(() => {
     items.forEach((item, itemIndex) => {
@@ -321,6 +325,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     (construction) => construction.Type === 'WORK_FINISHED',
   );
 
+  const toggleVisibility = (index: number) => {
+    setVisibleItems((prev) => {
+      const newVisibility = [...prev];
+      newVisibility[index] = !newVisibility[index];
+      return newVisibility;
+    });
+  };
+
   return (
     <div>
       {isEditing && (
@@ -447,17 +459,30 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         <tbody>
           {items.map((item, itemIndex) => (
             <React.Fragment key={itemIndex}>
-              <tr>
+              <tr
+                onClick={() => toggleVisibility(itemIndex)}
+                className="cursor-pointer"
+              >
                 <td
                   colSpan={isEditing ? 10 : 9}
                   className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
                   <div className="flex items-center">
                     <span>{item.ContructionName}</span>
+                    <span className="ml-2 text-blue-500 hover:text-blue-700">
+                      {visibleItems[itemIndex] ? (
+                        <FaChevronUp />
+                      ) : (
+                        <FaChevronDown />
+                      )}
+                    </span>
                     {isEditing && (
                       <button
                         className="text-red-500 hover:text-red-700 ml-2"
-                        onClick={() => handleDeleteConstruction(itemIndex)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteConstruction(itemIndex);
+                        }}
                       >
                         <FontAwesomeIcon icon={faClose} />
                       </button>
@@ -465,151 +490,172 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                   </div>
                 </td>
               </tr>
-              {item.QuotationItems.map((qItem, qItemIndex) => (
-                <React.Fragment key={qItemIndex}>
-                  <tr>
-                    <td className="px-4 py-2 border text-left align-top">
-                      {isEditing ? (
-                        <textarea
-                          ref={(el) => (textareaRefs.current[qItemIndex] = el)}
-                          value={qItem.WorkName}
-                          className="w-full border-none p-2 font-bold"
-                          placeholder="Nhập tên công việc"
-                          rows={2}
-                          style={{
-                            resize: 'none',
-                            overflow: 'hidden',
-                            minHeight: '100px',
-                            maxHeight: '400px',
-                            width: '100%',
-                          }}
-                          onChange={(e) => {
-                            handleWorkNameChange(
-                              itemIndex,
-                              qItemIndex,
-                              e.target.value,
-                            );
-                          }}
-                          onInput={(e) => {
-                            const target = e.target as HTMLTextAreaElement;
-                            target.style.height = 'auto';
-                            target.style.height = `${target.scrollHeight}px`;
-                          }}
-                        />
-                      ) : (
-                        <span className="font-bold">{qItem.WorkName}</span>
-                      )}
-                      {isEditing &&
-                        selectedItem?.constructionIndex === itemIndex &&
-                        selectedItem?.qItemIndex === qItemIndex &&
-                        searchResults.length > 0 && (
-                          <ul
-                            className="bg-white border border-gray-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto"
-                            style={{ width: '100%' }}
-                          >
-                            {searchResults.map((result, resultIndex) => (
-                              <li
-                                key={resultIndex}
-                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                                onClick={() =>
-                                  handleSelectSearchResult(
+              {visibleItems[itemIndex] &&
+                item.QuotationItems.map((qItem, qItemIndex) => (
+                  <React.Fragment key={qItemIndex}>
+                    <tr>
+                      <td className="px-4 py-2 border text-left align-top">
+                        {isEditing ? (
+                          <textarea
+                            ref={(el) =>
+                              (textareaRefs.current[qItemIndex] = el)
+                            }
+                            value={qItem.WorkName}
+                            className="w-full font-bold text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            placeholder="Nhập tên công việc"
+                            rows={2}
+                            style={{
+                              resize: 'none',
+                              overflow: 'hidden',
+                              minHeight: '100px',
+                              maxHeight: '400px',
+                              width: '100%',
+                              border: '1px solid #ccc',
+                            }}
+                            onChange={(e) => {
+                              handleWorkNameChange(
+                                itemIndex,
+                                qItemIndex,
+                                e.target.value,
+                              );
+                            }}
+                            onInput={(e) => {
+                              const target = e.target as HTMLTextAreaElement;
+                              target.style.height = 'auto';
+                              target.style.height = `${target.scrollHeight}px`;
+                            }}
+                          />
+                        ) : (
+                          <span className="font-bold">{qItem.WorkName}</span>
+                        )}
+                        {isEditing &&
+                          selectedItem?.constructionIndex === itemIndex &&
+                          selectedItem?.qItemIndex === qItemIndex &&
+                          searchResults.length > 0 && (
+                            <ul
+                              className="bg-white border border-gray-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto"
+                              style={{ width: '100%' }}
+                            >
+                              {searchResults.map((result, resultIndex) => (
+                                <li
+                                  key={resultIndex}
+                                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                                  onClick={() =>
+                                    handleSelectSearchResult(
+                                      itemIndex,
+                                      qItemIndex,
+                                      result,
+                                    )
+                                  }
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlus}
+                                    className="mr-2 text-blue-500 "
+                                  />
+                                  <span className="font-bold">
+                                    {result.ConstructionWorkName}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.Unit}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.0001"
+                            ref={(el) =>
+                              (weightInputRefs.current[qItemIndex] = el)
+                            }
+                            value={qItem.Weight !== undefined ? qItem.Weight : ''}
+                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            style={{
+                              maxWidth: '70px',
+                              overflow: 'hidden',
+                              minHeight: '30px',
+                              resize: 'vertical',
+                              border: '1px solid #ccc',
+                            }}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '') {
+                                handleWeightChange(itemIndex, qItemIndex, 0);
+                              } else {
+                                const newValue = parseFloat(value);
+                                if (!isNaN(newValue) && newValue >= 0) {
+                                  handleWeightChange(
                                     itemIndex,
                                     qItemIndex,
-                                    result,
-                                  )
+                                    newValue,
+                                  );
+                                } else {
+                                  e.target.value = qItem.Weight.toString();
                                 }
-                              >
-                                <FontAwesomeIcon
-                                  icon={faPlus}
-                                  className="mr-2 text-blue-500"
-                                />
-                                <span className="font-bold">
-                                  {result.ConstructionWorkName}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
+                              }
+                            }}
+                            required
+                          />
+                        ) : qItem.Weight !== 0 ? (
+                          qItem.Weight
+                        ) : (
+                          ''
                         )}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.Unit}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          ref={(el) =>
-                            (weightInputRefs.current[qItemIndex] = el)
-                          }
-                          value={qItem.Weight || ''}
-                          className="w-full border-none text-center"
-                          style={{ maxWidth: '50px' }}
-                          onChange={(e) =>
-                            handleWeightChange(
-                              itemIndex,
-                              qItemIndex,
-                              parseFloat(e.target.value),
-                            )
-                          }
-                          required
-                        />
-                      ) : qItem.Weight !== 0 ? (
-                        qItem.Weight
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceLabor !== null &&
-                      qItem.UnitPriceLabor !== 0
-                        ? qItem.UnitPriceLabor.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceRough !== null &&
-                      qItem.UnitPriceRough !== 0
-                        ? qItem.UnitPriceRough.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceFinished !== null &&
-                      qItem.UnitPriceFinished !== 0
-                        ? qItem.UnitPriceFinished.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceLabor !== null &&
-                      qItem.TotalPriceLabor !== 0
-                        ? qItem.TotalPriceLabor.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceRough !== null &&
-                      qItem.TotalPriceRough !== 0
-                        ? qItem.TotalPriceRough.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceFinished !== null &&
-                      qItem.TotalPriceFinished !== 0
-                        ? qItem.TotalPriceFinished.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    {isEditing && (
-                      <td className="px-4 py-2 border text-center">
-                        <button
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() =>
-                            handleDeleteItem(itemIndex, qItemIndex)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
                       </td>
-                    )}
-                  </tr>
-                </React.Fragment>
-              ))}
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceLabor !== null &&
+                        qItem.UnitPriceLabor !== 0
+                          ? qItem.UnitPriceLabor.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceRough !== null &&
+                        qItem.UnitPriceRough !== 0
+                          ? qItem.UnitPriceRough.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceFinished !== null &&
+                        qItem.UnitPriceFinished !== 0
+                          ? qItem.UnitPriceFinished.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceLabor !== null &&
+                        qItem.TotalPriceLabor !== 0
+                          ? qItem.TotalPriceLabor.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceRough !== null &&
+                        qItem.TotalPriceRough !== 0
+                          ? qItem.TotalPriceRough.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceFinished !== null &&
+                        qItem.TotalPriceFinished !== 0
+                          ? qItem.TotalPriceFinished.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      {isEditing && (
+                        <td className="px-4 py-2 border text-center">
+                          <button
+                            className="text-red-500 hover:text-red-700"
+                            onClick={() =>
+                              handleDeleteItem(itemIndex, qItemIndex)
+                            }
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  </React.Fragment>
+                ))}
               {isEditing && (
                 <tr>
                   <td colSpan={10} className="px-4 py-2 border text-center">
