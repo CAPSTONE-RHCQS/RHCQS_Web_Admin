@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { getFinalQuotation } from '../../../api/FinalQuotation/FinalQuotationApi';
 import {
@@ -22,6 +22,9 @@ import {
   FaChevronDown,
   FaChevronUp,
   FaPlus,
+  FaPhone,
+  FaMailBulk,
+  FaFileInvoiceDollar,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
@@ -32,6 +35,10 @@ import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
 import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
+import { HiHomeModern } from 'react-icons/hi2';
+import { TbHomePlus } from 'react-icons/tb';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -53,6 +60,7 @@ const FinalQuotationDetailStaff = () => {
   const [showConstructionAreaTable, setShowConstructionAreaTable] =
     useState(true);
   const [showUtilities, setShowUtilities] = useState(true);
+  const navigate = useNavigate();
 
   const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -309,6 +317,22 @@ const FinalQuotationDetailStaff = () => {
   const totalContractValue =
     totalFinalQuotation + totalUtilities + totalEquipment - totalDiscount;
 
+  const handleNavigation = () => {
+    const id = quotationDetail.InitailQuotationId;
+    navigate(`/initial-quotation-detail-staff/${id}`);
+  };
+
+  const projectTypeMap: { [key: string]: string } = {
+    TEMPLATE: 'Mẫu nhà',
+    FINISHED: 'Phần Hoàn thiện',
+    ROUGH: 'Phần Thô',
+    ALL: 'Phần Thô & Hoàn thiện',
+    HAVE_DRAWING: 'Có sẵn bản thiết kế',
+  };
+
+  const projectTypeInVietnamese =
+    projectTypeMap[quotationDetail.ProjectType] || 'Không xác định';
+
   return (
     <div className="bg-gray-100 min-h-screen">
       {showChat && quotationDetail && (
@@ -321,25 +345,37 @@ const FinalQuotationDetailStaff = () => {
       <FinalQuotationStatus
         currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
       />
+      <ButtonGroup
+        isEditing={isEditing}
+        isSaving={isSaving}
+        isFinalized={
+          quotationDetail.Status === 'Processing' ||
+          quotationDetail.Status === 'Rejected'
+        }
+        handleSave={handleSave}
+        handleEditToggle={handleEditToggle}
+        handleDownload={handleDownload}
+        handleShare={handleShare}
+      />
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between mb-4">
-          <h2 className="text-2xl font-bold text-primary">
-            Thông tin báo giá chi tiết
-          </h2>
+          <div>
+            <h2 className="mr-3 text-2xl font-bold text-primary">
+              Thông tin báo giá chi tiết
+            </h2>
+            <div
+              className="text-gray-500 text-sm mt-2 cursor-pointer hover:text-blue-500 flex items-center"
+              onClick={handleNavigation}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+              <span className="font-semibold">Thông tin báo giá sơ bộ</span>
+              <span className="text-gray-700 ml-2">
+                (Phiên bản {quotationDetail.InitailQuotationVersion})
+              </span>
+            </div>
+          </div>
           <div className="text-right">
-            <ButtonGroup
-              isEditing={isEditing}
-              isSaving={isSaving}
-              isFinalized={
-                quotationDetail.Status === 'Processing' ||
-                quotationDetail.Status === 'Rejected'
-              }
-              handleSave={handleSave}
-              handleEditToggle={handleEditToggle}
-              handleDownload={handleDownload}
-              handleShare={handleShare}
-            />
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
               {quotationDetail.Version}
@@ -350,44 +386,100 @@ const FinalQuotationDetailStaff = () => {
           </div>
         </div>
 
-        <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2 text-secondary" />
-          <span className="font-semibold">Tên khách hàng:</span>
-          {isEditing ? (
-            <input
-              type="text"
-              value={quotationDetail.AccountName}
-              onChange={handleCustomerNameChange}
-              className="ml-2 border border-gray-300 rounded-md p-2"
-            />
-          ) : (
-            <span className="text-gray-700 ml-2">
-              {quotationDetail.AccountName}
-            </span>
-          )}
-        </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2 text-secondary" />
-          <span className="font-semibold">Địa chỉ thi công:</span>
-          {isEditing ? (
-            <input
-              type="text"
-              value={quotationDetail.ProjectAddress}
-              onChange={handleProjectAddressChange}
-              className="ml-2 border border-gray-300 rounded-md p-2"
-            />
-          ) : (
-            <span className="text-gray-700 ml-2">
-              {quotationDetail.ProjectAddress}
-            </span>
-          )}
-        </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaMoneyBillWave className="mr-2 text-secondary" />
-          <span className="font-semibold">Tổng chi phí:</span>
-          <span className="text-gray-700 ml-2">
-            {calculateTotalPrice().toLocaleString()} VNĐ
-          </span>
+        <div className="flex flex-wrap">
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <HiHomeModern className="mr-2 text-secondary" />
+              <span className="font-semibold">Công trình:</span>
+              <span className="text-gray-700 ml-2">Nhà ở Dân dụng</span>
+            </div>
+
+            <div className="mb-2 text-lg flex items-center">
+              <TbHomePlus className="mr-2 text-secondary" />
+              <span className="font-semibold">Phân loại dự án:</span>
+              <span className="text-gray-700 ml-2">
+                {projectTypeInVietnamese}
+              </span>
+            </div>
+
+            <div className="mb-2 text-lg flex flex-col items-start">
+              <div className="flex items-center">
+                <FaFileInvoiceDollar className="mr-2 text-secondary" />
+                <span className="font-semibold mr-2">Đơn giá thi công:</span>
+              </div>
+              <span className="text-gray-700">
+                {quotationDetail.PackageQuotationList.PackageRough || 'N/A'} -{' '}
+                {quotationDetail.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+                đồng/m²
+              </span>
+              <span className="text-gray-700">
+                {quotationDetail.PackageQuotationList.PackageFinished || 'N/A'}{' '}
+                -{' '}
+                {quotationDetail.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                đồng/m²
+              </span>
+            </div>
+          </div>
+
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <FaMapMarkerAlt className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ thi công:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={quotationDetail.ProjectAddress}
+                  onChange={handleProjectAddressChange}
+                  className="ml-2 border border-gray-300 rounded-md p-2"
+                />
+              ) : (
+                <span className="text-gray-700 ml-2">
+                  {quotationDetail.ProjectAddress}
+                </span>
+              )}
+            </div>
+
+            <div className="mb-2 text-lg flex items-center">
+              <FaUser className="mr-2 text-secondary" />
+              <span className="font-semibold">Chủ đầu tư:</span>
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={quotationDetail.AccountName}
+                  onChange={handleCustomerNameChange}
+                  className="ml-2 border border-gray-300 rounded-md p-2"
+                />
+              ) : (
+                <span className="text-gray-700 ml-2">
+                  {quotationDetail.AccountName}
+                </span>
+              )}
+            </div>
+
+            <div className="mb-2 text-lg flex items-center">
+              <FaPhone className="mr-2 text-secondary" />
+              <span className="font-semibold">Số điện thoại:</span>
+              <span className="text-gray-700 ml-2">
+                {quotationDetail.PhoneNumber}
+              </span>
+            </div>
+
+            <div className="mb-2 text-lg flex items-center">
+              <FaMailBulk className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ email:</span>
+              <span className="text-gray-700 ml-2">
+                {quotationDetail.Email}
+              </span>
+            </div>
+
+            <div className="mb-2 text-lg flex items-center">
+              <FaMoneyBillWave className="mr-2 text-secondary" />
+              <span className="font-semibold">Tổng giá trị hợp đồng:</span>
+              <span className="text-gray-700 ml-2">
+                {calculateTotalPrice().toLocaleString()} VNĐ
+              </span>
+            </div>
+          </div>
         </div>
 
         <hr className="my-4 border-gray-300" />

@@ -15,14 +15,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   handleEditToggle,
   handleSave,
 }) => {
-  const handleDownload = () => {
-    toast.info('Tải về hợp đồng');
-  };
-
-  const handleShare = () => {
-    toast.info('Chia sẻ hợp đồng');
-  };
-
   return (
     <div className="flex justify-end space-x-2">
       {isEditing && (
@@ -40,19 +32,6 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
       >
         {isSaving ? 'Đang lưu...' : isEditing ? 'Lưu' : 'Chỉnh sửa'}
-      </button>
-
-      <button
-        onClick={handleDownload}
-        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-      >
-        <FaDownload className="text-lg" />
-      </button>
-      <button
-        onClick={handleShare}
-        className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
-      >
-        <FaShareAlt className="text-lg" />
       </button>
     </div>
   );

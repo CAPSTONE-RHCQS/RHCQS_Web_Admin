@@ -78,10 +78,12 @@ const InitialQuotationDetailStaff = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const totalArea = tableData.reduce((total, row) => {
-    const dienTich = parseFloat(row.dienTich);
-    return total + (isNaN(dienTich) ? 0 : dienTich);
-  }, 0);
+  const totalArea = tableData.length > 0 
+    ? tableData.reduce((total, row) => {
+        const dienTich = parseFloat(row.dienTich);
+        return total + (isNaN(dienTich) ? 0 : dienTich);
+      }, 0)
+    : quotationData.Area;
 
   const totalRough =
     totalArea * quotationData.PackageQuotationList.UnitPackageRough;
