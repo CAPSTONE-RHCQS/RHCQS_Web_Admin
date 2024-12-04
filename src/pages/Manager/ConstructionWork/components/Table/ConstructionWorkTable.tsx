@@ -136,16 +136,19 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Nguồn
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
-                            Tên tài nguyên
+                            Phần vật tư cần thiết
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
                             Định mức
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
-                            Giá tài nguyên
+                            Gói
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
-                            Gói
+                            Giá vật tư
+                          </th>
+                          <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
+                            Gia nhân công
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
                             Tổng tiền
@@ -177,36 +180,66 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                                 </div>
                               ))}
                           </td>
-                          <td className="py-2 px-4 text-center border border-gray-300">
-                            {workTemplates
-                              .map((template) => template.MaterialCost)
-                              .reduce((acc, cost) => acc + cost, 0)
-                              .toLocaleString('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND',
-                              })}
-                          </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={2}
+                            rowSpan={workTemplates.length}
                           >
                             {workTemplates.map((template) => (
-                              <div key={template.PackageName}>
+                              <div
+                                key={template.PackageName}
+                                className="border-b last:border-b-0 py-3"
+                              >
                                 {template.PackageName}
                               </div>
                             ))}
                           </td>
                           <td
                             className="py-2 px-4 text-center border border-gray-300"
-                            rowSpan={2}
+                            rowSpan={workTemplates.length}
                           >
-                            {workTemplates
-                              .map((template) => template.TotalCost)
-                              .reduce((acc, cost) => acc + cost, 0)
-                              .toLocaleString('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND',
-                              })}
+                            {workTemplates.map((template) => (
+                              <div
+                                key={template.PackageName}
+                                className="border-b last:border-b-0 py-3"
+                              >
+                                {template.MaterialCost.toLocaleString('vi-VN', {
+                                  style: 'currency',
+                                  currency: 'VND',
+                                })}
+                              </div>
+                            ))}
+                          </td>
+                          <td
+                            className="py-2 px-4 text-center border border-gray-300"
+                            rowSpan={workTemplates.length}
+                          >
+                            {workTemplates.map((template) => (
+                              <div
+                                key={template.PackageName}
+                                className="border-b last:border-b-0 py-3"
+                              >
+                                {template.LaborCost.toLocaleString('vi-VN', {
+                                  style: 'currency',
+                                  currency: 'VND',
+                                })}
+                              </div>
+                            ))}
+                          </td>
+                          <td
+                            className="py-2 px-4 text-center border border-gray-300"
+                            rowSpan={workTemplates.length}
+                          >
+                            {workTemplates.map((template) => (
+                              <div
+                                key={template.PackageName}
+                                className="border-b last:border-b-0 py-3"
+                              >
+                                {template.TotalCost.toLocaleString('vi-VN', {
+                                  style: 'currency',
+                                  currency: 'VND',
+                                })}
+                              </div>
+                            ))}
                           </td>
                         </tr>
                         <tr>
@@ -230,15 +263,6 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                                   {resource.LaborNorm?.toLocaleString('vi-VN')}
                                 </div>
                               ))}
-                          </td>
-                          <td className="py-2 px-4 text-center border border-gray-300">
-                            {workTemplates
-                              .map((template) => template.LaborCost)
-                              .reduce((acc, cost) => acc + cost, 0)
-                              .toLocaleString('vi-VN', {
-                                style: 'currency',
-                                currency: 'VND',
-                              })}
                           </td>
                         </tr>
                       </tbody>
