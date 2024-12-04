@@ -136,14 +136,16 @@ export const handleSave = async (
     promotionInfo.Value === 0;
 
   const updatedUtilityInfos = utilityInfos.map((utility, index) => {
+    const quantity = utility.Quantity ?? 0;
     const price =
       utility.Coefficient !== 0
         ? totalRough * utility.Coefficient
-        : (utility.UnitPrice || 0) * (quantities[index] || 0);
+        : (utility.UnitPrice || 0) * quantity;
 
     return {
       ...utility,
       price,
+      quantity,
     };
   });
 
@@ -190,7 +192,7 @@ export const handleSave = async (
       utilitiesItemId: utility.Id,
       coefficient: utility.Coefficient,
       price: utility.price,
-      quantity: quantities[index] || 0,
+      quantity: utility.quantity,
       description: utility.Description,
     })),
     promotions:

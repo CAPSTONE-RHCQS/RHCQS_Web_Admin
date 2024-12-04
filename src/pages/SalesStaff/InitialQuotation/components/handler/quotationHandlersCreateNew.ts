@@ -1,7 +1,6 @@
 import {
   InitialQuotationResponse,
   UpdateInitialQuotationRequest,
-  QuotationUtility,
   PromotionInfo,
   BatchPaymentInfo,
   UtilityInfo,
@@ -12,16 +11,6 @@ import {
 } from '../../../../../api/InitialQuotation/InitialQuotationApi';
 import { toast } from 'react-toastify';
 import { TableRow } from '../types';
-
-const convertToQuotationUtility = (utility: any): QuotationUtility => {
-  return {
-    utilitiesItemId: utility.Id,
-    coefficient: utility.Coefficient,
-    price: utility.Price,
-    quantity: utility.Quantity,
-    description: utility.Description,
-  };
-};
 
 export const fetchQuotationData = async (
   projectId: string | undefined,
@@ -96,7 +85,6 @@ export const handleSave = async (
   totalUtilities: number,
   navigate: (path: string) => void,
   setIsSaving: (value: boolean) => void,
-  quantities: (number | null)[],
 ) => {
   if (!quotationData) return;
 
@@ -145,14 +133,16 @@ export const handleSave = async (
     promotionInfo.Value === 0;
 
   const updatedUtilityInfos = utilityInfos.map((utility, index) => {
+    const quantity = utility.Quantity ?? 0;
     const price =
       utility.Coefficient !== 0
-        ? (totalRough + totalFinished) * utility.Coefficient
-        : (utility.UnitPrice || 0) * (quantities[index] || 0);
+        ? totalRough * utility.Coefficient
+        : (utility.UnitPrice || 0) * quantity;
 
     return {
       ...utility,
       price,
+      quantity,
     };
   });
 
@@ -199,7 +189,7 @@ export const handleSave = async (
       utilitiesItemId: utility.Id,
       coefficient: utility.Coefficient,
       price: utility.price,
-      quantity: quantities[index] || 0,
+      quantity: utility.quantity,
       description: utility.Description,
     })),
     promotions: isInvalidPromotion

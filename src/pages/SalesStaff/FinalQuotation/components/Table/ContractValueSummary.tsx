@@ -26,41 +26,47 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="px-4 py-2 border text-center">
-              Tổng giá trị xây dựng
-            </td>
-            <td className="px-4 py-2 border text-center">
-              {totalFinalQuotation.toLocaleString()} 
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
-          <tr>
-            <td className="px-4 py-2 border text-center">
-              Tùy chọn & Tiện ích
-            </td>
-            <td className="px-4 py-2 border text-center">
-              {totalUtilities.toLocaleString()} 
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
-          <tr>
-            <td className="px-4 py-2 border text-center">Chi Phí Thiết bị</td>
-            <td className="px-4 py-2 border text-center">
-              {totalEquipment.toLocaleString()} 
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
-          <tr>
-            <td className="px-4 py-2 border text-center">Khuyến mãi</td>
-            <td className="px-4 py-2 border text-center">
-              -{totalDiscount.toLocaleString()} 
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
+          {totalFinalQuotation !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">
+                Giá trị báo giá chi tiết xây dựng trước thuế
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {totalFinalQuotation.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
+          {totalUtilities !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">Tùy chọn & Tiện ích</td>
+              <td className="px-4 py-2 border text-center">
+                {totalUtilities.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
+          {totalEquipment !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">Chi Phí Thiết bị</td>
+              <td className="px-4 py-2 border text-center">
+                {totalEquipment.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
+          {totalDiscount !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">Khuyến mãi</td>
+              <td className="px-4 py-2 border text-center">
+                -{totalDiscount.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
           <tr className="bg-gray-200">
             <td className="px-4 py-2 border text-center font-bold">
-              GIÁ TRỊ HỢP ĐỒNG
+              TỔNG GIÁ TRỊ HỢP ĐỒNG
             </td>
             <td className="px-4 py-2 border text-center font-bold">
               {totalContractValue.toLocaleString()} VNĐ

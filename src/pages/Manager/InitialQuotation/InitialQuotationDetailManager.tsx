@@ -5,6 +5,10 @@ import {
   FaCommentDots,
   FaUser,
   FaMapMarkerAlt,
+  FaFileInvoiceDollar,
+  FaPhone,
+  FaMailBulk,
+  FaMoneyBillWave,
 } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -24,6 +28,8 @@ import {
 } from '../../../types/InitialQuotationTypes';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import ChatBox from '../../../components/ChatBox';
+import { HiHomeModern } from 'react-icons/hi2';
+import { TbHomePlus } from 'react-icons/tb';
 
 interface TableRow {
   stt: number;
@@ -46,7 +52,6 @@ const InitialQuotationDetailManager = () => {
   );
   const [utilityInfos, setUtilityInfos] = useState<UtilityInfo[]>([]);
   const [promotionInfo, setPromotionInfo] = useState<any>(null);
-  const [donGia, setDonGia] = useState<number>(0);
   const [unitPackageRough, setUnitPackageRough] = useState<number>(0);
   const [unitPackageFinished, setUnitPackageFinished] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -75,13 +80,12 @@ const InitialQuotationDetailManager = () => {
         });
         setTableData(updatedTableData);
 
-        const totalRough = data.TotalRough;
+        const total = data.TotalRough + data.TotalFinished;
         const area = data.Area;
         const totalUtilities = data.TotalUtilities;
         const discount: number | null | undefined = data.PromotionInfo?.Value;
 
-        let giaTriHopDong =
-          totalRough + totalUtilities - (discount ?? 0) * area;
+        let giaTriHopDong = total + totalUtilities - (discount ?? 0) * area;
 
         if (data.PromotionInfo && data.PromotionInfo.Value !== null) {
           setPromotionInfo(data.PromotionInfo);
@@ -110,10 +114,10 @@ const InitialQuotationDetailManager = () => {
     );
   }
 
-  const totalDienTich = tableData.reduce(
-    (total, row) => total + parseFloat(row.dienTich),
-    0,
-  );
+  const totalDienTich =
+    tableData.length > 0
+      ? tableData.reduce((total, row) => total + parseFloat(row.dienTich), 0)
+      : quotationData.Area;
 
   const thanhTien = totalDienTich * (unitPackageRough + unitPackageFinished);
   const discount = promotionInfo?.Value * quotationData.Area;
@@ -175,7 +179,16 @@ const InitialQuotationDetailManager = () => {
     }
   };
 
-  const sectionStart = tableData.length > 0 ? 3 : 2;
+  const projectTypeMap: { [key: string]: string } = {
+    TEMPLATE: 'Mẫu nhà',
+    FINISHED: 'Phần Hoàn thiện',
+    ROUGH: 'Phần Thô',
+    ALL: 'Phần Thô & Hoàn thiện',
+    HAVE_DRAWING: 'Có sẵn bản thiết kế',
+  };
+
+  const projectTypeInVietnamese =
+    projectTypeMap[quotationData.ProjectType] || 'Không xác định';
 
   return (
     <>
@@ -210,49 +223,30 @@ const InitialQuotationDetailManager = () => {
             Phê duyệt
           </button>
         )}
+
+        <>
+          <button
+            onClick={handleDownload}
+            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+          >
+            <FaDownload className="text-lg" />
+          </button>
+          <button
+            onClick={handleShare}
+            className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
+          >
+            <FaShareAlt className="text-lg" />
+          </button>
+        </>
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between mb-4">
-          <div>
-            <h2 className="mb-4 text-2xl font-bold text-primary">
-              Thông tin báo giá sơ bộ
-            </h2>
-            <strong className="text-lg font-bold text-secondary">
-              Thông tin khách hàng:
-            </strong>
-            <div className="mt-2 flex items-center">
-              <FaUser className="text-blue-500 mr-2" />
-              <label className="block text-gray-700 font-semibold">
-                Tên khách hàng:
-              </label>
-              <p className="ml-2">{quotationData.AccountName}</p>
-            </div>
-            <div className="mt-2 flex items-center">
-              <FaMapMarkerAlt className="text-blue-500 mr-2" />
-              <label className="block text-gray-700 font-semibold">
-                Địa chỉ thi công:
-              </label>
-              <p className="ml-2">{quotationData.Address}</p>
-            </div>
-          </div>
+          <h2 className="mb-4 text-2xl font-bold text-primary">
+            Thông tin báo giá sơ bộ
+          </h2>
 
           <div className="text-right">
-            <div className="flex justify-end space-x-2">
-              <button
-                onClick={handleDownload}
-                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-              >
-                <FaDownload className="text-lg" />
-              </button>
-              <button
-                onClick={handleShare}
-                className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
-              >
-                <FaShareAlt className="text-lg" />
-              </button>
-            </div>
-
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
               {quotationData.Version || ''}
@@ -266,34 +260,88 @@ const InitialQuotationDetailManager = () => {
           </div>
         </div>
 
-        <div className="flex items-center">
-          <div className="mb-4">
-            <p className="text-lg font-bold mb-2 text-secondary">
-              1. ĐƠN GIÁ THI CÔNG:
-            </p>
-            <p className="mb-2">
-              {quotationData.PackageQuotationList.PackageRough || ''} -{' '}
-              {quotationData.PackageQuotationList.UnitPackageRough?.toLocaleString() ||
-                ''}{' '}
-              đồng/m²
-            </p>
-            {quotationData.PackageQuotationList.PackageFinished &&
-              quotationData.PackageQuotationList.UnitPackageFinished !== 0 && (
-                <p>
-                  {quotationData.PackageQuotationList.PackageFinished} -{' '}
-                  {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() ||
-                    ''}{' '}
-                  đồng/m²
-                </p>
-              )}
+        <div className="flex flex-wrap">
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <HiHomeModern className="mr-2 text-secondary" />
+              <span className="font-semibold">Công trình:</span>
+              <span className="text-gray-700 ml-2">Nhà ở Dân dụng</span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <TbHomePlus className="mr-2 text-secondary" />
+              <span className="font-semibold">Phân loại dự án:</span>
+              <span className="text-gray-700 ml-2">
+                {projectTypeInVietnamese}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex flex-col items-start">
+              <div className="flex items-center mb-2">
+                <FaFileInvoiceDollar className="mr-2 text-secondary" />
+                <span className="font-semibold mr-2">Đơn giá thi công:</span>
+              </div>
+
+              {quotationData.PackageQuotationList.PackageRough &&
+                quotationData.PackageQuotationList.UnitPackageRough !== 0 && (
+                  <p className="mb-2">
+                    {quotationData.PackageQuotationList.PackageRough || ''} -{' '}
+                    {quotationData.PackageQuotationList.UnitPackageRough?.toLocaleString() ||
+                      ''}{' '}
+                    đồng/m²
+                  </p>
+                )}
+
+              {quotationData.PackageQuotationList.PackageFinished &&
+                quotationData.PackageQuotationList.UnitPackageFinished !==
+                  0 && (
+                  <p>
+                    {quotationData.PackageQuotationList.PackageFinished} -{' '}
+                    {quotationData.PackageQuotationList.UnitPackageFinished?.toLocaleString() ||
+                      ''}{' '}
+                    đồng/m²
+                  </p>
+                )}
+            </div>
+          </div>
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <FaMapMarkerAlt className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ thi công:</span>
+              <span className="text-gray-700 ml-2">
+                {quotationData.Address}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaUser className="mr-2 text-secondary" />
+              <span className="font-semibold">Chủ đầu tư:</span>
+              <span className="text-gray-700 ml-2">
+                {quotationData.AccountName}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaPhone className="mr-2 text-secondary" />
+              <span className="font-semibold">Số điện thoại:</span>
+              <span className="text-gray-700 ml-2"></span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaMailBulk className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ email:</span>
+              <span className="text-gray-700 ml-2"></span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaMoneyBillWave className="mr-2 text-secondary" />
+              <span className="font-semibold">Tổng giá trị hợp đồng:</span>
+              <span className="text-gray-700 ml-2">
+                {giaTriHopDong.toLocaleString()} VNĐ
+              </span>
+            </div>
           </div>
         </div>
 
         <div className="flex items-center mb-4">
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
-              <strong className="text-lg inline-block text-secondary">
-                Diện tích xây dựng theo phương án thiết kế:
+              <strong className="text-xl text-secondary">
+                1. DIỆN TÍCH XÂY DỰNG THEO PHƯƠNG ÁN THIẾT KẾ:
               </strong>
             </div>
           </div>
@@ -302,6 +350,7 @@ const InitialQuotationDetailManager = () => {
         <ConstructionAreaTable
           tableData={tableData}
           totalDienTich={totalDienTich}
+          projectType={quotationData.ProjectType}
         />
 
         <div className="mt-4">
@@ -327,45 +376,97 @@ const InitialQuotationDetailManager = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-4 py-2 border text-left">
-                    <strong className="text-primary">Phần thô</strong>
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {totalDienTich} m²
-                  </td>
-                  <td className="px-4 py-2 border text-center">x</td>
-                  <td className="px-4 py-2 border text-center">
-                    {unitPackageRough.toLocaleString()} đồng/m²
-                  </td>
-                  <td className="px-4 py-2 border text-center">=</td>
-                  <td className="px-4 py-2 border text-center">
-                    <strong>
-                      {(totalDienTich * unitPackageRough).toLocaleString()} VNĐ
-                    </strong>
-                  </td>
-                  <td className="px-4 py-2 border text-center">VNĐ</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 border text-left ">
-                    <strong className="text-primary">Phần hoàn thiện</strong>
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {totalDienTich} m²
-                  </td>
-                  <td className="px-4 py-2 border text-center">x</td>
-                  <td className="px-4 py-2 border text-center">
-                    {unitPackageFinished.toLocaleString()} đồng/m²
-                  </td>
-                  <td className="px-4 py-2 border text-center">=</td>
-                  <td className="px-4 py-2 border text-center">
-                    <strong>
-                      {(totalDienTich * unitPackageFinished).toLocaleString()}{' '}
-                      VNĐ
-                    </strong>
-                  </td>
-                  <td className="px-4 py-2 border text-center">VNĐ</td>
-                </tr>
+                {quotationData.ProjectType === 'FINISHED' ? (
+                  <tr>
+                    <td className="px-4 py-2 border text-left ">
+                      <strong className="text-primary">Phần hoàn thiện</strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {totalDienTich} m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">x</td>
+                    <td className="px-4 py-2 border text-center">
+                      {unitPackageFinished.toLocaleString()} đồng/m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">=</td>
+                    <td className="px-4 py-2 border text-center">
+                      <strong>
+                        {(totalDienTich * unitPackageFinished).toLocaleString()}{' '}
+                        VNĐ
+                      </strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+                ) : quotationData.ProjectType === 'ROUGH' ? (
+                  <tr>
+                    <td className="px-4 py-2 border text-left">
+                      <strong className="text-primary">Phần thô</strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {totalDienTich} m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">x</td>
+                    <td className="px-4 py-2 border text-center">
+                      {unitPackageRough.toLocaleString()} đồng/m²
+                    </td>
+                    <td className="px-4 py-2 border text-center">=</td>
+                    <td className="px-4 py-2 border text-center">
+                      <strong>
+                        {(totalDienTich * unitPackageRough).toLocaleString()}{' '}
+                        VNĐ
+                      </strong>
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+                ) : (
+                  <>
+                    {' '}
+                    <tr>
+                      <td className="px-4 py-2 border text-left">
+                        <strong className="text-primary">Phần thô</strong>
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {totalDienTich} m²
+                      </td>
+                      <td className="px-4 py-2 border text-center">x</td>
+                      <td className="px-4 py-2 border text-center">
+                        {unitPackageRough.toLocaleString()} đồng/m²
+                      </td>
+                      <td className="px-4 py-2 border text-center">=</td>
+                      <td className="px-4 py-2 border text-center">
+                        <strong>
+                          {(totalDienTich * unitPackageRough).toLocaleString()}{' '}
+                          VNĐ
+                        </strong>
+                      </td>
+                      <td className="px-4 py-2 border text-center">VNĐ</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-2 border text-left ">
+                        <strong className="text-primary">
+                          Phần hoàn thiện
+                        </strong>
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {totalDienTich} m²
+                      </td>
+                      <td className="px-4 py-2 border text-center">x</td>
+                      <td className="px-4 py-2 border text-center">
+                        {unitPackageFinished.toLocaleString()} đồng/m²
+                      </td>
+                      <td className="px-4 py-2 border text-center">=</td>
+                      <td className="px-4 py-2 border text-center">
+                        <strong>
+                          {(
+                            totalDienTich * unitPackageFinished
+                          ).toLocaleString()}{' '}
+                          VNĐ
+                        </strong>
+                      </td>
+                      <td className="px-4 py-2 border text-center">VNĐ</td>
+                    </tr>
+                  </>
+                )}
                 <tr>
                   <td
                     className="px-4 py-2 border text-center font-bold"
@@ -389,7 +490,7 @@ const InitialQuotationDetailManager = () => {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <strong className="text-xl font-bold text-secondary">
-                {sectionStart}. TÙY CHỌN & TIỆN ÍCH:
+                3. TÙY CHỌN & TIỆN ÍCH:
               </strong>
             </div>
           </div>
@@ -451,9 +552,7 @@ const InitialQuotationDetailManager = () => {
 
         <div>
           <div className="mb-4">
-            <strong className="text-xl text-secondary">
-              {sectionStart + 1}. KHUYẾN MÃI:
-            </strong>
+            <strong className="text-xl text-secondary">4. KHUYẾN MÃI:</strong>
           </div>
           <div className="overflow-x-auto mb-4">
             <table className="min-w-full bg-white border border-gray-200">
@@ -494,7 +593,7 @@ const InitialQuotationDetailManager = () => {
         <div className="mt-4">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
-              {sectionStart + 2}. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:
+              5. TỔNG HỢP GIÁ TRỊ HỢP ĐỒNG:
             </strong>
           </div>
 
@@ -510,7 +609,7 @@ const InitialQuotationDetailManager = () => {
               <tbody>
                 <tr>
                   <td className="px-4 py-2 border text-left">
-                    Giá trị báo giá xây dựng (trước thuế)
+                    Giá trị báo giá sơ bộ xây dựng trước thuế
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {thanhTien.toLocaleString()}
@@ -542,7 +641,7 @@ const InitialQuotationDetailManager = () => {
                     <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    <strong>{totalAmount.toLocaleString()} VNĐ</strong>
+                    <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
                     <strong>VNĐ</strong>
@@ -557,7 +656,7 @@ const InitialQuotationDetailManager = () => {
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center">
               <strong className="text-xl text-secondary">
-                {sectionStart + 3}. CÁC ĐỢT THANH TOÁN:
+                6. CÁC ĐỢT THANH TOÁN:
               </strong>
             </div>
           </div>
@@ -632,7 +731,7 @@ const InitialQuotationDetailManager = () => {
         <div className="mt-4">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
-              {sectionStart + 4}. CÁC THỎA THUẬN KHÁC:
+              7. CÁC THỎA THUẬN KHÁC:
             </strong>
           </div>
           <p className="text-gray-700 whitespace-pre-line">
@@ -643,7 +742,7 @@ const InitialQuotationDetailManager = () => {
         <div className="mt-4 w-1/3">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
-              {sectionStart + 5} THỜI GIAN THI CÔNG:
+              8. THỜI GIAN THI CÔNG:
             </strong>
           </div>
 

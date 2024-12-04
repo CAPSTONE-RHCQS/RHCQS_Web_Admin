@@ -13,8 +13,6 @@ interface UtilityTableProps {
   setUtilityInfos: React.Dispatch<React.SetStateAction<any[]>>;
   isEditing: boolean;
   onPriceChange: (prices: number[]) => void;
-  quantities: (any | null)[];
-  setQuantities: React.Dispatch<React.SetStateAction<(number | null)[]>>;
   setTotalUtilities: React.Dispatch<React.SetStateAction<number>>;
   projectType: string;
 }
@@ -25,8 +23,6 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   setUtilityInfos,
   isEditing,
   onPriceChange,
-  quantities,
-  setQuantities,
   setTotalUtilities,
   projectType,
 }) => {
@@ -35,31 +31,34 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   const [totalUtilityCost, setTotalUtilityCost] = useState<number>(0);
 
   useEffect(() => {
-    const totalCost = utilityInfos.reduce((total, utility, index) => {
-      const quantity = quantities[index] || 0;
-      return (
-        total +
-        (utility.Coefficient === 0
+    const updatedUtilityInfos = utilityInfos.map((utility) => {
+      const quantity = utility.Quantity ?? 0;
+      const price =
+        utility.Coefficient === 0
           ? utility.UnitPrice * quantity
-          : utility.Coefficient * totalRough)
-      );
+          : utility.Coefficient * totalRough;
+
+      return {
+        ...utility,
+        Price: price,
+      };
+    });
+
+    const totalCost = updatedUtilityInfos.reduce((total, utility) => {
+      return total + utility.Price;
     }, 0);
+
+    setUtilityInfos(updatedUtilityInfos);
     setTotalUtilityCost(totalCost);
     setTotalUtilities(totalCost);
 
-    const prices = utilityInfos.map((utility, index) => {
-      const quantity = quantities[index] || 0;
-      return utility.Coefficient === 0
-        ? utility.Price * quantity
-        : utility.Coefficient * totalRough;
-    });
+    const prices = updatedUtilityInfos.map((utility) => utility.Price);
     onPriceChange(prices);
-  }, [utilityInfos, quantities, totalRough, onPriceChange, setTotalUtilities]);
+  }, [utilityInfos, totalRough, onPriceChange, setTotalUtilities]);
 
   const handleDeleteRow = (index: number) => {
     const newData = utilityInfos.filter((_, i) => i !== index);
     setUtilityInfos(newData);
-    setQuantities(quantities.filter((_, i) => i !== index));
   };
 
   const handleSearchAndEdit = async (value: string, index: number) => {
@@ -100,13 +99,6 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
     const newData = [...utilityInfos];
     newData[index] = { ...newData[index], [field]: value };
     setUtilityInfos(newData);
-  };
-
-  const handleQuantityChange = (index: number, value: number) => {
-    const newQuantities = [...quantities];
-    newQuantities[index] = value || null;
-    console.log('Updated Quantities:', newQuantities);
-    setQuantities(newQuantities);
   };
 
   return (
@@ -169,10 +161,15 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                   <input
                     type="number"
                     min="0"
-                    value={quantities[index] || ''}
-                    onChange={(e) =>
-                      handleQuantityChange(index, Number(e.target.value))
-                    }
+                    value={utility.Quantity ?? ''}
+                    onChange={(e) => {
+                      const newUtilityInfos = [...utilityInfos];
+                      newUtilityInfos[index] = {
+                        ...newUtilityInfos[index],
+                        Quantity: parseFloat(e.target.value) || 0,
+                      };
+                      setUtilityInfos(newUtilityInfos);
+                    }}
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     style={{
                       border: '1px solid #ccc',
@@ -196,7 +193,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                 <span>
                   {utility.Coefficient === 0
                     ? (
-                        (utility.UnitPrice || 0) * (quantities[index] || 0)
+                        (utility.UnitPrice || 0) * (utility.Quantity || 0)
                       ).toLocaleString()
                     : (utility.Coefficient * totalRough).toLocaleString()}
                 </span>
