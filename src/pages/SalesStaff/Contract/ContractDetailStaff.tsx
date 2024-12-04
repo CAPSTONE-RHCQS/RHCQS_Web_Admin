@@ -283,7 +283,7 @@ const ContractDetailStaff = () => {
               </tr>
             </thead>
             <tbody>
-              {contractDetail.BatchPayment.map((batch) => (
+              {contractDetail.BatchPayment?.map((batch) => (
                 <tr key={batch.NumberOfBatch} className="text-center">
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
@@ -301,6 +301,32 @@ const ContractDetailStaff = () => {
                       <img
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
+                        className="w-16 h-16 object-cover mx-auto"
+                      />
+                    ) : (
+                      'Chưa có hóa đơn'
+                    )}
+                  </td>
+                </tr>
+              ))}
+              {contractDetail.BatchPaymentAppendices?.map((appendix) => (
+                <tr key={appendix.NumberOfBatch} className="text-center">
+                  <td className="px-4 py-2 border">{appendix.NumberOfBatch}</td>
+                  <td className="px-4 py-2 border">{appendix.Description}</td>
+                  <td className="px-4 py-2 border">
+                    {appendix.Price.toLocaleString()} {contractDetail.UnitPrice}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(appendix.PaymentDate)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {formatDate(appendix.PaymentPhase)}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {appendix.InvoiceImage !== 'Chưa có hóa đơn' ? (
+                      <img
+                        src={appendix.InvoiceImage}
+                        alt={`Invoice for ${appendix.Description}`}
                         className="w-16 h-16 object-cover mx-auto"
                       />
                     ) : (

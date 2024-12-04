@@ -107,6 +107,27 @@ export const searchConstructionWork = async (
   }
 };
 
+export const getConstructionWork = async (
+  packageId: string,
+  constructionItemId: string,
+): Promise<ConstructionWork[]> => {
+  try {
+    const response = await requestWebRHCQS.get<ConstructionWork[]>(
+      `/construction/construction-work`,
+      {
+        params: { packageId, constructionItemId },
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching construction work:', error);
+    throw error;
+  }
+};
+
 export const getFinalToContractConstruction = async (
   projectId: string,
 ): Promise<FinalToContractResponse> => {
@@ -128,13 +149,14 @@ export const getFinalToContractConstruction = async (
 };
 
 export const getConstructionByType = async (
+  packageid: string,
   type: string,
 ): Promise<ConstructionTypeResponse[]> => {
   try {
     const response = await requestWebRHCQS.get<ConstructionTypeResponse[]>(
-      `/construction/type`,
+      `/construction/construction-work/package`,
       {
-        params: { type },
+        params: { packageid, type },
         headers: {
           accept: 'text/plain',
         },

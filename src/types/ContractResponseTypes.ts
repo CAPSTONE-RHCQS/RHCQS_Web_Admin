@@ -12,6 +12,19 @@ export interface BatchPayment {
   PaymentPhase: string;
   Percents: number;
   Description: string;
+  Status: string;
+  InvoiceImage: string;
+}
+
+export interface BatchPaymentAppendix {
+  PaymentId: string;
+  NumberOfBatch: number;
+  Price: number;
+  PaymentDate: string;
+  PaymentPhase: string;
+  Percents: number;
+  Description: string;
+  Status: string;
   InvoiceImage: string;
 }
 
@@ -37,6 +50,7 @@ export interface ContractDesignResponse {
   InsDate: string;
   Quotation: Quotation;
   BatchPayment: BatchPayment[];
+  BatchPaymentAppendices: BatchPaymentAppendix[];
 }
 
 export interface BatchPaymentRequest {

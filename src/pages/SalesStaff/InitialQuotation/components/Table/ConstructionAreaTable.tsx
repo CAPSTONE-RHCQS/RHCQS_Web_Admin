@@ -336,7 +336,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 <td className="px-4 py-2 border text-center">1</td>
                 <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
                 <td className="px-4 py-2 border text-center font-bold">
-                  {area} m²
+                  {totalArea} m²
                 </td>
                 <td className="px-4 py-2 border text-center font-bold">m²</td>
               </tr>
