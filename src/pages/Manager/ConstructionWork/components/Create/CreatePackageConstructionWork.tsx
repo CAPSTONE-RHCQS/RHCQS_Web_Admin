@@ -43,6 +43,13 @@ const calculateTotal = (resources: Resource[], type: 'material' | 'labor') => {
   }, 0);
 };
 
+const formatCurrency = (value: number) => {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+  }).format(value);
+};
+
 const CreatePackageConstructionWork: React.FC<
   CreatePackageConstructionWorkProps
 > = ({ isOpen, onSave, onCancel, constructionData }) => {
@@ -361,8 +368,23 @@ const CreatePackageConstructionWork: React.FC<
           </button>
         </div>
         {packages.map((pkg, packageIndex) => (
-          <div key={packageIndex} className="mb-4 border-b pb-4">
-            <strong className="font-bold">Gói {packageIndex + 1}:</strong>
+          <div
+            key={packageIndex}
+            className="mb-4 border-2 border rounded-lg p-4"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <strong className="font-bold text-black text-lg">
+                Gói thi công {packageIndex + 1}:
+              </strong>
+              <div className="flex justify-end">
+                <button
+                  onClick={() => removePackage(packageIndex)}
+                  className="text-red-500 px-4 py-2 rounded font-bold"
+                >
+                  Hủy gói
+                </button>
+              </div>
+            </div>
             <input
               type="text"
               value={pkg.packageName}
@@ -399,13 +421,13 @@ const CreatePackageConstructionWork: React.FC<
               )}
 
             <div className="mt-4">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between items-center text-black">
                 <h3 className="font-bold">Phần vật tư:</h3>
                 <button
                   onClick={() => addMaterialResource(packageIndex)}
-                  className=" text-primaryGreenButton px-4 py-2 rounded font-bold"
+                  className="bg-primaryGreenButton text-white w-8 h-5 rounded-full flex items-center justify-center text-lg mr-2 mb-2"
                 >
-                  + Thêm Vật Tư
+                  +
                 </button>
               </div>
               {pkg.materialResources.map((resource, resourceIndex) => (
@@ -470,6 +492,7 @@ const CreatePackageConstructionWork: React.FC<
                     }
                     className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                     placeholder="Nhập giá tiền"
+                    readOnly
                   />
                   <div className="right-0">
                     <DeleteButton
@@ -480,20 +503,24 @@ const CreatePackageConstructionWork: React.FC<
                   </div>
                 </div>
               ))}
-              <div className="font-bold text-right">
-                Tổng tiền vật tư:{' '}
-                {calculateTotal(pkg.materialResources, 'material')}
+              <div className="text-left">
+                <span className="font-regular text-sm">Tổng tiền vật tư:</span>{' '}
+                <span className="text-primary font-bold">
+                  {formatCurrency(
+                    calculateTotal(pkg.materialResources, 'material'),
+                  )}
+                </span>
               </div>
             </div>
 
             <div className="mt-4">
-              <div className="flex justify-between items-center">
-                <h3 className="font-bold">Phần nhân công:</h3>
+              <div className="flex justify-between items-center text-black">
+                <h3 className="font-bold">Nhân công:</h3>
                 <button
                   onClick={() => addLaborResource(packageIndex)}
-                  className=" text-primaryGreenButton px-4 py-2 rounded font-bold"
+                  className="bg-primaryGreenButton text-white w-8 h-5 rounded-full flex items-center justify-center text-lg mr-2 mb-2"
                 >
-                  + Thêm Nhân Công
+                  +
                 </button>
               </div>
               {pkg.laborResources.map((resource, resourceIndex) => (
@@ -558,6 +585,7 @@ const CreatePackageConstructionWork: React.FC<
                     }
                     className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                     placeholder="Nhập giá tiền"
+                    readOnly
                   />
                   <div className="right-0">
                     <DeleteButton
@@ -568,20 +596,22 @@ const CreatePackageConstructionWork: React.FC<
                   </div>
                 </div>
               ))}
-              <div className="font-bold text-right">
-                Tổng tiền nhân công:{' '}
-                {calculateTotal(pkg.laborResources, 'labor')}
+              <div className="text-left">
+                <span className="font-regular text-sm">Tổng tiền nhân công:</span>{' '}
+                <span className="text-primary font-bold">
+                  {formatCurrency(calculateTotal(pkg.laborResources, 'labor'))}
+                </span>
               </div>
             </div>
 
             <div className="font-bold text-right mt-4">
-              Tổng tiền gói:{' '}
-              {calculateTotal(pkg.materialResources, 'material') +
-                calculateTotal(pkg.laborResources, 'labor')}
-            </div>
-
-            <div className="flex justify-end">
-              <DeleteButton onClick={() => removePackage(packageIndex)} />
+              <span className="text-black">Tổng tiền gói:</span>{' '}
+              <span className="text-primary">
+                {formatCurrency(
+                  calculateTotal(pkg.materialResources, 'material') +
+                    calculateTotal(pkg.laborResources, 'labor'),
+                )}
+              </span>
             </div>
           </div>
         ))}
