@@ -10,6 +10,7 @@ import { searchConstructionWork } from '../../../../../api/Construction/Construc
 import { ConstructionWork } from '../../../../../types/ConstructionTypes';
 import { getConstructionByType } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionTypeResponse } from '../../../../../types/ConstructionTypeResponse';
+import { getConstructionWork } from '../../../../../api/Construction/ConstructionApi';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -56,10 +57,23 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   useEffect(() => {
     const fetchConstructionOptions = async () => {
       try {
-        const roughConstructions = await getConstructionByType('WORK_ROUGH');
-        const finishedConstructions = await getConstructionByType(
-          'WORK_FINISHED',
-        );
+        let roughConstructions: ConstructionTypeResponse[] = [];
+        let finishedConstructions: ConstructionTypeResponse[] = [];
+
+        if (quotationPackage.IdPackageRough) {
+          roughConstructions = await getConstructionByType(
+            quotationPackage.IdPackageRough,
+            'WORK_ROUGH',
+          );
+        }
+
+        if (quotationPackage.IdPackageFinished) {
+          finishedConstructions = await getConstructionByType(
+            quotationPackage.IdPackageFinished,
+            'WORK_FINISHED',
+          );
+        }
+
         setConstructionOptions([
           ...roughConstructions,
           ...finishedConstructions,
@@ -70,7 +84,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     };
 
     fetchConstructionOptions();
-  }, []);
+  }, [quotationPackage]);
 
   const handleAddNewItem = (constructionIndex: number) => {
     const newItem: QuotationItem = {
@@ -176,46 +190,86 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     onItemsChange(updatedItems);
   };
 
-  const handleCreateRoughConstruction = () => {
+  const handleCreateRoughConstruction = async () => {
     if (selectedRoughConstruction) {
-      const construction = roughConstructionOptions.find(
-        (c) => c.Id === selectedRoughConstruction,
-      );
-      if (construction) {
-        const newItem: FinalQuotationItem = {
+      try {
+        const constructionWorks = await getConstructionWork(
+          quotationPackage.IdPackageRough!,
+          selectedRoughConstruction!
+        );
+
+        const newItems = constructionWorks.map((work) => ({
           Id: '',
-          ConstructionId: construction.Id,
+          ConstructionId: work.ConstructionWorkId,
           SubConstructionId: null,
-          ContructionName: construction.Name,
+          ContructionName: work.ConstructionWorkName,
           Area: null,
-          Type: construction.Type,
+          Type: 'WORK_ROUGH',
           InsDate: new Date().toISOString(),
-          QuotationItems: [],
-        };
-        onItemsChange([...items, newItem]);
+          QuotationItems: [{
+            Id: '',
+            WorkTemplateId: work.WorkTemplateId,
+            WorkName: work.ConstructionWorkName,
+            Unit: work.Unit,
+            Weight: 0,
+            UnitPriceLabor: work.LaborCost,
+            UnitPriceRough: work.MaterialRoughCost,
+            UnitPriceFinished: work.MaterialFinishedCost,
+            TotalPriceLabor: 0,
+            TotalPriceRough: 0,
+            TotalPriceFinished: 0,
+            InsDate: null,
+            UpsDate: null,
+            Note: null,
+          }],
+        }));
+
+        onItemsChange([...items, ...newItems]);
         setSelectedRoughConstruction(null);
+      } catch (error) {
+        console.error('Error creating rough construction:', error);
       }
     }
   };
 
-  const handleCreateFinishedConstruction = () => {
+  const handleCreateFinishedConstruction = async () => {
     if (selectedFinishedConstruction) {
-      const construction = finishedConstructionOptions.find(
-        (c) => c.Id === selectedFinishedConstruction,
-      );
-      if (construction) {
-        const newItem: FinalQuotationItem = {
+      try {
+        const constructionWorks = await getConstructionWork(
+          quotationPackage.IdPackageFinished!,
+          selectedFinishedConstruction!
+        );
+
+        const newItems = constructionWorks.map((work) => ({
           Id: '',
-          ConstructionId: construction.Id,
+          ConstructionId: work.ConstructionWorkId,
           SubConstructionId: null,
-          ContructionName: construction.Name,
+          ContructionName: work.ConstructionWorkName,
           Area: null,
-          Type: construction.Type,
+          Type: 'WORK_FINISHED',
           InsDate: new Date().toISOString(),
-          QuotationItems: [],
-        };
-        onItemsChange([...items, newItem]);
+          QuotationItems: [{
+            Id: '',
+            WorkTemplateId: work.WorkTemplateId,
+            WorkName: work.ConstructionWorkName,
+            Unit: work.Unit,
+            Weight: 0,
+            UnitPriceLabor: work.LaborCost,
+            UnitPriceRough: work.MaterialRoughCost,
+            UnitPriceFinished: work.MaterialFinishedCost,
+            TotalPriceLabor: 0,
+            TotalPriceRough: 0,
+            TotalPriceFinished: 0,
+            InsDate: null,
+            UpsDate: null,
+            Note: null,
+          }],
+        }));
+
+        onItemsChange([...items, ...newItems]);
         setSelectedFinishedConstruction(null);
+      } catch (error) {
+        console.error('Error creating finished construction:', error);
       }
     }
   };
