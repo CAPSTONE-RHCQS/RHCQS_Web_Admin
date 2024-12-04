@@ -15,3 +15,5 @@ export interface LaborItem {
   Deflag: boolean;
   Type: string;
 }
+
+export type SearchLaborByNameResponse = LaborItem[];

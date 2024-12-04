@@ -69,12 +69,25 @@ export const createConstructionWork = async (data: CreateConstructionWork) => {
         const response = await requestWebRHCQS.post('/construction-work', data, {
             headers: {
                 accept: 'text/plain',
-                // 'Content-Type': 'application/json',
             },
         });
         return response.data;
-    } catch (error) {
-        console.error('Error creating construction work:', error);
+    } catch (error: any) {
+        console.error('Error creating construction work:', error.response.data.Error);
         throw error;
     }
 };
+
+export const createPackageConstructionWork = async (data: any) => {
+    try {
+        const response = await requestWebRHCQS.post('/work-template', data, {
+            headers: {
+                accept: 'text/plain',
+            },
+        });
+        return response.data;
+    } catch (error: any) {
+        console.error('Error creating package construction work:', error.response.data.Error);
+        throw error;
+    }
+}

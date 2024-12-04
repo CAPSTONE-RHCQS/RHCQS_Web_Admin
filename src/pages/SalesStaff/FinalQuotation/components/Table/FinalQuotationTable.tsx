@@ -192,21 +192,17 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
   const handleCreateRoughConstruction = async () => {
     if (selectedRoughConstruction) {
-      try {
-        const constructionWorks = await getConstructionWork(
-          quotationPackage.IdPackageRough!,
-          selectedRoughConstruction!
-        );
+      const construction = roughConstructionOptions.find(
+        (c) => c.Id === selectedRoughConstruction,
+      );
+      if (construction) {
+        try {
+          const constructionWorks = await getConstructionWork(
+            quotationPackage.IdPackageRough as string,
+            construction.Id,
+          );
 
-        const newItems = constructionWorks.map((work) => ({
-          Id: '',
-          ConstructionId: work.ConstructionWorkId,
-          SubConstructionId: null,
-          ContructionName: work.ConstructionWorkName,
-          Area: null,
-          Type: 'WORK_ROUGH',
-          InsDate: new Date().toISOString(),
-          QuotationItems: [{
+          const newQuotationItems = constructionWorks.map((work) => ({
             Id: '',
             WorkTemplateId: work.WorkTemplateId,
             WorkName: work.ConstructionWorkName,
@@ -221,34 +217,41 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             InsDate: null,
             UpsDate: null,
             Note: null,
-          }],
-        }));
+          }));
 
-        onItemsChange([...items, ...newItems]);
-        setSelectedRoughConstruction(null);
-      } catch (error) {
-        console.error('Error creating rough construction:', error);
+          const newItem: FinalQuotationItem = {
+            Id: '',
+            ConstructionId: construction.Id,
+            SubConstructionId: null,
+            ContructionName: construction.Name,
+            Area: null,
+            Type: construction.Type,
+            InsDate: new Date().toISOString(),
+            QuotationItems: newQuotationItems,
+          };
+
+          onItemsChange([...items, newItem]);
+          setSelectedRoughConstruction(null);
+        } catch (error) {
+          console.error('Error fetching construction work:', error);
+        }
       }
     }
   };
 
   const handleCreateFinishedConstruction = async () => {
     if (selectedFinishedConstruction) {
-      try {
-        const constructionWorks = await getConstructionWork(
-          quotationPackage.IdPackageFinished!,
-          selectedFinishedConstruction!
-        );
+      const construction = finishedConstructionOptions.find(
+        (c) => c.Id === selectedFinishedConstruction,
+      );
+      if (construction) {
+        try {
+          const constructionWorks = await getConstructionWork(
+            quotationPackage.IdPackageFinished as string,
+            construction.Id,
+          );
 
-        const newItems = constructionWorks.map((work) => ({
-          Id: '',
-          ConstructionId: work.ConstructionWorkId,
-          SubConstructionId: null,
-          ContructionName: work.ConstructionWorkName,
-          Area: null,
-          Type: 'WORK_FINISHED',
-          InsDate: new Date().toISOString(),
-          QuotationItems: [{
+          const newQuotationItems = constructionWorks.map((work) => ({
             Id: '',
             WorkTemplateId: work.WorkTemplateId,
             WorkName: work.ConstructionWorkName,
@@ -263,13 +266,24 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             InsDate: null,
             UpsDate: null,
             Note: null,
-          }],
-        }));
+          }));
 
-        onItemsChange([...items, ...newItems]);
-        setSelectedFinishedConstruction(null);
-      } catch (error) {
-        console.error('Error creating finished construction:', error);
+          const newItem: FinalQuotationItem = {
+            Id: '',
+            ConstructionId: construction.Id,
+            SubConstructionId: null,
+            ContructionName: construction.Name,
+            Area: null,
+            Type: construction.Type,
+            InsDate: new Date().toISOString(),
+            QuotationItems: newQuotationItems,
+          };
+
+          onItemsChange([...items, newItem]);
+          setSelectedFinishedConstruction(null);
+        } catch (error) {
+          console.error('Error fetching construction work:', error);
+        }
       }
     }
   };
