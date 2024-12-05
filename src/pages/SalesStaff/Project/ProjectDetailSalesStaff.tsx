@@ -81,6 +81,9 @@ const ProjectDetailSalesStaff = () => {
 
   useEffect(() => {
     fetchProjectDetail();
+    const interval = setInterval(fetchProjectDetail, 2000);
+
+    return () => clearInterval(interval);
   }, [id]);
 
   if (!projectDetail) {
