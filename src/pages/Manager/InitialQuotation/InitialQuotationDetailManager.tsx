@@ -354,12 +354,14 @@ const InitialQuotationDetailManager = () => {
             <div className="mb-2 text-lg flex items-center">
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
-              <span className="text-gray-700 ml-2"></span>
+              <span className="text-gray-700 ml-2">
+                {quotationData.PhoneNumber}
+              </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMailBulk className="mr-2 text-secondary" />
               <span className="font-semibold">Địa chỉ email:</span>
-              <span className="text-gray-700 ml-2"></span>
+              <span className="text-gray-700 ml-2">{quotationData.Email}</span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMoneyBillWave className="mr-2 text-secondary" />
@@ -533,7 +535,7 @@ const InitialQuotationDetailManager = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="px-4 py-2 border text-center">Mô t</th>
+                <th className="px-4 py-2 border text-center">Mô tả</th>
                 <th className="px-4 py-2 border text-center">Hệ số</th>
                 <th className="px-4 py-2 border text-center">Số lượng</th>
                 <th className="px-4 py-2 border text-center">Đơn Giá</th>
