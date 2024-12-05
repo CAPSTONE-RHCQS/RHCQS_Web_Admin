@@ -41,6 +41,7 @@ export interface MaterialItem {
     SupplierName: string
     MaterialSectionType: string
     Code: string
+    Type: string
 }
 
 export interface MaterialRequest {
