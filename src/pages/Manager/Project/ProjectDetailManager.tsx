@@ -10,6 +10,8 @@ import {
   FaBuilding,
   FaDraftingCompass,
   FaSync,
+  FaMailBulk,
+  FaPhone,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -313,10 +315,12 @@ const ProjectDetailManager = () => {
             data={{
               fullName: projectDetail.AccountName || '',
               phoneNumber: projectDetail.Phone || '',
+              mail: projectDetail.Mail || '',
             }}
             fields={[
               { key: 'fullName', label: 'Name' },
               { key: 'phoneNumber', label: 'Phone' },
+              { key: 'mail', label: 'Mail' },
             ]}
             avatarUrl={projectDetail.Avatar}
           />
@@ -355,29 +359,49 @@ const ProjectDetailManager = () => {
             Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaHome className="mr-2 text-secondary" />
-          <span className="font-semibold">Phân loại dự án:</span>
-          <span className="text-gray-700 ml-2">
-            {getTypeInVietnamese(projectDetail.Type)}
-          </span>
-        </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaUser className="mr-2 text-secondary" />
-          <span className="font-semibold">Tên khách hàng:</span>
-          <span className="text-gray-700 ml-2">
-            {projectDetail.AccountName}
-          </span>
-        </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaMapMarkerAlt className="mr-2 text-secondary" />
-          <span className="font-semibold">Địa chỉ thi công:</span>
-          <span className="text-gray-700 ml-2">{projectDetail.Address}</span>
-        </div>
-        <div className="mb-2 text-lg flex items-center">
-          <FaRulerCombined className="mr-2 text-secondary" />
-          <span className="font-semibold">Diện tích xây dựng:</span>
-          <span className="text-gray-700 ml-2"> {projectDetail.Area} m²</span>
+        <div className="flex flex-wrap">
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <FaHome className="mr-2 text-secondary" />
+              <span className="font-semibold">Phân loại dự án:</span>
+              <span className="text-gray-700 ml-2">
+                {getTypeInVietnamese(projectDetail.Type)}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaMapMarkerAlt className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ thi công:</span>
+              <span className="text-gray-700 ml-2">
+                {projectDetail.Address}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaRulerCombined className="mr-2 text-secondary" />
+              <span className="font-semibold">Diện tích xây dựng:</span>
+              <span className="text-gray-700 ml-2">
+                {projectDetail.Area} m²
+              </span>
+            </div>
+          </div>
+          <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <FaUser className="mr-2 text-secondary" />
+              <span className="font-semibold">Tên khách hàng:</span>
+              <span className="text-gray-700 ml-2">
+                {projectDetail.AccountName}
+              </span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaPhone className="mr-2 text-secondary" />
+              <span className="font-semibold">Số điện thoại:</span>
+              <span className="text-gray-700 ml-2">{projectDetail.Phone}</span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaMailBulk className="mr-2 text-secondary" />
+              <span className="font-semibold">Địa chỉ email:</span>
+              <span className="text-gray-700 ml-2">{projectDetail.Mail}</span>
+            </div>
+          </div>
         </div>
 
         <div className="mt-4">
