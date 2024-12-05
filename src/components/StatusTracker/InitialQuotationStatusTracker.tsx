@@ -8,6 +8,7 @@ import {
   FaCheckCircle,
   FaUserCheck,
   FaTimes,
+  FaEdit,
 } from 'react-icons/fa';
 
 interface InitialQuotationStatusTrackerProps {
@@ -44,6 +45,12 @@ const statuses = [
     icon: <FaTimes />,
     bgColor: '#FF6347',
     labelColor: '#FF6347',
+  },
+  {
+    label: 'Đang chỉnh sửa',
+    icon: <FaEdit />,
+    bgColor: '#1E90FF',
+    labelColor: '#1E90FF',
   },
   {
     label: 'Hoàn thành',

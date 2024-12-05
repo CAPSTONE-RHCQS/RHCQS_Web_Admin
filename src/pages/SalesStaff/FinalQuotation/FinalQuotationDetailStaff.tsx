@@ -375,7 +375,8 @@ const FinalQuotationDetailStaff = () => {
         isSaving={isSaving}
         isFinalized={
           quotationDetail.Status === 'Processing' ||
-          quotationDetail.Status === 'Rejected'
+          quotationDetail.Status === 'Rejected' ||
+          quotationDetail.Status === 'Updating'
         }
         handleSave={handleSave}
         handleEditToggle={handleEditToggle}
