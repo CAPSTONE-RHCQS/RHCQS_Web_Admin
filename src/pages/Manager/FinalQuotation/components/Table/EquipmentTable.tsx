@@ -8,7 +8,7 @@ interface EquipmentTableProps {
 const EquipmentTable: React.FC<EquipmentTableProps> = ({ items }) => {
   const totalMaterialCost = items.reduce(
     (total, item) => total + item.TotalOfMaterial,
-    0
+    0,
   );
 
   return (
@@ -27,14 +27,14 @@ const EquipmentTable: React.FC<EquipmentTableProps> = ({ items }) => {
         <tbody>
           {items.map((item) => (
             <tr key={item.Id}>
-              <td className="px-4 py-2 border text-center">{item.Name}</td>
+              <td className="px-4 py-2 border text-left">{item.Name}</td>
               <td className="px-4 py-2 border text-center">{item.Unit}</td>
               <td className="px-4 py-2 border text-center">{item.Quantity}</td>
               <td className="px-4 py-2 border text-center">
-                {item.UnitOfMaterial.toLocaleString()} VNĐ
+                {item.UnitOfMaterial.toLocaleString()}
               </td>
               <td className="px-4 py-2 border text-center">
-                {item.TotalOfMaterial.toLocaleString()} VNĐ
+                {item.TotalOfMaterial.toLocaleString()}
               </td>
               <td className="px-4 py-2 border text-center">
                 {item.Note || ''}

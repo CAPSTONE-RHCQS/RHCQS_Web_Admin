@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
-import { getFinalQuotation } from '../../../api/FinalQuotation/FinalQuotationApi';
+import {
+  getFinalQuotation,
+  getFinalQuotationStatus,
+} from '../../../api/FinalQuotation/FinalQuotationApi';
 import {
   FinalQuotationDetail as FinalQuotationDetailType,
   UtilityInfo,
@@ -65,6 +68,7 @@ const FinalQuotationDetailStaff = () => {
   const dateRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -102,6 +106,27 @@ const FinalQuotationDetailStaff = () => {
       setTotalRough(total);
     }
   }, [quotationDetail]);
+
+  useEffect(() => {
+    const fetchStatus = async () => {
+      if (id) {
+        try {
+          const status = await getFinalQuotationStatus(id);
+          if (currentStatus !== status) {
+            setCurrentStatus(status);
+            const data = await getFinalQuotation(id);
+            setQuotationDetail(data);
+          }
+        } catch (error) {
+          console.error('Error fetching status:', error);
+        }
+      }
+    };
+
+    const intervalId = setInterval(fetchStatus, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [id, currentStatus]);
 
   const handleUtilitiesChange = (updatedUtilities: UtilityInfo[]) => {
     if (quotationDetail) {
@@ -350,7 +375,8 @@ const FinalQuotationDetailStaff = () => {
         isSaving={isSaving}
         isFinalized={
           quotationDetail.Status === 'Processing' ||
-          quotationDetail.Status === 'Rejected'
+          quotationDetail.Status === 'Rejected' ||
+          quotationDetail.Status === 'Updating'
         }
         handleSave={handleSave}
         handleEditToggle={handleEditToggle}

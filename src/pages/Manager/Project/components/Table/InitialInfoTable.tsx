@@ -9,6 +9,7 @@ import {
   FaTimes,
   FaUser,
   FaCheckCircle,
+  FaEdit,
 } from 'react-icons/fa';
 
 interface InitialInfoTableProps {
@@ -61,6 +62,11 @@ const InitialInfoTable: React.FC<InitialInfoTableProps> = ({ quoteData }) => {
       label: 'Từ chối báo giá',
       icon: <FaTimes />,
       color: '#FF6347',
+    },
+    Updating: {
+      label: 'Đang chỉnh sửa',
+      icon: <FaEdit />,
+      color: '#1E90FF',
     },
     Finalized: {
       label: 'Hoàn thành',

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
-import { approveDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
+import {
+  getHouseDesignById,
+  getHouseDesignDrawingStatus,
+} from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { ClipLoader } from 'react-spinners';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   FiFileText,
@@ -15,7 +16,7 @@ import {
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
 import { HouseDesignDetailResponse } from '../../../types/HouseDesignTypes';
 
-const HouseDesignDetailDesignStaff: React.FC = () => {
+const HouseDesignDetailSalesStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
     useState<HouseDesignDetailResponse | null>(null);
@@ -23,6 +24,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null,
   );
+  const [currentStatus, setCurrentStatus] = useState<string>('');
 
   const fetchDesignDetail = async () => {
     if (!id) {
@@ -48,9 +50,27 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     }
   };
 
+  const fetchCurrentStatus = async () => {
+    if (id) {
+      const status = await getHouseDesignDrawingStatus(id);
+      setCurrentStatus(status);
+    }
+  };
+
   useEffect(() => {
     fetchDesignDetail();
+    const interval = setInterval(() => {
+      fetchCurrentStatus();
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [id]);
+
+  useEffect(() => {
+    if (currentStatus !== designDetail?.Status) {
+      fetchDesignDetail();
+    }
+  }, [currentStatus, designDetail]);
 
   if (loading) {
     return (
@@ -217,4 +237,4 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   );
 };
 
-export default HouseDesignDetailDesignStaff;
+export default HouseDesignDetailSalesStaff;

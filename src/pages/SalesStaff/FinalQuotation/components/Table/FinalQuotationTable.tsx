@@ -5,12 +5,24 @@ import {
   QuotationItem,
 } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClose,
+  faPlus,
+  faTrash,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { searchConstructionWork } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionWork } from '../../../../../types/ConstructionTypes';
 import { getConstructionByType } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionTypeResponse } from '../../../../../types/ConstructionTypeResponse';
 import { getConstructionWork } from '../../../../../api/Construction/ConstructionApi';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import {
+  uploadConstructionWork,
+  ConstructionWorkResponse,
+  ConstructionItem,
+  WorkTemplates,
+} from '../../../../../api/Construction/uploadConstructionWorkApi';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -41,6 +53,15 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
   const textareaRefs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const weightInputRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const [visibleItems, setVisibleItems] = useState<boolean[]>(
+    items.map(() => true),
+  );
+
+  const [isRoughModalOpen, setIsRoughModalOpen] = useState(false);
+  const [isFinishedModalOpen, setIsFinishedModalOpen] = useState(false);
+
+  const [uploadedData, setUploadedData] =
+    useState<ConstructionWorkResponse | null>(null);
 
   useEffect(() => {
     items.forEach((item, itemIndex) => {
@@ -321,6 +342,99 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     (construction) => construction.Type === 'WORK_FINISHED',
   );
 
+  const toggleVisibility = (index: number) => {
+    setVisibleItems((prev) => {
+      const newVisibility = [...prev];
+      newVisibility[index] = !newVisibility[index];
+      return newVisibility;
+    });
+  };
+
+  const handleRoughUploadClick = () => {
+    setIsRoughModalOpen(true);
+  };
+
+  const handleFinishedUploadClick = () => {
+    setIsFinishedModalOpen(true);
+  };
+
+  const handleCloseRoughModal = () => {
+    setIsRoughModalOpen(false);
+    setUploadedData(null);
+  };
+
+  const handleCloseFinishedModal = () => {
+    setIsFinishedModalOpen(false);
+    setUploadedData(null);
+  };
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    isRough: boolean,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedData(null);
+      const packageId = isRough
+        ? quotationPackage.IdPackageRough
+        : quotationPackage.IdPackageFinished;
+      if (!packageId) {
+        console.error('Package ID is not available.');
+        return;
+      }
+      try {
+        const data = await uploadConstructionWork(file, packageId);
+        setUploadedData(data);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
+
+  const handleConfirmUpload = () => {
+    if (uploadedData) {
+      const newItems = uploadedData.map((construction: ConstructionItem) => ({
+        Id: '',
+        ConstructionId: construction.ConstructionId,
+        SubConstructionId: null,
+        ContructionName: construction.ConstructionName,
+        Area: null,
+        Type: 'WORK_UPLOADED',
+        InsDate: new Date().toISOString(),
+        QuotationItems: construction.WorkTemplates.map(
+          (work: WorkTemplates) => {
+            const totalPriceLabor = (work.LaborCost ?? 0) * (work.Weight ?? 0);
+            const totalPriceRough =
+              (work.MaterialCost ?? 0) * (work.Weight ?? 0);
+            const totalPriceFinished =
+              (work.MaterialFinishedCost ?? 0) * (work.Weight ?? 0);
+
+            return {
+              Id: '',
+              WorkTemplateId: work.WorkTemplateId,
+              WorkName: work.ConstructionWorkName,
+              Unit: work.Unit,
+              Weight: work.Weight,
+              UnitPriceLabor: work.LaborCost,
+              UnitPriceRough: work.MaterialCost,
+              UnitPriceFinished: work.MaterialFinishedCost,
+              TotalPriceLabor: totalPriceLabor,
+              TotalPriceRough: totalPriceRough,
+              TotalPriceFinished: totalPriceFinished,
+              InsDate: null,
+              UpsDate: null,
+              Note: null,
+            };
+          },
+        ),
+      }));
+      onItemsChange([...items, ...newItems]);
+      setIsRoughModalOpen(false);
+      setIsFinishedModalOpen(false);
+      setUploadedData(null);
+    }
+  };
+
   return (
     <div>
       {isEditing && (
@@ -348,6 +462,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               <FontAwesomeIcon icon={faPlus} /> Tạo công trình Thô
             </button>
           </div>
+          <button
+            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+            onClick={handleRoughUploadClick}
+          >
+            <FontAwesomeIcon icon={faUpload} />
+          </button>
 
           <div className="flex items-center space-x-2">
             <select
@@ -371,6 +491,290 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             >
               <FontAwesomeIcon icon={faPlus} /> Tạo công trình Hoàn thiện
             </button>
+          </div>
+          <button
+            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+            onClick={handleFinishedUploadClick}
+          >
+            <FontAwesomeIcon icon={faUpload} />
+          </button>
+        </div>
+      )}
+
+      {isRoughModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={handleCloseRoughModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Tải lên công trình Thô</h2>
+              <button
+                onClick={handleCloseRoughModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={(e) => handleFileUpload(e, true)}
+              className="mb-4"
+            />
+            {uploadedData && (
+              <div className="overflow-y-auto max-h-[60vh]">
+                <table className="min-w-full bg-white border border-gray-200 mt-2">
+                  <thead className="bg-gray-200 sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Tên công việc
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Đơn vị
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Khối lượng
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Đơn giá
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Thành tiền
+                      </th>
+                    </tr>
+                    <tr>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {uploadedData.map(
+                      (construction: ConstructionItem, index: number) => (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td
+                              colSpan={9}
+                              className="px-4 py-2 border text-left font-bold bg-gray-200"
+                            >
+                              {construction.ConstructionName}
+                            </td>
+                          </tr>
+                          {construction.WorkTemplates.map(
+                            (work: WorkTemplates, workIndex: number) => (
+                              <tr key={workIndex}>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.ConstructionWorkName}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Unit}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Weight}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.LaborCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialFinishedCost.toLocaleString(
+                                    'vi-VN',
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.LaborCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialFinishedCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                              </tr>
+                            ),
+                          )}
+                        </React.Fragment>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleConfirmUpload}
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded mt-4"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isFinishedModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={handleCloseFinishedModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">
+                Tải lên công trình Hoàn thiện
+              </h2>
+              <button
+                onClick={handleCloseFinishedModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={(e) => handleFileUpload(e, false)}
+              className="mb-4"
+            />
+            {uploadedData && (
+              <div className="overflow-y-auto max-h-[60vh]">
+                <table className="min-w-full bg-white border border-gray-200 mt-2">
+                  <thead className="bg-gray-200 sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Tên công việc
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Đơn vị
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Khối lượng
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Đơn giá
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Thành tiền
+                      </th>
+                    </tr>
+                    <tr>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {uploadedData.map(
+                      (construction: ConstructionItem, index: number) => (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td
+                              colSpan={9}
+                              className="px-4 py-2 border text-left font-bold bg-gray-200"
+                            >
+                              {construction.ConstructionName}
+                            </td>
+                          </tr>
+                          {construction.WorkTemplates.map(
+                            (work: WorkTemplates, workIndex: number) => (
+                              <tr key={workIndex}>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.ConstructionWorkName}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Unit}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Weight}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.LaborCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialFinishedCost.toLocaleString(
+                                    'vi-VN',
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.LaborCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialFinishedCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                              </tr>
+                            ),
+                          )}
+                        </React.Fragment>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleConfirmUpload}
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded mt-4"
+              >
+                Xác nhận
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -447,17 +851,30 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         <tbody>
           {items.map((item, itemIndex) => (
             <React.Fragment key={itemIndex}>
-              <tr>
+              <tr
+                onClick={() => toggleVisibility(itemIndex)}
+                className="cursor-pointer"
+              >
                 <td
                   colSpan={isEditing ? 10 : 9}
                   className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
                   <div className="flex items-center">
                     <span>{item.ContructionName}</span>
+                    <span className="ml-2 text-blue-500 hover:text-blue-700">
+                      {visibleItems[itemIndex] ? (
+                        <FaChevronUp />
+                      ) : (
+                        <FaChevronDown />
+                      )}
+                    </span>
                     {isEditing && (
                       <button
                         className="text-red-500 hover:text-red-700 ml-2"
-                        onClick={() => handleDeleteConstruction(itemIndex)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteConstruction(itemIndex);
+                        }}
                       >
                         <FontAwesomeIcon icon={faClose} />
                       </button>
@@ -465,151 +882,174 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                   </div>
                 </td>
               </tr>
-              {item.QuotationItems.map((qItem, qItemIndex) => (
-                <React.Fragment key={qItemIndex}>
-                  <tr>
-                    <td className="px-4 py-2 border text-left align-top">
-                      {isEditing ? (
-                        <textarea
-                          ref={(el) => (textareaRefs.current[qItemIndex] = el)}
-                          value={qItem.WorkName}
-                          className="w-full border-none p-2 font-bold"
-                          placeholder="Nhập tên công việc"
-                          rows={2}
-                          style={{
-                            resize: 'none',
-                            overflow: 'hidden',
-                            minHeight: '100px',
-                            maxHeight: '400px',
-                            width: '100%',
-                          }}
-                          onChange={(e) => {
-                            handleWorkNameChange(
-                              itemIndex,
-                              qItemIndex,
-                              e.target.value,
-                            );
-                          }}
-                          onInput={(e) => {
-                            const target = e.target as HTMLTextAreaElement;
-                            target.style.height = 'auto';
-                            target.style.height = `${target.scrollHeight}px`;
-                          }}
-                        />
-                      ) : (
-                        <span className="font-bold">{qItem.WorkName}</span>
-                      )}
-                      {isEditing &&
-                        selectedItem?.constructionIndex === itemIndex &&
-                        selectedItem?.qItemIndex === qItemIndex &&
-                        searchResults.length > 0 && (
-                          <ul
-                            className="bg-white border border-gray-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto"
-                            style={{ width: '100%' }}
-                          >
-                            {searchResults.map((result, resultIndex) => (
-                              <li
-                                key={resultIndex}
-                                className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
-                                onClick={() =>
-                                  handleSelectSearchResult(
+              {visibleItems[itemIndex] &&
+                item.QuotationItems.map((qItem, qItemIndex) => (
+                  <React.Fragment key={qItemIndex}>
+                    <tr>
+                      <td className="px-4 py-2 border text-left align-top">
+                        {isEditing ? (
+                          <textarea
+                            ref={(el) =>
+                              (textareaRefs.current[qItemIndex] = el)
+                            }
+                            value={qItem.WorkName}
+                            className="w-full font-bold text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            placeholder="Nhập tên công việc"
+                            rows={2}
+                            style={{
+                              resize: 'none',
+                              overflow: 'hidden',
+                              minHeight: '100px',
+                              maxHeight: '400px',
+                              width: '100%',
+                              border: '1px solid #ccc',
+                            }}
+                            onChange={(e) => {
+                              handleWorkNameChange(
+                                itemIndex,
+                                qItemIndex,
+                                e.target.value,
+                              );
+                            }}
+                            onInput={(e) => {
+                              const target = e.target as HTMLTextAreaElement;
+                              target.style.height = 'auto';
+                              target.style.height = `${target.scrollHeight}px`;
+                            }}
+                          />
+                        ) : (
+                          <span className="font-bold">{qItem.WorkName}</span>
+                        )}
+                        {isEditing &&
+                          selectedItem?.constructionIndex === itemIndex &&
+                          selectedItem?.qItemIndex === qItemIndex &&
+                          searchResults.length > 0 && (
+                            <ul
+                              className="bg-white border border-gray-200 mt-1 rounded-md shadow-lg max-h-48 overflow-y-auto"
+                              style={{ width: '100%' }}
+                            >
+                              {searchResults.map((result, resultIndex) => (
+                                <li
+                                  key={resultIndex}
+                                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center"
+                                  onClick={() =>
+                                    handleSelectSearchResult(
+                                      itemIndex,
+                                      qItemIndex,
+                                      result,
+                                    )
+                                  }
+                                >
+                                  <FontAwesomeIcon
+                                    icon={faPlus}
+                                    className="mr-2 text-blue-500 "
+                                  />
+                                  <span className="font-bold">
+                                    {result.ConstructionWorkName}
+                                  </span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.Unit}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {isEditing ? (
+                          <input
+                            type="number"
+                            step="0.0001"
+                            ref={(el) =>
+                              (weightInputRefs.current[qItemIndex] = el)
+                            }
+                            value={
+                              qItem.Weight !== undefined ? qItem.Weight : ''
+                            }
+                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            style={{
+                              maxWidth: '70px',
+                              overflow: 'hidden',
+                              minHeight: '30px',
+                              resize: 'vertical',
+                              border: '1px solid #ccc',
+                            }}
+                            onChange={(e) => {
+                              const value = e.target.value;
+                              if (value === '') {
+                                handleWeightChange(itemIndex, qItemIndex, 0);
+                              } else {
+                                const newValue = parseFloat(value);
+                                if (!isNaN(newValue) && newValue >= 0) {
+                                  handleWeightChange(
                                     itemIndex,
                                     qItemIndex,
-                                    result,
-                                  )
+                                    newValue,
+                                  );
+                                } else {
+                                  e.target.value = qItem.Weight.toString();
                                 }
-                              >
-                                <FontAwesomeIcon
-                                  icon={faPlus}
-                                  className="mr-2 text-blue-500"
-                                />
-                                <span className="font-bold">
-                                  {result.ConstructionWorkName}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
+                              }
+                            }}
+                            required
+                          />
+                        ) : qItem.Weight !== 0 ? (
+                          qItem.Weight
+                        ) : (
+                          ''
                         )}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.Unit}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {isEditing ? (
-                        <input
-                          type="number"
-                          ref={(el) =>
-                            (weightInputRefs.current[qItemIndex] = el)
-                          }
-                          value={qItem.Weight || ''}
-                          className="w-full border-none text-center"
-                          style={{ maxWidth: '50px' }}
-                          onChange={(e) =>
-                            handleWeightChange(
-                              itemIndex,
-                              qItemIndex,
-                              parseFloat(e.target.value),
-                            )
-                          }
-                          required
-                        />
-                      ) : qItem.Weight !== 0 ? (
-                        qItem.Weight
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceLabor !== null &&
-                      qItem.UnitPriceLabor !== 0
-                        ? qItem.UnitPriceLabor.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceRough !== null &&
-                      qItem.UnitPriceRough !== 0
-                        ? qItem.UnitPriceRough.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.UnitPriceFinished !== null &&
-                      qItem.UnitPriceFinished !== 0
-                        ? qItem.UnitPriceFinished.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceLabor !== null &&
-                      qItem.TotalPriceLabor !== 0
-                        ? qItem.TotalPriceLabor.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceRough !== null &&
-                      qItem.TotalPriceRough !== 0
-                        ? qItem.TotalPriceRough.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    <td className="px-4 py-2 border text-center">
-                      {qItem.TotalPriceFinished !== null &&
-                      qItem.TotalPriceFinished !== 0
-                        ? qItem.TotalPriceFinished.toLocaleString('vi-VN')
-                        : ''}
-                    </td>
-                    {isEditing && (
-                      <td className="px-4 py-2 border text-center">
-                        <button
-                          className="text-red-500 hover:text-red-700"
-                          onClick={() =>
-                            handleDeleteItem(itemIndex, qItemIndex)
-                          }
-                        >
-                          <FontAwesomeIcon icon={faTrash} />
-                        </button>
                       </td>
-                    )}
-                  </tr>
-                </React.Fragment>
-              ))}
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceLabor !== null &&
+                        qItem.UnitPriceLabor !== 0
+                          ? qItem.UnitPriceLabor.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceRough !== null &&
+                        qItem.UnitPriceRough !== 0
+                          ? qItem.UnitPriceRough.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.UnitPriceFinished !== null &&
+                        qItem.UnitPriceFinished !== 0
+                          ? qItem.UnitPriceFinished.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceLabor !== null &&
+                        qItem.TotalPriceLabor !== 0
+                          ? qItem.TotalPriceLabor.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceRough !== null &&
+                        qItem.TotalPriceRough !== 0
+                          ? qItem.TotalPriceRough.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      <td className="px-4 py-2 border text-center">
+                        {qItem.TotalPriceFinished !== null &&
+                        qItem.TotalPriceFinished !== 0
+                          ? qItem.TotalPriceFinished.toLocaleString('vi-VN')
+                          : ''}
+                      </td>
+                      {isEditing && (
+                        <td className="px-4 py-2 border text-center">
+                          <button
+                            className="text-red-500 hover:text-red-700"
+                            onClick={() =>
+                              handleDeleteItem(itemIndex, qItemIndex)
+                            }
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  </React.Fragment>
+                ))}
               {isEditing && (
                 <tr>
                   <td colSpan={10} className="px-4 py-2 border text-center">

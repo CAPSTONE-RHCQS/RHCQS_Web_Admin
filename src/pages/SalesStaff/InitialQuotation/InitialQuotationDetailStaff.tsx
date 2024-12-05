@@ -23,6 +23,7 @@ import {
   UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import ChatBox from '../../../components/ChatBox';
+import { getInitialQuotationStatus } from '../../../api/InitialQuotation/InitialQuotationApi';
 
 const InitialQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -44,6 +45,7 @@ const InitialQuotationDetailStaff = () => {
   const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [quantities, setQuantities] = useState<(number | null)[]>([]);
+  const [status, setStatus] = useState<string>('');
 
   const navigate = useNavigate();
 
@@ -63,7 +65,19 @@ const InitialQuotationDetailStaff = () => {
     };
 
     fetchData();
-  }, []);
+    
+    const intervalId = setInterval(async () => {
+      if (id) {
+        const newStatus = await getInitialQuotationStatus(id);
+        if (newStatus !== status) {
+          setStatus(newStatus);
+          await fetchData();
+        }
+      }
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [id, status]);
 
   if (!quotationData) {
     return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
+import { getHouseDesignById, getHouseDesignDrawingStatus } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { approveDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
@@ -28,6 +28,7 @@ const HouseDesignDetailManager: React.FC = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null,
   );
+  const [currentStatus, setCurrentStatus] = useState<string>('');
 
   const fetchDesignDetail = async () => {
     if (!id) {
@@ -54,9 +55,27 @@ const HouseDesignDetailManager: React.FC = () => {
     }
   };
 
+  const fetchCurrentStatus = async () => {
+    if (id) {
+      const status = await getHouseDesignDrawingStatus(id);
+      setCurrentStatus(status);
+    }
+  };
+
   useEffect(() => {
     fetchDesignDetail();
+    const interval = setInterval(() => {
+      fetchCurrentStatus();
+    }, 2000);
+
+    return () => clearInterval(interval);
   }, [id]);
+
+  useEffect(() => {
+    if (currentStatus !== designDetail?.Status) {
+      fetchDesignDetail();
+    }
+  }, [currentStatus, designDetail]);
 
   const handleApproveDesign = async () => {
     if (!selectedVersionId) return;

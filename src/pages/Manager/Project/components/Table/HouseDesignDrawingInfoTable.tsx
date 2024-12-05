@@ -47,14 +47,13 @@ const statusMap: {
   },
   Rejected: { color: '#FF6347', label: 'Bị từ chối', icon: <FaTimes /> },
   Updating: { color: '#1E90FF', label: 'Đang chỉnh sửa', icon: <FaEdit /> },
-  Updated: { color: '#E81E63', label: 'Đã chỉnh sửa', icon: <FaPaintRoller /> },
   Accepted: { color: '#C0CA33', label: 'Chấp nhận bản vẽ', icon: <FaCheck /> },
   Finalized: {
     color: '#32CD32',
     label: 'Hoàn thành',
     icon: <FaCheckCircle />,
   },
-  Canceled: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
+  Ended: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
 };
 
 const getStatusInfo = (status: string | null) => {

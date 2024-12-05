@@ -27,6 +27,7 @@ import PromotionTable from './components/Table/PromotionTable';
 import ActionButtons from './components/ActionButtons';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
+import { toast } from 'react-toastify';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -249,6 +250,15 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   const projectTypeInVietnamese =
     projectTypeMap[quotationData.ProjectType] || 'Không xác định';
 
+  useEffect(() => {
+    const totalTime = quotationData.TimeRough + quotationData.TimeOthers;
+    if (totalTime > 400) {
+      toast.error(
+        'Tổng thời gian hoàn thành công trình không được vượt quá 400 ngày!',
+      );
+    }
+  }, [quotationData.TimeRough, quotationData.TimeOthers]);
+
   return (
     <>
       <ActionButtons
@@ -336,12 +346,14 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             <div className="mb-2 text-lg flex items-center">
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
-              <span className="text-gray-700 ml-2"></span>
+              <span className="text-gray-700 ml-2">
+                {quotationData.PhoneNumber}
+              </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMailBulk className="mr-2 text-secondary" />
               <span className="font-semibold">Địa chỉ email:</span>
-              <span className="text-gray-700 ml-2"></span>
+              <span className="text-gray-700 ml-2">{quotationData.Email}</span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMoneyBillWave className="mr-2 text-secondary" />
@@ -360,15 +372,16 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 1. DIỆN TÍCH XÂY DỰNG THEO PHƯƠNG ÁN THIẾT KẾ:
               </strong>
             </div>
-            {(isEditing && quotationData.ProjectType !== 'TEMPLATE') ||
-              (quotationData.ProjectType !== 'FINISHED' && (
+            {isEditing &&
+              quotationData.ProjectType !== 'TEMPLATE' &&
+              quotationData.ProjectType !== 'FINISHED' && (
                 <button
                   onClick={addConstructionRow}
                   className="ml-4 bg-primaryGreenButton text-white w-8 h-8 flex items-center justify-center rounded-full shadow-lg hover:bg-secondaryGreenButton transition-colors duration-200"
                 >
                   <FaPlus />
                 </button>
-              ))}
+              )}
           </div>
         </div>
         <ConstructionAreaTable
@@ -419,7 +432,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     </td>
                     <td className="px-4 py-2 border text-center">
                       {totalArea} m²
-                    </td> 
+                    </td>
                     <td className="px-4 py-2 border text-center">x</td>
                     <td className="px-4 py-2 border text-center">
                       {quotationData.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
@@ -615,6 +628,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             }
           />
         </div>
+
         <div className="mt-4 w-1/3">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
@@ -624,43 +638,35 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <div className="mb-4 text-right">
             <p className="flex justify-between">
               <strong>Thời gian hoàn thành công trình là:</strong>
-              {isEditing ? (
-                <>
-                  <input
-                    type="number"
-                    value={quotationData.TimeProcessing || ''}
-                    onChange={(e) =>
-                      setQuotationData({
-                        ...quotationData,
-                        TimeProcessing: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    className="w-10 p-1 border rounded text-right"
-                  />
-                </>
-              ) : (
-                <span className="font-bold">
-                  {quotationData.TimeProcessing} Ngày
-                </span>
-              )}
+              <span className="font-bold">
+                {quotationData.TimeRough + quotationData.TimeOthers} Ngày
+              </span>
             </p>
             <p className="text-left">
               <em>Trong đó:</em>
             </p>
             <div className="ml-5">
               <p className="flex justify-between">
-                <em>Thời gian thi công phần thô:</em>
+                <strong>Thời gian thi công phần thô:</strong>
                 {isEditing ? (
                   <>
                     <input
                       type="number"
                       value={quotationData.TimeRough || ''}
-                      onChange={(e) =>
-                        setQuotationData({
-                          ...quotationData,
-                          TimeRough: parseInt(e.target.value) || 0,
-                        })
-                      }
+                      onChange={(e) => {
+                        const newValue = parseInt(e.target.value) || 0;
+                        const totalTime = newValue + quotationData.TimeOthers;
+                        if (totalTime <= 400) {
+                          setQuotationData({
+                            ...quotationData,
+                            TimeRough: newValue,
+                          });
+                        } else {
+                          toast.error(
+                            'Tổng thời gian hoàn thành công trình không được vượt quá 400 ngày!',
+                          );
+                        }
+                      }}
                       className="w-10 p-1 border rounded text-right"
                     />
                   </>
@@ -671,18 +677,26 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 )}
               </p>
               <p className="flex justify-between">
-                <em>Phối hợp với CT hoàn thiện công trình:</em>
+                <strong>Phối hợp với CT hoàn thiện công trình:</strong>
                 {isEditing ? (
                   <>
                     <input
                       type="number"
                       value={quotationData.TimeOthers || ''}
-                      onChange={(e) =>
-                        setQuotationData({
-                          ...quotationData,
-                          TimeOthers: parseInt(e.target.value) || 0,
-                        })
-                      }
+                      onChange={(e) => {
+                        const newValue = parseInt(e.target.value) || 0;
+                        const totalTime = quotationData.TimeRough + newValue;
+                        if (totalTime <= 400) {
+                          setQuotationData({
+                            ...quotationData,
+                            TimeOthers: newValue,
+                          });
+                        } else {
+                          toast.error(
+                            'Tổng thời gian hoàn thành công trình không được vượt quá 400 ngày!',
+                          );
+                        }
+                      }}
                       className="w-10 p-1 border rounded text-right"
                     />
                   </>

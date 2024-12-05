@@ -44,6 +44,7 @@ import CreateNewInitialQuotationStaff from './pages/SalesStaff/InitialQuotation/
 import ProjectDetailDesignStaff from './pages/DesignStaff/Project/ProjectDetailDesignStaff.tsx';
 import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
 import ConstructionWorkList from './pages/Manager/ConstructionWork/ConstructionWorkList.tsx';
+import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailSalesStaff.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -300,7 +301,7 @@ function App() {
               element={
                 <PrivateRoute allowedRoles={['SalesStaff', 'DesignStaff']}>
                   <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignDetailDesignStaff />
+                  <HouseDesignDetailSalesStaff />
                 </PrivateRoute>
               }
             />

@@ -11,6 +11,7 @@ import {
   FaClock,
   FaUser,
   FaCheckCircle,
+  FaEdit,
 } from 'react-icons/fa';
 
 interface FinalInfoTableProps {
@@ -33,8 +34,13 @@ const statusMap: {
     color: '#5BABAC',
   },
   Rejected: { label: 'Từ chối báo giá', icon: <FaTimes />, color: '#FF6347' },
+  Updating: {
+    label: 'Đang chỉnh sửa',
+    icon: <FaEdit />,
+    color: '#1E90FF',
+  },
   Finalized: { label: 'Hoàn thành', icon: <FaCheckCircle />, color: '#32CD32' },
-  Canceled: { label: 'Đã đóng', icon: <FaBan />, color: '#EF5350' },
+  Ended: { label: 'Đã đóng', icon: <FaBan />, color: '#EF5350' },
 };
 
 const getStatusInfo = (status: string) => {

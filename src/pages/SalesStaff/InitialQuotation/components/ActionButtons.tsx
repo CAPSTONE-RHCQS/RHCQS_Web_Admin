@@ -28,7 +28,8 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
   return (
     <div className="flex justify-end space-x-2">
       {(quotationData.Status === 'Processing' ||
-        quotationData.Status === 'Rejected') && (
+        quotationData.Status === 'Rejected' ||
+        quotationData.Status === 'Updating') && (
         <>
           {isEditing && (
             <button

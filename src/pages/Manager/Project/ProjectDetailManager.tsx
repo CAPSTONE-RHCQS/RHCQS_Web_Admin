@@ -9,6 +9,7 @@ import {
   FaHome,
   FaBuilding,
   FaDraftingCompass,
+  FaSync,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
@@ -75,7 +76,9 @@ const ProjectDetailManager = () => {
   const [showEmployeeListModal, setShowEmployeeListModal] = useState(false);
   const [showEmployeeDialog, setShowEmployeeDialog] = useState(false);
   const [open, setOpen] = useState(0);
-  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
+    null,
+  );
 
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
@@ -95,6 +98,9 @@ const ProjectDetailManager = () => {
 
   useEffect(() => {
     fetchProjectDetail();
+    const interval = setInterval(fetchProjectDetail, 2000);
+
+    return () => clearInterval(interval);
   }, [projectId]);
 
   const handleCancelProject = async () => {
@@ -245,6 +251,7 @@ const ProjectDetailManager = () => {
           <h2 className="text-3xl font-bold text-primary dark:text-white">
             Chi tiết dự án
           </h2>
+
           <div
             onMouseEnter={showMenu}
             onMouseLeave={hideMenu}

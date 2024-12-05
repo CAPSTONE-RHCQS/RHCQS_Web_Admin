@@ -10,6 +10,7 @@ import {
   FaSpinner,
   FaUserCheck,
   FaCheckCircle,
+  FaEdit,
 } from 'react-icons/fa';
 
 interface FinalQuotationStatusProps {
@@ -46,6 +47,12 @@ const statuses = [
     icon: <FaTimes />,
     color: '#FF6347',
     labelColor: '#FF6347',
+  },
+  {
+    label: 'Đang chỉnh sửa',
+    icon: <FaEdit />,
+    color: '#1E90FF',
+    labelColor: '#1E90FF',
   },
   {
     label: 'Hoàn thành',

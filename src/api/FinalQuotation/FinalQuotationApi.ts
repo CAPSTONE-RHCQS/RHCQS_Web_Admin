@@ -79,3 +79,21 @@ export const postFinalQuotationByProjectId = async (
     throw error;
   }
 };
+
+export async function getFinalQuotationStatus(
+  finalId: string,
+): Promise<string> {
+  try {
+    const response = await requestWebRHCQS.get(`/quotation/final/status/id`, {
+      params: { finalId },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching status for final ID ${finalId}:`, error);
+    throw new Error('Failed to fetch final quotation status');
+  }
+}

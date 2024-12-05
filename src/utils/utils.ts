@@ -37,6 +37,7 @@ export const getStatusLabelInitalQuoteDetail = (status: string) => {
     Reviewing: 'Chờ xác nhận quản lý',
     Approved: 'Quản lý đã xác nhận',
     Rejected: 'Từ chối báo giá',
+    Updating: 'Đang chỉnh sửa',
     Finalized: 'Hoàn thành',
     Ended: 'Đã đóng',
   };
@@ -50,6 +51,7 @@ export const getStatusLabelFinalQuoteDetail = (status: string) => {
     Reviewing: 'Chờ xác nhận quản lý',
     Approved: 'Quản lý đã xác nhận',
     Rejected: 'Từ chối báo giá',
+    Updating: 'Đang chỉnh sửa',
     Finalized: 'Hoàn thành',
     Ended: 'Đã đóng',
   };

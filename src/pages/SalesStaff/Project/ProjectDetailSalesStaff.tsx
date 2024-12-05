@@ -26,16 +26,16 @@ import {
 import { getProjectDetail } from '../../../api/Project/ProjectApi';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { ProjectDetail as ProjectDetailType } from '../../../types/ProjectTypes';
-import InitialInfoTable from '../../DesignStaff/Project/components/Table/InitialInfoTable';
-import HouseDesignDrawingInfoTable from '../../DesignStaff/Project/components/Table/HouseDesignDrawingInfoTable';
-import FinalInfoTable from '../../DesignStaff/Project/components/Table/FinalInfoTable';
-import ContractTable from '../../DesignStaff/Project/components/Table/ContractTable';
 import { toast } from 'react-toastify';
 import {
   isAnyInitialInfoFinalized,
   isAnyFinalInfoFinalized,
 } from '../../../utils/projectUtils';
 import ArrowIcon from '../../../SVG/ArrowIcon';
+import InitialInfoTable from './components/Table/InitialInfoTable';
+import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
+import FinalInfoTable from './components/Table/FinalInfoTable';
+import ContractTable from './components/Table/ContractTable';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -81,6 +81,9 @@ const ProjectDetailSalesStaff = () => {
 
   useEffect(() => {
     fetchProjectDetail();
+    const interval = setInterval(fetchProjectDetail, 2000);
+
+    return () => clearInterval(interval);
   }, [id]);
 
   if (!projectDetail) {
