@@ -53,7 +53,7 @@ const statusMap: {
     label: 'Hoàn thành',
     icon: <FaCheckCircle />,
   },
-  Canceled: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
+  Ended: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
 };
 
 const getStatusInfo = (status: string | null) => {

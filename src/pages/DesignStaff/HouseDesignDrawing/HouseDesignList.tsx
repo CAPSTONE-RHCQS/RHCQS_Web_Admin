@@ -39,7 +39,7 @@ const statusMap: { [key: string]: string } = {
   Updating: 'Đang chỉnh sửa',
   Accepted: 'Chấp nhận bản vẽ',
   Finalized: 'Hoàn thành',
-  Canceled: 'Đã đóng',
+  Ended: 'Đã đóng',
 };
 
 export const statusStyles: {
@@ -80,7 +80,7 @@ export const statusStyles: {
     backgroundColor: '#32CD32',
     icon: <FaCheckCircle className="text-white" />,
   },
-  Canceled: {
+  Ended: {
     backgroundColor: '#EF5350',
     icon: <FaBan className="text-white" />,
   },

@@ -53,6 +53,8 @@ export interface InitialQuotationResponse {
   Id: string;
   AccountName: string;
   ProjectType: string;
+  PhoneNumber: string;
+  Email: string;
   Address: string;
   ProjectId: string;
   Area: number;

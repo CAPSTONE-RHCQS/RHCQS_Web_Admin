@@ -45,6 +45,7 @@ export interface FinalQuotationRequest {
   address: string;
   projectId: string;
   note: string;
+  versionPresent: number;
   batchPaymentInfos: BatchPaymentInfoRequest[];
   equipmentItems: EquipmentItemRequest[];
   utilities: UtilityRequest[];

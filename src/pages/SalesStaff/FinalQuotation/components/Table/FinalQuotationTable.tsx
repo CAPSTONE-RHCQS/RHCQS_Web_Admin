@@ -5,13 +5,24 @@ import {
   QuotationItem,
 } from '../../../../../types/FinalQuotationTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClose, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import {
+  faClose,
+  faPlus,
+  faTrash,
+  faUpload,
+} from '@fortawesome/free-solid-svg-icons';
 import { searchConstructionWork } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionWork } from '../../../../../types/ConstructionTypes';
 import { getConstructionByType } from '../../../../../api/Construction/ConstructionApi';
 import { ConstructionTypeResponse } from '../../../../../types/ConstructionTypeResponse';
 import { getConstructionWork } from '../../../../../api/Construction/ConstructionApi';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
+import {
+  uploadConstructionWork,
+  ConstructionWorkResponse,
+  ConstructionItem,
+  WorkTemplates,
+} from '../../../../../api/Construction/uploadConstructionWorkApi';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -45,6 +56,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   const [visibleItems, setVisibleItems] = useState<boolean[]>(
     items.map(() => true),
   );
+
+  const [isRoughModalOpen, setIsRoughModalOpen] = useState(false);
+  const [isFinishedModalOpen, setIsFinishedModalOpen] = useState(false);
+
+  const [uploadedData, setUploadedData] =
+    useState<ConstructionWorkResponse | null>(null);
 
   useEffect(() => {
     items.forEach((item, itemIndex) => {
@@ -333,6 +350,91 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     });
   };
 
+  const handleRoughUploadClick = () => {
+    setIsRoughModalOpen(true);
+  };
+
+  const handleFinishedUploadClick = () => {
+    setIsFinishedModalOpen(true);
+  };
+
+  const handleCloseRoughModal = () => {
+    setIsRoughModalOpen(false);
+    setUploadedData(null);
+  };
+
+  const handleCloseFinishedModal = () => {
+    setIsFinishedModalOpen(false);
+    setUploadedData(null);
+  };
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    isRough: boolean,
+  ) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedData(null);
+      const packageId = isRough
+        ? quotationPackage.IdPackageRough
+        : quotationPackage.IdPackageFinished;
+      if (!packageId) {
+        console.error('Package ID is not available.');
+        return;
+      }
+      try {
+        const data = await uploadConstructionWork(file, packageId);
+        setUploadedData(data);
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
+
+  const handleConfirmUpload = () => {
+    if (uploadedData) {
+      const newItems = uploadedData.map((construction: ConstructionItem) => ({
+        Id: '',
+        ConstructionId: construction.ConstructionId,
+        SubConstructionId: null,
+        ContructionName: construction.ConstructionName,
+        Area: null,
+        Type: 'WORK_UPLOADED',
+        InsDate: new Date().toISOString(),
+        QuotationItems: construction.WorkTemplates.map(
+          (work: WorkTemplates) => {
+            const totalPriceLabor = (work.LaborCost ?? 0) * (work.Weight ?? 0);
+            const totalPriceRough =
+              (work.MaterialCost ?? 0) * (work.Weight ?? 0);
+            const totalPriceFinished =
+              (work.MaterialFinishedCost ?? 0) * (work.Weight ?? 0);
+
+            return {
+              Id: '',
+              WorkTemplateId: work.WorkTemplateId,
+              WorkName: work.ConstructionWorkName,
+              Unit: work.Unit,
+              Weight: work.Weight,
+              UnitPriceLabor: work.LaborCost,
+              UnitPriceRough: work.MaterialCost,
+              UnitPriceFinished: work.MaterialFinishedCost,
+              TotalPriceLabor: totalPriceLabor,
+              TotalPriceRough: totalPriceRough,
+              TotalPriceFinished: totalPriceFinished,
+              InsDate: null,
+              UpsDate: null,
+              Note: null,
+            };
+          },
+        ),
+      }));
+      onItemsChange([...items, ...newItems]);
+      setIsRoughModalOpen(false);
+      setIsFinishedModalOpen(false);
+      setUploadedData(null);
+    }
+  };
+
   return (
     <div>
       {isEditing && (
@@ -360,6 +462,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               <FontAwesomeIcon icon={faPlus} /> Tạo công trình Thô
             </button>
           </div>
+          <button
+            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+            onClick={handleRoughUploadClick}
+          >
+            <FontAwesomeIcon icon={faUpload} />
+          </button>
 
           <div className="flex items-center space-x-2">
             <select
@@ -383,6 +491,290 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             >
               <FontAwesomeIcon icon={faPlus} /> Tạo công trình Hoàn thiện
             </button>
+          </div>
+          <button
+            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+            onClick={handleFinishedUploadClick}
+          >
+            <FontAwesomeIcon icon={faUpload} />
+          </button>
+        </div>
+      )}
+
+      {isRoughModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={handleCloseRoughModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">Tải lên công trình Thô</h2>
+              <button
+                onClick={handleCloseRoughModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={(e) => handleFileUpload(e, true)}
+              className="mb-4"
+            />
+            {uploadedData && (
+              <div className="overflow-y-auto max-h-[60vh]">
+                <table className="min-w-full bg-white border border-gray-200 mt-2">
+                  <thead className="bg-gray-200 sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Tên công việc
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Đơn vị
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Khối lượng
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Đơn giá
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Thành tiền
+                      </th>
+                    </tr>
+                    <tr>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {uploadedData.map(
+                      (construction: ConstructionItem, index: number) => (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td
+                              colSpan={9}
+                              className="px-4 py-2 border text-left font-bold bg-gray-200"
+                            >
+                              {construction.ConstructionName}
+                            </td>
+                          </tr>
+                          {construction.WorkTemplates.map(
+                            (work: WorkTemplates, workIndex: number) => (
+                              <tr key={workIndex}>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.ConstructionWorkName}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Unit}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Weight}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.LaborCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialFinishedCost.toLocaleString(
+                                    'vi-VN',
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.LaborCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialFinishedCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                              </tr>
+                            ),
+                          )}
+                        </React.Fragment>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleConfirmUpload}
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded mt-4"
+              >
+                Xác nhận
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isFinishedModalOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={handleCloseFinishedModal}
+        >
+          <div
+            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">
+                Tải lên công trình Hoàn thiện
+              </h2>
+              <button
+                onClick={handleCloseFinishedModal}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                &times;
+              </button>
+            </div>
+            <input
+              type="file"
+              accept=".xlsx, .xls"
+              onChange={(e) => handleFileUpload(e, false)}
+              className="mb-4"
+            />
+            {uploadedData && (
+              <div className="overflow-y-auto max-h-[60vh]">
+                <table className="min-w-full bg-white border border-gray-200 mt-2">
+                  <thead className="bg-gray-200 sticky top-0">
+                    <tr>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Tên công việc
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Đơn vị
+                      </th>
+                      <th className="px-4 py-2 border text-center" rowSpan={2}>
+                        Khối lượng
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Đơn giá
+                      </th>
+                      <th className="px-4 py-2 border text-center" colSpan={3}>
+                        Thành tiền
+                      </th>
+                    </tr>
+                    <tr>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Nhân công
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư thô
+                      </th>
+                      <th className="px-4 py-2 border text-center">
+                        Vật tư H.T
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {uploadedData.map(
+                      (construction: ConstructionItem, index: number) => (
+                        <React.Fragment key={index}>
+                          <tr>
+                            <td
+                              colSpan={9}
+                              className="px-4 py-2 border text-left font-bold bg-gray-200"
+                            >
+                              {construction.ConstructionName}
+                            </td>
+                          </tr>
+                          {construction.WorkTemplates.map(
+                            (work: WorkTemplates, workIndex: number) => (
+                              <tr key={workIndex}>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.ConstructionWorkName}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Unit}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.Weight}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.LaborCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialCost.toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {work.MaterialFinishedCost.toLocaleString(
+                                    'vi-VN',
+                                  )}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.LaborCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                                <td className="px-4 py-2 border text-center">
+                                  {(
+                                    work.MaterialFinishedCost * work.Weight
+                                  ).toLocaleString('vi-VN')}
+                                </td>
+                              </tr>
+                            ),
+                          )}
+                        </React.Fragment>
+                      ),
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleConfirmUpload}
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded mt-4"
+              >
+                Xác nhận
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -571,7 +963,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                             ref={(el) =>
                               (weightInputRefs.current[qItemIndex] = el)
                             }
-                            value={qItem.Weight !== undefined ? qItem.Weight : ''}
+                            value={
+                              qItem.Weight !== undefined ? qItem.Weight : ''
+                            }
                             className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
                             style={{
                               maxWidth: '70px',

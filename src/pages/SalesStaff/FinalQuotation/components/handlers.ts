@@ -33,6 +33,7 @@ export const handleSeva = async (
       address: quotationDetail.ProjectAddress,
       projectId: quotationDetail.ProjectId,
       note: quotationDetail.Note || '',
+      versionPresent: quotationDetail.Version || 1,
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
         price: payment.Price,
         numberOfBatch: payment.NumberOfBatch,
@@ -134,6 +135,7 @@ export const hanldCreateNew = async (
     address: quotationDetail.ProjectAddress,
     projectId: quotationDetail.ProjectId,
     note: quotationDetail.Note || '',
+    versionPresent: 0,
     batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
       price: payment.Price,
       numberOfBatch: payment.NumberOfBatch,

@@ -67,7 +67,7 @@ const statuses = [
     textColor: 'text-green-400',
   },
   {
-    key: 'Canceled',
+    key: 'Ended',
     label: 'Bị đóng',
     icon: <FaBan />,
     backgroundColor: 'bg-red-400',

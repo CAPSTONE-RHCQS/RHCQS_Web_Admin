@@ -34,7 +34,7 @@ const statusMap: {
   },
   Rejected: { label: 'Từ chối báo giá', icon: <FaTimes />, color: '#FF6347' },
   Finalized: { label: 'Hoàn thành', icon: <FaCheckCircle />, color: '#32CD32' },
-  Canceled: { label: 'Đã đóng', icon: <FaBan />, color: '#EF5350' },
+  Ended: { label: 'Đã đóng', icon: <FaBan />, color: '#EF5350' },
 };
 
 const getStatusInfo = (status: string) => {

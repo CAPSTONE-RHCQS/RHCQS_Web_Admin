@@ -4,6 +4,7 @@ import ClipLoader from 'react-spinners/ClipLoader';
 import {
   approveFinalQuotation,
   getFinalQuotation,
+  getFinalQuotationStatus,
 } from '../../../api/FinalQuotation/FinalQuotationApi';
 import { FinalQuotationDetail as FinalQuotationDetailType } from '../../../types/FinalQuotationTypes';
 import BatchPaymentTable from './components/Table/BatchPaymentTable';
@@ -53,6 +54,7 @@ const FinalQuotationDetailManager = () => {
   const [totalUtilities, setTotalUtilities] = useState(0);
   const [totalEquipmentCost, setTotalEquipmentCost] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
 
   const fetchQuotationDetail = async () => {
     if (id) {
@@ -150,6 +152,24 @@ const FinalQuotationDetailManager = () => {
   const toggleChat = () => {
     setShowChat(!showChat);
   };
+
+  useEffect(() => {
+    const intervalId = setInterval(async () => {
+      if (id) {
+        try {
+          const newStatus = await getFinalQuotationStatus(id);
+          if (newStatus !== currentStatus) {
+            setCurrentStatus(newStatus);
+            fetchQuotationDetail();
+          }
+        } catch (error) {
+          console.error('Error fetching quotation status:', error);
+        }
+      }
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [id, currentStatus]);
 
   if (loading) {
     return (
