@@ -20,6 +20,8 @@ import {
   FaPaperclip,
   FaStickyNote,
   FaUpload,
+  FaCheckCircle,
+  FaBan,
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
@@ -168,21 +170,30 @@ const ContractDetailStaff = () => {
             <FaMoneyBillWave className="mr-2" />
             <span className="font-semibold">Giá trị hợp đồng:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.ContractValue !== null ? contractDetail.ContractValue.toLocaleString() : 'N/A'} VNĐ
+              {contractDetail.ContractValue !== null
+                ? contractDetail.ContractValue.toLocaleString()
+                : 'N/A'}{' '}
+              VNĐ
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBoxOpen className="mr-2" />
             <span className="font-semibold">Giá trị thi công thô:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.RoughPackagePrice !== null ? contractDetail.RoughPackagePrice.toLocaleString() : 'N/A'} {contractDetail.UnitPrice}
+              {contractDetail.RoughPackagePrice !== null
+                ? contractDetail.RoughPackagePrice.toLocaleString()
+                : 'N/A'}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
           <div className="mb-4 text-lg flex items-center">
             <FaBox className="mr-2" />
             <span className="font-semibold">Giá trị thi công hoàn thiện:</span>
             <span className="text-gray-700 ml-2">
-              {contractDetail.FinishedPackagePrice !== null ? contractDetail.FinishedPackagePrice.toLocaleString() : 'N/A'} {contractDetail.UnitPrice}
+              {contractDetail.FinishedPackagePrice !== null
+                ? contractDetail.FinishedPackagePrice.toLocaleString()
+                : 'N/A'}{' '}
+              {contractDetail.UnitPrice}
             </span>
           </div>
           {contractDetail.UrlFile && (
@@ -278,6 +289,7 @@ const ContractDetailStaff = () => {
                 </th>
                 <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
+                <th className="px-4 py-2 border text-center">Trạng thái</th>
               </tr>
             </thead>
             <tbody>
@@ -305,6 +317,21 @@ const ContractDetailStaff = () => {
                       'Chưa có hóa đơn'
                     )}
                   </td>
+                  <td className="px-4 py-2 border">
+                    {batch.Status === 'Paid' ? (
+                      <span className="text-green-500 flex items-center">
+                        <FaCheckCircle className="mr-1" /> Đã thanh toán
+                      </span>
+                    ) : batch.Status === 'Canceled' ? (
+                      <span className="text-red-500 flex items-center">
+                        <FaBan className="mr-1" /> Đã chấm dứt
+                      </span>
+                    ) : (
+                      <span className="text-yellow-500 flex items-center">
+                        <FaClock className="mr-1" /> Chờ thanh toán
+                      </span>
+                    )}
+                  </td>
                 </tr>
               ))}
               {contractDetail.BatchPaymentAppendices?.map((appendix) => (
@@ -329,6 +356,21 @@ const ContractDetailStaff = () => {
                       />
                     ) : (
                       'Chưa có hóa đơn'
+                    )}
+                  </td>
+                  <td className="px-4 py-2 border">
+                    {appendix.Status === 'Paid' ? (
+                      <span className="text-green-500 flex items-center">
+                        <FaCheckCircle className="mr-1" /> Đã thanh toán
+                      </span>
+                    ) : appendix.Status === 'Canceled' ? (
+                      <span className="text-red-500 flex items-center">
+                        <FaBan className="mr-1" /> Đã chấm dứt
+                      </span>
+                    ) : (
+                      <span className="text-yellow-500 flex items-center">
+                        <FaClock className="mr-1" /> Chờ thanh toán
+                      </span>
                     )}
                   </td>
                 </tr>

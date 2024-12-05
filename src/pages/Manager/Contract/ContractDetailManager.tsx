@@ -4,6 +4,7 @@ import {
   getContractDesignById,
   paymentContractDesign,
   paymentContractConstruction,
+  approveContractBill,
 } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -22,6 +23,8 @@ import {
   FaPaperclip,
   FaStickyNote,
   FaUpload,
+  FaCheckCircle,
+  FaBan,
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
@@ -57,7 +60,11 @@ const ContractDetailManager = () => {
   ) => {
     if (event.target.files && event.target.files.length > 0) {
       setSelectedFile(event.target.files[0]);
-      setSelectedBatch(batchNumber);
+      if (contractDetail && batchNumber < contractDetail.BatchPayment.length) {
+        setSelectedBatch(batchNumber);
+      } else {
+        console.error('Batch number không hợp lệ');
+      }
     }
   };
 
@@ -70,7 +77,14 @@ const ContractDetailManager = () => {
     ) {
       setIsUploading(true);
       try {
-        const paymentId = contractDetail.BatchPayment[selectedBatch].PaymentId;
+        const batch = contractDetail.BatchPayment.find(
+          (b) => b.NumberOfBatch === selectedBatch,
+        );
+        if (!batch) {
+          throw new Error('Không tìm thấy đợt thanh toán tương ứng.');
+        }
+        const paymentId = batch.PaymentId;
+        console.log('', paymentId);
         if (
           contractDetail.Name ===
           'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng'
@@ -94,6 +108,17 @@ const ContractDetailManager = () => {
       } finally {
         setIsUploading(false);
       }
+    }
+  };
+
+  const handleApproveBill = async (paymentId: string, type: string) => {
+    try {
+      await approveContractBill(paymentId, type);
+      toast.success('Hóa đơn đã được xác nhận!');
+      fetchContractDetail();
+    } catch (error) {
+      console.error('Error approving contract bill:', error);
+      toast.error('Xác nhận hóa đơn thất bại!');
     }
   };
 
@@ -173,23 +198,29 @@ const ContractDetailManager = () => {
     {
       icon: <FaMoneyBillWave />,
       label: 'Giá trị hợp đồng',
-      value: `${contractDetail.ContractValue !== null ? contractDetail.ContractValue.toLocaleString() : 'N/A'} ${
-        contractDetail.UnitPrice
-      }`,
+      value: `${
+        contractDetail.ContractValue !== null
+          ? contractDetail.ContractValue.toLocaleString()
+          : 'N/A'
+      } ${contractDetail.UnitPrice}`,
     },
     {
       icon: <FaBoxOpen />,
       label: 'Gói thô',
-      value: `${contractDetail.RoughPackagePrice !== null ? contractDetail.RoughPackagePrice.toLocaleString() : 'N/A'} ${
-        contractDetail.UnitPrice
-      }`,
+      value: `${
+        contractDetail.RoughPackagePrice !== null
+          ? contractDetail.RoughPackagePrice.toLocaleString()
+          : 'N/A'
+      } ${contractDetail.UnitPrice}`,
     },
     {
       icon: <FaBox />,
       label: 'Gói hoàn thiện',
-      value: `${contractDetail.FinishedPackagePrice !== null ? contractDetail.FinishedPackagePrice.toLocaleString() : 'N/A'} ${
-        contractDetail.UnitPrice
-      }`,
+      value: `${
+        contractDetail.FinishedPackagePrice !== null
+          ? contractDetail.FinishedPackagePrice.toLocaleString()
+          : 'N/A'
+      } ${contractDetail.UnitPrice}`,
     },
     attachment,
     {
@@ -271,10 +302,11 @@ const ContractDetailManager = () => {
                 </th>
                 <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
                 <th className="px-4 py-2 border text-center">Hóa đơn</th>
+                <th className="px-4 py-2 border text-center">Trạng thái</th>
               </tr>
             </thead>
             <tbody>
-              {contractDetail.BatchPayment?.map((batch, index) => (
+              {contractDetail.BatchPayment?.map((batch) => (
                 <tr key={batch.NumberOfBatch} className="text-center">
                   <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{batch.Description}</td>
@@ -298,24 +330,37 @@ const ContractDetailManager = () => {
                       'Chưa có hóa đơn'
                     )}
                   </td>
-                  {batch.InvoiceImage === 'Chưa có hóa đơn' && (
-                    <td className="px-4 py-2 border">
-                      <>
-                        <input
-                          type="file"
-                          onChange={(e) => handleFileChange(e, index)}
-                          className="ml-2"
-                        />
+                  <td className="px-4 py-2 border">
+                    {batch.Status === 'Paid' ? (
+                      <span className="text-green-500 flex items-center">
+                        <FaCheckCircle className="mr-1" /> Đã thanh toán
+                      </span>
+                    ) : batch.Status === 'Canceled' ? (
+                      <span className="text-red-500 flex items-center">
+                        <FaBan className="mr-1" /> Đã chấm dứt
+                      </span>
+                    ) : (
+                      <span className="text-yellow-500 flex items-center">
+                        <FaClock className="mr-1" /> Chờ thanh toán
+                      </span>
+                    )}
+                  </td>
+                  {batch.InvoiceImage !== 'Chưa có hóa đơn' &&
+                    batch.Status === 'Progress' && (
+                      <td className="px-4 py-2 border">
                         <button
-                          onClick={() => handleUpload(index)}
-                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                          disabled={isUploading}
+                          onClick={() =>
+                            handleApproveBill(
+                              batch.PaymentId,
+                              contractDetail.Type,
+                            )
+                          }
+                          className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
                         >
-                          {isUploading ? 'Đang tải lên...' : <FaUpload />}
+                          Xác nhận
                         </button>
-                      </>
-                    </td>
-                  )}
+                      </td>
+                    )}
                 </tr>
               ))}
               {contractDetail.BatchPaymentAppendices?.map((appendix, index) => (

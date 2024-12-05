@@ -136,3 +136,20 @@ export const paymentContractConstruction = async (
     throw error;
   }
 };
+
+export const approveContractBill = async (paymentId: string, type: string) => {
+  try {
+    const response = await requestWebRHCQS.post(
+      `/contract/approve/bill?paymentId=${paymentId}&type=${type}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error approving contract bill:', error);
+    throw error;
+  }
+};

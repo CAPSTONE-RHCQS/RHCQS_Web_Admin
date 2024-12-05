@@ -112,7 +112,7 @@ const CreateConstructionContract = () => {
                 onChange={(e) =>
                   handleChangeContractDetails('startDate', e.target.value)
                 }
-                min={today} // Ngăn chọn ngày trong quá khứ
+                min={today}
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
               />
@@ -127,7 +127,7 @@ const CreateConstructionContract = () => {
                 onChange={(e) =>
                   handleChangeContractDetails('endDate', e.target.value)
                 }
-                min={contractDetails.startDate || today} // Ngăn chọn ngày trước ngày bắt đầu
+                min={contractDetails.startDate || today}
                 className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                 required
               />

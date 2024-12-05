@@ -43,6 +43,11 @@ const CreateContractDesign = () => {
     field: keyof CreateContractDesignRequest,
     value: string | number,
   ) => {
+    if (field === 'contractValue' && typeof value === 'number' && value < 0) {
+      toast.error('Giá trị hợp đồng không được nhỏ hơn 0');
+      return;
+    }
+
     setContractDetails((prevDetails) => ({
       ...prevDetails,
       [field]: value,
@@ -134,6 +139,11 @@ const CreateContractDesign = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (isSubmitting) return;
+
+    if (contractDetails.contractValue < 0) {
+      toast.error('Giá trị hợp đồng không được nhỏ hơn 0');
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -285,9 +295,8 @@ const CreateContractDesign = () => {
                 <td className="py-2 text-center border-r border-gray-300">
                   {payment.numberOfBatches}
                 </td>
-                <td className="py-2 border-r border-gray-300">
+                <td className="px-4 py-2 border text-center align-middle">
                   <input
-                    type="text"
                     value={payment.description}
                     onChange={(e) =>
                       handleBatchPaymentChange(
@@ -296,11 +305,17 @@ const CreateContractDesign = () => {
                         e.target.value,
                       )
                     }
-                    className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    style={{
+                      overflow: 'hidden',
+                      minHeight: '60px',
+                      resize: 'vertical',
+                      border: '1px solid #ccc',
+                    }}
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     required
                   />
                 </td>
-                <td className="py-2 border-r border-gray-300 w-20 text-center">
+                <td className="px-4 py-2 border text-center align-middle">
                   <input
                     type="text"
                     value={payment.percents}
@@ -311,7 +326,13 @@ const CreateContractDesign = () => {
                         e.target.value,
                       )
                     }
-                    className="w-full rounded-lg bg-transparent py-1 px-2 text-black text-center outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    style={{
+                      overflow: 'hidden',
+                      minHeight: '60px',
+                      resize: 'vertical',
+                      border: '1px solid #ccc',
+                    }}
+                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     required
                   />
                 </td>
