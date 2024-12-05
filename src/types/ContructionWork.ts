@@ -35,7 +35,7 @@ export interface WorkTemplate {
   PackageName: string
   LaborCost: number
   MaterialCost: number
-  MaterialFinishedCost: number
+  MaterialFinishedCost: number | null
   TotalCost: number
   InsDate: any
 }

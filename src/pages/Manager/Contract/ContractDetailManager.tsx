@@ -350,10 +350,7 @@ const ContractDetailManager = () => {
                       <td className="px-4 py-2 border">
                         <button
                           onClick={() =>
-                            handleApproveBill(
-                              batch.PaymentId,
-                              contractDetail.Type,
-                            )
+                            handleApproveBill(batch.PaymentId, 'Approved')
                           }
                           className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
                         >

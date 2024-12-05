@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 import {
   searchPackagesByName,
@@ -9,6 +9,7 @@ import { searchLaborByPackageId } from '../../../../../api/Labor/Labor';
 import { MaterialItem } from '../../../../../types/Material';
 import { LaborItem } from '../../../../../types/Labor';
 import { createPackageConstructionWork } from '../../../../../api/Construction/ContructionWork';
+import { getConstructionWorkById } from '../../../../../api/Construction/ContructionWork';
 
 interface CreatePackageConstructionWorkProps {
   isOpen: boolean;
@@ -32,7 +33,8 @@ interface Resource {
 interface Package {
   packageName: string;
   packageId: string;
-  materialResources: Resource[];
+  roughMaterialResources: Resource[];
+  finishedMaterialResources: Resource[];
   laborResources: Resource[];
 }
 
@@ -57,7 +59,17 @@ const CreatePackageConstructionWork: React.FC<
     {
       packageName: '',
       packageId: '',
-      materialResources: [
+      roughMaterialResources: [
+        {
+          materialSectionId: '',
+          price: 0,
+          laborId: null,
+          laborPrice: null,
+          materialName: '',
+          materialSearchResults: [],
+        },
+      ],
+      finishedMaterialResources: [
         {
           materialSectionId: '',
           price: 0,
@@ -86,6 +98,24 @@ const CreatePackageConstructionWork: React.FC<
   const [selectedPackageIds, setSelectedPackageIds] = useState<Set<string>>(
     new Set(),
   );
+  const [workName, setWorkName] = useState<string>('');
+
+  useEffect(() => {
+    const fetchWorkName = async () => {
+      if (constructionData) {
+        try {
+          const data = await getConstructionWorkById(constructionData);
+          setWorkName(data.WorkName);
+        } catch (error) {
+          console.error('Error fetching construction work:', error);
+        }
+      }
+    };
+
+    if (isOpen) {
+      fetchWorkName();
+    }
+  }, [isOpen, constructionData]);
 
   const handleSearchPackage = async (name: string, packageIndex: number) => {
     try {
@@ -105,6 +135,7 @@ const CreatePackageConstructionWork: React.FC<
     name: string,
     packageIndex: number,
     resourceIndex: number,
+    type: 'ROUGH' | 'FINISHED'
   ) => {
     try {
       const results = await searchMaterialByPackageId(
@@ -112,17 +143,17 @@ const CreatePackageConstructionWork: React.FC<
         packages[packageIndex].packageId,
       );
       const newPackages = [...packages];
+      const resources = type === 'ROUGH'
+        ? newPackages[packageIndex].roughMaterialResources
+        : newPackages[packageIndex].finishedMaterialResources;
+      
       const selectedMaterials = new Set(
-        newPackages[packageIndex].materialResources.map(
-          (res) => res.materialName,
-        ),
+        resources.map((res) => res.materialName),
       );
       const filteredResults = results.filter(
-        (material) => !selectedMaterials.has(material.Name),
+        (material) => !selectedMaterials.has(material.Name) && material.Type === type,
       );
-      newPackages[packageIndex].materialResources[
-        resourceIndex
-      ].materialSearchResults = filteredResults;
+      resources[resourceIndex].materialSearchResults = filteredResults;
       setPackages(newPackages);
     } catch (error) {
       console.error('Error searching materials:', error);
@@ -177,15 +208,16 @@ const CreatePackageConstructionWork: React.FC<
     material: MaterialItem,
     packageIndex: number,
     resourceIndex: number,
+    resourceType: 'roughMaterial' | 'finishedMaterial'
   ) => {
     const newPackages = [...packages];
-    newPackages[packageIndex].materialResources[resourceIndex].materialName =
-      material.Name;
-    newPackages[packageIndex].materialResources[resourceIndex].price =
-      material.Price || 0;
-    newPackages[packageIndex].materialResources[
-      resourceIndex
-    ].materialSearchResults = [];
+    const resources = resourceType === 'roughMaterial'
+      ? newPackages[packageIndex].roughMaterialResources
+      : newPackages[packageIndex].finishedMaterialResources;
+    
+    resources[resourceIndex].materialName = material.Name;
+    resources[resourceIndex].price = material.Price || 0;
+    resources[resourceIndex].materialSearchResults = [];
     setPackages(newPackages);
   };
 
@@ -209,18 +241,20 @@ const CreatePackageConstructionWork: React.FC<
     value: string,
     packageIndex: number,
     resourceIndex?: number,
-    resourceType?: 'material' | 'labor',
+    resourceType?: 'roughMaterial' | 'finishedMaterial' | 'labor',
   ) => {
     const newPackages = [...packages];
     if (resourceType && resourceIndex !== undefined) {
       const resources =
-        resourceType === 'material'
-          ? newPackages[packageIndex].materialResources
+        resourceType === 'roughMaterial'
+          ? newPackages[packageIndex].roughMaterialResources
+          : resourceType === 'finishedMaterial'
+          ? newPackages[packageIndex].finishedMaterialResources
           : newPackages[packageIndex].laborResources;
       switch (field) {
         case 'materialName':
           resources[resourceIndex].materialName = value;
-          handleSearchMaterial(value, packageIndex, resourceIndex);
+          handleSearchMaterial(value, packageIndex, resourceIndex, resourceType === 'roughMaterial' ? 'ROUGH' : 'FINISHED');
           break;
         case 'laborName':
           resources[resourceIndex].laborName = value;
@@ -246,7 +280,17 @@ const CreatePackageConstructionWork: React.FC<
       {
         packageName: '',
         packageId: '',
-        materialResources: [
+        roughMaterialResources: [
+          {
+            materialSectionId: '',
+            price: 0,
+            laborId: null,
+            laborPrice: null,
+            materialName: '',
+            materialSearchResults: [],
+          },
+        ],
+        finishedMaterialResources: [
           {
             materialSectionId: '',
             price: 0,
@@ -276,9 +320,12 @@ const CreatePackageConstructionWork: React.FC<
     }
   };
 
-  const addMaterialResource = (packageIndex: number) => {
+  const addMaterialResource = (packageIndex: number, resourceType: 'roughMaterial' | 'finishedMaterial') => {
     const newPackages = [...packages];
-    newPackages[packageIndex].materialResources.push({
+    const resources = resourceType === 'roughMaterial'
+      ? newPackages[packageIndex].roughMaterialResources
+      : newPackages[packageIndex].finishedMaterialResources;
+    resources.push({
       materialSectionId: '',
       price: 0,
       laborId: null,
@@ -302,15 +349,13 @@ const CreatePackageConstructionWork: React.FC<
     setPackages(newPackages);
   };
 
-  const removeMaterialResource = (
-    packageIndex: number,
-    resourceIndex: number,
-  ) => {
+  const removeMaterialResource = (packageIndex: number, resourceIndex: number, resourceType: 'roughMaterial' | 'finishedMaterial') => {
     const newPackages = [...packages];
-    if (newPackages[packageIndex].materialResources.length > 1) {
-      newPackages[packageIndex].materialResources = newPackages[
-        packageIndex
-      ].materialResources.filter((_, i) => i !== resourceIndex);
+    const resources = resourceType === 'roughMaterial'
+      ? newPackages[packageIndex].roughMaterialResources
+      : newPackages[packageIndex].finishedMaterialResources;
+    if (resources.length > 1) {
+      resources.splice(resourceIndex, 1);
       setPackages(newPackages);
     }
   };
@@ -328,7 +373,8 @@ const CreatePackageConstructionWork: React.FC<
   const handleSave = async () => {
     const packageData = packages.map((pkg) => {
       const laborCost = calculateTotal(pkg.laborResources, 'labor');
-      const materialCost = calculateTotal(pkg.materialResources, 'material');
+      const materialCost = calculateTotal(pkg.roughMaterialResources, 'material');
+      const materialFinishedCost = calculateTotal(pkg.finishedMaterialResources, 'material');
       const totalCost = laborCost + materialCost;
 
       return {
@@ -336,7 +382,7 @@ const CreatePackageConstructionWork: React.FC<
         packageId: pkg.packageId,
         laborCost: laborCost,
         materialCost: materialCost,
-        materialFinishedCost: 0,
+        materialFinishedCost: materialFinishedCost,
         totalCost: totalCost,
       };
     });
@@ -359,7 +405,7 @@ const CreatePackageConstructionWork: React.FC<
       <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
         <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
           <h1 className="text-2xl">Tạo mới gói công tác</h1>
-          <h1 className="text-2xl">{constructionData}</h1>
+          <h1 className="text-2xl">{workName}</h1>
           <button
             onClick={addPackage}
             className="text-primaryGreenButton px-4 py-2 rounded font-bold"
@@ -422,15 +468,15 @@ const CreatePackageConstructionWork: React.FC<
 
             <div className="mt-4">
               <div className="flex justify-between items-center text-black">
-                <h3 className="font-bold">Phần vật tư:</h3>
+                <h3 className="font-bold">Phần vật tư thô:</h3>
                 <button
-                  onClick={() => addMaterialResource(packageIndex)}
+                  onClick={() => addMaterialResource(packageIndex, 'roughMaterial')}
                   className="bg-primaryGreenButton text-white w-8 h-5 rounded-full flex items-center justify-center text-lg mr-2 mb-2"
                 >
                   +
                 </button>
               </div>
-              {pkg.materialResources.map((resource, resourceIndex) => (
+              {pkg.roughMaterialResources.map((resource, resourceIndex) => (
                 <div
                   key={resourceIndex}
                   className="mb-2 mt-2 flex items-center relative"
@@ -447,11 +493,11 @@ const CreatePackageConstructionWork: React.FC<
                         e.target.value,
                         packageIndex,
                         resourceIndex,
-                        'material',
+                        'roughMaterial',
                       )
                     }
                     className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
-                    placeholder="Nhập tên vật tư"
+                    placeholder="Nhập tên vật tư thô"
                   />
                   {resource.materialSearchResults &&
                     resource.materialSearchResults.length > 0 && (
@@ -467,6 +513,7 @@ const CreatePackageConstructionWork: React.FC<
                                       result,
                                       packageIndex,
                                       resourceIndex,
+                                      'roughMaterial'
                                     )
                                   }
                                 >
@@ -487,7 +534,7 @@ const CreatePackageConstructionWork: React.FC<
                         e.target.value,
                         packageIndex,
                         resourceIndex,
-                        'material',
+                        'roughMaterial',
                       )
                     }
                     className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
@@ -497,17 +544,111 @@ const CreatePackageConstructionWork: React.FC<
                   <div className="right-0">
                     <DeleteButton
                       onClick={() =>
-                        removeMaterialResource(packageIndex, resourceIndex)
+                        removeMaterialResource(packageIndex, resourceIndex, 'roughMaterial')
                       }
                     />
                   </div>
                 </div>
               ))}
               <div className="text-left">
-                <span className="font-regular text-sm">Tổng tiền vật tư:</span>{' '}
+                <span className="font-regular text-sm">Tổng tiền vật tư thô:</span>{' '}
                 <span className="text-primary font-bold">
                   {formatCurrency(
-                    calculateTotal(pkg.materialResources, 'material'),
+                    calculateTotal(pkg.roughMaterialResources, 'material'),
+                  )}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <div className="flex justify-between items-center text-black">
+                <h3 className="font-bold">Vật tư hoàn thiện:</h3>
+                <button
+                  onClick={() => addMaterialResource(packageIndex, 'finishedMaterial')}
+                  className="bg-primaryGreenButton text-white w-8 h-5 rounded-full flex items-center justify-center text-lg mr-2 mb-2"
+                >
+                  +
+                </button>
+              </div>
+              {pkg.finishedMaterialResources.map((resource, resourceIndex) => (
+                <div
+                  key={resourceIndex}
+                  className="mb-2 mt-2 flex items-center relative"
+                >
+                  <span className="font-bold text-black text-lg mr-2 mb-2">
+                    {resourceIndex + 1}.
+                  </span>
+                  <input
+                    type="text"
+                    value={resource.materialName || ''}
+                    onChange={(e) =>
+                      handleChange(
+                        'materialName',
+                        e.target.value,
+                        packageIndex,
+                        resourceIndex,
+                        'finishedMaterial',
+                      )
+                    }
+                    className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
+                    placeholder="Nhập tên vật tư hoàn thiện"
+                  />
+                  {resource.materialSearchResults &&
+                    resource.materialSearchResults.length > 0 && (
+                      <div className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full z-10 no-scrollbar">
+                        <table className="w-full">
+                          <tbody>
+                            {resource.materialSearchResults.map((result) => (
+                              <tr key={result.Id}>
+                                <td
+                                  className="border-b border-primaryGreenButton p-2 cursor-pointer text-black"
+                                  onClick={() =>
+                                    handleSelectMaterial(
+                                      result,
+                                      packageIndex,
+                                      resourceIndex,
+                                      'finishedMaterial'
+                                    )
+                                  }
+                                >
+                                  {result.Name}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    )}
+                  <input
+                    type="number"
+                    value={resource.price || ''}
+                    onChange={(e) =>
+                      handleChange(
+                        'price',
+                        e.target.value,
+                        packageIndex,
+                        resourceIndex,
+                        'finishedMaterial',
+                      )
+                    }
+                    className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
+                    placeholder="Nhập giá tiền"
+                    readOnly
+                  />
+                  <div className="right-0">
+                    <DeleteButton
+                      onClick={() =>
+                        removeMaterialResource(packageIndex, resourceIndex, 'finishedMaterial')
+                      }
+                    />
+                  </div>
+                </div>
+              ))}
+              <div className="text-left">
+                <span className="font-regular text-sm">Tổng tiền vật tư hoàn thiện:</span>{' '}
+                <span className="text-primary font-bold">
+                  {formatCurrency(
+                    calculateTotal(pkg.finishedMaterialResources, 'material'),
                   )}
                 </span>
               </div>
@@ -608,7 +749,7 @@ const CreatePackageConstructionWork: React.FC<
               <span className="text-black">Tổng tiền gói:</span>{' '}
               <span className="text-primary">
                 {formatCurrency(
-                  calculateTotal(pkg.materialResources, 'material') +
+                  calculateTotal(pkg.roughMaterialResources, 'material') +
                     calculateTotal(pkg.laborResources, 'labor'),
                 )}
               </span>

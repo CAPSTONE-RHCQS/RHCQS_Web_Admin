@@ -144,7 +144,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Nguồn
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
-                            Phần vật tư cần thiết
+                            Vật tư cần thiết
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
                             Định mức
@@ -153,7 +153,10 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Gói
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
-                            Giá vật tư
+                            Giá vật tư thô
+                          </th>
+                          <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
+                            Giá vật tư hoàn thiện
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
                             Gia nhân công
@@ -214,6 +217,27 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                                   style: 'currency',
                                   currency: 'VND',
                                 })}
+                              </div>
+                            ))}
+                          </td>
+                          <td
+                            className="py-2 px-4 text-center border border-gray-300"
+                            rowSpan={2}
+                          >
+                            {workTemplates.map((template) => (
+                              <div
+                                key={template.PackageName}
+                                className="border-b last:border-b-0 py-3"
+                              >
+                                {template.MaterialFinishedCost
+                                  ? template.MaterialFinishedCost.toLocaleString(
+                                      'vi-VN',
+                                      {
+                                        style: 'currency',
+                                        currency: 'VND',
+                                      },
+                                    )
+                                  : '0'}
                               </div>
                             ))}
                           </td>
