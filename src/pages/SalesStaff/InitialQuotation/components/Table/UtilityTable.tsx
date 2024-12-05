@@ -48,7 +48,10 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
       return total + utility.Price;
     }, 0);
 
-    setUtilityInfos(updatedUtilityInfos);
+    if (JSON.stringify(updatedUtilityInfos) !== JSON.stringify(utilityInfos)) {
+      setUtilityInfos(updatedUtilityInfos);
+    }
+
     setTotalUtilityCost(totalCost);
     setTotalUtilities(totalCost);
 

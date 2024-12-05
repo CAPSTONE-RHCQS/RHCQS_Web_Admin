@@ -101,3 +101,21 @@ export async function approveInitialQuotation(
     throw new Error('Failed to approve initial quotation');
   }
 }
+
+export async function getInitialQuotationStatus(
+  initialId: string,
+): Promise<string> {
+  try {
+    const response = await requestWebRHCQS.get(`/quotation/initial/status/id`, {
+      params: { initialId },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching status for initial ID ${initialId}:`, error);
+    throw new Error('Failed to fetch initial quotation status');
+  }
+}

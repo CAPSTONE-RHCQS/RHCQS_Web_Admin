@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
-import { getHouseDesignById } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
+import {
+  getHouseDesignById,
+  getHouseDesignDrawingStatus,
+} from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { uploadFile } from '../../../api/Upload/UploadApi';
 import { createDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
@@ -20,7 +23,7 @@ import {
   FiType,
 } from 'react-icons/fi';
 
-const HouseDesignDetailSalesStaff: React.FC = () => {
+const HouseDesignDetailDesignStaff: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [designDetail, setDesignDetail] =
     useState<HouseDesignDetailResponse | null>(null);
@@ -30,6 +33,7 @@ const HouseDesignDetailSalesStaff: React.FC = () => {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(
     null,
   );
+  const [currentStatus, setCurrentStatus] = useState<string>('');
 
   const fetchDesignDetail = useCallback(async () => {
     if (!id) {
@@ -57,9 +61,27 @@ const HouseDesignDetailSalesStaff: React.FC = () => {
     }
   }, [id]);
 
+  const fetchCurrentStatus = async () => {
+    if (id) {
+      const status = await getHouseDesignDrawingStatus(id);
+      setCurrentStatus(status);
+    }
+  };
+
   useEffect(() => {
     fetchDesignDetail();
-  }, [fetchDesignDetail]);
+    const interval = setInterval(() => {
+      fetchCurrentStatus();
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [fetchDesignDetail, id]);
+
+  useEffect(() => {
+    if (currentStatus !== designDetail?.Status) {
+      fetchDesignDetail();
+    }
+  }, [currentStatus, designDetail]);
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -312,4 +334,4 @@ const HouseDesignDetailSalesStaff: React.FC = () => {
   );
 };
 
-export default HouseDesignDetailSalesStaff;
+export default HouseDesignDetailDesignStaff;

@@ -66,3 +66,24 @@ export const getHouseDesignById = async (
     throw error;
   }
 };
+
+export async function getHouseDesignDrawingStatus(
+  houseDesignId: string,
+): Promise<string> {
+  try {
+    const response = await requestWebRHCQS.get(`/housedesign/status/id`, {
+      params: { houseDesignId },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching status for initial ID ${houseDesignId}:`,
+      error,
+    );
+    throw new Error('Failed to fetch initial quotation status');
+  }
+}

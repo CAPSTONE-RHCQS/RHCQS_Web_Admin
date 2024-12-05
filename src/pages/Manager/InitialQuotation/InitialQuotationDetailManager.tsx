@@ -20,6 +20,7 @@ import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
 import {
   getInitialQuotation,
   approveInitialQuotation,
+  getInitialQuotationStatus,
 } from '../../../api/InitialQuotation/InitialQuotationApi';
 import {
   BatchPaymentInfo,
@@ -57,6 +58,9 @@ const InitialQuotationDetailManager = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [reason, setReason] = useState('');
   const [type, setType] = useState('Approved');
+  const [currentStatus, setCurrentStatus] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [isStatusChecked, setIsStatusChecked] = useState(false);
 
   const fetchQuotationData = async () => {
     if (id) {
@@ -98,13 +102,43 @@ const InitialQuotationDetailManager = () => {
         setUnitPackageFinished(data.PackageQuotationList.UnitPackageFinished);
       } catch (error) {
         console.error('Error fetching quotation data:', error);
+      } finally {
+        if (isStatusChecked) {
+          setIsLoading(false);
+        }
+      }
+    }
+  };
+
+  const checkStatus = async () => {
+    if (id) {
+      try {
+        const status = await getInitialQuotationStatus(id);
+        if (status !== currentStatus) {
+          setCurrentStatus(status);
+        }
+        setIsStatusChecked(true);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Error fetching status:', error);
       }
     }
   };
 
   useEffect(() => {
     fetchQuotationData();
+    checkStatus();
+    const interval = setInterval(checkStatus, 2000);
+    return () => clearInterval(interval);
   }, [id]);
+
+  if (isLoading) {
+    return (
+      <div>
+        <ClipLoader color="#36d7b7" />
+      </div>
+    );
+  }
 
   if (!quotationData) {
     return (
@@ -211,7 +245,7 @@ const InitialQuotationDetailManager = () => {
         )}
 
         <InitialQuotationStatusTracker
-          currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}
+          currentStatus={getStatusLabelInitalQuoteDetail(currentStatus)}
         />
       </div>
       <div className="flex justify-end space-x-2">
@@ -499,7 +533,7 @@ const InitialQuotationDetailManager = () => {
           <table className="min-w-full bg-white border border-gray-200">
             <thead>
               <tr>
-                <th className="px-4 py-2 border text-center">Mô tả</th>
+                <th className="px-4 py-2 border text-center">Mô t</th>
                 <th className="px-4 py-2 border text-center">Hệ số</th>
                 <th className="px-4 py-2 border text-center">Số lượng</th>
                 <th className="px-4 py-2 border text-center">Đơn Giá</th>
