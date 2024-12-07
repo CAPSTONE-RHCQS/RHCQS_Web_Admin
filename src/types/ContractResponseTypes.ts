@@ -5,6 +5,7 @@ export interface Quotation {
 }
 
 export interface BatchPayment {
+  BatchPaymentId: string;
   PaymentId: string;
   NumberOfBatch: number;
   Price: number;

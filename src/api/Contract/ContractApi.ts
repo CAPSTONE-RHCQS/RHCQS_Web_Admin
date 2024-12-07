@@ -153,3 +153,36 @@ export const approveContractBill = async (paymentId: string, type: string) => {
     throw error;
   }
 };
+
+export const createContractAppendix = async (data: {
+  contractId: string;
+  startDate: string;
+  endDate: string;
+  validityPeriod: number;
+  taxCode: string;
+  contractValue: number;
+  urlFile: string;
+  note: string;
+  cancelBatchPaymnetContract: { batchPaymentId: string }[];
+  batchPaymentRequests: {
+    numberOfBatches: number;
+    price: number;
+    paymentDate: string;
+    paymentPhase: string;
+    percents: number;
+    description: string;
+  }[];
+}) => {
+  try {
+    const response = await requestWebRHCQS.post('/contract/appendix', data, {
+      headers: {
+        'Content-Type': 'application/json',
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating contract appendix:', error);
+    throw error;
+  }
+};

@@ -280,7 +280,7 @@ const CreateContractDesign = () => {
               <th className="py-2 border-b border-gray-300 border-r w-60">
                 Giá trị thanh toán (VNĐ)
               </th>
-              <th className="py-2 border-b border-gray-300 border-r w-20">
+              <th className="py-2 border-b border-gray-300 border-r w-50">
                 Ngày thanh toán
               </th>
               <th className="py-2 border-b border-gray-300 border-r w-50">
