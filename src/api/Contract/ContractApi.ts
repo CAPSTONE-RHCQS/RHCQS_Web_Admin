@@ -112,6 +112,31 @@ export const paymentContractDesign = async (paymentId: string, file: File) => {
   }
 };
 
+export const paymentContractAppendix = async (
+  paymentId: string,
+  file: File,
+) => {
+  try {
+    const formData = new FormData();
+    formData.append('files', file, file.name);
+
+    const response = await requestWebRHCQS.post(
+      `/appendix/confirm/bill?paymentId=${paymentId}`,
+      formData,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error signing contract completion:', error);
+    throw error;
+  }
+};
+
 export const paymentContractConstruction = async (
   paymentId: string,
   file: File,

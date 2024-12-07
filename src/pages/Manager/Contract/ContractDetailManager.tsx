@@ -336,129 +336,122 @@ const ContractDetailManager = () => {
         </div>
       </div>
 
-      {contractDetail.Type !== 'Appendix' && (
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold mb-4">Các đợt thanh toán</h3>
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">Đợt</th>
-                <th className="px-4 py-2 border text-center">Mô tả</th>
-                <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
-                <th className="px-4 py-2 border text-center">
-                  Giá trị thanh toán (VNĐ)
-                </th>
-                <th className="px-4 py-2 border text-center">
-                  Ngày thanh toán
-                </th>
-                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
-                <th className="px-4 py-2 border text-center">Hóa đơn</th>
-                <th className="px-4 py-2 border text-center">Trạng thái</th>
-              </tr>
-            </thead>
-            <tbody>
-              {contractDetail.BatchPayment?.map((batch, index) => (
-                <tr key={batch.NumberOfBatch} className="text-center">
-                  <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
-                  <td className="px-4 py-2 border">{batch.Description}</td>
-                  <td className="px-4 py-2 border">{batch.Percents} %</td>
-                  <td className="px-4 py-2 border">
-                    {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {formatDate(batch.PaymentDate)}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {formatDate(batch.PaymentPhase)}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
+      <div className="mt-6">
+        <h3 className="text-xl font-semibold mb-4">Các đợt thanh toán</h3>
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border text-center">Đợt</th>
+              <th className="px-4 py-2 border text-center">Mô tả</th>
+              <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
+              <th className="px-4 py-2 border text-center">
+                Giá trị thanh toán (VNĐ)
+              </th>
+              <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
+              <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
+              <th className="px-4 py-2 border text-center">Hóa đơn</th>
+              <th className="px-4 py-2 border text-center">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contractDetail.BatchPayment?.map((batch, index) => (
+              <tr key={batch.NumberOfBatch} className="text-center">
+                <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
+                <td className="px-4 py-2 border">{batch.Description}</td>
+                <td className="px-4 py-2 border">{batch.Percents} %</td>
+                <td className="px-4 py-2 border">
+                  {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
+                </td>
+                <td className="px-4 py-2 border">
+                  {formatDate(batch.PaymentDate)}
+                </td>
+                <td className="px-4 py-2 border">
+                  {formatDate(batch.PaymentPhase)}
+                </td>
+                <td className="px-4 py-2 border">
+                  {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
+                    <img
+                      src={batch.InvoiceImage}
+                      alt={`Invoice for ${batch.Description}`}
+                      className="w-16 h-16 object-cover mx-auto"
+                    />
+                  ) : batch.InvoiceImage === 'Chưa có hóa đơn' &&
+                    batch.Status === 'Progress' ? (
+                    <>
+                      <input
+                        type="file"
+                        onChange={(e) => handleFileChange(e, index)}
+                        className="hidden"
+                        id={`fileInput-${index}`}
+                        accept="image/*"
+                      />
+                      <button
+                        onClick={() =>
+                          document.getElementById(`fileInput-${index}`)?.click()
+                        }
+                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                      >
+                        Chọn tệp
+                      </button>
+                      {selectedFile && (
+                        <span className="ml-2 text-gray-700">
+                          {selectedFile.name}
+                        </span>
+                      )}
+                      <button
+                        onClick={() => handleUpload(index)}
+                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                        disabled={!selectedFile || isUploading}
+                      >
+                        {isUploading ? 'Đang tải lên...' : <FaUpload />}
+                      </button>
+                      <p className="text-gray-500 text-sm mt-1">
+                        Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF).
+                      </p>
+                    </>
+                  ) : batch.InvoiceImage !== 'Chưa có hóa đơn' &&
+                    batch.Status === 'Progress' ? (
+                    <>
                       <img
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
                         className="w-16 h-16 object-cover mx-auto"
                       />
-                    ) : batch.InvoiceImage === 'Chưa có hóa đơn' &&
-                      batch.Status === 'Progress' ? (
-                      <>
-                        <input
-                          type="file"
-                          onChange={(e) => handleFileChange(e, index)}
-                          className="hidden"
-                          id={`fileInput-${index}`}
-                          accept="image/*"
-                        />
-                        <button
-                          onClick={() =>
-                            document
-                              .getElementById(`fileInput-${index}`)
-                              ?.click()
-                          }
-                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                        >
-                          Chọn tệp
-                        </button>
-                        {selectedFile && (
-                          <span className="ml-2 text-gray-700">
-                            {selectedFile.name}
-                          </span>
-                        )}
-                        <button
-                          onClick={() => handleUpload(index)}
-                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                          disabled={!selectedFile || isUploading}
-                        >
-                          {isUploading ? 'Đang tải lên...' : <FaUpload />}
-                        </button>
-                        <p className="text-gray-500 text-sm mt-1">
-                          Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF).
-                        </p>
-                      </>
-                    ) : batch.InvoiceImage !== 'Chưa có hóa đơn' &&
-                      batch.Status === 'Progress' ? (
-                      <>
-                        <img
-                          src={batch.InvoiceImage}
-                          alt={`Invoice for ${batch.Description}`}
-                          className="w-16 h-16 object-cover mx-auto"
-                        />
-                        <button
-                          onClick={() =>
-                            handleApproveBill(batch.PaymentId, 'Approved')
-                          }
-                          className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
-                        >
-                          Xác nhận
-                        </button>
-                      </>
-                    ) : (
-                      <></>
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {batch.Status === 'Paid' ? (
-                      <span className="text-green-500 flex items-center">
-                        <FaCheckCircle className="mr-1" /> Đã thanh toán
-                      </span>
-                    ) : batch.Status === 'Cancel' ? (
-                      <span className="text-red-500 flex items-center">
-                        <FaBan className="mr-1" /> Đã chấm dứt
-                      </span>
-                    ) : (
-                      <span className="text-blue-500 flex items-center">
-                        <FaClock className="mr-1" /> Chờ thanh toán
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+                      <button
+                        onClick={() =>
+                          handleApproveBill(batch.PaymentId, 'Approved')
+                        }
+                        className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
+                      >
+                        Xác nhận
+                      </button>
+                    </>
+                  ) : (
+                    <></>
+                  )}
+                </td>
+                <td className="px-4 py-2 border">
+                  {batch.Status === 'Paid' ? (
+                    <span className="text-green-500 flex items-center">
+                      <FaCheckCircle className="mr-1" /> Đã thanh toán
+                    </span>
+                  ) : batch.Status === 'Cancel' ? (
+                    <span className="text-red-500 flex items-center">
+                      <FaBan className="mr-1" /> Đã chấm dứt
+                    </span>
+                  ) : (
+                    <span className="text-blue-500 flex items-center">
+                      <FaClock className="mr-1" /> Chờ thanh toán
+                    </span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {contractDetail.Type === 'Appendix' &&
-      contractDetail.BatchPaymentAppendices ? (
+      {contractDetail.BatchPaymentAppendices ? (
         <div className="mt-6">
           <h3 className="text-xl font-semibold mb-4">Phụ lục hợp đồng</h3>
           <table className="min-w-full bg-white border border-gray-200">
@@ -526,7 +519,7 @@ const ContractDetailManager = () => {
                           </span>
                         )}
                         <button
-                          onClick={() => handleUpload(index)}
+                          onClick={() => handleUploadAppendices(index)}
                           className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
                           disabled={!selectedFile || isUploading}
                         >
