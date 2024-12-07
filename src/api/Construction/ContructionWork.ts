@@ -1,4 +1,4 @@
-import { CreateConstructionWork } from '../../types/ContructionWork';
+import { ConstructionWorkItem, ConstructionWorkType, CreateConstructionWork } from '../../types/ContructionWork';
 import {
   SearchConstructionWorkItem,
   SearchConstructionWorkResponse,
@@ -68,6 +68,30 @@ export const searchConstructionWorkItem = async (
     );
     console.log(response.data);
     return response.data as SearchConstructionWorkItem[];
+  } catch (error) {
+    console.error('Error fetching search results:', error);
+    throw error;
+  }
+};
+
+export const multipleSearchConstructionWorkItem = async (
+  page: number,
+  size: number,
+  code: string,
+  name: string,
+  unit: string,
+): Promise<ConstructionWorkType> => {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/construction-work/multi-filter?page=${page}&size=${size}&code=${code}&name=${name}&unit=${unit}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    console.log(response.data);
+    return response.data as ConstructionWorkType;
   } catch (error) {
     console.error('Error fetching search results:', error);
     throw error;

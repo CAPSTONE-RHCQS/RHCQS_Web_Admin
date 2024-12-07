@@ -20,10 +20,7 @@ interface ConstructionWorkTableProps {
 
 const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
   dataConstructionWork,
-  openItems,
   editModalOpen,
-  openEditModal,
-  currentEditId,
   refreshData,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
@@ -75,7 +72,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            {['Tên công việc', 'Mã công việc', 'Đơn vị', 'Ngày tạo', ''].map(
+            {['Tên công tác', 'Mã công tác', 'Đơn vị', 'Ngày tạo', ''].map(
               (header) => (
                 <th
                   key={header}

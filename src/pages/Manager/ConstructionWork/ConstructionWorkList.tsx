@@ -6,7 +6,11 @@ import { FaDownload } from 'react-icons/fa';
 import { ConstructionWorkType } from '../../../types/ContructionWork';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import Alert from '../../../components/Alert';
-import { getConstructionWorks, importConstructionWorkByExcel } from '../../../api/Construction/ContructionWork';
+import {
+  getConstructionWorks,
+  importConstructionWorkByExcel,
+  multipleSearchConstructionWorkItem,
+} from '../../../api/Construction/ContructionWork';
 import ConstructionWorkTable from './components/Table/ConstructionWorkTable';
 import CreateContructionWork from './components/Create/CreateContructionWork';
 import CreatePackageConstructionWork from './components/Create/CreatePackageConstructionWork';
@@ -28,20 +32,45 @@ const ConstructionWorkList: React.FC = () => {
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
   const [constructionResponse, setConstructionResponse] = useState<string>('');
+  const [searchCode, setSearchCode] = useState('');
+  const [searchName, setSearchName] = useState('');
+  const [searchUnit, setSearchUnit] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getConstructionWorks(page, 10).then((data) => {
-      setDataConstructionWork(data.Items);
-      setTotalPages(data.TotalPages);
-      setTotalConstructionWork(data.Total);
-      setIsLoading(false);
-    });
-  }, [page, refreshKey]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (isSearching) {
+          const data = await multipleSearchConstructionWorkItem(
+            page,
+            10,
+            searchCode,
+            searchName,
+            searchUnit,
+          );
+          setDataConstructionWork(data.Items);
+          setTotalPages(data.TotalPages);
+          setTotalConstructionWork(data.Total);
+        } else {
+          const data = await getConstructionWorks(page, 10);
+          setDataConstructionWork(data.Items);
+          setTotalPages(data.TotalPages);
+          setTotalConstructionWork(data.Total);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, refreshKey, searchCode, searchName, searchUnit, isSearching]);
 
   const openEditModal = (id: string) => {
     setCurrentEditId(id);
@@ -110,16 +139,53 @@ const ConstructionWorkList: React.FC = () => {
     }
   };
 
+  const handleSearchChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      setIsSearching(true);
+      setPage(1);
+    };
+
   return (
     <>
       <div>
         <Breadcrumb pageName="Công tác hạng mục" />
         <div className="bg-white p-4 rounded shadow">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <span className="text-lg text-black dark:text-white">
-              Tổng số công tác hạng mục: {totalConstructionWork}
-            </span>
-            <div className="flex space-x-2">
+            <div className="flex items-center justify-start space-x-2">
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm font-medium">Tên công tác</label>
+                <input
+                  type="text"
+                  placeholder="Nhập tên công tác"
+                  value={searchName}
+                  onChange={handleSearchChange(setSearchName)}
+                  className="border rounded px-2 py-1"
+                />
+              </div>
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm font-medium">Mã công tác</label>
+                <input
+                  type="text"
+                  placeholder="Nhập mã công tác"
+                  value={searchCode}
+                  onChange={handleSearchChange(setSearchCode)}
+                  className="border rounded px-2 py-1"
+                />
+              </div>
+              <div className="flex flex-col space-y-2">
+                <label className="text-sm font-medium">Đơn vị</label>
+                <input
+                  type="text"
+                  placeholder="Nhập đơn vị"
+                  value={searchUnit}
+                  onChange={handleSearchChange(setSearchUnit)}
+                  className="border rounded px-2 py-1"
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-end space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
@@ -132,10 +198,15 @@ const ConstructionWorkList: React.FC = () => {
               >
                 <FaDownload className="text-lg" />
               </button>
-              <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange} />
+              <input
+                type="file"
+                id="fileInput"
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+              />
               <ArrowPathIcon
                 onClick={handleRefresh}
-                className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
+                className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
               />
             </div>
           </div>
