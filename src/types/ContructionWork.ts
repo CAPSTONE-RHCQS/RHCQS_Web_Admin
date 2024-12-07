@@ -83,3 +83,8 @@ export interface SearchConstructionWorkItem {
   Name: string;
   ConstructionId: string;
 }
+
+export interface UpdateConstructionWork {
+  nameConstructionWork: string | undefined
+  resources: CreateConstructionWorkResource[]
+}

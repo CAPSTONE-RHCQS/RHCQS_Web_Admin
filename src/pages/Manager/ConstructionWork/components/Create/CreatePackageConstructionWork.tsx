@@ -404,8 +404,7 @@ const CreatePackageConstructionWork: React.FC<
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
         <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
-          <h1 className="text-2xl">Tạo mới gói công tác</h1>
-          <h1 className="text-2xl">{workName}</h1>
+          <h1 className="text-2xl">Tạo gói công tác "{workName}"</h1>
           <button
             onClick={addPackage}
             className="text-primaryGreenButton px-4 py-2 rounded font-bold"

@@ -16,7 +16,6 @@ import CreateContructionWork from './components/Create/CreateContructionWork';
 import CreatePackageConstructionWork from './components/Create/CreatePackageConstructionWork';
 
 const ConstructionWorkList: React.FC = () => {
-  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
   const [dataConstructionWork, setDataConstructionWork] = useState<
@@ -24,7 +23,6 @@ const ConstructionWorkList: React.FC = () => {
   >([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalConstructionWork, setTotalConstructionWork] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -55,12 +53,10 @@ const ConstructionWorkList: React.FC = () => {
           );
           setDataConstructionWork(data.Items);
           setTotalPages(data.TotalPages);
-          setTotalConstructionWork(data.Total);
         } else {
           const data = await getConstructionWorks(page, 10);
           setDataConstructionWork(data.Items);
           setTotalPages(data.TotalPages);
-          setTotalConstructionWork(data.Total);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -155,7 +151,9 @@ const ConstructionWorkList: React.FC = () => {
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <div className="flex items-center justify-start space-x-2">
               <div className="flex flex-col space-y-2">
-                <label className="text-sm font-medium">Tên công tác</label>
+                <label className="text-sm font-bold text-black">
+                  Tên công tác
+                </label>
                 <input
                   type="text"
                   placeholder="Nhập tên công tác"
@@ -165,7 +163,9 @@ const ConstructionWorkList: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col space-y-2">
-                <label className="text-sm font-medium">Mã công tác</label>
+                <label className="text-sm font-bold text-black">
+                  Mã công tác
+                </label>
                 <input
                   type="text"
                   placeholder="Nhập mã công tác"
@@ -175,7 +175,7 @@ const ConstructionWorkList: React.FC = () => {
                 />
               </div>
               <div className="flex flex-col space-y-2">
-                <label className="text-sm font-medium">Đơn vị</label>
+                <label className="text-sm font-bold text-black">Đơn vị</label>
                 <input
                   type="text"
                   placeholder="Nhập đơn vị"
@@ -218,7 +218,6 @@ const ConstructionWorkList: React.FC = () => {
           ) : (
             <ConstructionWorkTable
               dataConstructionWork={dataConstructionWork}
-              openItems={openItems}
               editModalOpen={editModalOpen}
               openEditModal={openEditModal}
               currentEditId={currentEditId}
