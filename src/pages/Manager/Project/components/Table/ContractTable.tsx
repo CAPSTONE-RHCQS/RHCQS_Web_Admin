@@ -1,5 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FiMoreVertical } from 'react-icons/fi';
+import {
+  FaCheckCircle,
+  FaBan,
+  FaFileContract,
+  FaSpinner,
+} from 'react-icons/fa';
 import { ContractInfo } from '../../../../../types/ProjectTypes';
 import { Link } from 'react-router-dom';
 
@@ -9,24 +15,31 @@ interface ContractTableProps {
 
 const statusColorMap: { [key: string]: string } = {
   Processing: '#FFA500',
-  Completed: '#008000',
-  Ended: '#FF0000',
-  Finished: '#4B0082',
+  Completed: '#32CD32',
+  Ended: '#EF5350',
+  Finished: '#5BABAC',
 };
 
-const statusLabelMap: { [key: string]: string } = {
-  Processing: 'Đang xử lý',
-  Completed: 'Hoàn thành',
-  Finished: 'Đã thanh toán',
-  Ended: 'Chấm dứt hợp đồng',
-};
+const statusLabelMap: { [key: string]: { label: string; icon: JSX.Element } } =
+  {
+    Processing: { label: 'Đang xử lý', icon: <FaSpinner /> },
+    Completed: { label: 'Hoàn thành', icon: <FaCheckCircle /> },
+    Finished: { label: 'Đã thanh toán', icon: <FaFileContract /> },
+    Ended: { label: 'Chấm dứt hợp đồng', icon: <FaBan /> },
+  };
 
-const getStatusStyle = (status: string | null) => {
-  return status ? statusColorMap[status] || 'text-gray-500' : 'text-gray-500';
-};
+const getStatusInfo = (status: string | null) => {
+  if (!status) {
+    return { style: 'text-gray-500', label: 'Không xác định', icon: null };
+  }
 
-const getStatusLabel = (status: string | null) => {
-  return status ? statusLabelMap[status] || 'Không xác định' : 'Không xác định';
+  const color = statusColorMap[status] || 'text-gray-500';
+  const labelInfo = statusLabelMap[status] || {
+    label: 'Không xác định',
+    icon: null,
+  };
+
+  return { style: color, label: labelInfo.label, icon: labelInfo.icon };
 };
 
 const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
@@ -70,48 +83,51 @@ const ContractTable: React.FC<ContractTableProps> = ({ contractData }) => {
         </tr>
       </thead>
       <tbody>
-        {contractData.map((item, index) => (
-          <tr key={index}>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {index + 1}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Name}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              <span
-                className={`inline-flex items-center px-3 py-1 rounded-full text-white`}
-                style={{ backgroundColor: getStatusStyle(item.Status) }}
-              >
-                {getStatusLabel(item.Status)}
-              </span>
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-              {item.Note ?? ''}
-            </td>
-            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
-              <FiMoreVertical
-                className="cursor-pointer"
-                onClick={() => toggleRowMenu(index)}
-              />
-              {activeMenu === index && (
-                <div
-                  ref={menuRef}
-                  className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+        {contractData.map((item, index) => {
+          const { style, label, icon } = getStatusInfo(item.Status);
+          return (
+            <tr key={index}>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {index + 1}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {item.Name}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                <span
+                  className="inline-flex items-center px-3 py-1 rounded-full text-white whitespace-nowrap"
+                  style={{ backgroundColor: style }}
                 >
-                  <div className="py-2">
-                    <Link
-                      to={`/contract-detail-manager/${item.Id}`}
-                      className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
-                    >
-                      Xem chi tiết
-                    </Link>
+                  {icon} <span className="ml-2">{label} </span>
+                </span>
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                {item.Note ?? ''}
+              </td>
+              <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark relative">
+                <FiMoreVertical
+                  className="cursor-pointer"
+                  onClick={() => toggleRowMenu(index)}
+                />
+                {activeMenu === index && (
+                  <div
+                    ref={menuRef}
+                    className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50"
+                  >
+                    <div className="py-2">
+                      <Link
+                        to={`/contract-detail-manager/${item.Id}`}
+                        className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        Xem chi tiết
+                      </Link>
+                    </div>
                   </div>
-                </div>
-              )}
-            </td>
-          </tr>
-        ))}
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
