@@ -1,7 +1,6 @@
-import { ConstructionWorkItem, ConstructionWorkType, CreateConstructionWork } from '../../types/ContructionWork';
+import { ConstructionWorkType, CreateConstructionWork, UpdateConstructionWork } from '../../types/ContructionWork';
 import {
   SearchConstructionWorkItem,
-  SearchConstructionWorkResponse,
 } from '../../types/ContructionWork';
 import requestWebRHCQS from '../../utils/axios';
 
@@ -109,6 +108,26 @@ export const createConstructionWork = async (data: CreateConstructionWork) => {
   } catch (error: any) {
     console.error(
       'Error creating construction work:',
+      error.response.data.Error,
+    );
+    throw error;
+  }
+};
+
+export const updateConstructionWork = async (id: string, data: UpdateConstructionWork) => {
+  try {
+    const response = await requestWebRHCQS.put(
+      `/construction-work/id?constructionWorkId=${id}`,
+      data,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      });
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      'Error updating construction work:',
       error.response.data.Error,
     );
     throw error;

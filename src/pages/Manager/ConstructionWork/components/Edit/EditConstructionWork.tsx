@@ -1,23 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { searchMaterialSection } from '../../../../../api/Material/Material';
 import { searchLabor } from '../../../../../api/Labor/Labor';
 import { MaterialItem } from '../../../../../types/Material';
 import { LaborItem } from '../../../../../types/Labor';
 import {
-  CreateConstructionWork as CreateConstructionWorkType,
-  SearchConstructionWorkItem,
+  type UpdateConstructionWork,
 } from '../../../../../types/ContructionWork';
 import {
-  createConstructionWork,
-  searchConstructionWorkItem,
+  updateConstructionWork,
 } from '../../../../../api/Construction/ContructionWork';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 
-export interface CreateConstructionWorkProps {
+export interface UpdateConstructionWorkProps {
   isOpen: boolean;
   onSave: (response: string) => void;
   onCancel: () => void;
   onError: (errorMessage: string) => void;
+  currentEditId: string | null;
 }
 
 interface Resource {
@@ -31,50 +30,27 @@ interface Resource {
   laborSearchResults?: LaborItem[];
 }
 
-const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
+const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   isOpen,
   onSave,
   onCancel,
   onError,
+  currentEditId,
 }) => {
   const [workName, setWorkName] = useState('');
-  const [construction, setConstruction] = useState('');
-  const [inputCodeValue, setInputCodeValue] = useState('');
-  const [unit, setUnit] = useState('m');
-  const [constructionSearchResults, setConstructionSearchResults] = useState<
-    SearchConstructionWorkItem[]
-  >([]);
-  const [selectedConstructionId, setSelectedConstructionId] =
-    useState<string>('');
-  const [materialResources, setMaterialResources] = useState<Resource[]>([
-    {
-      materialSectionId: '',
-      materialSectionNorm: 0,
-      laborId: null,
-      laborNorm: null,
-      materialName: '',
-      materialSearchResults: [],
-    },
-  ]);
-  const [laborResources, setLaborResources] = useState<Resource[]>([
-    {
-      materialSectionId: null,
-      materialSectionNorm: null,
-      laborId: '',
-      laborNorm: 0,
-      laborName: '',
-      laborSearchResults: [],
-    },
-  ]);
+  const [materialResources, setMaterialResources] = useState<Resource[]>([]);
+  const [laborResources, setLaborResources] = useState<Resource[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  useEffect(() => {
+    setWorkName('');
+    setMaterialResources([]);
+    setLaborResources([]);
+  }, [currentEditId]);
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
     if (!workName) newErrors.workName = 'Tên công tác không được để trống.';
-    if (!construction)
-      newErrors.construction = 'Tên hạng mục không được để trống.';
-    if (!inputCodeValue)
-      newErrors.inputCodeValue = 'Mã công tác không được để trống.';
     if (materialResources.some((resource) => !resource.materialName)) {
       newErrors.materialResources = 'Tên vật tư không được để trống.';
     }
@@ -92,29 +68,25 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   };
 
   const handleSave = async () => {
+    console.log('Saving data for ID:', currentEditId);
     if (!validateFields()) return;
 
     const combinedResources = [...materialResources, ...laborResources];
 
-    const constructionData: CreateConstructionWorkType = {
-      workName: workName,
-      constructionId: selectedConstructionId,
-      unit: unit,
-      code: inputCodeValue,
-      resources: combinedResources.map((resource) => ({
-        materialSectionId: resource.materialSectionId || null,
-        materialSectionNorm: resource.materialSectionNorm || null,
-        laborId: resource.laborId || null,
-        laborNorm: resource.laborNorm || null,
-      })),
+    const constructionData: UpdateConstructionWork = {
+      nameConstructionWork: workName,
+      resources: combinedResources,
     };
 
-    try {
-      const response = await createConstructionWork(constructionData);
+    try {   
+      const response = await updateConstructionWork(
+        currentEditId as string,
+        constructionData,
+      );
       onSave(response);
     } catch (error: any) {
       console.error(
-        'Error creating construction work:',
+        'Error updating construction work:',
         error.response.data.Error,
       );
       onError(error.response.data.Error);
@@ -124,17 +96,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   const handleCancel = () => {
     onCancel();
   };
-
-  const handleSearchConstruction = async (name: string) => {
-    try {
-      const results = await searchConstructionWorkItem(name);
-      console.log(results);
-      setConstructionSearchResults(results as SearchConstructionWorkItem[]);
-    } catch (error) {
-      console.error('Error fetching search results:', error);
-    }
-  };
-
   const handleSearchMaterial = async (name: string, index: number) => {
     try {
       const resultsMaterial = await searchMaterialSection(name);
@@ -167,13 +128,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
       console.error('Error fetching labor search results:', error);
     }
   };
-
-  const handleSelectConstruction = (name: string, id: string) => {
-    setConstruction(name);
-    setSelectedConstructionId(id);
-    setConstructionSearchResults([]);
-  };
-
   const addMaterialResource = () => {
     setMaterialResources((prevResources) => [
       ...prevResources,
@@ -226,19 +180,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           setErrors((prevErrors) => ({ ...prevErrors, workName: '' }));
         }
         break;
-      case 'construction':
-        setConstruction(value);
-        if (errors.construction) {
-          setErrors((prevErrors) => ({ ...prevErrors, construction: '' }));
-        }
-        handleSearchConstruction(value);
-        break;
-      case 'inputCodeValue':
-        setInputCodeValue(value);
-        if (errors.inputCodeValue) {
-          setErrors((prevErrors) => ({ ...prevErrors, inputCodeValue: '' }));
-        }
-        break;
       case 'materialName':
         if (index !== undefined) {
           const newResources = [...materialResources];
@@ -289,7 +230,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
       <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
         <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
-          <h1 className="text-2xl">Tạo mới công tác</h1>
+          <h1 className="text-2xl">Cập nhật công tác</h1>
         </div>
         <strong className="font-bold">Tên công tác:</strong>
         <input
@@ -300,80 +241,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           placeholder="Nhập tên công tác"
         />
         {errors.workName && <p className="text-red-500">{errors.workName}</p>}
-        <strong className="font-bold">Tên hạng mục:</strong>
-        <input
-          type="text"
-          value={construction}
-          onChange={(e) => handleChange('construction', e.target.value)}
-          className="relative border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập tên hạng mục"
-        />
-        {errors.construction && (
-          <p className="text-red-500">{errors.construction}</p>
-        )}
-        {constructionSearchResults.length > 0 && (
-          <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/3 z-10 no-scrollbar flex flex-col">
-            <table className="w-full">
-              <tbody>
-                {constructionSearchResults.map((result) => (
-                  <tr key={result.ConstructionId}>
-                    <td
-                      className="border-b border-primaryGreenButton p-2 cursor-pointer text-black"
-                      onClick={() =>
-                        handleSelectConstruction(
-                          result.Name,
-                          result.ConstructionId,
-                        )
-                      }
-                    >
-                      {result.Name}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-        <strong className="font-bold">Mã công tác:</strong>
-        <input
-          type="text"
-          value={inputCodeValue}
-          onChange={(e) => handleChange('inputCodeValue', e.target.value)}
-          className="border p-2 mb-4 w-full rounded font-regular"
-          placeholder="Nhập mã công tác"
-        />
-        {errors.inputCodeValue && (
-          <p className="text-red-500">{errors.inputCodeValue}</p>
-        )}
-        <strong className="font-bold">Đơn vị:</strong>
-        <select
-          name="Unit"
-          value={unit}
-          onChange={(e) => setUnit(e.target.value)}
-          className="border p-2 w-full rounded font-regular"
-        >
-          {[
-            'm',
-            'cuộn',
-            'viên',
-            'm2',
-            'm3',
-            'máy',
-            'bộ',
-            'cái',
-            'thùng',
-            'ống',
-            'bao',
-            'can',
-            'md',
-            'kg',
-            'tấn',
-          ].map((unit) => (
-            <option key={unit} value={unit}>
-              {unit}
-            </option>
-          ))}
-        </select>
 
         <div className="mt-4">
           <div className="flex justify-between items-center">
@@ -523,7 +390,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
             onClick={handleSave}
             className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
           >
-            Tiếp tục
+            Cập nhật
           </button>
         </div>
       </div>
@@ -531,4 +398,4 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   );
 };
 
-export default CreateConstructionWork;
+export default UpdateConstructionWork;

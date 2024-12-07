@@ -7,11 +7,10 @@ import {
 import { PencilIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import { getConstructionWorkById } from '../../../../../api/Construction/ContructionWork';
-import CreatePackageConstructionWork from '../Create/CreatePackageConstructionWork';
+import EditConstructionWork from '../Edit/EditConstructionWork';
 
 interface ConstructionWorkTableProps {
   dataConstructionWork: ConstructionWorkItem[];
-  openItems: Set<number>;
   editModalOpen: boolean;
   openEditModal: (id: string) => void;
   currentEditId: string | null;
@@ -22,6 +21,8 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
   dataConstructionWork,
   editModalOpen,
   refreshData,
+  openEditModal,
+  currentEditId,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(editModalOpen);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -65,6 +66,12 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
+  };
+
+  const handleEditClick = (event: React.MouseEvent, id: string) => {
+    event.stopPropagation();
+    setIsModalOpen(editModalOpen);
+    openEditModal(id);
   };
 
   return (
@@ -120,10 +127,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                   <div className="flex justify-center relative" ref={editRef}>
                     <button
                       className="cursor-pointer"
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        setIsModalOpen(true);
-                      }}
+                      onClick={(event) => handleEditClick(event, item.Id)}
                       title="Chỉnh sửa"
                     >
                       <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
@@ -305,11 +309,12 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
       </table>
 
       {isModalOpen && (
-        <CreatePackageConstructionWork
+        <EditConstructionWork
           isOpen={isModalOpen}
           onSave={handleSave}
           onCancel={handleCancel}
           onError={handleError}
+          currentEditId={currentEditId}
         />
       )}
 
