@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPackageById, putPackage } from '../../../api/Package/PackageApi';
-import { Package } from '../../../types/PackagesTypes';
+import { Package, PackageLabor } from '../../../types/PackagesTypes';
 import { PackagePutRequest } from '../../../types/PackageRequestTypes';
 import ClipLoader from 'react-spinners/ClipLoader';
 import LaborTable from './components/Table/LaborTable';
@@ -75,6 +75,18 @@ const PackageDetail: React.FC = () => {
       return <FaCheckCircle className="text-green-500" />;
     }
     return null;
+  };
+
+  const handleLaborUpdate = (updatedLabors: PackageLabor[]) => {
+    const updatedPackageLabors = updatedLabors.map(labor => ({
+      laborId: labor.LaborId,
+    }));
+
+    setEditData((prev) => {
+      const newData = prev ? { ...prev, packageLabors: updatedPackageLabors } : null;
+      console.log('Updated editData:', newData);
+      return newData;
+    });
   };
 
   if (loading) {
@@ -168,8 +180,10 @@ const PackageDetail: React.FC = () => {
         <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
           Chi tiết nhân công
         </h2>
-        <LaborTable labors={packageDetail.PackageLabors} />
-
+        <LaborTable
+          labors={packageDetail.PackageLabors}
+          onLaborUpdate={handleLaborUpdate}
+        />
         <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
           Chi tiết vật liệu
         </h2>

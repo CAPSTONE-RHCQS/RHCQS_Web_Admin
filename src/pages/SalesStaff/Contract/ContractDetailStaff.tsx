@@ -189,7 +189,7 @@ const ContractDetailStaff = () => {
     }
 
     if (!appendixStartDate || !appendixEndDate) {
-      toast.error('Vui l��ng nhập ngày bắt đầu và ngày kết thúc cho phụ lục!');
+      toast.error('Vui lòng nhập ngày bắt đầu và ngày kết thúc cho phụ lục!');
       return;
     }
 
@@ -473,76 +473,71 @@ const ContractDetailStaff = () => {
         </div>
       </div>
 
-      {contractDetail.Type !== 'Appendix' && (
-        <div className="mt-6 mb-4">
-          <h3 className="text-xl font-semibold mb-4">Các đợt thanh toán</h3>
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 border text-center">Đợt</th>
-                <th className="px-4 py-2 border text-center">Mô tả</th>
-                <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
-                <th className="px-4 py-2 border text-center">
-                  Giá trị thanh toán (VNĐ)
-                </th>
-                <th className="px-4 py-2 border text-center">
-                  Ngày thanh toán
-                </th>
-                <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
-                <th className="px-4 py-2 border text-center">Hóa đơn</th>
-                <th className="px-4 py-2 border text-center">Trạng thái</th>
+      <div className="mt-6 mb-4">
+        <h3 className="text-xl font-semibold mb-4">Các đợt thanh toán</h3>
+        <table className="min-w-full bg-white border border-gray-200">
+          <thead>
+            <tr>
+              <th className="px-4 py-2 border text-center">Đợt</th>
+              <th className="px-4 py-2 border text-center">Mô tả</th>
+              <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
+              <th className="px-4 py-2 border text-center">
+                Giá trị thanh toán (VNĐ)
+              </th>
+              <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
+              <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
+              <th className="px-4 py-2 border text-center">Hóa đơn</th>
+              <th className="px-4 py-2 border text-center">Trạng thái</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contractDetail.BatchPayment?.map((batch) => (
+              <tr key={batch.NumberOfBatch} className="text-center">
+                <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
+                <td className="px-4 py-2 border">{batch.Description}</td>
+                <td className="px-4 py-2 border">{batch.Percents} %</td>
+                <td className="px-4 py-2 border">
+                  {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
+                </td>
+                <td className="px-4 py-2 border">
+                  {formatDate(batch.PaymentDate)}
+                </td>
+                <td className="px-4 py-2 border">
+                  {formatDate(batch.PaymentPhase)}
+                </td>
+                <td className="px-4 py-2 border">
+                  {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
+                    <img
+                      src={batch.InvoiceImage}
+                      alt={`Invoice for ${batch.Description}`}
+                      className="w-16 h-16 object-cover mx-auto"
+                    />
+                  ) : (
+                    ''
+                  )}
+                </td>
+                <td className="px-4 py-2 border">
+                  {batch.Status === 'Paid' ? (
+                    <span className="text-green-500 flex items-center">
+                      <FaCheckCircle className="mr-1" /> Đã thanh toán
+                    </span>
+                  ) : batch.Status === 'Cancel' ? (
+                    <span className="text-red-500 flex items-center">
+                      <FaBan className="mr-1" /> Đã chấm dứt
+                    </span>
+                  ) : (
+                    <span className="text-blue-500 flex items-center">
+                      <FaClock className="mr-1" /> Chờ thanh toán
+                    </span>
+                  )}
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {contractDetail.BatchPayment?.map((batch) => (
-                <tr key={batch.NumberOfBatch} className="text-center">
-                  <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
-                  <td className="px-4 py-2 border">{batch.Description}</td>
-                  <td className="px-4 py-2 border">{batch.Percents} %</td>
-                  <td className="px-4 py-2 border">
-                    {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {formatDate(batch.PaymentDate)}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {formatDate(batch.PaymentPhase)}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
-                      <img
-                        src={batch.InvoiceImage}
-                        alt={`Invoice for ${batch.Description}`}
-                        className="w-16 h-16 object-cover mx-auto"
-                      />
-                    ) : (
-                      ''
-                    )}
-                  </td>
-                  <td className="px-4 py-2 border">
-                    {batch.Status === 'Paid' ? (
-                      <span className="text-green-500 flex items-center">
-                        <FaCheckCircle className="mr-1" /> Đã thanh toán
-                      </span>
-                    ) : batch.Status === 'Cancel' ? (
-                      <span className="text-red-500 flex items-center">
-                        <FaBan className="mr-1" /> Đã chấm dứt
-                      </span>
-                    ) : (
-                      <span className="text-blue-500 flex items-center">
-                        <FaClock className="mr-1" /> Chờ thanh toán
-                      </span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {contractDetail.Type === 'Appendix' &&
-      contractDetail.BatchPaymentAppendices ? (
+      {contractDetail.BatchPaymentAppendices ? (
         <div className="mt-6 mb-4">
           <h3 className="text-xl font-semibold mb-4">Phụ lục hợp đồng</h3>
           <table className="min-w-full bg-white border border-gray-200">
