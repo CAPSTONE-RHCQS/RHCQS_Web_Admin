@@ -37,6 +37,7 @@ export interface Labor {
   UpsDate: string | null;
   Deflag: boolean;
   Type: string;
+  Code: string;
 }
 
 export type GetLaborByNameResponse = Labor[];
@@ -55,6 +56,10 @@ export interface Material {
   MaterialTypeName: string;
   MaterialSectionName: string;
   SupplierName: string;
+  Type: string;
+  Code: string;
+  SupplierId: string;
+  MaterialSectionId: string;
 }
 
 export type GetMaterialByNameResponse = Material[];

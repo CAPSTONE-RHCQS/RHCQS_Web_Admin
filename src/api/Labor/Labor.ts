@@ -8,13 +8,29 @@ export async function getLaborByName(
 ): Promise<GetLaborByNameResponse> {
   try {
     console.log('pk', packageId);
-    const response = await requestWebRHCQS.get('/Labor/name', {
+    const response = await requestWebRHCQS.get('/labor/name', {
       params: { name, packageId },
       headers: {
         accept: 'text/plain',
       },
     });
-    console.log('Labor search results:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching labor by name ${name}:`, error);
+    throw new Error('Failed to fetch labor by name');
+  }
+}
+
+export async function getAllLaborByName(
+  name: string,
+): Promise<GetLaborByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/labor/allname', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
     return response.data;
   } catch (error) {
     console.error(`Error fetching labor by name ${name}:`, error);
@@ -101,8 +117,9 @@ export async function searchLaborByPackageId(
       {
         headers: {
           accept: 'text/plain',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error(`Error fetching construction by name ${name}:`, error);
