@@ -139,6 +139,7 @@ const ConstructionWorkList: React.FC = () => {
     (setter: React.Dispatch<React.SetStateAction<string>>) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setter(e.target.value);
+      setEditModalOpen(false);
       setIsSearching(true);
       setPage(1);
     };

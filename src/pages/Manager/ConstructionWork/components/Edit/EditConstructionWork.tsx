@@ -8,6 +8,7 @@ import {
 } from '../../../../../types/ContructionWork';
 import {
   updateConstructionWork,
+  getConstructionWorkById,
 } from '../../../../../api/Construction/ContructionWork';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 
@@ -28,6 +29,7 @@ interface Resource {
   laborName?: string;
   materialSearchResults?: MaterialItem[];
   laborSearchResults?: LaborItem[];
+  isNew: boolean;
 }
 
 const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
@@ -38,14 +40,54 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   currentEditId,
 }) => {
   const [workName, setWorkName] = useState('');
+  const [initialWorkName, setInitialWorkName] = useState('');
   const [materialResources, setMaterialResources] = useState<Resource[]>([]);
   const [laborResources, setLaborResources] = useState<Resource[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    setWorkName('');
-    setMaterialResources([]);
-    setLaborResources([]);
+    const fetchConstructionWork = async () => {
+      if (currentEditId) {
+        try {
+          const data = await getConstructionWorkById(currentEditId);
+          setWorkName(data.WorkName);
+          setInitialWorkName(data.WorkName);
+
+          const materials = data.Resources.filter(
+            (resource: any) => resource.LaborName === null && resource.LaborNorm === null
+          ).map((resource: any) => ({
+            materialSectionId: resource.MaterialSectionId,
+            materialSectionNorm: resource.MaterialSectionNorm,
+            laborId: null,
+            laborNorm: null,
+            materialName: resource.MaterialSectionName,
+            materialSearchResults: [],
+            isNew: false,
+          }));
+
+          const labors = data.Resources.filter(
+            (resource: any) => resource.MaterialSectionName === null && resource.MaterialSectionNorm === null
+          ).map((resource: any) => ({
+            materialSectionId: null,
+            materialSectionNorm: null,
+            laborId: resource.LaborId,
+            laborNorm: resource.LaborNorm,
+            laborName: resource.LaborName,
+            laborSearchResults: [],
+            isNew: false,
+          }));
+
+          setMaterialResources(materials);
+          setLaborResources(labors);
+        } catch (error) {
+          console.error('Error fetching construction work:', error);
+          onError('Không thể tải dữ liệu công tác.');
+        }
+      }
+    };
+
+    fetchConstructionWork();
   }, [currentEditId]);
 
   const validateFields = () => {
@@ -71,11 +113,14 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
     console.log('Saving data for ID:', currentEditId);
     if (!validateFields()) return;
 
-    const combinedResources = [...materialResources, ...laborResources];
+    setIsLoading(true);
+
+    const newMaterialResources = materialResources.filter(resource => resource.isNew);
+    const newLaborResources = laborResources.filter(resource => resource.isNew);
 
     const constructionData: UpdateConstructionWork = {
-      nameConstructionWork: workName,
-      resources: combinedResources,
+      nameConstructionWork: workName !== initialWorkName ? workName : undefined,
+      resources: [...newMaterialResources, ...newLaborResources],
     };
 
     try {   
@@ -90,6 +135,8 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         error.response.data.Error,
       );
       onError(error.response.data.Error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -138,6 +185,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         laborNorm: null,
         materialName: '',
         materialSearchResults: [],
+        isNew: true,
       },
     ]);
   };
@@ -152,12 +200,13 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         laborNorm: 0,
         laborName: '',
         laborSearchResults: [],
+        isNew: true,
       },
     ]);
   };
 
   const removeMaterialResource = (index: number) => {
-    if (materialResources.length > 1) {
+    if (materialResources[index].isNew) {
       setMaterialResources((prevResources) =>
         prevResources.filter((_, i) => i !== index),
       );
@@ -165,7 +214,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   };
 
   const removeLaborResource = (index: number) => {
-    if (laborResources.length > 1) {
+    if (laborResources[index].isNew) {
       setLaborResources((prevResources) =>
         prevResources.filter((_, i) => i !== index),
       );
@@ -181,7 +230,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         }
         break;
       case 'materialName':
-        if (index !== undefined) {
+        if (index !== undefined && materialResources[index].isNew) {
           const newResources = [...materialResources];
           newResources[index].materialName = value;
           setMaterialResources(newResources);
@@ -195,14 +244,14 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         }
         break;
       case 'materialSectionNorm':
-        if (index !== undefined) {
+        if (index !== undefined && materialResources[index].isNew) {
           const newResources = [...materialResources];
           newResources[index].materialSectionNorm = Number(value);
           setMaterialResources(newResources);
         }
         break;
       case 'laborName':
-        if (index !== undefined) {
+        if (index !== undefined && laborResources[index].isNew) {
           const newResources = [...laborResources];
           newResources[index].laborName = value;
           setLaborResources(newResources);
@@ -213,7 +262,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
         }
         break;
       case 'laborNorm':
-        if (index !== undefined) {
+        if (index !== undefined && laborResources[index].isNew) {
           const newResources = [...laborResources];
           newResources[index].laborNorm = Number(value);
           setLaborResources(newResources);
@@ -227,7 +276,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
         <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
           <h1 className="text-2xl">Cập nhật công tác</h1>
@@ -388,8 +437,31 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold flex items-center"
+            disabled={isLoading}
           >
+            {isLoading && (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            )}
             Cập nhật
           </button>
         </div>

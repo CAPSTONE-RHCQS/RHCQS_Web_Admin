@@ -49,6 +49,8 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
   };
   const handleSave = async () => {
     refreshData();
+    setAlertMessage('Cập nhật thành công!');
+    setAlertType('success');
   };
 
   const handleCancel = () => {
@@ -145,7 +147,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Nguồn
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
-                            Vật tư cần thiết
+                            V���t tư cần thiết
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
                             Định mức

@@ -67,6 +67,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     },
   ]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
@@ -94,6 +95,8 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   const handleSave = async () => {
     if (!validateFields()) return;
 
+    setIsLoading(true);
+
     const combinedResources = [...materialResources, ...laborResources];
 
     const constructionData: CreateConstructionWorkType = {
@@ -118,6 +121,8 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
         error.response.data.Error,
       );
       onError(error.response.data.Error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -521,9 +526,32 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           </button>
           <button
             onClick={handleSave}
-            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold flex items-center"
+            disabled={isLoading}
           >
-            Tiếp tục
+            {isLoading && (
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+                ></path>
+              </svg>
+            )}
+            Tạo
           </button>
         </div>
       </div>
