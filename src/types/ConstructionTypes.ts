@@ -1,5 +1,5 @@
 export interface SubConstructionRequest {
-  id: string;
+  id?: string;
   name: string;
   coefficient: number;
   unit: string;
@@ -10,7 +10,8 @@ export interface ConstructionRequest {
   coefficient: number;
   unit: string;
   type: string;
-  subRequests: SubConstructionRequest[];
+  subConstructionRequests: SubConstructionRequest[];
+  subRequests?: SubConstructionRequest[];
 }
 
 export interface ContractConstructionRequest {

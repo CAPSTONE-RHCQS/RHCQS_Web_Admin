@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import {
   putConstruction,
-  SubConstructionRequest,
 } from '../../../../../api/Construction/ConstructionApi';
 import {
   ConstructionItem,
   SubConstructionItem,
 } from '../Table/ConstructionTable';
+import { SubConstructionRequest } from '../../../../../types/ConstructionTypes';
 
 interface EditConstructionModalProps {
   isOpen: boolean;
@@ -62,7 +62,7 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
     try {
       const subRequests: SubConstructionRequest[] = subConstructions.map(
         (sub) => ({
-          id: sub.Id,
+          id: sub.Id || undefined,
           name: sub.Name,
           coefficient: sub.Coefficient,
           unit: sub.Unit,
@@ -75,6 +75,7 @@ const EditConstructionModal: React.FC<EditConstructionModalProps> = ({
         coefficient,
         unit,
         type,
+        subConstructionRequests: subRequests,
         subRequests,
       };
 

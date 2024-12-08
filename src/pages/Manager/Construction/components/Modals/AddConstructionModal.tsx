@@ -74,7 +74,6 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
       const validSubConstructions: SubConstructionRequest[] = subConstructions
         .filter((sub) => sub.name && sub.unit)
         .map((sub) => ({
-          id: sub.id || generateTemporaryId(),
           name: sub.name,
           coefficient: sub.coefficient,
           unit: sub.unit,
@@ -87,11 +86,11 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
 
       const constructionData = {
         name,
-        Name: name,
         coefficient,
         unit,
         type,
-        subRequests: validSubConstructions,
+        subConstructionRequests: validSubConstructions,
+        isFinalQuotation: false,
       };
 
       await postConstruction(constructionData);
@@ -102,10 +101,6 @@ const AddConstructionModal: React.FC<AddConstructionModalProps> = ({
       console.error('Failed to add construction:', error);
       toast.error('Thêm mới thất bại!');
     }
-  };
-
-  const generateTemporaryId = () => {
-    return `temp-${Math.random().toString(36).substr(2, 9)}`;
   };
 
   if (!isOpen) return null;

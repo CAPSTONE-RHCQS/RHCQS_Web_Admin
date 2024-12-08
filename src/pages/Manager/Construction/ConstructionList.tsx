@@ -4,6 +4,8 @@ import useFetchConstructions from '../../../hooks/useFetchConstructions';
 import ConstructionTable from './components/Table/ConstructionTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import AddConstructionModal from './components/Modals/AddConstructionModal';
+import { searchConstruction } from '../../../api/Construction/ConstructionApi';
+import { ConstructionTypeResponse } from '../../../types/ConstructionTypeResponse';
 
 const ConstructionList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,6 +14,8 @@ const ConstructionList: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { totalPages, totalConstructions, isLoading, constructions } =
     useFetchConstructions(currentPage, refreshKey);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<ConstructionTypeResponse[]>([]);
 
   useEffect(() => {
     setPageInput(currentPage.toString());
@@ -45,16 +49,37 @@ const ConstructionList: React.FC = () => {
     }
   };
 
+  const handleSearch = async () => {
+    try {
+      const results = await searchConstruction(searchQuery, currentPage, 10);
+      setSearchResults(results.Items);
+    } catch (error) {
+      console.error('Error searching constructions:', error);
+    }
+  };
+
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    handleSearch();
+  };
+
   return (
     <>
       <Breadcrumb pageName="Quản lý hạng mục" />
 
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <div className="flex justify-between items-center mb-5">
-          <div className="flex items-center">
-            <span className="text-lg text-black dark:text-white">
-              Tổng số hạng mục: {totalConstructions}
-            </span>
+          <div className="flex flex-col space-y-2 w-full">
+            <label className="text-sm font-bold text-black">
+              Tìm kiếm hạng mục
+            </label>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchInputChange}
+              placeholder="Tên hạng mục"
+              className="border rounded px-4 py-1 mr-2 w-1/2"
+            />
           </div>
           <div className="flex items-center">
             <button
@@ -71,7 +96,7 @@ const ConstructionList: React.FC = () => {
         </div>
         <div className="max-w-full overflow-x-auto">
           <ConstructionTable
-            data={constructions}
+            data={searchQuery ? searchResults : constructions}
             isLoading={isLoading}
             onEditSuccess={handleRefresh}
           />

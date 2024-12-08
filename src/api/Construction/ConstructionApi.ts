@@ -5,7 +5,7 @@ import {
   ConstructionRequest,
   ConstructionWork,
 } from '../../types/ConstructionTypes';
-import { ConstructionTypeResponse } from '../../types/ConstructionTypeResponse';
+import { ConstructionTypeResponse, SearchConstructionResponse } from '../../types/ConstructionTypeResponse';
 
 export const getConstructions = async (page: number, size: number) => {
   try {
@@ -84,6 +84,25 @@ export async function getConstructionByName(
     throw new Error('Failed to fetch construction by name');
   }
 }
+
+export const searchConstruction = async (
+  name: string,
+  page: number,
+  size: number,
+): Promise<SearchConstructionResponse> => {
+  try {
+    const response = await requestWebRHCQS.get(`/construction/name`, {
+      params: { name, page, size },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw error;
+  }
+};
 
 export const searchConstructionWork = async (
   packageId: string,
