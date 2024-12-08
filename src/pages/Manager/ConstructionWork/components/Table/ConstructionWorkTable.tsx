@@ -147,7 +147,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Nguồn
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
-                            V���t tư cần thiết
+                            Vật tư cần thiết
                           </th>
                           <th className="py-2 px-4 text-left w-2/8 text-center border border-gray-300">
                             Định mức
