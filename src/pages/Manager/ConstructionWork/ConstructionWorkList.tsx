@@ -150,7 +150,7 @@ const ConstructionWorkList: React.FC = () => {
         <Breadcrumb pageName="Công tác hạng mục" />
         <div className="bg-white p-4 rounded shadow">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <div className="flex items-center justify-start space-x-2 w-full">
+            <div className="flex items-center justify-start space-x-2 w-2/3">
               <div className="flex flex-col space-y-2 w-1/2">
                 <label className="text-sm font-bold text-black">
                   Tên công tác

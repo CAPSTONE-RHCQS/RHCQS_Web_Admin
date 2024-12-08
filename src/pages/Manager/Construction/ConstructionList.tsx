@@ -12,7 +12,7 @@ const ConstructionList: React.FC = () => {
   const [pageInput, setPageInput] = useState<string>(currentPage.toString());
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { totalPages, totalConstructions, isLoading, constructions } =
+  const { totalPages, isLoading, constructions } =
     useFetchConstructions(currentPage, refreshKey);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<ConstructionTypeResponse[]>([]);
@@ -53,6 +53,7 @@ const ConstructionList: React.FC = () => {
     try {
       const results = await searchConstruction(searchQuery, currentPage, 10);
       setSearchResults(results.Items);
+      setCurrentPage(1);
     } catch (error) {
       console.error('Error searching constructions:', error);
     }
@@ -69,7 +70,7 @@ const ConstructionList: React.FC = () => {
 
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <div className="flex justify-between items-center mb-5">
-          <div className="flex flex-col space-y-2 w-full">
+          <div className="flex flex-col space-y-2 w-2/3">
             <label className="text-sm font-bold text-black">
               Tìm kiếm hạng mục
             </label>
