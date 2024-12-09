@@ -368,13 +368,13 @@ const CreateContractDesign = () => {
                     value={payment.paymentPhase}
                     min={payment.paymentDate || today}
                     max={endDate}
-                    onChange={(e) =>
-                      handleBatchPaymentChange(
-                        index,
-                        'paymentPhase',
-                        e.target.value,
-                      )
-                    }
+                    onChange={(e) => {
+                      if (e.target.value !== payment.paymentDate) {
+                        handleBatchPaymentChange(index, 'paymentPhase', e.target.value);
+                      } else {
+                        toast.error('Ngày đáo hạn không được trùng với ngày thanh toán');
+                      }
+                    }}
                     className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                     required
                   />

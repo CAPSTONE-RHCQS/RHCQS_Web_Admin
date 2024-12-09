@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BatchPaymentInfo } from '../../../../../types/FinalQuotationTypes';
+import { toast } from 'react-toastify';
 
 interface BatchPaymentTableProps {
   payments: BatchPaymentInfo[];
@@ -161,9 +162,15 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                             .split('T')[0]
                         : today
                     }
-                    onChange={(e) =>
-                      handleDateChange(index, 'PaymentPhase', e.target.value)
-                    }
+                    onChange={(e) => {
+                      if (e.target.value !== payment.PaymentDate) {
+                        handleDateChange(index, 'PaymentPhase', e.target.value);
+                      } else {
+                        toast.error(
+                          'Ngày đáo hạn không được trùng với ngày thanh toán',
+                        );
+                      }
+                    }}
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : payment.PaymentPhase ? (
