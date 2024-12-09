@@ -58,27 +58,40 @@ const PackageDetail: React.FC = () => {
     loadPackageDetail();
   }, [id]);
 
-  const handleLaborUpdate = useCallback((updatedLabors: PackageLabor[]) => {
-    if (editData && JSON.stringify(editData.packageLabors) !== JSON.stringify(updatedLabors)) {
-      setEditData((prevEditData) => ({
-        ...prevEditData!,
-        packageLabors: updatedLabors.map((labor) => ({
-          laborId: labor.LaborId,
-        })),
-      }));
-    }
-  }, [editData]);
+  const handleLaborUpdate = useCallback(
+    (updatedLabors: PackageLabor[]) => {
+      if (
+        editData &&
+        JSON.stringify(editData.packageLabors) !== JSON.stringify(updatedLabors)
+      ) {
+        setEditData((prevEditData) => ({
+          ...prevEditData!,
+          packageLabors: updatedLabors.map((labor) => ({
+            laborId: labor.LaborId,
+          })),
+        }));
+      }
+    },
+    [editData],
+  );
 
-  const handleMaterialUpdate = useCallback((updatedMaterials: PackageMaterial[]) => {
-    if (editData && JSON.stringify(editData.packageMaterials) !== JSON.stringify(updatedMaterials)) {
-      setEditData((prevEditData) => ({
-        ...prevEditData!,
-        packageMaterials: updatedMaterials.map((material) => ({
-          materialId: material.Id,
-        })),
-      }));
-    }
-  }, [editData]);
+  const handleMaterialUpdate = useCallback(
+    (updatedMaterials: PackageMaterial[]) => {
+      if (
+        editData &&
+        JSON.stringify(editData.packageMaterials) !==
+          JSON.stringify(updatedMaterials)
+      ) {
+        setEditData((prevEditData) => ({
+          ...prevEditData!,
+          packageMaterials: updatedMaterials.map((material) => ({
+            materialId: material.MaterialId,
+          })),
+        }));
+      }
+    },
+    [editData],
+  );
 
   const handleSave = async () => {
     if (!editData || !id) return;

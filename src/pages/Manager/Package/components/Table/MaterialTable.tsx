@@ -59,7 +59,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     const updatedMaterials = [...editMaterials];
     updatedMaterials[index] = {
       ...updatedMaterials[index],
-      Id: selectedMaterial.Id,
+      MaterialId: selectedMaterial.Id,
       MaterialName: selectedMaterial.Name,
       Type: selectedMaterial.Type,
       Price: selectedMaterial.Price,
@@ -74,6 +74,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     const newMaterial: PackageMaterial = {
       Id: '',
       Description: '',
+      MaterialId: '',
       MaterialName: '',
       MaterialSectionId: '',
       ImgUrl: '',
@@ -135,7 +136,9 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                       {searchResults
                         .filter(
                           (result) =>
-                            !editMaterials.some((l) => l.Id === result.Id),
+                            !editMaterials.some(
+                              (l) => l.MaterialId === result.Id,
+                            ),
                         )
                         .map((result) => (
                           <li
