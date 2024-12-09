@@ -153,7 +153,7 @@ export const handleSave = async (
     projectId: quotationData.ProjectId,
     isSave: true,
     area: totalArea,
-    timeProcessing: quotationData.TimeProcessing,
+    timeProcessing: quotationData.TimeOthers + quotationData.TimeRough,
     timeRough: quotationData.TimeRough,
     timeOthers: quotationData.TimeOthers,
     othersAgreement: quotationData.OthersAgreement,

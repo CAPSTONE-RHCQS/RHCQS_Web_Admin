@@ -110,7 +110,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     type="date"
                     ref={(el) => (dateRefs.current[index] = el)}
                     value={payment.PaymentDate || ''}
-                    min={today}
+                    min={index > 0 
+                      ? new Date(Math.max(new Date(editedPayments[index - 1].PaymentDate).getTime(), new Date(today).getTime())).toISOString().split('T')[0]
+                      : today}
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentDate', e.target.value)
                     }

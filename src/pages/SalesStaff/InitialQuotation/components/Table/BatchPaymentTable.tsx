@@ -117,12 +117,16 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       type="date"
                       value={
                         row.PaymentDate
-                          ? new Date(row.PaymentDate)
-                              .toISOString()
-                              .split('T')[0]
+                          ? new Date(row.PaymentDate).toISOString().split('T')[0]
                           : ''
                       }
-                      min={today} // Ngăn chọn ngày trong quá khứ
+                      min={
+                        index > 0
+                          ? new Date(Math.max(new Date(batchPayment[index - 1].PaymentDate || today).getTime(), new Date(today).getTime()))
+                              .toISOString()
+                              .split('T')[0]
+                          : today
+                      }
                       onChange={(e) =>
                         handlePaymentChange(
                           index,
@@ -149,7 +153,7 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                               .split('T')[0]
                           : ''
                       }
-                      min={today} // Ngăn chọn ngày trong quá khứ
+                      min={today}
                       onChange={(e) =>
                         handlePaymentChange(
                           index,
