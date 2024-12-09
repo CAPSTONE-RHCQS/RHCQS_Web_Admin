@@ -8,6 +8,7 @@ import {
   FaFileInvoiceDollar,
   FaChevronLeft,
   FaChevronRight,
+  FaStickyNote,
 } from 'react-icons/fa';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
@@ -24,6 +25,7 @@ import {
 } from '../../../types/InitialQuotationTypes';
 import ChatBox from '../../../components/ChatBox';
 import { getInitialQuotationStatus } from '../../../api/InitialQuotation/InitialQuotationApi';
+import EditRequestDialog from '../../../components/EditRequestDialog';
 
 const InitialQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -46,6 +48,7 @@ const InitialQuotationDetailStaff = () => {
   const [isPanelVisible, setIsPanelVisible] = useState(true);
   const [quantities, setQuantities] = useState<(number | null)[]>([]);
   const [status, setStatus] = useState<string>('');
+  const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
 
   const navigate = useNavigate();
 
@@ -65,7 +68,7 @@ const InitialQuotationDetailStaff = () => {
     };
 
     fetchData();
-    
+
     const intervalId = setInterval(async () => {
       if (id) {
         const newStatus = await getInitialQuotationStatus(id);
@@ -86,6 +89,14 @@ const InitialQuotationDetailStaff = () => {
       </div>
     );
   }
+
+  const handleCloseEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(false);
+  };
+
+  const handleToggleEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(true);
+  };
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -131,7 +142,7 @@ const InitialQuotationDetailStaff = () => {
   return (
     <>
       <div>
-        <div
+        {/* <div
           className={`fixed bottom-4 right-0 flex items-center group transition-transform duration-300 ${
             isPanelVisible ? 'translate-x-0' : 'translate-x-90'
           }`}
@@ -172,6 +183,33 @@ const InitialQuotationDetailStaff = () => {
               </span>
             </div>
           </div>
+        </div> */}
+        {isEditRequestDialogOpen && quotationData?.Note && (
+          <EditRequestDialog
+            note={quotationData.Note}
+            onClose={handleCloseEditRequestDialog}
+            accountName={quotationData.AccountName}
+          />
+        )}
+
+        <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+          {!isEditRequestDialogOpen && (
+            <button
+              onClick={handleToggleEditRequestDialog}
+              className="bg-[#ff8c00] text-white p-4 rounded-full shadow-lg hover:bg-[#e58006] transition-colors duration-200"
+            >
+              <FaStickyNote className="text-2xl" />
+            </button>
+          )}
+
+          {!showChat && (
+            <button
+              onClick={toggleChat}
+              className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+            >
+              <FaCommentDots className="text-2xl" />
+            </button>
+          )}
         </div>
 
         {showChat && quotationData && (

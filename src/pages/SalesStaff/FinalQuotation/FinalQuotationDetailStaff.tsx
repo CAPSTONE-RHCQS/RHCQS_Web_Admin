@@ -28,6 +28,8 @@ import {
   FaPhone,
   FaMailBulk,
   FaFileInvoiceDollar,
+  FaStickyNote,
+  FaCommentDots,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
@@ -42,6 +44,7 @@ import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import EditRequestDialog from '../../../components/EditRequestDialog';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -69,6 +72,7 @@ const FinalQuotationDetailStaff = () => {
 
   const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
+  const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -312,6 +316,14 @@ const FinalQuotationDetailStaff = () => {
     }
   };
 
+  const handleCloseEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(false);
+  };
+
+  const handleToggleEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(true);
+  };
+
   const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
     (total, item) => {
       return (
@@ -360,6 +372,34 @@ const FinalQuotationDetailStaff = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
+      {isEditRequestDialogOpen && quotationDetail?.Note && (
+        <EditRequestDialog
+          note={quotationDetail.Note}
+          onClose={handleCloseEditRequestDialog}
+          accountName={quotationDetail.AccountName}
+        />
+      )}
+
+      <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {!isEditRequestDialogOpen && (
+          <button
+            onClick={handleToggleEditRequestDialog}
+            className="bg-[#ff8c00] text-white p-4 rounded-full shadow-lg hover:bg-[#e58006] transition-colors duration-200"
+          >
+            <FaStickyNote className="text-2xl" />
+          </button>
+        )}
+
+        {!showChat && (
+          <button
+            onClick={toggleChat}
+            className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+          >
+            <FaCommentDots className="text-2xl" />
+          </button>
+        )}
+      </div>
+
       {showChat && quotationDetail && (
         <ChatBox
           onClose={toggleChat}
