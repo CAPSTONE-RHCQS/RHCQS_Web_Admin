@@ -800,7 +800,7 @@ const InitialQuotationDetailManager = () => {
                 </span>
               </p>
               <p className="flex justify-between">
-                <em>Phối hợp với CT hoàn thiện công trình:</em>
+                <em>Phối hợp với CĐT hoàn thiện công trình:</em>
                 <span className="font-italic">
                   {quotationData.TimeOthers} Ngày
                 </span>

@@ -211,6 +211,16 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
   const handlePaymentChange = (index: number, field: string, value: any) => {
     const newSchedule = [...batchPayment];
     newSchedule[index] = { ...newSchedule[index], [field]: value };
+
+    if (field === 'PaymentDate') {
+      newSchedule[index].PaymentPhase = '';
+      
+      for (let i = index + 1; i < newSchedule.length; i++) {
+        newSchedule[i].PaymentDate = '';
+        newSchedule[i].PaymentPhase = '';
+      }
+    }
+
     setBatchPayment(newSchedule);
   };
 
@@ -664,7 +674,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 )}
               </p>
               <p className="flex justify-between">
-                <strong>Phối hợp với CT hoàn thiện công trình:</strong>
+                <strong>Phối hợp với CĐT hoàn thiện công trình:</strong>
                 {isEditing ? (
                   <>
                     <input

@@ -88,7 +88,15 @@ const CreateContractDesign = () => {
       const newBatchPayments = [...prevBatchPayments];
       const payment = newBatchPayments[index];
 
-      if (field === 'percents') {
+      if (field === 'paymentDate') {
+        payment.paymentDate = value as string;
+        payment.paymentPhase = ''; 
+
+        for (let i = index + 1; i < newBatchPayments.length; i++) {
+          newBatchPayments[i].paymentDate = '';
+          newBatchPayments[i].paymentPhase = '';
+        }
+      } else if (field === 'percents') {
         const newPercents = parseFloat(value as string);
         const totalPercents = newBatchPayments.reduce((sum, p, i) => {
           return sum + (i === index ? newPercents : parseFloat(p.percents));
