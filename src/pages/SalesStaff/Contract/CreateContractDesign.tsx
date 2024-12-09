@@ -168,6 +168,8 @@ const CreateContractDesign = () => {
   };
 
   const today = new Date().toISOString().split('T')[0];
+  const startDate = contractDetails.startDate || today;
+  const endDate = contractDetails.endDate || today;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -343,7 +345,8 @@ const CreateContractDesign = () => {
                   <input
                     type="date"
                     value={payment.paymentDate}
-                    min={today}
+                    min={index > 0 ? batchPayments[index - 1].paymentDate : today}
+                    max={endDate}
                     onChange={(e) =>
                       handleBatchPaymentChange(
                         index,
@@ -359,7 +362,8 @@ const CreateContractDesign = () => {
                   <input
                     type="date"
                     value={payment.paymentPhase}
-                    min={today}
+                    min={payment.paymentDate || today}
+                    max={endDate}
                     onChange={(e) =>
                       handleBatchPaymentChange(
                         index,
