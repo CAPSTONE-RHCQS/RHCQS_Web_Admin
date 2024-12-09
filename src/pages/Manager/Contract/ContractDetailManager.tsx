@@ -369,7 +369,8 @@ const ContractDetailManager = () => {
                   {formatDate(batch.PaymentPhase)}
                 </td>
                 <td className="px-4 py-2 border">
-                  {batch.InvoiceImage !== 'Chưa có hóa đơn' ? (
+                  {batch.InvoiceImage !== 'Chưa có hóa đơn' &&
+                  batch.Status !== 'Progress' ? (
                     <img
                       src={batch.InvoiceImage}
                       alt={`Invoice for ${batch.Description}`}
@@ -421,7 +422,7 @@ const ContractDetailManager = () => {
                         onClick={() =>
                           handleApproveBill(batch.PaymentId, 'Approved')
                         }
-                        className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
+                        className="bg-green-500 text-white px-4 py-2 mt-3 rounded shadow-md hover:bg-green-600"
                       >
                         Xác nhận
                       </button>

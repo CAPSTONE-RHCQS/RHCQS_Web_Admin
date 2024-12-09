@@ -34,6 +34,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     null,
   );
   const [currentStatus, setCurrentStatus] = useState<string>('');
+  const [fileName, setFileName] = useState<string | null>(null);
 
   const fetchDesignDetail = useCallback(async () => {
     if (!id) {
@@ -89,6 +90,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    setFileName(file.name);
     setUploading(true);
     try {
       const response = await uploadFile(file, file.name);
@@ -184,7 +186,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
                     Ghi chú khách hàng
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Lý do
+                    Lý do từ chối
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
                 </tr>
@@ -318,6 +320,9 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
               </div>
               {uploading && (
                 <p className="mt-2 text-blue-500">Đang tải lên...</p>
+              )}
+              {fileUrl && fileName && (
+                <p className="mt-2 text-gray-700">Tên file: {fileName}</p>
               )}
             </div>
             <button

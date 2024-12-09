@@ -195,7 +195,7 @@ const InitialQuotationDetailManager = () => {
     if (!id) return;
     try {
       await approveInitialQuotation(id, { type, reason });
-      if (type === 'Accepted') {
+      if (type === 'Approved') {
         toast.success('Chấp nhận báo giá thành công!');
       } else if (type === 'Rejected') {
         toast.success('Từ chối báo giá thành công!');

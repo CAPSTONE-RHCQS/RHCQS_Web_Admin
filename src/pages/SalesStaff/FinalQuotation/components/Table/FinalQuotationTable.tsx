@@ -23,6 +23,8 @@ import {
   ConstructionItem,
   WorkTemplates,
 } from '../../../../../api/Construction/uploadConstructionWorkApi';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
@@ -387,6 +389,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         setUploadedData(data);
       } catch (error) {
         console.error('Error uploading file:', error);
+        toast.error('Lỗi! Không thể tải lên file.');
+        event.target.value = '';
       }
     }
   };
