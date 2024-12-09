@@ -232,7 +232,7 @@ const ContractDetailStaff = () => {
       })),
       batchPaymentRequests: batchPaymentRequests.map((request) => ({
         numberOfBatches: request.NumberOfBatches,
-        price: request.Price,
+        price: request.Price * request.Percents,
         paymentDate: request.PaymentDate,
         paymentPhase: request.PaymentPhase,
         percents: request.Percents,
