@@ -124,6 +124,52 @@ const PackageDetail: React.FC = () => {
     }
   };
 
+  const handleAddLabor = () => {
+    if (!packageDetail) return;
+    const newLabor: PackageLabor = {
+      Id: Date.now().toString(),
+      LaborId: '',
+      NameOfLabor: '',
+      Type: '',
+      Price: 0,
+      InsDate: new Date().toISOString(),
+    };
+
+    const updatedLabors = [...packageDetail.PackageLabors, newLabor];
+    handleLaborUpdate(updatedLabors);
+
+    setPackageDetail((prev) => ({
+      ...prev!,
+      PackageLabors: updatedLabors,
+    }));
+  };
+
+  const handleAddMaterial = () => {
+    if (!packageDetail) return;
+    const newMaterial: PackageMaterial = {
+      Id: '',
+      Description: '',
+      MaterialId: '',
+      MaterialName: '',
+      MaterialSectionId: '',
+      ImgUrl: '',
+      MaterialSectionName: '',
+      Shape: '',
+      Size: '',
+      Unit: '',
+      Type: '',
+      Price: 0,
+      InsDate: new Date().toISOString(),
+    };
+
+    const updatedMaterials = [...packageDetail.PackageMaterials, newMaterial];
+    handleMaterialUpdate(updatedMaterials);
+    setPackageDetail((prev) => ({
+      ...prev!,
+      PackageMaterials: updatedMaterials,
+    }));
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -206,7 +252,7 @@ const PackageDetail: React.FC = () => {
           )}
         </p>
 
-        {packageDetail.PackageLabors.length > 0 && (
+        {packageDetail.PackageLabors.length > 0 ? (
           <>
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
               Chi tiết nhân công
@@ -217,9 +263,18 @@ const PackageDetail: React.FC = () => {
               onLaborUpdate={handleLaborUpdate}
             />
           </>
+        ) : editMode ? (
+          <button
+            onClick={handleAddLabor}
+            className="bg-teal-500 text-white px-4 py-2 rounded mt-4 shadow-lg hover:bg-teal-600 transition duration-300"
+          >
+            Tạo nhân công
+          </button>
+        ) : (
+          <></>
         )}
 
-        {packageDetail.PackageMaterials.length > 0 && (
+        {packageDetail.PackageMaterials.length > 0 ? (
           <>
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
               Chi tiết vật liệu
@@ -230,6 +285,15 @@ const PackageDetail: React.FC = () => {
               onMaterialUpdate={handleMaterialUpdate}
             />
           </>
+        ) : editMode ? (
+          <button
+            onClick={handleAddMaterial}
+            className="bg-teal-500 text-white px-4 py-2 rounded mt-4 shadow-lg hover:bg-teal-600 transition duration-300"
+          >
+            Tạo vật tư
+          </button>
+        ) : (
+          <></>
         )}
 
         {packageDetail.PackageHouses.length > 0 && (
