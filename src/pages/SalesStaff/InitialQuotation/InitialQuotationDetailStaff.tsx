@@ -214,6 +214,8 @@ const InitialQuotationDetailStaff = () => {
 
         {showChat && quotationData && (
           <ChatBox
+            isOpen={showChat}
+            selectedChat={quotationData.Id}
             onClose={toggleChat}
             accountName={quotationData.AccountName}
             note={quotationData.Note}

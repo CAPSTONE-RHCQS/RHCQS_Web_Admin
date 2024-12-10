@@ -45,6 +45,7 @@ import ProjectDetailDesignStaff from './pages/DesignStaff/Project/ProjectDetailD
 import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
 import ConstructionWorkList from './pages/Manager/ConstructionWork/ConstructionWorkList.tsx';
 import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailSalesStaff.tsx';
+import { ChatProvider } from './context/ChatContext';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -59,368 +60,370 @@ function App() {
   return loading ? (
     <Loader />
   ) : (
-    <>
-      <ScrollToTop />
-      {isAuthPage ? (
-        <Routes>
-          <Route
-            path="/auth/signin"
-            element={
-              <>
-                <PageTitle title="Signin | RHCQS - Residential Housing Construction Quotation System" />
-                <SignIn />
-              </>
-            }
-          />
-          <Route
-            path="/auth/signup"
-            element={
-              <>
-                <PageTitle title="Signup | RHCQS - Residential Housing Construction Quotation System" />
-                <SignUp />
-              </>
-            }
-          />
-        </Routes>
-      ) : (
-        <DefaultLayout>
+    <ChatProvider>
+      <>
+        <ScrollToTop />
+        {isAuthPage ? (
           <Routes>
             <Route
-              index
+              path="/auth/signin"
               element={
-                <PrivateRoute
-                  allowedRoles={['Manager', 'SalesStaff', 'DesignStaff']}
-                >
-                  <PageTitle title="RHCQS Dashboard | RHCQS - Residential Housing Construction Quotation System" />
-                  <RHCQS />
-                </PrivateRoute>
-              }
-            />
-            {/* Manager Routes */}
-            <Route
-              path="/project-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectListManager />
-                </PrivateRoute>
+                <>
+                  <PageTitle title="Signin | RHCQS - Residential Housing Construction Quotation System" />
+                  <SignIn />
+                </>
               }
             />
             <Route
-              path="/package-list-manager"
+              path="/auth/signup"
               element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
-                  <PackageList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/package-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <PackageDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/house-templates"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="House Templates | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseTemplateList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/house-template/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="House Template Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseTemplateDetail />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/create-house-template"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Create House Template | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateHouseModel />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/add-image-house"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Add Image House | RHCQS - Residential Housing Construction Quotation System" />
-                  <AddImageHouse />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/construction-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Construction List | RHCQS - Residential Housing Construction Quotation System" />
-                  <ConstructionList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/construction-work-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Construction Work List | RHCQS - Residential Housing Construction Quotation System" />
-                  <ConstructionWorkList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/utility-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Utility List | RHCQS - Residential Housing Construction Quotation System" />
-                  <UtilityList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/promotion-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Promotion List | RHCQS - Residential Housing Construction Quotation System" />
-                  <PromotionList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/material-section-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
-                  <MaterialSectionList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/supplier-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
-                  <SupplierList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/labor-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Labor List | RHCQS - Residential Housing Construction Quotation System" />
-                  <LaborList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/account-list-manager"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
-                  <AccountList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/project-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectDetailManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/initial-quotation-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <InitialQuotationDetailManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/final-quotation-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Quote Detail Manager | RHCQS - Residential Housing Construction Quotation System" />
-                  <FinalQuotationDetailManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/contract-detail-manager/:contractId"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ContractDetailManager />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/house-design-detail-manager/:id"
-              element={
-                <PrivateRoute allowedRoles={['Manager']}>
-                  <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignDetailManager />
-                </PrivateRoute>
-              }
-            />
-            {/* Sales Staff Routes */}
-            <Route
-              path="/project-list-staff"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectListSalesStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/project-detail-staff/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Project Detail Staff | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectDetailSalesStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/house-design-detail-salesstaff/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff', 'DesignStaff']}>
-                  <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignDetailSalesStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/initial-quotation-detail-staff/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <InitialQuotationDetailStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/final-quotation-detail-staff/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
-                  <FinalQuotationDetailStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/create-new-final-quotation-staff/:id"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateNewFinalQuotationStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/create-initial-quote/:projectId"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateNewInitialQuotationStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/create-contract-design/:projectId"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateContractDesign />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/create-construction-contract/:projectId"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Create Construction Contract | RHCQS - Residential Housing Construction Quotation System" />
-                  <CreateConstructionContract />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/contract-detail-staff/:contractId"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ContractDetailStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/blog-list-staff"
-              element={
-                <PrivateRoute allowedRoles={['SalesStaff']}>
-                  <PageTitle title="Blog List Staff | RHCQS - Residential Housing Construction Quotation System" />
-                  <BlogList />
-                </PrivateRoute>
-              }
-            />
-            {/* Design Staff Routes */}
-            <Route
-              path="/house-design-list"
-              element={
-                <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="Design House List | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignList />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/house-design-detail-designstaff/:id"
-              element={
-                <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <HouseDesignDetailDesignStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/project-detail-designstaff/:id"
-              element={
-                <PrivateRoute allowedRoles={['DesignStaff']}>
-                  <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
-                  <ProjectDetailDesignStaff />
-                </PrivateRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <PrivateRoute
-                  allowedRoles={['Manager', 'Sales Staff', 'DesignStaff']}
-                >
-                  <PageTitle title="Settings | RHCQS - Residential Housing Construction Quotation System" />
-                  <Settings />
-                </PrivateRoute>
+                <>
+                  <PageTitle title="Signup | RHCQS - Residential Housing Construction Quotation System" />
+                  <SignUp />
+                </>
               }
             />
           </Routes>
-        </DefaultLayout>
-      )}
-      <ToastContainer position="top-right" autoClose={5000} />
-    </>
+        ) : (
+          <DefaultLayout>
+            <Routes>
+              <Route
+                index
+                element={
+                  <PrivateRoute
+                    allowedRoles={['Manager', 'SalesStaff', 'DesignStaff']}
+                  >
+                    <PageTitle title="RHCQS Dashboard | RHCQS - Residential Housing Construction Quotation System" />
+                    <RHCQS />
+                  </PrivateRoute>
+                }
+              />
+              {/* Manager Routes */}
+              <Route
+                path="/project-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Project Manager | RHCQS - Residential Housing Construction Quotation System" />
+                    <ProjectListManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/package-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Package List | RHCQS - Residential Housing Construction Quotation System" />
+                    <PackageList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/package-detail-manager/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <PackageDetail />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/house-templates"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="House Templates | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseTemplateList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/house-template/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="House Template Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseTemplateDetail />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-house-template"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Create House Template | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreateHouseModel />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/add-image-house"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Add Image House | RHCQS - Residential Housing Construction Quotation System" />
+                    <AddImageHouse />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/construction-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Construction List | RHCQS - Residential Housing Construction Quotation System" />
+                    <ConstructionList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/construction-work-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Construction Work List | RHCQS - Residential Housing Construction Quotation System" />
+                    <ConstructionWorkList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/utility-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Utility List | RHCQS - Residential Housing Construction Quotation System" />
+                    <UtilityList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/promotion-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Promotion List | RHCQS - Residential Housing Construction Quotation System" />
+                    <PromotionList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/material-section-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Material Section List | RHCQS - Residential Housing Construction Quotation System" />
+                    <MaterialSectionList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/supplier-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Supplier List | RHCQS - Residential Housing Construction Quotation System" />
+                    <SupplierList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/labor-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Labor List | RHCQS - Residential Housing Construction Quotation System" />
+                    <LaborList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/account-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Staff List | RHCQS - Residential Housing Construction Quotation System" />
+                    <AccountList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/project-detail-manager/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <ProjectDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/initial-quotation-detail-manager/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <InitialQuotationDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/final-quotation-detail-manager/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Quote Detail Manager | RHCQS - Residential Housing Construction Quotation System" />
+                    <FinalQuotationDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/contract-detail-manager/:contractId"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <ContractDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/house-design-detail-manager/:id"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseDesignDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              {/* Sales Staff Routes */}
+              <Route
+                path="/project-list-staff"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Quote List | RHCQS - Residential Housing Construction Quotation System" />
+                    <ProjectListSalesStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/project-detail-staff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Project Detail Staff | RHCQS - Residential Housing Construction Quotation System" />
+                    <ProjectDetailSalesStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/house-design-detail-salesstaff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff', 'DesignStaff']}>
+                    <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseDesignDetailSalesStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/initial-quotation-detail-staff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <InitialQuotationDetailStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/final-quotation-detail-staff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+                    <FinalQuotationDetailStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-new-final-quotation-staff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Quote Detail Sales Staff | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreateNewFinalQuotationStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-initial-quote/:projectId"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Create Initial Quote | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreateNewInitialQuotationStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-contract-design/:projectId"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Create Contract Design | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreateContractDesign />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-construction-contract/:projectId"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Create Construction Contract | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreateConstructionContract />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/contract-detail-staff/:contractId"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Contract Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <ContractDetailStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/blog-list-staff"
+                element={
+                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                    <PageTitle title="Blog List Staff | RHCQS - Residential Housing Construction Quotation System" />
+                    <BlogList />
+                  </PrivateRoute>
+                }
+              />
+              {/* Design Staff Routes */}
+              <Route
+                path="/house-design-list"
+                element={
+                  <PrivateRoute allowedRoles={['DesignStaff']}>
+                    <PageTitle title="Design House List | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseDesignList />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/house-design-detail-designstaff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['DesignStaff']}>
+                    <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <HouseDesignDetailDesignStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/project-detail-designstaff/:id"
+                element={
+                  <PrivateRoute allowedRoles={['DesignStaff']}>
+                    <PageTitle title="Project Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <ProjectDetailDesignStaff />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <PrivateRoute
+                    allowedRoles={['Manager', 'Sales Staff', 'DesignStaff']}
+                  >
+                    <PageTitle title="Settings | RHCQS - Residential Housing Construction Quotation System" />
+                    <Settings />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
+          </DefaultLayout>
+        )}
+        <ToastContainer position="top-right" autoClose={5000} />
+      </>
+    </ChatProvider>
   );
 }
 

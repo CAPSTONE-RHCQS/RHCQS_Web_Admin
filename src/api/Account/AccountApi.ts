@@ -26,6 +26,16 @@ export const getAccounts = async (page: number, size: number) => {
   }
 };
 
+export const getProfile = async () => {
+  try {
+    const response = await requestWebRHCQS.get(`/account/profile`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching accounts:', error);
+    throw error;
+  }
+};
+
 export const getAccountById = async (id: string) => {
   try {
     const response = await requestWebRHCQS.get(`/account/id`, {
