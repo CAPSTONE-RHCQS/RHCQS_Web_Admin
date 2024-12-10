@@ -6,6 +6,7 @@ interface CreateUtilityProps {
   onClose: () => void;
   onSave: (data: any) => void;
   onCancel: () => void;
+  onError: (message: string) => void;
 }
 
 const CreateUtility: React.FC<CreateUtilityProps> = ({
@@ -13,6 +14,7 @@ const CreateUtility: React.FC<CreateUtilityProps> = ({
   onClose,
   onSave,
   onCancel,
+  onError,
 }) => {
   const [sectionDetail, setSectionDetail] = useState<any>({
     Name: '',
@@ -73,8 +75,9 @@ const CreateUtility: React.FC<CreateUtilityProps> = ({
       const response = await postUtility(utilityData);
       console.log('Utility created successfully:', response);
       onSave(response);
-    } catch (error) {
-      console.error('Error creating utility:', error);
+    } catch (error: any) {
+        console.error('Error creating utility:', error);
+        onError(error.message);
     }
   };
 

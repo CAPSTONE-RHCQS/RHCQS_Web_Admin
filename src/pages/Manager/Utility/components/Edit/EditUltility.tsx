@@ -3,10 +3,12 @@ import { getUtilityById, putUtility } from '../../../../../api/Utility/UtilityAp
 
 interface EditUtilityProps {
   id: string;
+  onSave: () => void;
   onClose: () => void;
+  onError: (message: string) => void;
 }
 
-const EditUtility: React.FC<EditUtilityProps> = ({ id, onClose }) => {
+const EditUtility: React.FC<EditUtilityProps> = ({ id, onClose, onSave, onError }) => {
   const [utilityDetail, setUtilityDetail] = useState<any>(null);
 
   useEffect(() => {
@@ -30,9 +32,10 @@ const EditUtility: React.FC<EditUtilityProps> = ({ id, onClose }) => {
 
     try {
       await putUtility(utilityData);
-      onClose();
-    } catch (error) {
+      onSave();
+    } catch (error: any) {
       console.error('Error updating utility:', error);
+      onError(error.message);
     }
   };
 

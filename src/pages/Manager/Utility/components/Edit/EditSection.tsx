@@ -6,10 +6,12 @@ import {
 
 interface EditSectionProps {
   id: string;
+  onSave: () => void;
   onClose: () => void;
+  onError: (message: string) => void;
 }
 
-const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
+const EditSection: React.FC<EditSectionProps> = ({ id, onClose, onSave, onError }) => {
   const [sectionDetail, setSectionDetail] = useState<any>(null);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
   }, [id]);
 
   const handleSave = async () => {
-    const utilityData = {
+    const utilityData: any = {
       utility: null,
       sections: {
         id: sectionDetail?.Id,
@@ -30,20 +32,47 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
         unitPrice: sectionDetail?.UnitPrice,
         unit: sectionDetail?.Unit,
       },
-
       items: sectionDetail?.Items.map((item: any) => ({
         id: item.Id,
         name: item.Name,
         coefficient: item.Coefficient,
       })),
     };
-    console.log(utilityData);
+
+    const updatedUtilityData: any = {
+      sections: {
+        id: null,
+        name: null,
+        description: null,
+        unitPrice: null,
+        unit: null,
+      },
+      items: [],
+    };
+
+    Object.keys(utilityData.sections).forEach((key) => {
+      if (utilityData.sections[key] !== null && utilityData.sections[key] !== '' && utilityData.sections[key] !== sectionDetail[key]) {
+        updatedUtilityData.sections[key] = utilityData.sections[key];
+      }
+    });
+
+    utilityData.items.forEach((item: any) => {
+      const updatedItem = {
+        id: item.id,
+        name: item.name !== '' ? item.name : null,
+        coefficient: item.coefficient !== 0 ? item.coefficient : null,
+      };
+      updatedUtilityData.items.push(updatedItem);
+    });
+
+    console.log(updatedUtilityData);
 
     try {
-      await putUtility(utilityData);
-      onClose();
-    } catch (error) {
+      await putUtility(updatedUtilityData);
+      onSave();
+    } catch (error: any) {
       console.error('Error updating utility:', error);
+      onError(error.message);
     }
   };
 
@@ -122,30 +151,28 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
               <strong className="font-bold">Tùy chọn tiện ích:</strong>
             </div>
             {sectionDetail?.Items?.map((item: any, index: number) => (
-              <>
-                <div key={index} className="mb-4 flex space-x-2">
-                  <input
-                    type="text"
-                    value={item.Name}
-                    onChange={(e) => {
-                      const newItems = [...sectionDetail.Items];
-                      newItems[index].Name = e.target.value;
-                      setSectionDetail({ ...sectionDetail, Items: newItems });
-                    }}
-                    className="border p-2 flex-grow rounded font-regular"
-                  />
-                  <input
-                    type="number"
-                    value={item.Coefficient}
-                    onChange={(e) => {
-                      const newItems = [...sectionDetail.Items];
-                      newItems[index].Coefficient = parseFloat(e.target.value);
-                      setSectionDetail({ ...sectionDetail, Items: newItems });
-                    }}
-                    className="border p-2 w-1/4 rounded font-regular"
-                  />
-                </div>
-              </>
+              <div key={index} className="mb-4 flex space-x-2">
+                <input
+                  type="text"
+                  value={item.Name}
+                  onChange={(e) => {
+                    const newItems = [...sectionDetail.Items];
+                    newItems[index].Name = e.target.value;
+                    setSectionDetail({ ...sectionDetail, Items: newItems });
+                  }}
+                  className="border p-2 flex-grow rounded font-regular"
+                />
+                <input
+                  type="number"
+                  value={item.Coefficient}
+                  onChange={(e) => {
+                    const newItems = [...sectionDetail.Items];
+                    newItems[index].Coefficient = parseFloat(e.target.value);
+                    setSectionDetail({ ...sectionDetail, Items: newItems });
+                  }}
+                  className="border p-2 w-1/4 rounded font-regular"
+                />
+              </div>
             ))}
           </>
         )}

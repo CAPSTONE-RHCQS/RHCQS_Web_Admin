@@ -5,12 +5,15 @@ import UtilityTable from './components/Table/UtilityTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import CreateUtility from './components/Create/CreateUltility';
 import CreateSection from './components/Create/CreateSection';
+import Alert from '../../../components/Alert';
 
 const UtilityList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null);
   const { totalPages, totalUtilities, isLoading, utilities } =
     useFetchUtilities(currentPage, refreshKey);
 
@@ -27,11 +30,20 @@ const UtilityList: React.FC = () => {
   const handleAddSuccess = () => {
     handleRefresh();
     setIsModalOpen(false);
+    setAlertMessage('Thêm tiện ích thành công!');
+    setAlertType('success');
   };
 
   const handleSectionAddSuccess = () => {
     handleRefresh();
     setIsSectionModalOpen(false);
+    setAlertMessage('Thêm phần tiện ích thành công!');
+    setAlertType('success');
+  };
+
+  const handleError = (message: string) => {
+    setAlertMessage(message);
+    setAlertType('error');
   };
 
   return (
@@ -96,13 +108,22 @@ const UtilityList: React.FC = () => {
         onClose={() => setIsModalOpen(false)}
         onSave={handleAddSuccess}
         onCancel={() => setIsModalOpen(false)}
+        onError={handleError}
       />
       <CreateSection
         isOpen={isSectionModalOpen}
         onClose={() => setIsSectionModalOpen(false)}
         onSave={handleSectionAddSuccess}
         onCancel={() => setIsSectionModalOpen(false)}
+        onError={handleError}
       />
+      {alertMessage && (
+        <Alert
+          message={alertMessage}
+          type={alertType || 'success'}
+          onClose={() => setAlertMessage(null)}
+        />
+      )}
     </>
   );
 };

@@ -4,9 +4,10 @@ import { PencilIcon } from '@heroicons/react/24/solid';
 import { UtilityItem } from '../../../../../types/UtilityTypes';
 import { SectionItem } from '../../../../../types/UtilityTypes';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
-import { FaEye } from 'react-icons/fa';
+import { FaEye, FaPlus } from 'react-icons/fa';
 import EditSection from '../Edit/EditSection';
 import EditUtility from '../Edit/EditUltility';
+import Alert from '../../../../../components/Alert';
 
 export interface UtilityTableProps {
   data: UtilityItem[];
@@ -17,7 +18,6 @@ export interface UtilityTableProps {
 const UtilityTable: React.FC<UtilityTableProps> = ({
   data,
   isLoading,
-  onEditSuccess,
 }) => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editSectionOpen, setEditSectionOpen] = useState(false);
@@ -30,6 +30,8 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   const [selectedUtilitySections, setSelectedUtilitySections] = useState<
     SectionItem[] | null
   >(null);
+  const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [alertType, setAlertType] = useState<'success' | 'error' | null>(null);
 
   const openEditModal = (id: string) => {
     const utility = data.find((item) => item.Id === id);
@@ -50,6 +52,27 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
     } else {
       setSelectedUtilitySections(sections);
     }
+  };
+
+  const handleSaveUtility = () => {
+    setEditModalOpen(false);
+    setAlertMessage('Sửa tiện ích thành công!');
+    setAlertType('success');
+  };
+
+  const handleSaveSection = () => {
+    setEditSectionOpen(false);
+    setAlertMessage('Sửa phần tiện ích thành công!');
+    setAlertType('success');
+  };
+
+  const handleAddNewItem = (itemId: string, sectionId: string, sectionName: string) => {
+    console.log(itemId, sectionId, sectionName);
+  };
+
+  const handleError = (message: string) => {
+    setAlertMessage(message);
+    setAlertType('error');
   };
 
   return (
@@ -124,7 +147,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                         <table className="w-full">
                           <thead>
                             <tr className="bg-gray-2 text-left border-b border-[#eee] dark:bg-meta-4">
-                              {['Tên', 'Đơn giá', ''].map((header) => (
+                              {['Tên', 'Đơn giá', 'Chi tiết', 'Thêm mới'].map((header) => (
                                 <th
                                   key={header}
                                   className="py-2 px-4 font-medium text-gray-500 dark:text-white"
@@ -150,13 +173,24 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                                 </td>
                                 <td className="py-2 px-4">
                                   <FaEye
-                                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition mr-6 cursor-pointer"
+                                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition cursor-pointer"
                                     onClick={() => {
                                       if (section.Id) {
                                         openEditSection(section.Id);
                                       }
                                     }}
                                     title="Xem chi tiết"
+                                  />
+                                </td>
+                                <td className="py-2 px-4">
+                                  <FaPlus
+                                    className="text-primaryGreenButton hover:text-secondaryGreenButton transition cursor-pointer"
+                                    onClick={() => {
+                                      if (section.Id && section.Name && item.Id) {
+                                        handleAddNewItem(item.Id, section.Id, section.Name);
+                                      }
+                                    }}
+                                    title="Thêm mới"
                                   />
                                 </td>
                               </tr>
@@ -171,17 +205,28 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
           </tbody>
         </table>
       )}
-      
+
       {editSectionOpen && selectedSectionId && (
         <EditSection
           id={selectedSectionId}
           onClose={() => setEditSectionOpen(false)}
+          onSave={handleSaveSection}
+          onError={handleError}
         />
       )}
       {editModalOpen && selectedUtility && (
         <EditUtility
           id={selectedUtility.Id}
           onClose={() => setEditModalOpen(false)}
+          onSave={handleSaveUtility}
+          onError={handleError}
+        />
+      )}
+      {alertMessage && (
+        <Alert
+          message={alertMessage}
+          type={alertType || 'success'}
+          onClose={() => setAlertMessage(null)}
         />
       )}
     </>
