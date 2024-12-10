@@ -14,6 +14,7 @@ export interface ItemInitial {
   ConstructionItemId: string;
   SubConstruction: string | null;
   SubConstructionId: string | null;
+  AreaConstruction: number | null;
   Area: number;
   Price: number;
   UnitPrice: string;
@@ -84,6 +85,7 @@ interface Item {
   name: string;
   constructionItemId: string;
   subConstructionId: string | null;
+  areaConstruction: number;
   area: number;
   price: number;
 }

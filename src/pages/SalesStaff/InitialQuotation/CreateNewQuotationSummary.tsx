@@ -398,7 +398,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
           <div className="mt-4">
             <div className="mb-4">
               <strong className="text-xl text-secondary">
-                2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG TRƯỚC THUẾ:
+                2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG:
               </strong>
             </div>
             <div className="overflow-x-auto mb-4">
