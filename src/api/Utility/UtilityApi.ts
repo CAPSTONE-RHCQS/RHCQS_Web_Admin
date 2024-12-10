@@ -1,5 +1,5 @@
 import { GetUtilityByNameResponse } from '../../types/SearchContainNameTypes';
-import { UtilityRequest } from '../../types/UtilityTypes';
+import { SectionItem, UtilityRequest } from '../../types/UtilityTypes';
 import requestWebRHCQS from '../../utils/axios';
 
 export const getUtilities = async (page: number, size: number) => {
@@ -52,10 +52,11 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
         unitPrice: section.unitPrice,
         unit: section.unit,
       })),
-      items: utilityData.items.map((item) => ({
+      items: utilityData.items ? utilityData.items.map((item) => ({
         name: item.name,
-        coefficient: item.coefficient,
-      })),
+            coefficient: item.coefficient,
+            }))
+          : null,
     };
     console.log('putUtility', formattedData);
 
@@ -76,6 +77,25 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
     }
   }
 };
+
+export async function getSectionById(
+  id: string,
+): Promise<SectionItem> {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/utilities/section/id?id=${id}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching utilities by id ${id}:`, error);
+    throw new Error('Failed to fetch utilities by id');
+  }
+}
 
 export async function getUtilityByName(
   name: string,
