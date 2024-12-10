@@ -42,7 +42,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
               <td className="px-4 py-2 border text-center">1</td>
               <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
               <td className="px-4 py-2 border text-center">
-                <strong>{totalDienTich} m²</strong>
+                <strong>{totalDienTich}</strong>
               </td>
               <td className="px-4 py-2 border text-center">
                 <strong>m²</strong>
@@ -78,12 +78,12 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 <td className="px-4 py-2 border text-center">{row.donVi}</td>
               </tr>
             ))}
-            <tr>
+            <tr className='bg-gray-200'>
               <td className="px-4 py-2 border text-center" colSpan={4}>
                 <strong>Tổng diện tích xây dựng theo phương án thiết kế</strong>
               </td>
               <td className="px-4 py-2 border text-center">
-                <strong>{totalDienTich} m²</strong>
+                <strong>{totalDienTich}</strong>
               </td>
               <td className="px-4 py-2 border text-center">
                 <strong>m²</strong>
@@ -122,14 +122,14 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   <td className="px-4 py-2 border text-center">{row.donVi}</td>
                 </tr>
               ))}
-              <tr>
+              <tr className='bg-gray-200'>
                 <td className="px-4 py-2 border text-center" colSpan={4}>
                   <strong>
                     Tổng diện tích xây dựng theo phương án thiết kế
                   </strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
-                  <strong>{totalDienTich} m²</strong>
+                  <strong>{totalDienTich}</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>m²</strong>
@@ -156,7 +156,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 <td className="px-4 py-2 border text-center">1</td>
                 <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
                 <td className="px-4 py-2 border text-center">
-                  <strong>{totalDienTich} m²</strong>
+                  <strong>{totalDienTich}</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>m²</strong>

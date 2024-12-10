@@ -434,7 +434,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                       </td>
                       <td className="px-4 py-2 border text-center">=</td>
                       <td className="px-4 py-2 border text-center">
-                        <strong> {totalFinished.toLocaleString()} VNĐ</strong>
+                        <strong>{totalFinished.toLocaleString()}</strong>
                       </td>
                       <td className="px-4 py-2 border text-center">VNĐ</td>
                     </tr>
@@ -453,7 +453,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                       </td>
                       <td className="px-4 py-2 border text-center">=</td>
                       <td className="px-4 py-2 border text-center">
-                        <strong> {totalRough.toLocaleString()} VNĐ</strong>
+                        <strong>{totalRough.toLocaleString()}</strong>
                       </td>
                       <td className="px-4 py-2 border text-center">VNĐ</td>
                     </tr>
@@ -473,7 +473,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                         </td>
                         <td className="px-4 py-2 border text-center">=</td>
                         <td className="px-4 py-2 border text-center">
-                          <strong> {totalRough.toLocaleString()} VNĐ</strong>
+                          <strong>{totalRough.toLocaleString()}</strong>
                         </td>
                         <td className="px-4 py-2 border text-center">VNĐ</td>
                       </tr>
@@ -494,23 +494,23 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                         </td>
                         <td className="px-4 py-2 border text-center">=</td>
                         <td className="px-4 py-2 border text-center">
-                          <strong> {totalFinished.toLocaleString()} VNĐ</strong>
+                          <strong>{totalFinished.toLocaleString()}</strong>
                         </td>
                         <td className="px-4 py-2 border text-center">VNĐ</td>
                       </tr>
                     </>
                   )}
 
-                  <tr>
+                  <tr className='bg-gray-200'>
                     <td
                       className="px-4 py-2 border text-center font-bold"
                       colSpan={5}
                     >
-                      Tổng giá trị báo giá sơ bộ xây dựng trước thuế
+                      Tổng giá trị báo giá sơ bộ xây dựng
                     </td>
                     <td className="px-4 py-2 border text-center ">
                       <strong>
-                        {(totalRough + totalFinished).toLocaleString()} VNĐ
+                        {(totalRough + totalFinished).toLocaleString()}
                       </strong>
                     </td>
                     <td className="px-4 py-2 border text-center font-bold">

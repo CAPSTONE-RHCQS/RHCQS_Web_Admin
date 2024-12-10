@@ -38,7 +38,7 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
         <tbody>
           <tr>
             <td className="px-4 py-2 border text-left">
-              Giá trị báo giá sơ bộ xây dựng trước thuế
+              Giá trị báo giá sơ bộ xây dựng
             </td>
             <td className="px-4 py-2 border text-center">
               {(totalRough + totalFinished).toLocaleString()}
@@ -63,12 +63,12 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
               <td className="px-4 py-2 border text-center">VNĐ</td>
             </tr>
           )}
-          <tr className="bg-gray-100">
+          <tr className="bg-gray-200">
             <td className="px-4 py-2 border text-center">
               <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
             </td>
             <td className="px-4 py-2 border text-center">
-              <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
+              <strong>{giaTriHopDong.toLocaleString()}</strong>
             </td>
             <td className="px-4 py-2 border text-center">
               <strong>VNĐ</strong>

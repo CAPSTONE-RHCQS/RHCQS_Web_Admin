@@ -9,7 +9,6 @@ import {
   FaPhone,
   FaMailBulk,
   FaMoneyBillWave,
-  FaNotesMedical,
   FaTimes,
   FaStickyNote,
 } from 'react-icons/fa';
@@ -35,6 +34,7 @@ import ChatBox from '../../../components/ChatBox';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
+import RejectDialog from '../../../components/RejectDialog';
 
 interface TableRow {
   stt: number;
@@ -66,6 +66,7 @@ const InitialQuotationDetailManager = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isStatusChecked, setIsStatusChecked] = useState(false);
   const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(true);
 
   const fetchQuotationData = async () => {
     if (id) {
@@ -83,7 +84,9 @@ const InitialQuotationDetailManager = () => {
             hangMuc: item.SubConstruction || item.Name,
             dTich: item.Area.toString(),
             heSo: coefficient.toString(),
-            dienTich: item.AreaConstruction ? item.AreaConstruction.toString() : '0',
+            dienTich: item.AreaConstruction
+              ? item.AreaConstruction.toString()
+              : '0',
             donVi: 'm²',
           };
         });
@@ -143,6 +146,14 @@ const InitialQuotationDetailManager = () => {
 
   const handleToggleEditRequestDialog = () => {
     setIsEditRequestDialogOpen(true);
+  };
+
+  const handleCloseRejectDialog = () => {
+    setIsRejectDialogOpen(false);
+  };
+
+  const handleToggleRejectDialog = () => {
+    setIsRejectDialogOpen(true);
   };
 
   if (isLoading) {
@@ -247,7 +258,23 @@ const InitialQuotationDetailManager = () => {
         />
       )}
 
+      {isRejectDialogOpen && quotationData?.ReasonReject && (
+        <RejectDialog
+          note={quotationData.ReasonReject}
+          onClose={handleCloseRejectDialog}
+        />
+      )}
+
       <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {!isRejectDialogOpen && (
+          <button
+            onClick={handleToggleRejectDialog}
+            className="bg-[#ff6347] text-white p-4 rounded-full shadow-lg hover:bg-[#ea5c43] transition-colors duration-200"
+          >
+            <FaTimes className="text-2xl" />
+          </button>
+        )}
+
         {!isEditRequestDialogOpen && (
           <button
             onClick={handleToggleEditRequestDialog}
@@ -459,8 +486,7 @@ const InitialQuotationDetailManager = () => {
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
                       <strong>
-                        {(totalDienTich * unitPackageFinished).toLocaleString()}{' '}
-                        VNĐ
+                        {(totalDienTich * unitPackageFinished).toLocaleString()}
                       </strong>
                     </td>
                     <td className="px-4 py-2 border text-center">VNĐ</td>
@@ -480,8 +506,7 @@ const InitialQuotationDetailManager = () => {
                     <td className="px-4 py-2 border text-center">=</td>
                     <td className="px-4 py-2 border text-center">
                       <strong>
-                        {(totalDienTich * unitPackageRough).toLocaleString()}{' '}
-                        VNĐ
+                        {(totalDienTich * unitPackageRough).toLocaleString()}
                       </strong>
                     </td>
                     <td className="px-4 py-2 border text-center">VNĐ</td>
@@ -503,8 +528,7 @@ const InitialQuotationDetailManager = () => {
                       <td className="px-4 py-2 border text-center">=</td>
                       <td className="px-4 py-2 border text-center">
                         <strong>
-                          {(totalDienTich * unitPackageRough).toLocaleString()}{' '}
-                          VNĐ
+                          {(totalDienTich * unitPackageRough).toLocaleString()}
                         </strong>
                       </td>
                       <td className="px-4 py-2 border text-center">VNĐ</td>
@@ -527,23 +551,22 @@ const InitialQuotationDetailManager = () => {
                         <strong>
                           {(
                             totalDienTich * unitPackageFinished
-                          ).toLocaleString()}{' '}
-                          VNĐ
+                          ).toLocaleString()}
                         </strong>
                       </td>
                       <td className="px-4 py-2 border text-center">VNĐ</td>
                     </tr>
                   </>
                 )}
-                <tr>
+                <tr className="bg-gray-200">
                   <td
                     className="px-4 py-2 border text-center font-bold"
                     colSpan={5}
                   >
-                    Tổng giá trị báo giá sơ bộ xây dựng trước thuế
+                    Tổng giá trị báo giá sơ bộ xây dựng
                   </td>
                   <td className="px-4 py-2 border text-center ">
-                    <strong>{thanhTien.toLocaleString()} VNĐ</strong>
+                    <strong>{thanhTien.toLocaleString()}</strong>
                   </td>
                   <td className="px-4 py-2 border text-center font-bold">
                     VNĐ
@@ -603,12 +626,12 @@ const InitialQuotationDetailManager = () => {
                   <td className="px-4 py-2 border text-center">VNĐ</td>
                 </tr>
               ))}
-              <tr>
+              <tr className="bg-gray-200">
                 <td className="px-4 py-2 border text-center" colSpan={4}>
-                  <strong>Tổng chi phí tiện ích</strong>
+                  <strong>Tổng chi phí dịch vụ & tiện ích</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
-                  <strong>{totalUtilityCost.toLocaleString()} VNĐ</strong>
+                  <strong>{totalUtilityCost.toLocaleString()}</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>VNĐ</strong>
@@ -677,7 +700,7 @@ const InitialQuotationDetailManager = () => {
               <tbody>
                 <tr>
                   <td className="px-4 py-2 border text-left">
-                    Giá trị báo giá sơ bộ xây dựng trước thuế
+                    Giá trị báo giá sơ bộ xây dựng
                   </td>
                   <td className="px-4 py-2 border text-center">
                     {thanhTien.toLocaleString()}
@@ -701,15 +724,15 @@ const InitialQuotationDetailManager = () => {
                     <td className="px-4 py-2 border text-center">
                       -{discount.toLocaleString()}
                     </td>
-                    <td className="px-4 py-2 border text-center"></td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
                   </tr>
                 )}
-                <tr>
+                <tr className="bg-gray-200">
                   <td className="px-4 py-2 border text-center">
-                    <strong>GIÁ TRỊ HỢP ĐỒNG</strong>
+                    <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
-                    <strong>{giaTriHopDong.toLocaleString()} VNĐ</strong>
+                    <strong>{giaTriHopDong.toLocaleString()}</strong>
                   </td>
                   <td className="px-4 py-2 border text-center">
                     <strong>VNĐ</strong>
@@ -739,7 +762,7 @@ const InitialQuotationDetailManager = () => {
                 >
                   Đợt
                 </th>
-                <th className="px-4 py-2 border text-left">Nội dung</th>
+                <th className="px-4 py-2 border text-center">Nội dung</th>
                 <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
                 <th className="px-4 py-2 border text-center">
                   Giá trị thanh toán (VNĐ)
@@ -780,9 +803,9 @@ const InitialQuotationDetailManager = () => {
                   </td>
                 </tr>
               ))}
-              <tr>
+              <tr className="bg-gray-200">
                 <td className="px-4 py-2 border text-center" colSpan={2}>
-                  <strong>Tổng giá trị hợp đồng</strong>
+                  <strong>Tổng cộng</strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>{totalPercentage}%</strong>
@@ -790,7 +813,6 @@ const InitialQuotationDetailManager = () => {
                 <td className="px-4 py-2 border text-center">
                   <strong>{totalAmount.toLocaleString()} VNĐ</strong>
                 </td>
-                <td className="px-4 py-2 border text-center" colSpan={2}></td>
               </tr>
             </tbody>
           </table>

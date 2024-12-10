@@ -2,14 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
 import 'react-toastify/dist/ReactToastify.css';
-import {
-  FaCommentDots,
-  FaRulerCombined,
-  FaFileInvoiceDollar,
-  FaChevronLeft,
-  FaChevronRight,
-  FaStickyNote,
-} from 'react-icons/fa';
+import { FaCommentDots, FaStickyNote, FaTimes } from 'react-icons/fa';
 
 import InitialQuotationStatusTracker from '../../../components/StatusTracker/InitialQuotationStatusTracker';
 import { getStatusLabelInitalQuoteDetail } from '../../../utils/utils';
@@ -26,6 +19,7 @@ import {
 import ChatBox from '../../../components/ChatBox';
 import { getInitialQuotationStatus } from '../../../api/InitialQuotation/InitialQuotationApi';
 import EditRequestDialog from '../../../components/EditRequestDialog';
+import RejectDialog from '../../../components/RejectDialog';
 
 const InitialQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -49,6 +43,7 @@ const InitialQuotationDetailStaff = () => {
   const [quantities, setQuantities] = useState<(number | null)[]>([]);
   const [status, setStatus] = useState<string>('');
   const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(true);
 
   const navigate = useNavigate();
 
@@ -96,6 +91,14 @@ const InitialQuotationDetailStaff = () => {
 
   const handleToggleEditRequestDialog = () => {
     setIsEditRequestDialogOpen(true);
+  };
+
+  const handleCloseRejectDialog = () => {
+    setIsRejectDialogOpen(false);
+  };
+
+  const handleToggleRejectDialog = () => {
+    setIsRejectDialogOpen(true);
   };
 
   const toggleChat = () => {
@@ -192,7 +195,23 @@ const InitialQuotationDetailStaff = () => {
           />
         )}
 
+        {isRejectDialogOpen && quotationData?.ReasonReject && (
+          <RejectDialog
+            note={quotationData.ReasonReject}
+            onClose={handleCloseRejectDialog}
+          />
+        )}
+
         <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+          {!isRejectDialogOpen && (
+            <button
+              onClick={handleToggleRejectDialog}
+              className="bg-[#ff6347] text-white p-4 rounded-full shadow-lg hover:bg-[#ea5c43] transition-colors duration-200"
+            >
+              <FaTimes className="text-2xl" />
+            </button>
+          )}
+
           {!isEditRequestDialogOpen && (
             <button
               onClick={handleToggleEditRequestDialog}
