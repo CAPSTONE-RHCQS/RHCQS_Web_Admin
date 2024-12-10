@@ -48,6 +48,6 @@ export interface HouseDesignDetailResponse {
   Type: string;
   IsCompany: boolean;
   InsDate: string;
-  DependOnVersion: DependOnVersion[];
+  DependOnVersion: DependOnVersion[] | null;
   Versions: VersionDetail[];
 }

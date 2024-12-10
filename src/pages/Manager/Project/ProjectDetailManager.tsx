@@ -473,9 +473,7 @@ const ProjectDetailManager = () => {
               isInitialInfoFinalized &&
               hasDesignContract &&
               projectDetail.ContractInfo.length > 0 &&
-              projectDetail.ContractInfo[0].FileContract !== null &&
-              projectDetail.ContractInfo[0].Name ===
-                'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng' ? (
+              projectDetail.ContractInfo[0].FileContract !== null ? (
                 <button
                   onClick={() => setIsAssignModalOpen(true)}
                   className="mb-4 bg-primaryGreenButton text-white p-2 rounded font-montserrat"

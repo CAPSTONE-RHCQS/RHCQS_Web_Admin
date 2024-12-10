@@ -216,14 +216,12 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
               )}
             </tr>
           ))}
-          <tr>
+          <tr className='bg-gray-200'>
             <td className="px-4 py-2 border text-center" colSpan={4}>
-              <strong>Tổng chi phí tiện ích</strong>
+              <strong>Tổng chi phí dịch vụ & tiện ích</strong>
             </td>
             <td className="px-4 py-2 border text-center">
-              <strong>{`${totalUtilityCost.toLocaleString(
-                'vi-VN',
-              )} VNĐ`}</strong>
+              <strong>{`${totalUtilityCost.toLocaleString('vi-VN')}`}</strong>
             </td>
             <td className="px-4 py-2 border text-center">
               <strong>VNĐ</strong>

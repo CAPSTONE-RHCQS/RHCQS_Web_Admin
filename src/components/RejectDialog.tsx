@@ -1,15 +1,12 @@
 import { FaTimes } from 'react-icons/fa';
 
-const EditRequestDialog: React.FC<{
+const RejectDialog: React.FC<{
   note: string;
   onClose: () => void;
-  accountName: string;
-}> = ({ note, onClose, accountName }) => {
+}> = ({ note, onClose }) => {
   return (
-    <div className="fixed bottom-20 right-13 bg-white p-4 rounded-lg shadow-lg z-50">
-      <h2 className="text-lg text-primary font-bold mb-2">
-        Yêu cầu chỉnh sửa từ {accountName}
-      </h2>
+    <div className="fixed bottom-50 right-13 bg-white p-4 rounded-lg shadow-lg z-50">
+      <h2 className="text-lg text-primary font-bold mb-2">Lý do từ chối</h2>
       <p className="mb-2">{note}</p>
       <div className="absolute top-[-2px] right-[-3px] z-50">
         <button
@@ -23,4 +20,4 @@ const EditRequestDialog: React.FC<{
   );
 };
 
-export default EditRequestDialog;
+export default RejectDialog;

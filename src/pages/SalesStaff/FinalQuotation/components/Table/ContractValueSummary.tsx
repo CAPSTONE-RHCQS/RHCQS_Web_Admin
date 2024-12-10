@@ -29,7 +29,7 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
           {totalFinalQuotation !== 0 && (
             <tr>
               <td className="px-4 py-2 border text-left">
-                Giá trị báo giá chi tiết xây dựng trước thuế
+                Giá trị báo giá chi tiết xây dựng
               </td>
               <td className="px-4 py-2 border text-center">
                 {totalFinalQuotation.toLocaleString()}
@@ -69,7 +69,7 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
               TỔNG GIÁ TRỊ HỢP ĐỒNG
             </td>
             <td className="px-4 py-2 border text-center font-bold">
-              {totalContractValue.toLocaleString()} VNĐ
+              {totalContractValue.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
           </tr>

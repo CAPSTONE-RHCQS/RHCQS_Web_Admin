@@ -30,6 +30,7 @@ import {
   FaFileInvoiceDollar,
   FaStickyNote,
   FaCommentDots,
+  FaTimes,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
@@ -45,6 +46,7 @@ import { TbHomePlus } from 'react-icons/tb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import EditRequestDialog from '../../../components/EditRequestDialog';
+import RejectDialog from '../../../components/RejectDialog';
 
 const FinalQuotationDetailStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -73,6 +75,7 @@ const FinalQuotationDetailStaff = () => {
   const [utilityPrices, setUtilityPrices] = useState<number[]>([]);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
   const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(true);
 
   useEffect(() => {
     const fetchQuotationDetail = async () => {
@@ -324,6 +327,14 @@ const FinalQuotationDetailStaff = () => {
     setIsEditRequestDialogOpen(true);
   };
 
+  const handleCloseRejectDialog = () => {
+    setIsRejectDialogOpen(false);
+  };
+
+  const handleToggleRejectDialog = () => {
+    setIsRejectDialogOpen(true);
+  };
+
   const totalFinalQuotation = quotationDetail.FinalQuotationItems.reduce(
     (total, item) => {
       return (
@@ -380,7 +391,23 @@ const FinalQuotationDetailStaff = () => {
         />
       )}
 
+      {isRejectDialogOpen && quotationDetail?.ReasonReject && (
+        <RejectDialog
+          note={quotationDetail.ReasonReject}
+          onClose={handleCloseRejectDialog}
+        />
+      )}
+
       <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {!isRejectDialogOpen && (
+          <button
+            onClick={handleToggleRejectDialog}
+            className="bg-[#ff6347] text-white p-4 rounded-full shadow-lg hover:bg-[#ea5c43] transition-colors duration-200"
+          >
+            <FaTimes className="text-2xl" />
+          </button>
+        )}
+
         {!isEditRequestDialogOpen && (
           <button
             onClick={handleToggleEditRequestDialog}

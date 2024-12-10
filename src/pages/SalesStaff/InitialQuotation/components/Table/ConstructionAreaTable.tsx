@@ -94,9 +94,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
             <tr>
               <td className="px-4 py-2 border text-center">1</td>
               <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
-              <td className="px-4 py-2 border text-center font-bold">
-                {area} m²
-              </td>
+              <td className="px-4 py-2 border text-center font-bold">{area}</td>
               <td className="px-4 py-2 border text-center font-bold">m²</td>
             </tr>
           </tbody>
@@ -190,16 +188,14 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 )}
               </tr>
             ))}
-            <tr>
+            <tr className="bg-gray-200">
               <td className="px-4 py-2 border text-center" colSpan={4}>
                 <strong>
                   Tổng diện tích xây dựng theo phương án thiết kế:
                 </strong>
               </td>
               <td className="px-4 py-2 border text-center">
-                <strong>
-                  {isNaN(totalArea) ? '0' : totalArea.toString()} m²
-                </strong>
+                <strong>{isNaN(totalArea) ? '0' : totalArea.toString()}</strong>
               </td>
               <td className="px-4 py-2 border text-center">
                 <strong>m²</strong>
@@ -299,7 +295,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   )}
                 </tr>
               ))}
-              <tr>
+              <tr className="bg-gray-200">
                 <td className="px-4 py-2 border text-center" colSpan={4}>
                   <strong>
                     Tổng diện tích xây dựng theo phương án thiết kế:
@@ -307,7 +303,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 </td>
                 <td className="px-4 py-2 border text-center">
                   <strong>
-                    {isNaN(totalArea) ? '0' : totalArea.toString()} m²
+                    {isNaN(totalArea) ? '0' : totalArea.toString()}
                   </strong>
                 </td>
                 <td className="px-4 py-2 border text-center">
@@ -336,7 +332,7 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                 <td className="px-4 py-2 border text-center">1</td>
                 <td className="px-4 py-2 border text-left">Phần hoàn thiện</td>
                 <td className="px-4 py-2 border text-center font-bold">
-                  {totalArea} m²
+                  {totalArea}
                 </td>
                 <td className="px-4 py-2 border text-center font-bold">m²</td>
               </tr>

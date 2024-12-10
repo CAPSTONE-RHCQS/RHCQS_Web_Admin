@@ -177,9 +177,15 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       onChange={(e) => {
                         const newPaymentPhase = e.target.value;
                         if (newPaymentPhase === row.PaymentDate) {
-                          toast.error('Ngày đáo hạn không được trùng với ngày thanh toán');
+                          toast.error(
+                            'Ngày đáo hạn không được trùng với ngày thanh toán',
+                          );
                         } else {
-                          handlePaymentChange(index, 'PaymentPhase', newPaymentPhase);
+                          handlePaymentChange(
+                            index,
+                            'PaymentPhase',
+                            newPaymentPhase,
+                          );
                         }
                       }}
                       className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -204,9 +210,9 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                 )}
               </tr>
             ))}
-            <tr>
+            <tr className="bg-gray-200">
               <td className="px-4 py-2 border text-center" colSpan={2}>
-                <strong>TỔNG GIÁ TRỊ HỢP ĐỒNG</strong>
+                <strong>Tổng cộng</strong>
               </td>
               <td className="px-4 py-2 border text-center">
                 <strong>

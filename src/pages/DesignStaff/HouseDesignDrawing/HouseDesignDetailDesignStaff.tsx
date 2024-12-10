@@ -20,7 +20,6 @@ import {
   FiLayers,
   FiPenTool,
   FiPhoneCall,
-  FiType,
 } from 'react-icons/fi';
 
 const HouseDesignDetailDesignStaff: React.FC = () => {
@@ -106,10 +105,26 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   const handleSubmitDesign = async () => {
     if (!designDetail || !fileUrl) return;
 
+    const currentVersionIndex = designDetail.Versions.findIndex(
+      (version) => version.Id === selectedVersionId,
+    );
+
+    const currentVersionId =
+      currentVersionIndex >= 0
+        ? designDetail.Versions[currentVersionIndex].Id
+        : null;
+
+    const currentDependOnVersionId = 
+      designDetail.DependOnVersion && designDetail.DependOnVersion.length > 0
+        ? designDetail.DependOnVersion.find(depend => depend.HouseDesignVersion === designDetail.VersionPresent)?.HouseDesginVersionId || null
+        : null;
+
     const designData: CreateDesignRequest = {
       name: designDetail.Name,
       houseDesignDrawingId: designDetail.Id,
       fileUrl: fileUrl,
+      relatedDrawingId: currentVersionId,
+      previousDrawingId: currentDependOnVersionId,
     };
 
     try {
@@ -250,26 +265,31 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {designDetail.DependOnVersion.map((depend, index) => (
-                  <tr key={depend.HouseDesginVersionId}>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {depend.HouseDesignVersionName}
-                    </td>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {depend.HouseDesignVersion}
-                    </td>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      <a
-                        href={depend.FileDesignVersion}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className=" hover:underline"
-                      >
-                        <FiFileText className="inline-block" />
-                      </a>
-                    </td>
-                  </tr>
-                ))}
+                {designDetail.DependOnVersion &&
+                designDetail.DependOnVersion.length > 0 ? (
+                  designDetail.DependOnVersion.map((depend) => (
+                    <tr key={depend.HouseDesginVersionId}>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        {depend.HouseDesignVersionName}
+                      </td>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        {depend.HouseDesignVersion}
+                      </td>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        <a
+                          href={depend.FileDesignVersion}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          <FiFileText className="inline-block" />
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <></>
+                )}
               </tbody>
             </table>
           </div>
