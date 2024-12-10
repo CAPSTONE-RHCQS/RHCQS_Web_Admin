@@ -3,12 +3,14 @@ import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import useFetchUtilities from '../../../hooks/useFetchUtilities';
 import UtilityTable from './components/Table/UtilityTable';
 import { ArrowPathIcon } from '@heroicons/react/24/solid';
-import AddUtilityModal from './components/Modals/AddUtilityModal';
+import CreateUtility from './components/Create/CreateUltility';
+import CreateSection from './components/Create/CreateSection';
 
 const UtilityList: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSectionModalOpen, setIsSectionModalOpen] = useState(false);
   const { totalPages, totalUtilities, isLoading, utilities } =
     useFetchUtilities(currentPage, refreshKey);
 
@@ -24,12 +26,17 @@ const UtilityList: React.FC = () => {
 
   const handleAddSuccess = () => {
     handleRefresh();
+    setIsModalOpen(false);
+  };
+
+  const handleSectionAddSuccess = () => {
+    handleRefresh();
+    setIsSectionModalOpen(false);
   };
 
   return (
     <>
       <Breadcrumb pageName="Quản lý Dịch vụ và Tiện ích" />
-
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
@@ -43,6 +50,12 @@ const UtilityList: React.FC = () => {
               className="mr-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
             >
               Thêm mới
+            </button>
+            <button
+              onClick={() => setIsSectionModalOpen(true)}
+              className="mr-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            >
+              Thêm phần
             </button>
             <ArrowPathIcon
               onClick={handleRefresh}
@@ -78,10 +91,17 @@ const UtilityList: React.FC = () => {
         </div>
       </div>
 
-      <AddUtilityModal
+      <CreateUtility
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onAddSuccess={handleAddSuccess}
+        onSave={handleAddSuccess}
+        onCancel={() => setIsModalOpen(false)}
+      />
+      <CreateSection
+        isOpen={isSectionModalOpen}
+        onClose={() => setIsSectionModalOpen(false)}
+        onSave={handleSectionAddSuccess}
+        onCancel={() => setIsSectionModalOpen(false)}
       />
     </>
   );

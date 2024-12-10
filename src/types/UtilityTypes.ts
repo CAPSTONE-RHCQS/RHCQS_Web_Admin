@@ -1,3 +1,13 @@
+export interface UtilityItem {
+  Id: string;
+  Name: string;
+  Type: string;
+  Deflag: boolean;
+  InsDate: string;
+  UpsDate: string;
+  Sections: SectionItem[];
+}
+
 export interface SectionItem {
   Id: string;
   Name: string;
@@ -7,23 +17,16 @@ export interface SectionItem {
   Description: string | null;
   UnitPrice: number | null;
   Unit: string | null;
-  Items: any | null;
-}
-
-export interface UtilityItem {
-  Id: string | null;
-  Name: string;
-  Type: string;
-  Deflag: boolean;
-  InsDate: string;
-  UpsDate: string;
-  Sections: SectionItem[];
   Items: Item[];
 }
 
 export interface Item {
+  Id: string;
+  SectionId: string;
   Name: string;
   Coefficient: number;
+  InsDate: string;
+  UpsDate: string;
 }
 
 export interface SectionRequest {
@@ -41,8 +44,20 @@ export interface ItemRequest {
 
 export interface UtilityRequest {
   id: string | null;
-  name: string;
-  type: string;
-  sections: SectionRequest[];
-  items: ItemRequest[];
+  name: string | null;
+  type: string | null;
+  sections: SectionRequest[] | null;
+  items: ItemRequest[] | null;
+}
+
+export interface UtilityUpdateInfoRequest {
+  id: string | null;
+  name: string | null;
+  type: string | null;
+}
+
+export interface UtilityUpdateRequest {
+  utility: UtilityUpdateInfoRequest | null;
+  sections: SectionRequest | null;
+  items: ItemRequest[] | null;
 }
