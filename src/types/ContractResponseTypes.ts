@@ -55,7 +55,7 @@ export interface ContractDesignResponse {
 }
 
 export interface BatchPaymentRequest {
-  NumberOfBatches: number;
+  NumberOfBatches: number | null;
   Price: number;
   PaymentDate: string;
   PaymentPhase: string;
