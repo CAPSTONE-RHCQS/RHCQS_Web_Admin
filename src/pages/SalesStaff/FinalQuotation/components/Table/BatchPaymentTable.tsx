@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BatchPaymentInfo } from '../../../../../types/FinalQuotationTypes';
+import { toast } from 'react-toastify';
 
 interface BatchPaymentTableProps {
   payments: BatchPaymentInfo[];
@@ -48,7 +49,18 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
     value: string,
   ) => {
     const updatedPayments = [...editedPayments];
+
     updatedPayments[index][field] = value;
+
+    for (let i = index + 1; i < updatedPayments.length; i++) {
+      updatedPayments[i].PaymentDate = '';
+      updatedPayments[i].PaymentPhase = '';
+    }
+
+    if (field === 'PaymentDate') {
+      updatedPayments[index].PaymentPhase = '';
+    }
+
     setEditedPayments(updatedPayments);
     onPaymentsChange(updatedPayments);
   };
@@ -110,7 +122,20 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                     type="date"
                     ref={(el) => (dateRefs.current[index] = el)}
                     value={payment.PaymentDate || ''}
-                    min={today}
+                    min={
+                      index > 0
+                        ? new Date(
+                            Math.max(
+                              new Date(
+                                editedPayments[index - 1].PaymentDate,
+                              ).getTime(),
+                              new Date(today).getTime(),
+                            ),
+                          )
+                            .toISOString()
+                            .split('T')[0]
+                        : today
+                    }
                     onChange={(e) =>
                       handleDateChange(index, 'PaymentDate', e.target.value)
                     }
@@ -130,10 +155,22 @@ const BatchPaymentTable: React.FC<BatchPaymentTableProps> = ({
                       (dateRefs.current[index + editedPayments.length] = el)
                     }
                     value={payment.PaymentPhase || ''}
-                    min={today}
-                    onChange={(e) =>
-                      handleDateChange(index, 'PaymentPhase', e.target.value)
+                    min={
+                      payment.PaymentDate
+                        ? new Date(payment.PaymentDate)
+                            .toISOString()
+                            .split('T')[0]
+                        : today
                     }
+                    onChange={(e) => {
+                      if (e.target.value !== payment.PaymentDate) {
+                        handleDateChange(index, 'PaymentPhase', e.target.value);
+                      } else {
+                        toast.error(
+                          'Ngày đáo hạn không được trùng với ngày thanh toán',
+                        );
+                      }
+                    }}
                     className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 ) : payment.PaymentPhase ? (

@@ -9,6 +9,9 @@ import {
   FaPhone,
   FaMailBulk,
   FaMoneyBillWave,
+  FaNotesMedical,
+  FaTimes,
+  FaStickyNote,
 } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
@@ -31,6 +34,7 @@ import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import ChatBox from '../../../components/ChatBox';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
+import EditRequestDialog from '../../../components/EditRequestDialog';
 
 interface TableRow {
   stt: number;
@@ -61,6 +65,7 @@ const InitialQuotationDetailManager = () => {
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
   const [isStatusChecked, setIsStatusChecked] = useState(false);
+  const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
 
   const fetchQuotationData = async () => {
     if (id) {
@@ -132,6 +137,14 @@ const InitialQuotationDetailManager = () => {
     return () => clearInterval(interval);
   }, [id]);
 
+  const handleCloseEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(false);
+  };
+
+  const handleToggleEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div>
@@ -195,7 +208,7 @@ const InitialQuotationDetailManager = () => {
     if (!id) return;
     try {
       await approveInitialQuotation(id, { type, reason });
-      if (type === 'Accepted') {
+      if (type === 'Approved') {
         toast.success('Chấp nhận báo giá thành công!');
       } else if (type === 'Rejected') {
         toast.success('Từ chối báo giá thành công!');
@@ -226,24 +239,43 @@ const InitialQuotationDetailManager = () => {
 
   return (
     <>
-      <div>
+      {isEditRequestDialogOpen && quotationData?.Note && (
+        <EditRequestDialog
+          note={quotationData.Note}
+          onClose={handleCloseEditRequestDialog}
+          accountName={quotationData.AccountName}
+        />
+      )}
+
+      <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {!isEditRequestDialogOpen && (
+          <button
+            onClick={handleToggleEditRequestDialog}
+            className="bg-[#ff8c00] text-white p-4 rounded-full shadow-lg hover:bg-[#e58006] transition-colors duration-200"
+          >
+            <FaStickyNote className="text-2xl" />
+          </button>
+        )}
+
         {!showChat && (
           <button
             onClick={toggleChat}
-            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+            className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
           >
             <FaCommentDots className="text-2xl" />
           </button>
         )}
+      </div>
 
-        {showChat && quotationData && (
-          <ChatBox
-            onClose={toggleChat}
-            accountName={quotationData.AccountName || ''}
-            note={quotationData.Note || ''}
-          />
-        )}
+      {showChat && quotationData && (
+        <ChatBox
+          onClose={toggleChat}
+          accountName={quotationData.AccountName || ''}
+          note={quotationData.Note || ''}
+        />
+      )}
 
+      <div>
         <InitialQuotationStatusTracker
           currentStatus={getStatusLabelInitalQuoteDetail(currentStatus)}
         />
@@ -800,7 +832,7 @@ const InitialQuotationDetailManager = () => {
                 </span>
               </p>
               <p className="flex justify-between">
-                <em>Phối hợp với CT hoàn thiện công trình:</em>
+                <em>Phối hợp với CĐT hoàn thiện công trình:</em>
                 <span className="font-italic">
                   {quotationData.TimeOthers} Ngày
                 </span>

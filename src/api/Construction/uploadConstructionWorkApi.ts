@@ -1,4 +1,6 @@
 import requestWebRHCQS from '../../utils/axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export interface ConstructionItem {
   ConstructionId: string;
@@ -37,8 +39,13 @@ export const uploadConstructionWork = async (
       },
     );
     return response.data;
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error uploading equipment Excel:', error);
+    if (error.response && error.response.status === 409) {
+      toast.error('Lỗi! Gói Thi Công trong Excel không đúng');
+    } else {
+      toast.error('Đã xảy ra lỗi trong quá trình tải lên');
+    }
     throw error;
   }
 };

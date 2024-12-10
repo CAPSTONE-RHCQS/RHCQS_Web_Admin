@@ -24,6 +24,7 @@ import {
   FaPhone,
   FaMailBulk,
   FaFileInvoiceDollar,
+  FaStickyNote,
 } from 'react-icons/fa';
 import UtilityInfoTable from './components/Table/UtilityInfoTable';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
@@ -36,6 +37,7 @@ import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
+import EditRequestDialog from '../../../components/EditRequestDialog';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -60,6 +62,7 @@ const FinalQuotationDetailManager = () => {
   const [totalEquipmentCost, setTotalEquipmentCost] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
+  const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
 
   const fetchQuotationDetail = async () => {
     if (id) {
@@ -188,6 +191,14 @@ const FinalQuotationDetailManager = () => {
     return <div>Error: Quotation detail not found.</div>;
   }
 
+  const handleCloseEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(false);
+  };
+
+  const handleToggleEditRequestDialog = () => {
+    setIsEditRequestDialogOpen(true);
+  };
+
   const handleDownload = () => {};
 
   const handleShare = () => {};
@@ -205,14 +216,32 @@ const FinalQuotationDetailManager = () => {
 
   return (
     <div className="bg-gray-100 min-h-screen">
-      {!showChat && (
-        <button
-          onClick={toggleChat}
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
-        >
-          <FaCommentDots className="text-2xl" />
-        </button>
+      {isEditRequestDialogOpen && quotationDetail?.Note && (
+        <EditRequestDialog
+          note={quotationDetail.Note}
+          onClose={handleCloseEditRequestDialog}
+          accountName={quotationDetail.AccountName}
+        />
       )}
+
+      <div className="fixed bottom-4 right-4 flex flex-col items-end space-y-2 z-50">
+        {!isEditRequestDialogOpen && (
+          <button
+            onClick={handleToggleEditRequestDialog}
+            className="bg-[#ff8c00] text-white p-4 rounded-full shadow-lg hover:bg-[#e58006] transition-colors duration-200"
+          >
+            <FaStickyNote className="text-2xl" />
+          </button>
+        )}
+        {!showChat && (
+          <button
+            onClick={toggleChat}
+            className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
+          >
+            <FaCommentDots className="text-2xl" />
+          </button>
+        )}
+      </div>
 
       {showChat && quotationDetail && (
         <ChatBox

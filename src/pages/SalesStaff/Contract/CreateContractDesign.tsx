@@ -88,7 +88,15 @@ const CreateContractDesign = () => {
       const newBatchPayments = [...prevBatchPayments];
       const payment = newBatchPayments[index];
 
-      if (field === 'percents') {
+      if (field === 'paymentDate') {
+        payment.paymentDate = value as string;
+        payment.paymentPhase = ''; 
+
+        for (let i = index + 1; i < newBatchPayments.length; i++) {
+          newBatchPayments[i].paymentDate = '';
+          newBatchPayments[i].paymentPhase = '';
+        }
+      } else if (field === 'percents') {
         const newPercents = parseFloat(value as string);
         const totalPercents = newBatchPayments.reduce((sum, p, i) => {
           return sum + (i === index ? newPercents : parseFloat(p.percents));
@@ -168,6 +176,8 @@ const CreateContractDesign = () => {
   };
 
   const today = new Date().toISOString().split('T')[0];
+  const startDate = contractDetails.startDate || today;
+  const endDate = contractDetails.endDate || today;
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
@@ -208,47 +218,41 @@ const CreateContractDesign = () => {
             </div>
           </div>
           <div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                Ngày bắt đầu:
-              </label>
-              <input
-                type="date"
-                value={contractDetails.startDate}
-                min={today}
-                onChange={(e) =>
-                  handleChangeContractDetails('startDate', e.target.value)
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
+            <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-lg font-medium mb-2">
+                  Ngày bắt đầu:
+                </label>
+                <input
+                  type="date"
+                  value={contractDetails.startDate}
+                  min={today}
+                  onChange={(e) =>
+                    handleChangeContractDetails('startDate', e.target.value)
+                  }
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-lg font-medium mb-2">
+                  Ngày kết thúc:
+                </label>
+                <input
+                  type="date"
+                  value={contractDetails.endDate}
+                  min={contractDetails.startDate || today}
+                  onChange={(e) =>
+                    handleChangeContractDetails('endDate', e.target.value)
+                  }
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                Ngày kết thúc:
-              </label>
-              <input
-                type="date"
-                value={contractDetails.endDate}
-                min={contractDetails.startDate || today}
-                onChange={(e) =>
-                  handleChangeContractDetails('endDate', e.target.value)
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                Thời hạn hiệu lực (ngày):
-              </label>
-              <input
-                type="number"
-                value={contractDetails.validityPeriod}
-                readOnly
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-              />
-            </div>
+            <span className="block text-lg font-medium mb-2">
+              Thời hạn hiệu lực: {contractDetails.validityPeriod} ngày
+            </span>
           </div>
         </div>
 
@@ -343,7 +347,10 @@ const CreateContractDesign = () => {
                   <input
                     type="date"
                     value={payment.paymentDate}
-                    min={today}
+                    min={
+                      index > 0 ? batchPayments[index - 1].paymentDate : today
+                    }
+                    max={endDate}
                     onChange={(e) =>
                       handleBatchPaymentChange(
                         index,
@@ -359,14 +366,15 @@ const CreateContractDesign = () => {
                   <input
                     type="date"
                     value={payment.paymentPhase}
-                    min={today}
-                    onChange={(e) =>
-                      handleBatchPaymentChange(
-                        index,
-                        'paymentPhase',
-                        e.target.value,
-                      )
-                    }
+                    min={payment.paymentDate || today}
+                    max={endDate}
+                    onChange={(e) => {
+                      if (e.target.value !== payment.paymentDate) {
+                        handleBatchPaymentChange(index, 'paymentPhase', e.target.value);
+                      } else {
+                        toast.error('Ngày đáo hạn không được trùng với ngày thanh toán');
+                      }
+                    }}
                     className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
                     required
                   />

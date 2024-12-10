@@ -30,6 +30,8 @@ import {
 } from '../../../types/ContractResponseTypes';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const ContractDetailStaff = () => {
   const { contractId } = useParams<{ contractId: string }>();
@@ -114,6 +116,7 @@ const ContractDetailStaff = () => {
       const isSelected = selectedBatches.some(
         (selected) => selected.NumberOfBatch === batch.NumberOfBatch,
       );
+
       if (isSelected) {
         const updatedBatches = selectedBatches.filter(
           (selected) => selected.NumberOfBatch !== batch.NumberOfBatch,
@@ -129,11 +132,11 @@ const ContractDetailStaff = () => {
           ...batchPaymentRequests,
           {
             NumberOfBatches: batch.NumberOfBatch,
-            Price: 0,
-            PaymentDate: '',
-            PaymentPhase: '',
-            Percents: 0,
-            Description: '',
+            Price: batch.Price,
+            PaymentDate: batch.PaymentDate,
+            PaymentPhase: batch.PaymentPhase,
+            Percents: batch.Percents,
+            Description: batch.Description,
           },
         ]);
       }
@@ -147,6 +150,37 @@ const ContractDetailStaff = () => {
   ) => {
     const updatedRequests = [...batchPaymentRequests];
 
+    if (field === 'PaymentDate') {
+      const newPaymentDate = new Date(value as string);
+      const previousPaymentDate =
+        index > 0 ? new Date(updatedRequests[index - 1].PaymentDate) : null;
+
+      if (previousPaymentDate && newPaymentDate < previousPaymentDate) {
+        toast.error(
+          'Ngày thanh toán phải lớn hơn hoặc bằng ngày thanh toán của đợt trước đó!',
+        );
+        return;
+      }
+      updatedRequests[index].PaymentDate = value as string;
+
+      for (let i = index + 1; i < updatedRequests.length; i++) {
+        updatedRequests[i].PaymentDate = '';
+        updatedRequests[i].PaymentPhase = '';
+      }
+    }
+
+    if (field === 'PaymentPhase') {
+      const paymentDate = new Date(updatedRequests[index].PaymentDate);
+      const newPaymentPhase = new Date(value as string);
+
+      if (newPaymentPhase <= paymentDate) {
+        toast.error('Ngày đáo hạn phải lớn hơn ngày thanh toán!');
+        return;
+      }
+
+      updatedRequests[index].PaymentPhase = value as string;
+    }
+
     if (field === 'Percents') {
       const percentValue =
         typeof value === 'number' ? value : parseFloat(value);
@@ -158,14 +192,13 @@ const ContractDetailStaff = () => {
         (updatedRequests[index].Percents || 0) +
         percentValue;
 
-      const totalPercents =
-        contractDetail?.BatchPayment?.reduce((total, batch) => {
-          return batch.Status === 'Progress' ? total + batch.Percents : total;
-        }, 0) || 0;
+      const selectedTotalPercents = selectedBatches.reduce((total, batch) => {
+        return total + (batch.Percents || 0);
+      }, 0);
 
-      if (currentTotalPercents > totalPercents) {
+      if (currentTotalPercents > selectedTotalPercents) {
         toast.error(
-          'Tổng phần trăm của phụ lục không được lớn hơn tổng phần trăm của các đợt thanh toán có trạng thái "Chờ thanh toán"!',
+          'Tổng phần trăm của phụ lục không được lớn hơn tổng phần trăm của các đợt thanh toán đã chọn!',
         );
         return;
       }
@@ -179,7 +212,13 @@ const ContractDetailStaff = () => {
       [field]: value,
     };
 
+    updatedRequests.sort(
+      (a, b) => (a.NumberOfBatches ?? 0) - (b.NumberOfBatches ?? 0),
+    );
+
     setBatchPaymentRequests(updatedRequests);
+
+    console.log('Sorted batchPaymentRequests:', updatedRequests);
   };
 
   const handleCreateAppendix = async () => {
@@ -231,7 +270,7 @@ const ContractDetailStaff = () => {
         batchPaymentId: batch.BatchPaymentId,
       })),
       batchPaymentRequests: batchPaymentRequests.map((request) => ({
-        numberOfBatches: request.NumberOfBatches,
+        numberOfBatches: request.NumberOfBatches ?? 0,
         price: request.Price,
         paymentDate: request.PaymentDate,
         paymentPhase: request.PaymentPhase,
@@ -266,6 +305,26 @@ const ContractDetailStaff = () => {
         request.PaymentPhase !== '' &&
         request.Description !== '',
     );
+
+  const addNewBatchRequest = () => {
+    setBatchPaymentRequests((prevRequests) => [
+      ...prevRequests,
+      {
+        NumberOfBatches: null,
+        Price: 0,
+        PaymentDate: '',
+        PaymentPhase: '',
+        Percents: 0,
+        Description: '',
+      },
+    ]);
+    console.log('New batch added:', batchPaymentRequests);
+  };
+
+  const handleDeleteBatch = (index: number) => {
+    const updatedRequests = batchPaymentRequests.filter((_, i) => i !== index);
+    setBatchPaymentRequests(updatedRequests);
+  };
 
   if (!contractDetail) {
     return (
@@ -620,7 +679,8 @@ const ContractDetailStaff = () => {
           onClick={closeModal}
         >
           <div
-            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10"
+            className="bg-white rounded-lg shadow-lg p-6 w-full max-w-6xl relative ml-20 mt-10 overflow-y-auto"
+            style={{ maxHeight: '82vh' }}
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-4">
@@ -633,29 +693,52 @@ const ContractDetailStaff = () => {
               </button>
             </div>
 
-            <div className="mb-4">
-              <h3 className="font-semibold">Ngày bắt đầu:</h3>
-              <input
-                type="date"
-                value={appendixStartDate}
-                onChange={(e) => setAppendixStartDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2"
-                required
-                min={new Date().toISOString().split('T')[0]}
-              />
-            </div>
-            <div className="mb-4">
-              <h3 className="font-semibold">Ngày kết thúc:</h3>
-              <input
-                type="date"
-                value={appendixEndDate}
-                onChange={(e) => setAppendixEndDate(e.target.value)}
-                className="w-full border border-gray-300 rounded-md p-2"
-                required
-                min={
-                  appendixStartDate || new Date().toISOString().split('T')[0]
-                }
-              />
+            <div>
+              <div className="mb-4 grid grid-cols-1 md:grid-cols-6 gap-2">
+                <div>
+                  <label className="block text-lg font-medium mb-2">
+                    Ngày bắt đầu:
+                  </label>
+                  <input
+                    type="date"
+                    value={appendixStartDate}
+                    onChange={(e) => setAppendixStartDate(e.target.value)}
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    required
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+                <div>
+                  <label className="block text-lg font-medium mb-2">
+                    Ngày kết thúc:
+                  </label>
+                  <input
+                    type="date"
+                    value={appendixEndDate}
+                    onChange={(e) => setAppendixEndDate(e.target.value)}
+                    className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                    required
+                    min={
+                      appendixStartDate ||
+                      new Date().toISOString().split('T')[0]
+                    }
+                  />
+                </div>
+              </div>
+              <div className="mb-4">
+                <span className="block text-lg font-medium">
+                  Thời hạn hiệu lực{' '}
+                  {appendixStartDate && appendixEndDate
+                    ? `${
+                        Math.floor(
+                          (new Date(appendixEndDate).getTime() -
+                            new Date(appendixStartDate).getTime()) /
+                            (1000 * 60 * 60 * 24),
+                        ) + 1
+                      } ngày`
+                    : ''}
+                </span>
+              </div>
             </div>
 
             <div className="mb-4">
@@ -680,121 +763,147 @@ const ContractDetailStaff = () => {
                 ))}
               </ul>
             </div>
-            <table className="min-w-full bg-white border border-gray-300">
-              <thead>
-                <tr>
-                  <th className="py-2 border-b border-gray-300 border-r">
-                    Đợt
-                  </th>
-                  <th className="py-2 border-b border-gray-300 border-r">
-                    Mô tả
-                  </th>
-                  <th className="py-2 border-b border-gray-300 border-r w-27 text-center">
-                    Phần trăm (%)
-                  </th>
-                  <th className="py-2 border-b border-gray-300 border-r w-60">
-                    Giá trị thanh toán (VNĐ)
-                  </th>
-                  <th className="py-2 border-b border-gray-300 border-r w-50">
-                    Ngày thanh toán
-                  </th>
-                  <th className="py-2 border-b border-gray-300 border-r w-50">
-                    Ngày đáo hạn
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {selectedBatches.map((batch, index) => (
-                  <tr
-                    key={batch.NumberOfBatch}
-                    className="border-b border-gray-300"
-                  >
-                    <td className="py-2 text-center border-r border-gray-300">
-                      {batch.NumberOfBatch}
-                    </td>
-                    <td className="px-4 py-2 border text-center align-middle">
-                      <input
-                        type="text"
-                        value={batchPaymentRequests[index].Description}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            'Description',
-                            e.target.value,
-                          )
-                        }
-                        style={{
-                          overflow: 'hidden',
-                          minHeight: '60px',
-                          resize: 'vertical',
-                          border: '1px solid #ccc',
-                        }}
-                        className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        required
-                      />
-                    </td>
-                    <td className="px-4 py-2 border text-center align-middle">
-                      <input
-                        type="number"
-                        value={batchPaymentRequests[index].Percents}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            'Percents',
-                            parseFloat(e.target.value),
-                          )
-                        }
-                        style={{
-                          overflow: 'hidden',
-                          minHeight: '60px',
-                          resize: 'vertical',
-                          border: '1px solid #ccc',
-                        }}
-                        className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        required
-                      />
-                    </td>
-                    <td className="py-2 text-center border-r border-gray-300">
-                      {batchPaymentRequests[index].Price.toLocaleString(
-                        'vi-VN',
-                      )}
-                    </td>
-                    <td className="py-2 border-r border-gray-300">
-                      <input
-                        type="date"
-                        value={batchPaymentRequests[index].PaymentDate}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            'PaymentDate',
-                            e.target.value,
-                          )
-                        }
-                        className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                        required
-                        min={new Date().toISOString().split('T')[0]}
-                      />
-                    </td>
-                    <td className="py-2 border-r border-gray-300">
-                      <input
-                        type="date"
-                        value={batchPaymentRequests[index].PaymentPhase}
-                        onChange={(e) =>
-                          handleInputChange(
-                            index,
-                            'PaymentPhase',
-                            e.target.value,
-                          )
-                        }
-                        className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                        required
-                        min={new Date().toISOString().split('T')[0]}
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {selectedBatches.length > 0 && (
+              <>
+                <table className="min-w-full bg-white border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th className="py-2 border-b border-gray-300 border-r">
+                        Đợt
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r">
+                        Mô tả
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r w-40 text-center">
+                        Phần trăm (%)
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r w-60">
+                        Giá trị thanh toán (VNĐ)
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r w-50">
+                        Ngày thanh toán
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r w-50">
+                        Ngày đáo hạn
+                      </th>
+                      <th className="py-2 border-b border-gray-300 border-r w-20"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {batchPaymentRequests.map((request, index) => (
+                      <tr key={index} className="border-b border-gray-300">
+                        <td className="px-4 py-2 border text-center align-middle">
+                          <input
+                            type="number"
+                            value={request.NumberOfBatches ?? ''}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                'NumberOfBatches',
+                                parseInt(e.target.value),
+                              )
+                            }
+                            style={{
+                              border: '1px solid #ccc',
+                            }}
+                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            required
+                          />
+                        </td>
+                        <td className="px-4 py-2 border text-center align-middle">
+                          <input
+                            type="text"
+                            value={request.Description}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                'Description',
+                                e.target.value,
+                              )
+                            }
+                            style={{
+                              border: '1px solid #ccc',
+                            }}
+                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            required
+                          />
+                        </td>
+                        <td className="px-4 py-2 border text-center align-middle">
+                          <input
+                            type="number"
+                            value={request.Percents}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                'Percents',
+                                parseFloat(e.target.value),
+                              )
+                            }
+                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            required
+                          />
+                        </td>
+                        <td className="px-4 py-2 border text-center align-middle">
+                          {request.Price.toLocaleString('vi-VN')}
+                        </td>
+                        <td className="py-2 border-r border-gray-300">
+                          <input
+                            type="date"
+                            value={request.PaymentDate}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                'PaymentDate',
+                                e.target.value,
+                              )
+                            }
+                            min={
+                              appendixStartDate ||
+                              new Date().toISOString().split('T')[0]
+                            }
+                            max={appendixEndDate}
+                            className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary"
+                            required
+                          />
+                        </td>
+                        <td className="py-2 border-r border-gray-300">
+                          <input
+                            type="date"
+                            value={request.PaymentPhase}
+                            onChange={(e) =>
+                              handleInputChange(
+                                index,
+                                'PaymentPhase',
+                                e.target.value,
+                              )
+                            }
+                            min={request.PaymentDate}
+                            max={appendixEndDate}
+                            className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary"
+                            required
+                          />
+                        </td>
+                        <td className="py-2 text-center">
+                          <button
+                            onClick={() => handleDeleteBatch(index)}
+                            className="bg-red-500 text-white w-8 h-8 flex items-center justify-center shadow hover:bg-red-600 transition duration-300 rounded-full mx-auto"
+                          >
+                            <FontAwesomeIcon icon={faTrash} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                <button
+                  onClick={addNewBatchRequest}
+                  className="bg-primaryGreenButton text-white px-4 py-2 rounded mt-4 shadow-lg hover:bg-primaryDarkGreen transition duration-300"
+                >
+                  Thêm đợt thanh toán
+                </button>
+              </>
+            )}
 
             <div className="mt-4">
               <h3 className="font-semibold">Ghi chú:</h3>
@@ -809,7 +918,7 @@ const ContractDetailStaff = () => {
               onClick={handleCreateAppendix}
               className={`mt-4 px-4 py-2 rounded shadow-md ${
                 isCreateAppendixEnabled && !isCreatingAppendix
-                  ? 'bg-primary text-white hover:bg-primary-dark'
+                  ? 'bg-primaryGreenButton text-white hover:bg-primaryDarkGreen'
                   : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }`}
               disabled={!isCreateAppendixEnabled || isCreatingAppendix}

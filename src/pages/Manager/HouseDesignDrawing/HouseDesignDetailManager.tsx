@@ -188,7 +188,7 @@ const HouseDesignDetailManager: React.FC = () => {
                     Ghi chú khách hàng
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Lý do
+                    Lý do từ chối
                   </th>
                   <th className="py-4 px-4 font-medium text-black dark:text-white"></th>
                 </tr>

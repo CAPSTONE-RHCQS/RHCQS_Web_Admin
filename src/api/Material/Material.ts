@@ -1,4 +1,10 @@
-import { MaterialItem, MaterialListResponse, MaterialSectionItem, MaterialSectionListResponse, SearchMaterialByNameResponse } from '../../types/Material';
+import {
+  MaterialItem,
+  MaterialListResponse,
+  MaterialSectionItem,
+  MaterialSectionListResponse,
+  SearchMaterialByNameResponse,
+} from '../../types/Material';
 import { GetMaterialByNameResponse } from '../../types/SearchContainNameTypes';
 import requestWebRHCQS from '../../utils/axios';
 
@@ -20,9 +26,26 @@ export async function getMaterialByName(
   }
 }
 
+export async function getAllMaterialByName(
+  name: string,
+): Promise<GetMaterialByNameResponse> {
+  try {
+    const response = await requestWebRHCQS.get('/material/allname', {
+      params: { name },
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching material by name ${name}:`, error);
+    throw new Error('Failed to fetch material by name');
+  }
+}
+
 export async function getMaterialSectionList(
   page: number,
-  size: number
+  size: number,
 ): Promise<MaterialSectionListResponse> {
   try {
     const response = await requestWebRHCQS.get('/materialsection', {
@@ -40,7 +63,7 @@ export async function getMaterialSectionList(
 
 export async function getMaterialList(
   page: number,
-  size: number
+  size: number,
 ): Promise<MaterialListResponse> {
   try {
     const response = await requestWebRHCQS.get('/material', {
@@ -68,7 +91,7 @@ export async function getMaterialById(id: string) {
 
 export async function createMaterialSection(data: any) {
   try {
-    const response = await requestWebRHCQS.post('/materialsection', data,);
+    const response = await requestWebRHCQS.post('/materialsection', data);
     return response.data;
   } catch (error) {
     console.error('Error creating material section:', error);
@@ -89,7 +112,9 @@ export async function updateMaterialSection(id: string, data: any) {
   }
 }
 
-export async function getMaterialSectionById(id: string): Promise<MaterialSectionItem> {
+export async function getMaterialSectionById(
+  id: string,
+): Promise<MaterialSectionItem> {
   try {
     const response = await requestWebRHCQS.get(`/materialsection/id?id=${id}`);
     return response.data;
@@ -103,11 +128,14 @@ export async function searchMaterial(
   name: string,
 ): Promise<SearchMaterialByNameResponse> {
   try {
-    const response = await requestWebRHCQS.get(`/material/allname?name=${name}`, {
-      headers: {
-        accept: 'text/plain',
+    const response = await requestWebRHCQS.get(
+      `/material/allname?name=${name}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error(`Error fetching construction by name ${name}:`, error);
@@ -125,8 +153,9 @@ export async function searchMaterialByPackageId(
       {
         headers: {
           accept: 'text/plain',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error(`Error fetching construction by name ${name}:`, error);
@@ -136,7 +165,9 @@ export async function searchMaterialByPackageId(
 
 export async function searchMaterialSection(name: string) {
   try {
-    const response = await requestWebRHCQS.get(`/materialsection/name?name=${name}`);
+    const response = await requestWebRHCQS.get(
+      `/materialsection/name?name=${name}`,
+    );
     return response.data;
   } catch (error) {
     console.error('Error searching material section:', error);
@@ -161,16 +192,12 @@ export async function createMaterial(data: any) {
 
 export async function updateMaterial(id: string, data: any) {
   try {
-    const response = await requestWebRHCQS.put(
-      `/material?id=${id}`,
-      data,
-      {
-        headers: {
-          accept: 'text/plain',
-          'Content-Type': 'multipart/form-data',
-        },
+    const response = await requestWebRHCQS.put(`/material?id=${id}`, data, {
+      headers: {
+        accept: 'text/plain',
+        'Content-Type': 'multipart/form-data',
       },
-    );
+    });
     return response.data;
   } catch (error) {
     console.error('Error updating material:', error);
@@ -180,12 +207,16 @@ export async function updateMaterial(id: string, data: any) {
 
 export async function importExcelMaterial(data: any) {
   try {
-    const response = await requestWebRHCQS.post('/material/import-excel', data, {
-      headers: {
-        accept: 'text/plain',
-        'Content-Type': 'multipart/form-data',
+    const response = await requestWebRHCQS.post(
+      '/material/import-excel',
+      data,
+      {
+        headers: {
+          accept: 'text/plain',
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    });
+    );
     return response.data;
   } catch (error: any) {
     console.error('Error importing excel material:', error.response.data.Error);

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { getPackageById, putPackage } from '../../../api/Package/PackageApi';
-import { Package, PackageLabor } from '../../../types/PackagesTypes';
+import { Package, PackageMaterial } from '../../../types/PackagesTypes';
 import { PackagePutRequest } from '../../../types/PackageRequestTypes';
 import ClipLoader from 'react-spinners/ClipLoader';
 import LaborTable from './components/Table/LaborTable';
@@ -9,6 +9,9 @@ import MaterialTable from './components/Table/MaterialTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTimes, faSave } from '@fortawesome/free-solid-svg-icons';
 import { FaCheckCircle } from 'react-icons/fa';
+import { PackageLabor } from '../../../types/PackagesTypes';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PackageDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -16,11 +19,9 @@ const PackageDetail: React.FC = () => {
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editData, setEditData] = useState<PackagePutRequest | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) {
-      setError('ID không hợp lệ');
       setLoading(false);
       return;
     }
@@ -39,7 +40,7 @@ const PackageDetail: React.FC = () => {
             laborId: labor.LaborId,
           })),
           packageMaterials: response.data.PackageMaterials.map((material) => ({
-            materialId: material.MaterialSectionId,
+            materialId: material.Id,
           })),
           packageHouses: response.data.PackageHouses.map((house) => ({
             designTemplateId: house.DesignTemplateId,
@@ -49,7 +50,6 @@ const PackageDetail: React.FC = () => {
         });
       } catch (error) {
         console.error('Error fetching package detail:', error);
-        setError('Có lỗi xảy ra khi tải dữ liệu chi tiết');
       } finally {
         setLoading(false);
       }
@@ -58,15 +58,51 @@ const PackageDetail: React.FC = () => {
     loadPackageDetail();
   }, [id]);
 
+  const handleLaborUpdate = useCallback(
+    (updatedLabors: PackageLabor[]) => {
+      if (
+        editData &&
+        JSON.stringify(editData.packageLabors) !== JSON.stringify(updatedLabors)
+      ) {
+        setEditData((prevEditData) => ({
+          ...prevEditData!,
+          packageLabors: updatedLabors.map((labor) => ({
+            laborId: labor.LaborId,
+          })),
+        }));
+      }
+    },
+    [editData],
+  );
+
+  const handleMaterialUpdate = useCallback(
+    (updatedMaterials: PackageMaterial[]) => {
+      if (
+        editData &&
+        JSON.stringify(editData.packageMaterials) !==
+          JSON.stringify(updatedMaterials)
+      ) {
+        setEditData((prevEditData) => ({
+          ...prevEditData!,
+          packageMaterials: updatedMaterials.map((material) => ({
+            materialId: material.MaterialId,
+          })),
+        }));
+      }
+    },
+    [editData],
+  );
+
   const handleSave = async () => {
     if (!editData || !id) return;
     try {
       await putPackage(id, editData);
       setEditMode(false);
       setPackageDetail((prev) => (prev ? { ...prev, ...editData } : null));
+      toast.success('Cập nhật gói thành công!');
     } catch (error) {
+      toast.error('Cập nhật gói thất bại!');
       console.error('Error updating package:', error);
-      setError('Có lỗi xảy ra khi cập nhật dữ liệu');
     }
   };
 
@@ -77,30 +113,67 @@ const PackageDetail: React.FC = () => {
     return null;
   };
 
-  const handleLaborUpdate = (updatedLabors: PackageLabor[]) => {
-    const updatedPackageLabors = updatedLabors.map(labor => ({
-      laborId: labor.LaborId,
-    }));
+  const translatePackageType = (type: string) => {
+    switch (type.toUpperCase()) {
+      case 'ROUGH':
+        return 'Gói thô';
+      case 'FINISHED':
+        return 'Gói hoàn thiện';
+      default:
+        return type;
+    }
+  };
 
-    setEditData((prev) => {
-      const newData = prev ? { ...prev, packageLabors: updatedPackageLabors } : null;
-      console.log('Updated editData:', newData);
-      return newData;
-    });
+  const handleAddLabor = () => {
+    if (!packageDetail) return;
+    const newLabor: PackageLabor = {
+      Id: Date.now().toString(),
+      LaborId: '',
+      NameOfLabor: '',
+      Type: '',
+      Price: 0,
+      InsDate: new Date().toISOString(),
+    };
+
+    const updatedLabors = [...packageDetail.PackageLabors, newLabor];
+    handleLaborUpdate(updatedLabors);
+
+    setPackageDetail((prev) => ({
+      ...prev!,
+      PackageLabors: updatedLabors,
+    }));
+  };
+
+  const handleAddMaterial = () => {
+    if (!packageDetail) return;
+    const newMaterial: PackageMaterial = {
+      Id: '',
+      Description: '',
+      MaterialId: '',
+      MaterialName: '',
+      MaterialSectionId: '',
+      ImgUrl: '',
+      MaterialSectionName: '',
+      Shape: '',
+      Size: '',
+      Unit: '',
+      Type: '',
+      Price: 0,
+      InsDate: new Date().toISOString(),
+    };
+
+    const updatedMaterials = [...packageDetail.PackageMaterials, newMaterial];
+    handleMaterialUpdate(updatedMaterials);
+    setPackageDetail((prev) => ({
+      ...prev!,
+      PackageMaterials: updatedMaterials,
+    }));
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen bg-gray-100">
         <ClipLoader size={50} color={'#5BABAC'} loading={true} />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center text-red-500 bg-red-100 p-4 rounded-md">
-        {error}
       </div>
     );
   }
@@ -164,55 +237,93 @@ const PackageDetail: React.FC = () => {
         <p className="text-lg text-gray-500 mb-4">
           Loại:{' '}
           {editMode ? (
-            <input
-              type="text"
+            <select
               value={editData?.packageType || ''}
               onChange={(e) =>
                 setEditData({ ...editData!, packageType: e.target.value })
               }
               className="border p-2 rounded"
-            />
+            >
+              <option value="ROUGH">Gói thô</option>
+              <option value="FINISHED">Gói hoàn thiện</option>
+            </select>
           ) : (
-            packageDetail.PackageType
+            translatePackageType(packageDetail.PackageType)
           )}
         </p>
 
-        <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
-          Chi tiết nhân công
-        </h2>
-        <LaborTable
-          labors={packageDetail.PackageLabors}
-          onLaborUpdate={handleLaborUpdate}
-        />
-        <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
-          Chi tiết vật liệu
-        </h2>
-        <MaterialTable materials={packageDetail.PackageMaterials} />
+        {packageDetail.PackageLabors.length > 0 ? (
+          <>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
+              Chi tiết nhân công
+            </h2>
+            <LaborTable
+              labors={packageDetail.PackageLabors}
+              editMode={editMode}
+              onLaborUpdate={handleLaborUpdate}
+            />
+          </>
+        ) : editMode ? (
+          <button
+            onClick={handleAddLabor}
+            className="bg-teal-500 text-white px-4 py-2 rounded mt-4 shadow-lg hover:bg-teal-600 transition duration-300"
+          >
+            Tạo nhân công
+          </button>
+        ) : (
+          <></>
+        )}
 
-        <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
-          Chi tiết nhà
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {packageDetail.PackageHouses.map((house) => (
-            <div
-              key={house.Id}
-              className="border p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300"
-            >
-              {house.ImgUrl ? (
-                <img
-                  src={house.ImgUrl}
-                  alt="House Design"
-                  className="w-full h-32 object-cover rounded-md"
-                />
-              ) : (
-                <p className="text-gray-500">Không có hình ảnh</p>
-              )}
-              <p className="text-gray-500 mt-2">
-                Mẫu thiết kế: {house.DesignTemplateId}
-              </p>
+        {packageDetail.PackageMaterials.length > 0 ? (
+          <>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
+              Chi tiết vật liệu
+            </h2>
+            <MaterialTable
+              materials={packageDetail.PackageMaterials}
+              editMode={editMode}
+              onMaterialUpdate={handleMaterialUpdate}
+            />
+          </>
+        ) : editMode ? (
+          <button
+            onClick={handleAddMaterial}
+            className="bg-teal-500 text-white px-4 py-2 rounded mt-4 shadow-lg hover:bg-teal-600 transition duration-300"
+          >
+            Tạo vật tư
+          </button>
+        ) : (
+          <></>
+        )}
+
+        {packageDetail.PackageHouses.length > 0 && (
+          <>
+            <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
+              Chi tiết nhà
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {packageDetail.PackageHouses.map((house) => (
+                <div
+                  key={house.Id}
+                  className="border p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                >
+                  {house.ImgUrl ? (
+                    <img
+                      src={house.ImgUrl}
+                      alt="House Design"
+                      className="w-full h-32 object-cover rounded-md"
+                    />
+                  ) : (
+                    <p className="text-gray-500">Không có hình ảnh</p>
+                  )}
+                  <p className="text-gray-500 mt-2">
+                    Mẫu thiết kế: {house.DesignTemplateId}
+                  </p>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
 
         {editMode && (
           <div className="mt-6 flex justify-end">

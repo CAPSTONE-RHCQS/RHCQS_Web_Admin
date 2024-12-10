@@ -23,6 +23,7 @@ export interface PackageLabor {
 
 export interface PackageMaterial {
   Id: string;
+  MaterialId: string;
   MaterialSectionId: string;
   MaterialSectionName: string;
   MaterialName: string;
