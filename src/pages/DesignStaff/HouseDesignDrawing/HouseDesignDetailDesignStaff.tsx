@@ -109,22 +109,22 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
       (version) => version.Id === selectedVersionId,
     );
 
-    const previousVersionId =
-      currentVersionIndex > 0
-        ? designDetail.Versions[currentVersionIndex - 1].Id
+    const currentVersionId =
+      currentVersionIndex >= 0
+        ? designDetail.Versions[currentVersionIndex].Id
         : null;
 
-    const previousDrawingId =
+    const currentDependOnVersionId = 
       designDetail.DependOnVersion && designDetail.DependOnVersion.length > 0
-        ? designDetail.DependOnVersion[0].HouseDesginVersionId
+        ? designDetail.DependOnVersion.find(depend => depend.HouseDesignVersion === designDetail.VersionPresent)?.HouseDesginVersionId || null
         : null;
 
     const designData: CreateDesignRequest = {
       name: designDetail.Name,
       houseDesignDrawingId: designDetail.Id,
       fileUrl: fileUrl,
-      relatedDrawingId: previousVersionId,
-      previousDrawingId: previousDrawingId,
+      relatedDrawingId: currentVersionId,
+      previousDrawingId: currentDependOnVersionId,
     };
 
     try {
