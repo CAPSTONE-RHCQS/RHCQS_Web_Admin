@@ -1,5 +1,5 @@
 import { GetUtilityByNameResponse } from '../../types/SearchContainNameTypes';
-import { SectionItem, UtilityRequest } from '../../types/UtilityTypes';
+import { SectionItem, UtilityRequest, UtilityUpdateRequest } from '../../types/UtilityTypes';
 import requestWebRHCQS from '../../utils/axios';
 
 export const getUtilities = async (page: number, size: number) => {
@@ -13,6 +13,20 @@ export const getUtilities = async (page: number, size: number) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching utilities:', error);
+    throw error;
+  }
+};
+
+export const getUtilityById = async (id: string) => {
+  try {
+    const response = await requestWebRHCQS.get(`/utilities/id?id=${id}`, {
+      headers: {
+        accept: 'text/plain',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching utility by id:', error);
     throw error;
   }
 };
@@ -38,29 +52,9 @@ export const postUtility = async (utilityData: UtilityRequest) => {
   }
 };
 
-export const putUtility = async (id: string, utilityData: UtilityRequest) => {
+export const putUtility = async (utilityData: UtilityUpdateRequest) => {
   try {
-    const formattedData = {
-      utility: {
-        id: id,
-        name: utilityData.name,
-      },
-      sections: utilityData.sections.map((section) => ({
-        id: section.id,
-        name: section.name,
-        description: section.description,
-        unitPrice: section.unitPrice,
-        unit: section.unit,
-      })),
-      items: utilityData.items ? utilityData.items.map((item) => ({
-        name: item.name,
-            coefficient: item.coefficient,
-            }))
-          : null,
-    };
-    console.log('putUtility', formattedData);
-
-    const response = await requestWebRHCQS.put('/utilities', formattedData, {
+    const response = await requestWebRHCQS.put(`/utilities`, utilityData, {
       headers: {
         'Content-Type': 'application/json',
         accept: 'text/plain',
@@ -78,9 +72,7 @@ export const putUtility = async (id: string, utilityData: UtilityRequest) => {
   }
 };
 
-export async function getSectionById(
-  id: string,
-): Promise<SectionItem> {
+export async function getSectionById(id: string): Promise<SectionItem> {
   try {
     const response = await requestWebRHCQS.get(
       `/utilities/section/id?id=${id}`,

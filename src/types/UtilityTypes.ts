@@ -46,6 +46,18 @@ export interface UtilityRequest {
   id: string | null;
   name: string | null;
   type: string | null;
-  sections: SectionRequest[];
+  sections: SectionRequest[] | null;
+  items: ItemRequest[] | null;
+}
+
+export interface UtilityUpdateInfoRequest {
+  id: string | null;
+  name: string | null;
+  type: string | null;
+}
+
+export interface UtilityUpdateRequest {
+  utility: UtilityUpdateInfoRequest | null;
+  sections: SectionRequest | null;
   items: ItemRequest[] | null;
 }

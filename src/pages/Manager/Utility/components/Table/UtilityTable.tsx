@@ -6,6 +6,7 @@ import { SectionItem } from '../../../../../types/UtilityTypes';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import { FaEye } from 'react-icons/fa';
 import EditSection from '../Edit/EditSection';
+import EditUtility from '../Edit/EditUltility';
 
 export interface UtilityTableProps {
   data: UtilityItem[];
@@ -175,6 +176,12 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
         <EditSection
           id={selectedSectionId}
           onClose={() => setEditSectionOpen(false)}
+        />
+      )}
+      {editModalOpen && selectedUtility && (
+        <EditUtility
+          id={selectedUtility.Id}
+          onClose={() => setEditModalOpen(false)}
         />
       )}
     </>

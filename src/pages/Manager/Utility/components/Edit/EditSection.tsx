@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { getSectionById } from '../../../../../api/Utility/UtilityApi';
+import {
+  getSectionById,
+  putUtility,
+} from '../../../../../api/Utility/UtilityApi';
 
 interface EditSectionProps {
   id: string;
@@ -16,6 +19,33 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
     };
     fetchSectionDetail();
   }, [id]);
+
+  const handleSave = async () => {
+    const utilityData = {
+      utility: null,
+      sections: {
+        id: sectionDetail?.Id,
+        name: sectionDetail?.Name,
+        description: sectionDetail?.Description,
+        unitPrice: sectionDetail?.UnitPrice,
+        unit: sectionDetail?.Unit,
+      },
+
+      items: sectionDetail?.Items.map((item: any) => ({
+        id: item.Id,
+        name: item.Name,
+        coefficient: item.Coefficient,
+      })),
+    };
+    console.log(utilityData);
+
+    try {
+      await putUtility(utilityData);
+      onClose();
+    } catch (error) {
+      console.error('Error updating utility:', error);
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
@@ -126,7 +156,10 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose }) => {
           >
             Hủy
           </button>
-          <button className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold">
+          <button
+            onClick={handleSave}
+            className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"
+          >
             Lưu
           </button>
         </div>
