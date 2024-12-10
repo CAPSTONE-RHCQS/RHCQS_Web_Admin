@@ -9,6 +9,7 @@ interface CreateSectionProps {
   onClose: () => void;
   onSave: (data: any) => void;
   onCancel: () => void;
+  onError: (message: string) => void;
 }
 
 const CreateSection: React.FC<CreateSectionProps> = ({
@@ -16,6 +17,7 @@ const CreateSection: React.FC<CreateSectionProps> = ({
   onClose,
   onSave,
   onCancel,
+  onError,
 }) => {
   const [utilityId, setUtilityId] = useState<string | null>(null);
   const [utilities, setUtilities] = useState<any[]>([]);
@@ -93,8 +95,9 @@ const CreateSection: React.FC<CreateSectionProps> = ({
       const response = await postUtility(utilityData);
       console.log('Section created successfully:', response);
       onSave(response);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating section:', error);
+      onError(error.message);
     }
   };
 
