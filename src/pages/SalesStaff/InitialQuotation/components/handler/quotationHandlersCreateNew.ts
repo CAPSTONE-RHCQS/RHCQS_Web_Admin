@@ -165,6 +165,7 @@ export const handleSave = async (
       constructionItemId: item.constructionItemId || 'default-id',
       subConstructionId: item.subConstructionId ?? null,
       area: parseFloat(item.dTich),
+      areaConstruction: parseFloat(item.dTich) * parseFloat(item.heSo),
       price: item.price || 0,
     })),
     packages: [

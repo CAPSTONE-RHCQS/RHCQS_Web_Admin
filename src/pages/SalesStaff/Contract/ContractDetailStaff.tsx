@@ -663,7 +663,8 @@ const ContractDetailStaff = () => {
           </table>
         </div>
       ) : (
-        hasProgressBatch && (
+        hasProgressBatch &&
+        contractDetail.Type !== 'Appendix' && (
           <button
             onClick={openModal}
             className="bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"

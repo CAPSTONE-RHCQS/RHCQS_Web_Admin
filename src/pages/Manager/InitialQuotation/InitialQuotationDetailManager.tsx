@@ -83,7 +83,7 @@ const InitialQuotationDetailManager = () => {
             hangMuc: item.SubConstruction || item.Name,
             dTich: item.Area.toString(),
             heSo: coefficient.toString(),
-            dienTich: (item.Area * coefficient).toString(),
+            dienTich: item.AreaConstruction ? item.AreaConstruction.toString() : '0',
             donVi: 'm²',
           };
         });
@@ -424,7 +424,7 @@ const InitialQuotationDetailManager = () => {
         <div className="mt-4">
           <div className="mb-4">
             <strong className="text-xl text-secondary">
-              2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG TRƯỚC THUẾ:
+              2. GIÁ TRỊ BÁO GIÁ SƠ BỘ XÂY DỰNG:
             </strong>
           </div>
 

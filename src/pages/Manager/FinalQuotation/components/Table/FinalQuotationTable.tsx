@@ -182,7 +182,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
       </table>
 
       <h3 className="text-lg font-bold mt-4">
-        GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG TRƯỚC THUẾ:
+        GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG:
       </h3>
       <table className="min-w-full bg-white border border-gray-200 mt-2">
         <thead className="bg-gray-100">

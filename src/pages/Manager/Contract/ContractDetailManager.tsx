@@ -31,7 +31,9 @@ const ContractDetailManager = () => {
   const { contractId } = useParams<{ contractId: string }>();
   const [contractDetail, setContractDetail] =
     useState<ContractDesignResponse | null>(null);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<{
+    [key: number]: File | null;
+  }>({});
   const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
@@ -60,7 +62,11 @@ const ContractDetailManager = () => {
     batchNumber: number,
   ) => {
     if (event.target.files && event.target.files.length > 0) {
-      setSelectedFile(event.target.files[0]);
+      const file = event.target.files[0];
+      setSelectedFiles((prevFiles) => ({
+        ...prevFiles,
+        [batchNumber]: file,
+      }));
       if (contractDetail && batchNumber < contractDetail.BatchPayment.length) {
         setSelectedBatch(batchNumber);
       } else {
@@ -70,7 +76,7 @@ const ContractDetailManager = () => {
   };
 
   const handleUpload = async (index: number) => {
-    if (contractId && selectedFile && contractDetail) {
+    if (contractId && selectedFiles[index] && contractDetail) {
       setIsUploading(true);
       try {
         const appendix = contractDetail.BatchPayment?.[index];
@@ -80,7 +86,7 @@ const ContractDetailManager = () => {
 
         const paymentId = appendix.PaymentId;
 
-        await paymentContractDesign(paymentId, selectedFile);
+        await paymentContractDesign(paymentId, selectedFiles[index]);
 
         toast.success('Tải lên thành công!');
         fetchContractDetail();
@@ -100,7 +106,7 @@ const ContractDetailManager = () => {
   };
 
   const handleUploadAppendices = async (index: number) => {
-    if (contractId && selectedFile && contractDetail) {
+    if (contractId && selectedFiles[index] && contractDetail) {
       setIsUploading(true);
       try {
         const appendix = contractDetail.BatchPaymentAppendices?.[index];
@@ -110,7 +116,7 @@ const ContractDetailManager = () => {
 
         const paymentId = appendix.PaymentId;
 
-        await paymentContractDesign(paymentId, selectedFile);
+        await paymentContractDesign(paymentId, selectedFiles[index]);
 
         toast.success('Tải lên thành công!');
         fetchContractDetail();
@@ -146,6 +152,12 @@ const ContractDetailManager = () => {
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
+  };
+
+  const truncateFileName = (fileName: string, maxLength: number) => {
+    if (fileName.length <= maxLength) return fileName;
+    const extension = fileName.slice(fileName.lastIndexOf('.'));
+    return fileName.slice(0, maxLength - extension.length) + '...' + extension;
   };
 
   if (!contractDetail) {
@@ -390,24 +402,25 @@ const ContractDetailManager = () => {
                         onClick={() =>
                           document.getElementById(`fileInput-${index}`)?.click()
                         }
-                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
                       >
                         Chọn tệp
                       </button>
-                      {selectedFile && (
+                      {selectedFiles[index] && (
                         <span className="ml-2 text-gray-700">
-                          {selectedFile.name}
+                          {truncateFileName(selectedFiles[index]?.name, 20)}
                         </span>
                       )}
                       <button
                         onClick={() => handleUpload(index)}
-                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                        disabled={!selectedFile || isUploading}
+                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
+                        disabled={!selectedFiles[index] || isUploading}
                       >
                         {isUploading ? 'Đang tải lên...' : <FaUpload />}
                       </button>
                       <p className="text-gray-500 text-sm mt-1">
-                        Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF).
+                        Chỉ chấp nhận file hình ảnh <br />
+                        (JPG, PNG, GIF).
                       </p>
                     </>
                   ) : batch.InvoiceImage !== 'Chưa có hóa đơn' &&
@@ -477,7 +490,7 @@ const ContractDetailManager = () => {
                 <tr key={appendix.NumberOfBatch} className="text-center">
                   <td className="px-4 py-2 border">{appendix.NumberOfBatch}</td>
                   <td className="px-4 py-2 border">{appendix.Description}</td>
-                  <td className="px-4 py-2 border">{appendix.Percents}</td>
+                  <td className="px-4 py-2 border">{appendix.Percents} %</td>
                   <td className="px-4 py-2 border">
                     {appendix.Price.toLocaleString()} {contractDetail.UnitPrice}
                   </td>
@@ -514,20 +527,21 @@ const ContractDetailManager = () => {
                         >
                           Chọn tệp
                         </button>
-                        {selectedFile && (
+                        {selectedFiles[index] && (
                           <span className="ml-2 text-gray-700">
-                            {selectedFile.name}
+                            {truncateFileName(selectedFiles[index]?.name, 20)}
                           </span>
                         )}
                         <button
                           onClick={() => handleUploadAppendices(index)}
                           className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                          disabled={!selectedFile || isUploading}
+                          disabled={!selectedFiles[index] || isUploading}
                         >
                           {isUploading ? 'Đang tải lên...' : <FaUpload />}
                         </button>
                         <p className="text-gray-500 text-sm mt-1">
-                          Chỉ chấp nhận file hình ảnh (JPG, PNG, GIF).
+                          Chỉ chấp nhận file hình ảnh <br />
+                          (JPG, PNG, GIF).
                         </p>
                       </>
                     ) : appendix.InvoiceImage !== 'Chưa có hóa đơn' &&
