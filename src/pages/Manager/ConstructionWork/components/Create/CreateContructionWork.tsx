@@ -12,6 +12,10 @@ import {
   searchConstructionWorkItem,
 } from '../../../../../api/Construction/ContructionWork';
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
+import { ConstructionWorkItem } from '../../../../../api/GOVapi';
+import SearchModal from '../../../../../components/SearchModal';
+import { SiMaterialdesign, SiMaterialdesignicons } from 'react-icons/si';
+import { FaUserAstronaut, FaCheck, FaCodeBranch } from 'react-icons/fa';
 
 export interface CreateConstructionWorkProps {
   isOpen: boolean;
@@ -40,7 +44,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   const [workName, setWorkName] = useState('');
   const [construction, setConstruction] = useState('');
   const [inputCodeValue, setInputCodeValue] = useState('');
-  const [unit, setUnit] = useState('m');
+  const [inputUnit, setInputUnit] = useState('');
   const [constructionSearchResults, setConstructionSearchResults] = useState<
     SearchConstructionWorkItem[]
   >([]);
@@ -68,6 +72,9 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   ]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isInteractingWithSearch, setIsInteractingWithSearch] = useState(false);
+  const [showAbove, setShowAbove] = useState(false);
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
@@ -102,7 +109,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     const constructionData: CreateConstructionWorkType = {
       workName: workName,
       constructionId: selectedConstructionId,
-      unit: unit,
+      unit: inputUnit,
       code: inputCodeValue,
       resources: combinedResources.map((resource) => ({
         materialSectionId: resource.materialSectionId || null,
@@ -237,6 +244,9 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           setErrors((prevErrors) => ({ ...prevErrors, construction: '' }));
         }
         handleSearchConstruction(value);
+        if (!value) {
+          setConstructionSearchResults([]);
+        }
         break;
       case 'inputCodeValue':
         setInputCodeValue(value);
@@ -256,6 +266,9 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
             }));
           }
           handleSearchMaterial(value, index);
+          if (!value) {
+            newResources[index].materialSearchResults = [];
+          }
         }
         break;
       case 'materialSectionNorm':
@@ -274,6 +287,9 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
             setErrors((prevErrors) => ({ ...prevErrors, laborResources: '' }));
           }
           handleSearchLabor(value, index);
+          if (!value) {
+            newResources[index].laborSearchResults = [];
+          }
         }
         break;
       case 'laborNorm':
@@ -288,13 +304,42 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
     }
   };
 
+  const handleSelectConstructionWorkItem = (item: ConstructionWorkItem) => {
+    setWorkName(item.Ten);
+    setInputCodeValue(item.Ma);
+    setInputUnit(item.DonViTinh);
+
+    setIsSearchModalOpen(false);
+  };
+
+  const handleInputFocus = (index: number) => {
+    const inputElement = document.getElementById(`labor-input-${index}`);
+    if (inputElement) {
+      const rect = inputElement.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setShowAbove(spaceBelow < 200);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-      <div className="bg-white p-6 mt-10 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
+      <div className="bg-white p-6 mt-15 rounded shadow-lg w-1/2 max-h-[85vh] overflow-y-auto no-scrollbar">
         <div className="flex text-primaryGreenButton font-bold justify-between items-center mb-4">
           <h1 className="text-2xl">Tạo mới công tác</h1>
+          <button
+            onClick={() => setIsSearchModalOpen(true)}
+            className="bg-[#007acc] mb-2 text-white px-4 py-2 rounded flex items-center hover:bg-[#005f99]"
+          >
+            <img
+              src="https://cuckinhtexd.gov.vn/UploadedFiles/Hinh-Anh/250px-Emblem_of_Vietnam-svg.png"
+              alt="Logo"
+              className="mr-2"
+              style={{ width: '20px', height: 'auto' }}
+            />
+            Tra cứu định mức
+          </button>
         </div>
         <strong className="font-bold">Tên công tác:</strong>
         <input
@@ -310,6 +355,12 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           type="text"
           value={construction}
           onChange={(e) => handleChange('construction', e.target.value)}
+          onBlur={() => {
+            if (!isInteractingWithSearch) {
+              setConstructionSearchResults([]);
+            }
+          }}
+          onFocus={() => setIsInteractingWithSearch(false)}
           className="relative border p-2 mb-4 w-full rounded font-regular"
           placeholder="Nhập tên hạng mục"
         />
@@ -317,13 +368,18 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           <p className="text-red-500">{errors.construction}</p>
         )}
         {constructionSearchResults.length > 0 && (
-          <div className="absolute bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1/3 z-10 no-scrollbar flex flex-col">
+          <div
+            className="absolute bg-white border rounded shadow-lg max-h-40 w-1/3 z-10 flex flex-col"
+            style={{ overflowY: 'auto' }}
+            onMouseEnter={() => setIsInteractingWithSearch(true)}
+            onMouseLeave={() => setIsInteractingWithSearch(false)}
+          >
             <table className="w-full">
               <tbody>
                 {constructionSearchResults.map((result) => (
                   <tr key={result.ConstructionId}>
                     <td
-                      className="border-b border-primaryGreenButton p-2 cursor-pointer text-black"
+                      className="border-b border-primaryGreenButton p-2 cursor-pointer text-black hover:bg-gray-200 flex items-center"
                       onClick={() =>
                         handleSelectConstruction(
                           result.Name,
@@ -331,6 +387,19 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
                         )
                       }
                     >
+                      <svg
+                        stroke="currentColor"
+                        fill="currentColor"
+                        strokeWidth="0"
+                        viewBox="0 0 24 24"
+                        height="1em"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 mr-2"
+                      >
+                        <path fill="none" d="M0 0h24v24H0z"></path>
+                        <path d="m13.783 15.172 2.121-2.121 5.996 5.996-2.121 2.121zM17.5 10c1.93 0 3.5-1.57 3.5-3.5 0-.58-.16-1.12-.41-1.6l-2.7 2.7-1.49-1.49 2.7-2.7c-.48-.25-1.02-.41-1.6-.41C15.57 3 14 4.57 14 6.5c0 .41.08.8.21 1.16l-1.85 1.85-1.78-1.78.71-.71-1.41-1.41L12 3.49a3 3 0 0 0-4.24 0L4.22 7.03l1.41 1.41H2.81l-.71.71 3.54 3.54.71-.71V9.15l1.41 1.41.71-.71 1.78 1.78-7.41 7.41 2.12 2.12L16.34 9.79c.36.13.75.21 1.16.21z"></path>
+                      </svg>
                       {result.Name}
                     </td>
                   </tr>
@@ -351,36 +420,15 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
           <p className="text-red-500">{errors.inputCodeValue}</p>
         )}
         <strong className="font-bold">Đơn vị:</strong>
-        <select
-          name="Unit"
-          value={unit}
-          onChange={(e) => setUnit(e.target.value)}
-          className="border p-2 w-full rounded font-regular"
-        >
-          {[
-            'm',
-            'cuộn',
-            'viên',
-            'm2',
-            'm3',
-            'máy',
-            'bộ',
-            'cái',
-            'thùng',
-            'ống',
-            'bao',
-            'can',
-            'md',
-            'kg',
-            'tấn',
-          ].map((unit) => (
-            <option key={unit} value={unit}>
-              {unit}
-            </option>
-          ))}
-        </select>
+        <input
+          type="text"
+          value={inputUnit}
+          onChange={(e) => setInputUnit(e.target.value)}
+          className="border p-2 mb-4 w-full rounded font-regular"
+          placeholder="Nhập đơn vị"
+        />
 
-        <div className="mt-4">
+        <div>
           <div className="flex justify-between items-center">
             <h3 className="font-bold">Phần vật tư:</h3>
             <button
@@ -401,18 +449,32 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
                 onChange={(e) =>
                   handleChange('materialName', e.target.value, index)
                 }
+                onBlur={() => {
+                  setTimeout(() => {
+                    if (!isInteractingWithSearch) {
+                      const newResources = [...materialResources];
+                      newResources[index].materialSearchResults = [];
+                      setMaterialResources(newResources);
+                    }
+                  }, 100);
+                }}
+                onFocus={() => setIsInteractingWithSearch(false)}
                 className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
                 placeholder="Nhập tên vật tư"
               />
               {resource.materialSearchResults &&
                 resource.materialSearchResults.length > 0 && (
-                  <div className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full z-10 no-scrollbar">
+                  <div
+                    className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1.7/3 z-10"
+                    onMouseEnter={() => setIsInteractingWithSearch(true)}
+                    onMouseLeave={() => setIsInteractingWithSearch(false)}
+                  >
                     <table className="w-full">
                       <tbody>
                         {resource.materialSearchResults.map((result) => (
                           <tr key={result.Id}>
                             <td
-                              className="border-b border-primaryGreenButton p-2 cursor-pointer text-black"
+                              className="border-b border-primaryGreenButton p-2 cursor-pointer text-black hover:bg-gray-200 flex items-center"
                               onClick={() => {
                                 const newResources = [...materialResources];
                                 newResources[index].materialName = result.Name;
@@ -422,6 +484,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
                                 setMaterialResources(newResources);
                               }}
                             >
+                              <SiMaterialdesignicons className="h-4 w-4 mr-2" />
                               {result.Name}
                             </td>
                           </tr>
@@ -465,23 +528,40 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
                 {index + 1}.
               </span>
               <input
+                id={`labor-input-${index}`}
                 type="text"
                 value={resource.laborName || ''}
                 onChange={(e) =>
                   handleChange('laborName', e.target.value, index)
                 }
+                onFocus={() => handleInputFocus(index)}
+                onBlur={() => {
+                  setTimeout(() => {
+                    if (!isInteractingWithSearch) {
+                      const newResources = [...laborResources];
+                      newResources[index].laborSearchResults = [];
+                      setLaborResources(newResources);
+                    }
+                  }, 100);
+                }}
                 className="border p-2 mb-2 w-2/3 rounded font-regular mr-2"
                 placeholder="Nhập tên nhân công"
               />
               {resource.laborSearchResults &&
                 resource.laborSearchResults.length > 0 && (
-                  <div className="absolute top-full left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-full z-10">
+                  <div
+                    className={`absolute ${
+                      showAbove ? 'bottom-full' : 'top-full'
+                    } left-0 bg-white border rounded shadow-lg max-h-40 overflow-y-auto w-1.5/3 z-10`}
+                    onMouseEnter={() => setIsInteractingWithSearch(true)}
+                    onMouseLeave={() => setIsInteractingWithSearch(false)}
+                  >
                     <table className="w-full">
                       <tbody>
                         {resource.laborSearchResults.map((result) => (
                           <tr key={result.Id}>
                             <td
-                              className="border-b border-primaryGreenButton p-2 cursor-pointer text-black"
+                              className="border-b border-primaryGreenButton p-2 cursor-pointer text-black hover:bg-gray-200 flex items-center"
                               onClick={() => {
                                 const newResources = [...laborResources];
                                 newResources[index].laborName = result.Name;
@@ -490,6 +570,7 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
                                 setLaborResources(newResources);
                               }}
                             >
+                              <FaUserAstronaut className="h-4 w-4 mr-2" />
                               {result.Name}
                             </td>
                           </tr>
@@ -554,6 +635,12 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
             Tạo
           </button>
         </div>
+
+        <SearchModal
+          isOpen={isSearchModalOpen}
+          onClose={() => setIsSearchModalOpen(false)}
+          onSelect={handleSelectConstructionWorkItem}
+        />
       </div>
     </div>
   );
