@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import ClickOutside from '../ClickOutside';
-import UserOne from '../../images/user/user-01.png';
+import UserOne from '../../images/fee.jpg';
 import { toast } from 'react-toastify';
 
 // Hàm map role
 const mapRoleToVietnamese = (role: string): string => {
   const roleMap: { [key: string]: string } = {
-    'Manager': 'Quản lý',
-    'SalesStaff': 'Nhân viên báo giá',
-    'DesignStaff': 'Nhân viên thiết kế'
+    Manager: 'Quản lý',
+    SalesStaff: 'Nhân viên báo giá',
+    DesignStaff: 'Nhân viên thiết kế',
   };
 
   return roleMap[role] || role;
