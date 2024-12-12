@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { getChats } from '../../api/Chat/Chat';
-import UserTwo from '../../images/user/user-02.png';
+import UserTwo from '../../images/fee.jpg';
 import { ChatData } from '../../types/chat';
 import { getProfile } from '../../api/Account/AccountApi';
 import { useChat } from '../../context/ChatContext';
 
 const DropdownMessage = () => {
-  const { isDropdownOpen, toggleDropdown, openChat, setIsDropdownOpen } = useChat();
+  const { isDropdownOpen, toggleDropdown, openChat, setIsDropdownOpen } =
+    useChat();
   const [notifying, setNotifying] = useState(true);
   const [chats, setChats] = useState<ChatData[]>([]);
   const [user, setUser] = useState<any>(null);
@@ -113,7 +114,9 @@ const DropdownMessage = () => {
                 <li key={chat.Id}>
                   <div
                     className="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 cursor-pointer"
-                    onClick={() => openChat(chat.Id, chat.StaffName, user.RoleId)}
+                    onClick={() =>
+                      openChat(chat.Id, chat.StaffName, user.RoleId)
+                    }
                   >
                     <div className="h-12.5 w-12.5 rounded-full overflow-hidden">
                       <img
