@@ -214,7 +214,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
 
     if (field === 'PaymentDate') {
       newSchedule[index].PaymentPhase = '';
-      
+
       for (let i = index + 1; i < newSchedule.length; i++) {
         newSchedule[i].PaymentDate = '';
         newSchedule[i].PaymentPhase = '';
@@ -501,7 +501,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                     </>
                   )}
 
-                  <tr className='bg-gray-200'>
+                  <tr className="bg-gray-200">
                     <td
                       className="px-4 py-2 border text-center font-bold"
                       colSpan={5}
@@ -644,7 +644,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             </p>
             <div className="ml-5">
               <p className="flex justify-between">
-                <strong>Thời gian thi công phần thô:</strong>
+                <em>Thời gian thi công phần thô:</em>
                 {isEditing ? (
                   <>
                     <input
@@ -674,7 +674,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 )}
               </p>
               <p className="flex justify-between">
-                <strong>Phối hợp với CĐT hoàn thiện công trình:</strong>
+                <em>Phối hợp với CĐT hoàn thiện công trình:</em>
                 {isEditing ? (
                   <>
                     <input

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   getHouseDesignById,
   getHouseDesignDrawingStatus,
@@ -17,6 +17,7 @@ import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetai
 import {
   FiCalendar,
   FiFileText,
+  FiInfo,
   FiLayers,
   FiPenTool,
   FiPhoneCall,
@@ -34,6 +35,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   );
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [fileName, setFileName] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const fetchDesignDetail = useCallback(async () => {
     if (!id) {
@@ -112,9 +114,12 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
         ? designDetail.Versions[currentVersionIndex].Id
         : null;
 
-    const currentDependOnVersionId = 
+    const currentDependOnVersionId =
       designDetail.DependOnVersion && designDetail.DependOnVersion.length > 0
-        ? designDetail.DependOnVersion.find(depend => depend.HouseDesignVersion === designDetail.VersionPresent)?.HouseDesginVersionId || null
+        ? designDetail.DependOnVersion.find(
+            (depend) =>
+              depend.HouseDesignVersion === designDetail.VersionPresent,
+          )?.HouseDesginVersionId || null
         : null;
 
     const designData: CreateDesignRequest = {
@@ -134,6 +139,14 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
       const errorMessage =
         error.response?.data?.Error || 'Error submitting design';
       toast.error(errorMessage);
+    }
+  };
+
+  const handleViewInitialQuotation = () => {
+    if (designDetail?.InitialQuotationId) {
+      navigate(
+        `/initial-quotation-detail-staff/${designDetail.InitialQuotationId}`,
+      );
     }
   };
 
@@ -175,6 +188,13 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
                 <FiCalendar className="mr-2" />
                 <strong className="mr-2">Ngày tạo:</strong>
                 {new Date(designDetail.InsDate).toLocaleDateString()}
+              </p>
+              <p
+                className="flex items-center cursor-pointer hover:text-blue-600"
+                onClick={handleViewInitialQuotation}
+              >
+                <FiInfo className="mr-2" />
+                <strong className="mr-2">Xem báo giá sơ bộ</strong>
               </p>
             </div>
           </div>

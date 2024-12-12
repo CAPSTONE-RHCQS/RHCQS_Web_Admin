@@ -40,6 +40,7 @@ export interface DependOnVersion {
 export interface HouseDesignDetailResponse {
   Id: string;
   ProjectId: string;
+  InitialQuotationId: string;
   StaffName: string;
   VersionPresent: number;
   Name: string;
