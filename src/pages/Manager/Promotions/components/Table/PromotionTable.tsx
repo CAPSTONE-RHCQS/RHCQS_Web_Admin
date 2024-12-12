@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ClipLoader } from 'react-spinners';
-import { ChevronDownIcon, PencilIcon } from '@heroicons/react/24/solid';
+import { PencilIcon } from '@heroicons/react/24/solid';
 import EditPromotionModal from '../Modals/EditPromotionModal';
 import { PromotionItem } from '../../../../../types/PromotionTypes';
 

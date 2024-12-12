@@ -39,16 +39,6 @@ const DropdownMessage = () => {
     if (user?.Id) {
       fetchChats();
     }
-
-    const intervalId = setInterval(() => {
-      if (user?.Id) {
-        fetchChats();
-      }
-    }, 2000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
   }, [user]);
 
   useEffect(() => {
