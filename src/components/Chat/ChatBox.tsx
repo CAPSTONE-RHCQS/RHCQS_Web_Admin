@@ -263,12 +263,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           >
             Gửi
           </button>
-          <button
-            className="ml-2 p-2 bg-teal-700 text-white rounded"
-            onClick={initiateChatWithStaff}
-          >
-            tạo
-          </button>
         </div>
       </div>
     </Rnd>
