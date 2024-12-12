@@ -73,7 +73,6 @@ const ProjectTableSalesStaff: React.FC<ProjectTableSalesStaffProps> = ({
   const [showModal, setShowModal] = useState(false);
 
   const handleConfirmReject = (reason: string) => {
-    console.log('Rejected with reason:', reason);
     setShowModal(false);
   };
 

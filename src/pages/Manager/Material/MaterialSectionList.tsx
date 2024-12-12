@@ -48,7 +48,6 @@ const MaterialSectionList: React.FC = () => {
       setDataMaterialSection(data.Items);
       setTotalPages(data.TotalPages);
       setTotalMaterialSection(data.Total);
-      console.log(data.Items);
       setIsLoading(false);
     });
   }, [page, refreshKey]);

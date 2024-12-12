@@ -10,7 +10,6 @@ export const createContractDesign = async (
   data: CreateContractDesignRequest,
 ) => {
   try {
-    console.log('Create Contract', data);
     const response = await requestWebRHCQS.post('/contract/design', data, {
       headers: {
         accept: 'text/plain',
@@ -82,7 +81,6 @@ export const signContractCompletion = async (
         },
       },
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error signing contract completion:', error);

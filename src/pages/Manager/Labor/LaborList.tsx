@@ -35,7 +35,6 @@ const LaborList: React.FC = () => {
       setDataLabor(data.Items);
       setTotalPages(data.TotalPages);
       setTotalLabor(data.Total);
-      console.log(data.Items);
       setIsLoading(false);
     });
   }, [page, refreshKey]);

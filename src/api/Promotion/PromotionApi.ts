@@ -53,7 +53,6 @@ export const putPromotion = async (
   promotionData: PromotionRequest,
 ) => {
   try {
-    console.log('putPromotion', promotionData);
     const response = await requestWebRHCQS.put(
       `/promotion/id?promotionId=${id}`,
       promotionData,

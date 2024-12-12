@@ -34,7 +34,6 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
     const startConnection = async () => {
       try {
         await connection.start();
-        console.log('SignalR connected');
         initiateChatWithStaff(connection);
       } catch (error) {
         console.error('Error:', error);
@@ -63,7 +62,6 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
         );
         
         conn.on('ReceiveRoomNotification', (newRoomId) => {
-          console.log(`Đã tạo phòng chat mới với ID: ${newRoomId}`);
           setIsDropdownOpen(true);
           toast.success('Tạo phòng chat thành công!');
           onClose();

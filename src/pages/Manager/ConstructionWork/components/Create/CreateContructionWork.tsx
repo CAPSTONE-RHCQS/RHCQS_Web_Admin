@@ -140,7 +140,6 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
   const handleSearchConstruction = async (name: string) => {
     try {
       const results = await searchConstructionWorkItem(name);
-      console.log(results);
       setConstructionSearchResults(results as SearchConstructionWorkItem[]);
     } catch (error) {
       console.error('Error fetching search results:', error);

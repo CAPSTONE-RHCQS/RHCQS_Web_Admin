@@ -78,12 +78,13 @@ const InitialQuotationDetailStaff = () => {
     setIsPanelVisible(!isPanelVisible);
   };
 
-  const totalArea = tableData.length > 0 
-    ? tableData.reduce((total, row) => {
-        const dienTich = parseFloat(row.dienTich);
-        return total + (isNaN(dienTich) ? 0 : dienTich);
-      }, 0)
-    : quotationData.Area;
+  const totalArea =
+    tableData.length > 0
+      ? tableData.reduce((total, row) => {
+          const dienTich = parseFloat(row.dienTich);
+          return total + (isNaN(dienTich) ? 0 : dienTich);
+        }, 0)
+      : quotationData.Area;
 
   const totalRough =
     totalArea * quotationData.PackageQuotationList.UnitPackageRough;
@@ -108,7 +109,7 @@ const InitialQuotationDetailStaff = () => {
 
   return (
     <>
-      <div
+      {/* <div
         className={`fixed bottom-4 right-0 flex items-center group transition-transform duration-300 ${
           isPanelVisible ? 'translate-x-0' : 'translate-x-90'
         }`}
@@ -149,7 +150,7 @@ const InitialQuotationDetailStaff = () => {
             </span>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <CreateNewQuotationSummary
         quotationData={quotationData}

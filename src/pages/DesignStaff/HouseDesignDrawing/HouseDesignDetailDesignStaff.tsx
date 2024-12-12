@@ -45,7 +45,6 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     try {
       const response = await getHouseDesignById(id);
       const designData = response.data;
-      console.log('ds', designData);
       setDesignDetail(designData);
 
       const defaultVersion = designData.Versions.find(
@@ -93,7 +92,6 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     setUploading(true);
     try {
       const response = await uploadFile(file, file.name);
-      console.log('File uploaded successfully:', response.data.url);
       setFileUrl(response.data.url);
     } catch (error) {
       console.error('Error uploading file:', error);

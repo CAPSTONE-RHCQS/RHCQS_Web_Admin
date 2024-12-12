@@ -26,7 +26,6 @@ const DropdownMessage = () => {
       if (accountId) {
         const chatData = await getChats(accountId);
         setChats(chatData);
-        console.log('Fetched chat data:', chatData);
       }
     } catch (error) {
       console.error('Error fetching chats:', error);

@@ -57,7 +57,6 @@ const SupplierTable: React.FC<SupplierTableProps> = ({
     description: string,
     image: string,
   ) => {
-    console.log('id', id);
     event.stopPropagation();
     setInputValue({
       Name: name || '',

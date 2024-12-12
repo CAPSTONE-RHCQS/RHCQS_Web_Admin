@@ -85,7 +85,6 @@ const ProjectDetailManager = () => {
     if (projectId) {
       try {
         const data = await getProjectDetail(projectId);
-        console.log(data);
         setProjectDetail(data);
       } catch (error) {
         console.error('Error fetching project detail:', error);
@@ -224,7 +223,6 @@ const ProjectDetailManager = () => {
 
   const refreshProjectDetail = () => {
     fetchProjectDetail();
-    console.log('Refreshing project detail...');
   };
 
   const isInitialInfoFinalized = projectDetail.InitialInfo?.some(

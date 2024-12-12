@@ -71,7 +71,6 @@ const InitialQuotationDetailManager = () => {
     if (id) {
       try {
         const data: InitialQuotationResponse = await getInitialQuotation(id);
-        console.log('fetch', data);
         setQuotationData(data);
         const updatedTableData = data.ItemInitial.map((item, index) => {
           const coefficient =

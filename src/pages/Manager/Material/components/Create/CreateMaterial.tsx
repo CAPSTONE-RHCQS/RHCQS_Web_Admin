@@ -55,7 +55,6 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       try {
         const detail = await getMaterialSectionById(id);
         setMaterialSectionDetail(detail as any);
-        console.log(detail);
       } catch (error) {
         console.error('Failed to fetch material detail:', error);
       }
@@ -122,7 +121,6 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
 
     try {
       await createMaterial(materialData);
-      console.log('Tạo vật liệu thành công', materialData);
       onSuccess('Tạo vật liệu thành công');
       onClose();
     } catch (error) {

@@ -1,5 +1,9 @@
 import { GetUtilityByNameResponse } from '../../types/SearchContainNameTypes';
-import { SectionItem, UtilityRequest, UtilityUpdateRequest } from '../../types/UtilityTypes';
+import {
+  SectionItem,
+  UtilityRequest,
+  UtilityUpdateRequest,
+} from '../../types/UtilityTypes';
 import requestWebRHCQS from '../../utils/axios';
 
 export const getUtilities = async (page: number, size: number) => {
@@ -33,8 +37,6 @@ export const getUtilityById = async (id: string) => {
 
 export const postUtility = async (utilityData: UtilityRequest) => {
   try {
-    console.log('postUtility', utilityData);
-
     const response = await requestWebRHCQS.post('/utilities', utilityData, {
       headers: {
         'Content-Type': 'application/json',
@@ -94,7 +96,6 @@ export async function getUtilityByName(
   projectType: string,
 ): Promise<GetUtilityByNameResponse> {
   try {
-    console.log('Getting utility', name, projectType);
     const response = await requestWebRHCQS.get('/utilities/contain/name', {
       params: { name, projectType },
       headers: {

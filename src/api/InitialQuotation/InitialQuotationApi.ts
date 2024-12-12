@@ -27,7 +27,6 @@ export async function updateInitialQuotation(
   data: UpdateInitialQuotationRequest,
 ): Promise<void> {
   try {
-    console.log('Updating initial', data);
     const response = await requestWebRHCQS.post(
       '/quotation/initial/update',
       data,
@@ -38,7 +37,6 @@ export async function updateInitialQuotation(
         },
       },
     );
-    console.log('Update successful:', response.data);
   } catch (error) {
     console.error('Error updating initial quotation:', error);
 
@@ -112,7 +110,6 @@ export async function getInitialQuotationStatus(
         accept: 'text/plain',
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(`Error fetching status for initial ID ${initialId}:`, error);

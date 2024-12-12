@@ -29,7 +29,6 @@ export const fetchQuotationData = async (
   if (id) {
     try {
       const data: InitialQuotationResponse = await getInitialQuotation(id);
-      console.log('Fetched Quotation Data:', data);
       setQuotationData(data);
       setVersion(data.Version || null);
 

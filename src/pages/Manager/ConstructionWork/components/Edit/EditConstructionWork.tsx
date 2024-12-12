@@ -110,7 +110,6 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   };
 
   const handleSave = async () => {
-    console.log('Saving data for ID:', currentEditId);
     if (!validateFields()) return;
 
     setIsLoading(true);

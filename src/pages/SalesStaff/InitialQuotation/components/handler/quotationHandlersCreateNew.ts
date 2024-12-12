@@ -29,7 +29,6 @@ export const fetchQuotationData = async (
       const data: InitialQuotationResponse = await createNewInitialQuotation(
         projectId,
       );
-      console.log('Fetched Quotation Data:', data);
       setQuotationData(data);
 
       const updatedTableData = data.ItemInitial.map((item, index) => {
@@ -205,8 +204,6 @@ export const handleSave = async (
       paymentPhase: payment.PaymentPhase || '',
     })),
   };
-
-  console.log('Request Data:', requestData);
 
   try {
     setIsSaving(true);

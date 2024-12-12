@@ -7,7 +7,6 @@ export const createDesign = async (
   data: CreateDesignRequest,
 ): Promise<AxiosResponse> => {
   try {
-    console.log('creats', data);
     const response = await requestWebRHCQS.post('/design', data, {
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +25,6 @@ export async function approveDesign(
   data: { type: string; reason: string },
 ): Promise<void> {
   try {
-    console.log('data:', data);
     const response = await requestWebRHCQS.put(`/design/approve`, data, {
       params: { id },
       headers: {
