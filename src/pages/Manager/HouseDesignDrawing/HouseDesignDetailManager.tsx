@@ -66,7 +66,7 @@ const HouseDesignDetailManager: React.FC = () => {
     fetchDesignDetail();
     const interval = setInterval(() => {
       fetchCurrentStatus();
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [id]);
@@ -257,26 +257,34 @@ const HouseDesignDetailManager: React.FC = () => {
                 </tr>
               </thead>
               <tbody>
-                {designDetail.DependOnVersion.map((depend, index) => (
-                  <tr key={depend.HouseDesginVersionId}>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {depend.HouseDesignVersionName}
-                    </td>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      {depend.HouseDesignVersion}
-                    </td>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                      <a
-                        href={depend.FileDesignVersion}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className=" hover:underline"
-                      >
-                        <FiFileText className="inline-block" />
-                      </a>
+                {designDetail.DependOnVersion && designDetail.DependOnVersion.length > 0 ? (
+                  designDetail.DependOnVersion.map((depend) => (
+                    <tr key={depend.HouseDesginVersionId}>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        {depend.HouseDesignVersionName}
+                      </td>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        {depend.HouseDesignVersion}
+                      </td>
+                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                        <a
+                          href={depend.FileDesignVersion}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="hover:underline"
+                        >
+                          <FiFileText className="inline-block" />
+                        </a>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark" colSpan={3}>
+                      <span className="text-red-600">Không có phiên bản phụ thuộc</span>
                     </td>
                   </tr>
-                ))}
+                )}
               </tbody>
             </table>
           </div>

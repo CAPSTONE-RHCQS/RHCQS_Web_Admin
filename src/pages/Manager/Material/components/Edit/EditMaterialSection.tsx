@@ -26,7 +26,7 @@ const EditMaterialSection: React.FC<EditModalProps> = ({
     setTimeout(() => {
       onSave();
       setIsSaving(false);
-    }, 2000);
+    }, 3000);
   };
 
   if (!isOpen) return null;

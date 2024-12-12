@@ -73,7 +73,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
     fetchDesignDetail();
     const interval = setInterval(() => {
       fetchCurrentStatus();
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(interval);
   }, [fetchDesignDetail, id]);

@@ -96,7 +96,7 @@ const ProjectDetailManager = () => {
 
   useEffect(() => {
     fetchProjectDetail();
-    const interval = setInterval(fetchProjectDetail, 2000);
+    const interval = setInterval(fetchProjectDetail, 3000);
 
     return () => clearInterval(interval);
   }, [projectId]);

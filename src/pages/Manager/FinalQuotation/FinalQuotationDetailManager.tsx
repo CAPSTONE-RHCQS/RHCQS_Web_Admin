@@ -173,7 +173,7 @@ const FinalQuotationDetailManager = () => {
           console.error('Error fetching quotation status:', error);
         }
       }
-    }, 2000);
+    }, 3000);
 
     return () => clearInterval(intervalId);
   }, [id, currentStatus]);

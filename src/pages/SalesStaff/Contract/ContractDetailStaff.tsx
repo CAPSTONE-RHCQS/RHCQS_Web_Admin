@@ -65,7 +65,7 @@ const ContractDetailStaff = () => {
     };
 
     fetchContractDetail();
-    const interval = setInterval(fetchContractDetail, 2000);
+    const interval = setInterval(fetchContractDetail, 3000);
 
     return () => clearInterval(interval);
   }, [contractId]);
