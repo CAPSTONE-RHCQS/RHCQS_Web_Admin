@@ -106,7 +106,9 @@ const DropdownMessage = () => {
             className={`absolute -right-16 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80`}
           >
             <div className="px-4.5 py-3">
-              <h5 className="text-sm font-medium text-black">Messages</h5>
+              <h5 className="text-sm font-medium text-black">
+                Tin nhắn khách hàng
+              </h5>
             </div>
 
             <ul className="flex h-auto flex-col overflow-y-auto">
