@@ -61,7 +61,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     const fetchChatDetail = async () => {
       try {
         const chatDetailResponse = await getChatsByRoomId(roomId);
-        console.log('chatDetail', JSON.stringify(chatDetailResponse, null, 2));
         const formattedMessages = chatDetailResponse.MessageRooms.map(
           (msg: any) => ({
             user: msg.UserName,
@@ -93,12 +92,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     const startConnection = async () => {
       try {
         await connection.start();
-        console.log('SignalR connected');
         setConnection(connection);
-
-        // Join the room using SignalR
         await connection.invoke('JoinRoom', roomId, customerInfo.name);
-        console.log('Joined room successfully');
       } catch (err) {
         console.error('SignalR connection or JoinRoom error:', err);
       }
@@ -107,7 +102,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     startConnection();
 
     connection.on('ReceiveMessage', (user, userId, message, roomId) => {
-      console.log('New message received:', user, message, roomId);
       setMessages((prev) => [...prev, { user, message }]);
     });
 
@@ -116,9 +110,7 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
   }, [customerInfo.name]);
 
-  useEffect(() => {
-    console.log("Updated roomId:", roomId);
-  }, [roomId]);
+  useEffect(() => {}, [roomId]);
 
   useEffect(() => {
     if (roomId === '') {
@@ -133,13 +125,6 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     const initialMessage = 'Chúng tôi sẽ sớm liên hệ với bạn!';
 
     if (connection && username && accountId) {
-      console.log(
-        'Customer initiating chat with staff',
-        accountId,
-        saleId,
-        initialMessage,
-      );
-
       try {
         await connection.invoke(
           'StartChatWithStaff',
@@ -148,17 +133,8 @@ const ChatBox: React.FC<ChatBoxProps> = ({
           initialMessage,
         );
         connection.on('ReceiveRoomNotification', (newRoomId) => {
-          console.log(`Customer received new roomId: ${newRoomId}`);
           setRoomId(newRoomId);
         });
-
-        console.log(
-          'Customer initiating chat with staff',
-          accountId,
-          saleId,
-          initialMessage,
-        );
-        console.log('Chat with staff initiated successfully');
       } catch (error) {
         console.error('Error starting chat with staff:', error);
         toast.error(
@@ -171,18 +147,15 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     }
   };
 
-
   const sendMessage = async () => {
     if (message.trim() && connection) {
       try {
-        console.log('Sending message:', { roomId, user: user?.name, message });
         await connection.invoke(
           'SendMessageToRoom',
           roomId,
           user?.name || '',
           message,
         );
-        console.log('Message sent:', message);
         setMessage('');
       } catch (err) {
         console.error('Error sending message:', err);

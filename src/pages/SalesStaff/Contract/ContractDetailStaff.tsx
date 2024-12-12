@@ -217,8 +217,6 @@ const ContractDetailStaff = () => {
     );
 
     setBatchPaymentRequests(updatedRequests);
-
-    console.log('Sorted batchPaymentRequests:', updatedRequests);
   };
 
   const handleCreateAppendix = async () => {
@@ -318,7 +316,6 @@ const ContractDetailStaff = () => {
         Description: '',
       },
     ]);
-    console.log('New batch added:', batchPaymentRequests);
   };
 
   const handleDeleteBatch = (index: number) => {

@@ -4,11 +4,26 @@ import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
 import LogoIcon from '../../images/logo/logo-icon.svg';
 import DarkModeSwitcher from './DarkModeSwitcher';
+import { useState, useEffect } from 'react';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
   setSidebarOpen: (arg0: boolean) => void;
 }) => {
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const userInfoString = localStorage.getItem('user');
+    if (userInfoString) {
+      try {
+        const userInfo = JSON.parse(userInfoString);
+        setUserRole(userInfo.role);
+      } catch (error) {
+        console.error('Error parsing user info from localStorage:', error);
+      }
+    }
+  }, []);
+
   return (
     <header className="sticky top-0 z-999 flex w-full bg-white shadow-md dark:bg-boxdark transition-all duration-300">
       <div className="flex flex-grow items-center justify-between px-4 py-4 md:px-6 2xl:px-11">
@@ -78,7 +93,7 @@ const Header = (props: {
             {/* <!-- Notification Menu Area --> */}
 
             {/* <!-- Chat Notification Area --> */}
-            <DropdownMessage />
+            {userRole === 'SalesStaff' && <DropdownMessage />}
             {/* <!-- Chat Notification Area --> */}
           </ul>
 

@@ -232,14 +232,14 @@ const FinalQuotationDetailManager = () => {
             <FaStickyNote className="text-2xl" />
           </button>
         )}
-        {!showChat && (
+        {/* {!showChat && (
           <button
             onClick={toggleChat}
             className="fixed bottom-4 right-4 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
           >
             <FaCommentDots className="text-2xl" />
           </button>
-        )}
+        )} */}
       </div>
 
       <FinalQuotationStatus

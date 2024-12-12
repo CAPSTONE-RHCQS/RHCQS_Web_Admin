@@ -40,7 +40,6 @@ const CreateHouseModel: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = location.state || {};
-  console.log(id);
 
   useEffect(() => {
     const fetchPackageTypes = async () => {

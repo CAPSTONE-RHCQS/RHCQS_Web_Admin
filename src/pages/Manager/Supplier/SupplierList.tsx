@@ -47,7 +47,6 @@ const SupplierList: React.FC = () => {
       setDataSupplier(data.Items);
       setTotalPages(data.TotalPages);
       setTotalSupplier(data.Total);
-      console.log(data.Items);
       setIsLoading(false);
     });
   }, [page, refreshKey]);

@@ -10,7 +10,6 @@ export const createContractDesign = async (
   data: CreateContractDesignRequest,
 ) => {
   try {
-    console.log('Create Contract', data);
     const response = await requestWebRHCQS.post('/contract/design', data, {
       headers: {
         accept: 'text/plain',
@@ -82,7 +81,6 @@ export const signContractCompletion = async (
         },
       },
     );
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error('Error signing contract completion:', error);
@@ -120,8 +118,8 @@ export const paymentContractAppendix = async (
     const formData = new FormData();
     formData.append('files', file, file.name);
 
-    const response = await requestWebRHCQS.post(
-      `/appendix/confirm/bill?paymentId=${paymentId}`,
+    const response = await requestWebRHCQS.put(
+      `/contract/appendix/confirm/bill?paymentId=${paymentId}`,
       formData,
       {
         headers: {
@@ -164,7 +162,7 @@ export const paymentContractConstruction = async (
 
 export const approveContractBill = async (paymentId: string, type: string) => {
   try {
-    const response = await requestWebRHCQS.post(
+    const response = await requestWebRHCQS.put(
       `/contract/approve/bill?paymentId=${paymentId}&type=${type}`,
       {
         headers: {

@@ -11,7 +11,12 @@ interface EditSectionProps {
   onError: (message: string) => void;
 }
 
-const EditSection: React.FC<EditSectionProps> = ({ id, onClose, onSave, onError }) => {
+const EditSection: React.FC<EditSectionProps> = ({
+  id,
+  onClose,
+  onSave,
+  onError,
+}) => {
   const [sectionDetail, setSectionDetail] = useState<any>(null);
 
   useEffect(() => {
@@ -51,7 +56,11 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose, onSave, onError 
     };
 
     Object.keys(utilityData.sections).forEach((key) => {
-      if (utilityData.sections[key] !== null && utilityData.sections[key] !== '' && utilityData.sections[key] !== sectionDetail[key]) {
+      if (
+        utilityData.sections[key] !== null &&
+        utilityData.sections[key] !== '' &&
+        utilityData.sections[key] !== sectionDetail[key]
+      ) {
         updatedUtilityData.sections[key] = utilityData.sections[key];
       }
     });
@@ -64,8 +73,6 @@ const EditSection: React.FC<EditSectionProps> = ({ id, onClose, onSave, onError 
       };
       updatedUtilityData.items.push(updatedItem);
     });
-
-    console.log(updatedUtilityData);
 
     try {
       await putUtility(updatedUtilityData);

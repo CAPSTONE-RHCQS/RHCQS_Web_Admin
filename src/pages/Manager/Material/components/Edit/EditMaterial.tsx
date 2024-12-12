@@ -23,7 +23,6 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
       try {
         const detail = await getMaterialById(id);
         setMaterialDetail(detail);
-        console.log('detail', detail);
       } catch (error) {
         console.error('Failed to fetch material detail:', error);
       }

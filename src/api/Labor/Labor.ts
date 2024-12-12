@@ -7,7 +7,6 @@ export async function getLaborByName(
   packageId: string,
 ): Promise<GetLaborByNameResponse> {
   try {
-    console.log('pk', packageId);
     const response = await requestWebRHCQS.get('/labor/name', {
       params: { name, packageId },
       headers: {

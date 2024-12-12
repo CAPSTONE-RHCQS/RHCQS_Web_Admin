@@ -37,7 +37,6 @@ const LaborTable: React.FC<LaborTableProps> = ({
 
   const handleEditClick = (item: LaborItem) => {
     openEditModal(item.Id || '');
-    console.log(item.Id);
     setInputValue(item);
     setIsEditModalOpen(true);
   };

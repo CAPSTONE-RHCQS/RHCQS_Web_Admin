@@ -44,7 +44,6 @@ export const createBlog = async (
         'Content-Type': 'application/json',
       },
     });
-    console.log('Blog created successfully:', response.data);
   } catch (error) {
     console.error('Error creating blog:', error);
     throw error;
@@ -65,7 +64,6 @@ export const updateBlog = async (
         },
       },
     );
-    console.log('Blog updated successfully:', response.data);
   } catch (error) {
     console.error('Error updating blog:', error);
     throw error;
@@ -79,7 +77,6 @@ export const deleteBlog = async (id: string): Promise<void> => {
         accept: '*/*',
       },
     });
-    console.log('Blog deleted successfully:', response.data);
   } catch (error) {
     console.error('Error deleting blog:', error);
     throw error;

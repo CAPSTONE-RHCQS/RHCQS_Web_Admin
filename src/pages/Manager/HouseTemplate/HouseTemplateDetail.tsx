@@ -35,7 +35,6 @@ const HouseTemplateDetail: React.FC = () => {
       try {
         if (id) {
           const data = await fetchHouseTemplateDetail(id);
-          console.log('Fetched data:', data);
           setHouseTemplate(data);
         }
       } catch (err) {

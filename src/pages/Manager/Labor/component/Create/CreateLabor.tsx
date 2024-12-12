@@ -62,7 +62,6 @@ const CreateLabor: React.FC<CreateLaborProps> = ({
           </button>
           <button
             onClick={() => {
-              console.log('Creating labor with:', inputValue);
               onCreate(inputValue);
             }}
             className="bg-primaryGreenButton text-white px-4 py-2 rounded font-bold"

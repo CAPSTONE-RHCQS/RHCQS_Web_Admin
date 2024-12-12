@@ -73,7 +73,6 @@ const CreateUtility: React.FC<CreateUtilityProps> = ({
 
     try {
       const response = await postUtility(utilityData);
-      console.log('Utility created successfully:', response);
       onSave(response);
     } catch (error: any) {
         console.error('Error creating utility:', error);

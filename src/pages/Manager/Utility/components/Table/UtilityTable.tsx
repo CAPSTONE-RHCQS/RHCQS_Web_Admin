@@ -67,7 +67,6 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
   };
 
   const handleAddNewItem = (itemId: string, sectionId: string, sectionName: string) => {
-    console.log(itemId, sectionId, sectionName);
   };
 
   const handleError = (message: string) => {

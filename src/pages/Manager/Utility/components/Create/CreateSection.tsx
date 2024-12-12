@@ -40,7 +40,6 @@ const CreateSection: React.FC<CreateSectionProps> = ({
       try {
         const data = await getUtilities(1, 20);
         setUtilities(data.Items);
-        console.log(data.Items);
       } catch (error) {
         console.error('Error fetching utilities:', error);
       }
@@ -93,7 +92,6 @@ const CreateSection: React.FC<CreateSectionProps> = ({
 
     try {
       const response = await postUtility(utilityData);
-      console.log('Section created successfully:', response);
       onSave(response);
     } catch (error: any) {
       console.error('Error creating section:', error);

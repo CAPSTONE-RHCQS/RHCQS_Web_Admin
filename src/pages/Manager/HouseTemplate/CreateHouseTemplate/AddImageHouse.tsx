@@ -16,7 +16,6 @@ const AddImageHouse: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { id } = location.state || {};
-  console.log('ID:', id);
   const responseData = location.state?.responseData;
   const packageFinished = location.state?.packageFinished;
   const [overallImage, setOverallImage] = useState<File | null>(null);
@@ -60,17 +59,13 @@ const AddImageHouse: React.FC = () => {
           setHouseTemplate(data);
         } else if (id) {
           const data = await fetchHouseTemplateDetail(id);
-          console.log('Data:', data);
           setHouseTemplate(data);
-          // set overall image
           setOverallImage(new File([], data.ImgUrl));
           setPreviewOverallImage(data.ImgUrl);
-          // set outside images
           setOutsideImages(
             data.ExteriorsUrls.map((url) => new File([], url.Url)),
           );
           setPreviewOutsideImages(data.ExteriorsUrls.map((url) => url.Url));
-          // set design drawing images
           const flatDesignDrawingImages = data.SubTemplates.flatMap(
             (subTemplate) =>
               subTemplate.Designdrawings.map((url) => new File([], url.Url)),
@@ -210,7 +205,6 @@ const AddImageHouse: React.FC = () => {
             })),
           );
           formData.append('packageJson', packageJsonString);
-          console.log('Package JSON string:', packageJsonString);
         }
 
         const allSubTemplateImagesSelected = houseTemplate?.SubTemplates.every(
@@ -238,8 +232,6 @@ const AddImageHouse: React.FC = () => {
         }
 
         const result = await addImageHouseTemplate(responseData, formData);
-        console.log('Package finished images:', packageFinishedImages);
-        console.log('Image uploaded successfully:', result, formData);
         setAlert({
           message: 'Hình ảnh đã được gửi thành công!',
           type: 'success',
@@ -247,7 +239,6 @@ const AddImageHouse: React.FC = () => {
         navigate(`/house-template/${responseData}`);
       } catch (error) {
         console.error('Error uploading image:', error);
-        console.log('Package finished data:', packageFinished);
         setAlert({ message: 'Có lỗi xảy ra khi gửi hình ảnh.', type: 'error' });
       } finally {
         setIsLoading(false);
@@ -305,8 +296,6 @@ const AddImageHouse: React.FC = () => {
           id,
           formData,
         );
-        console.log('Outside Image Upload Result:', outsideResult);
-
         setAlert({
           message: 'Hình ảnh đã được gửi thành công!',
           type: 'success',

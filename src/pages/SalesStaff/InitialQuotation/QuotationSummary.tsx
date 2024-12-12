@@ -657,7 +657,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
             </p>
             <div className="ml-5">
               <p className="flex justify-between">
-                <strong>Thời gian thi công phần thô:</strong>
+                <em>Thời gian thi công phần thô:</em>
                 {isEditing ? (
                   <>
                     <input
@@ -687,7 +687,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
                 )}
               </p>
               <p className="flex justify-between">
-                <strong>Phối hợp với CĐT hoàn thiện công trình:</strong>
+                <em>Phối hợp với CĐT hoàn thiện công trình:</em>
                 {isEditing ? (
                   <>
                     <input

@@ -10,7 +10,6 @@ export const createHouseDesign = async (data: {
   designerElectricityWater: string;
 }): Promise<AxiosResponse> => {
   try {
-    console.log('data', data);
     const response = await requestWebRHCQS.post('/housedesign', data, {
       headers: {
         'Content-Type': 'application/json',
@@ -77,7 +76,6 @@ export async function getHouseDesignDrawingStatus(
         accept: 'text/plain',
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(

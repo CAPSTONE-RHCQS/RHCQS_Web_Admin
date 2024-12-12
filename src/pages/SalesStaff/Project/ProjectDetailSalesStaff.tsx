@@ -77,7 +77,6 @@ const ProjectDetailSalesStaff = () => {
     const fetchProfile = async () => {
       const profile = await getProfile();
       setUser(profile);
-      console.log(profile);
     };
     fetchProfile();
   }, []);
@@ -87,7 +86,6 @@ const ProjectDetailSalesStaff = () => {
       try {
         const data = await getProjectDetail(id);
         setProjectDetail(data);
-        console.log(data);
       } catch (error) {
         console.error('Error fetching project detail:', error);
       }
@@ -325,7 +323,6 @@ const ProjectDetailSalesStaff = () => {
                 onClick={handleOpenChat}
                 className="font-semibold text-primaryGreenButton"
               >
-                
                 Liên hệ với khách hàng
               </button>
             </div>

@@ -21,7 +21,6 @@ export const getFinalQuotation = async (
 
 export const updateFinalQuotation = async (data: FinalQuotationRequest) => {
   try {
-    console.log('Updating final quotation', data);
     const response = await requestWebRHCQS.put('/quotation/final', data, {
       headers: {
         'Content-Type': 'application/json',
@@ -40,7 +39,6 @@ export async function approveFinalQuotation(
   data: { type: string; reason: string },
 ): Promise<void> {
   try {
-    console.log('Applying final quotation', finalId, data);
     const response = await requestWebRHCQS.put(
       `/quotation/final/approve`,
       data,
@@ -72,7 +70,6 @@ export const postFinalQuotationByProjectId = async (
         },
       },
     );
-    console.log('Fetched data', response.data);
     return response.data;
   } catch (error) {
     console.error('Error posting final quotation by project ID:', error);
@@ -90,7 +87,6 @@ export async function getFinalQuotationStatus(
         accept: 'text/plain',
       },
     });
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error(`Error fetching status for final ID ${finalId}:`, error);

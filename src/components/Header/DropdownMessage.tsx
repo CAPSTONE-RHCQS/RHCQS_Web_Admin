@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getChats } from '../../api/Chat/Chat';
-import UserTwo from '../../images/user/user-02.png';
+import UserTwo from '../../images/fee.jpg';
 import { ChatData } from '../../types/chat';
 import { getProfile } from '../../api/Account/AccountApi';
 import { useChat } from '../../context/ChatContext';
 
 const DropdownMessage = () => {
-  const { isDropdownOpen, toggleDropdown, openChat, setIsDropdownOpen } = useChat();
+  const { isDropdownOpen, toggleDropdown, openChat, setIsDropdownOpen } =
+    useChat();
   const [notifying, setNotifying] = useState(true);
   const [chats, setChats] = useState<ChatData[]>([]);
   const [user, setUser] = useState<any>(null);
+  
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -26,7 +29,6 @@ const DropdownMessage = () => {
       if (accountId) {
         const chatData = await getChats(accountId);
         setChats(chatData);
-        console.log('Fetched chat data:', chatData);
       }
     } catch (error) {
       console.error('Error fetching chats:', error);
@@ -55,8 +57,27 @@ const DropdownMessage = () => {
     }
   }, [isDropdownOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen, setIsDropdownOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <li className="relative">
         <Link
           onClick={() => {
@@ -106,7 +127,9 @@ const DropdownMessage = () => {
             className={`absolute -right-16 mt-2.5 flex h-90 w-75 flex-col rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark sm:right-0 sm:w-80`}
           >
             <div className="px-4.5 py-3">
-              <h5 className="text-sm font-medium text-black">Messages</h5>
+              <h5 className="text-sm font-medium text-black">
+                Tin nhắn khách hàng
+              </h5>
             </div>
 
             <ul className="flex h-auto flex-col overflow-y-auto">
@@ -114,7 +137,9 @@ const DropdownMessage = () => {
                 <li key={chat.Id}>
                   <div
                     className="flex gap-4.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4 cursor-pointer"
-                    onClick={() => openChat(chat.Id, chat.StaffName, user.RoleId)}
+                    onClick={() =>
+                      openChat(chat.Id, chat.StaffName, user.RoleId)
+                    }
                   >
                     <div className="h-12.5 w-12.5 rounded-full overflow-hidden">
                       <img

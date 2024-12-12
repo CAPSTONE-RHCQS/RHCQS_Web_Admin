@@ -65,7 +65,6 @@ export const searchConstructionWorkItem = async (
         },
       },
     );
-    console.log(response.data);
     return response.data as SearchConstructionWorkItem[];
   } catch (error) {
     console.error('Error fetching search results:', error);
@@ -89,7 +88,6 @@ export const multipleSearchConstructionWorkItem = async (
         },
       },
     );
-    console.log(response.data);
     return response.data as ConstructionWorkType;
   } catch (error) {
     console.error('Error fetching search results:', error);

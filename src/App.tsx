@@ -320,7 +320,7 @@ function App() {
               <Route
                 path="/initial-quotation-detail-staff/:id"
                 element={
-                  <PrivateRoute allowedRoles={['SalesStaff']}>
+                  <PrivateRoute allowedRoles={['SalesStaff', 'DesignStaff']}>
                     <PageTitle title="Initial Quotation Detail | RHCQS - Residential Housing Construction Quotation System" />
                     <InitialQuotationDetailStaff />
                   </PrivateRoute>
@@ -421,7 +421,7 @@ function App() {
                 path="/settings"
                 element={
                   <PrivateRoute
-                    allowedRoles={['Manager', 'Sales Staff', 'DesignStaff']}
+                    allowedRoles={['Manager', 'SalesStaff', 'DesignStaff']}
                   >
                     <PageTitle title="Settings | RHCQS - Residential Housing Construction Quotation System" />
                     <Settings />

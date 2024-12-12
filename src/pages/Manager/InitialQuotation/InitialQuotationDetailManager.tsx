@@ -71,7 +71,6 @@ const InitialQuotationDetailManager = () => {
     if (id) {
       try {
         const data: InitialQuotationResponse = await getInitialQuotation(id);
-        console.log('fetch', data);
         setQuotationData(data);
         const updatedTableData = data.ItemInitial.map((item, index) => {
           const coefficient =
@@ -283,14 +282,14 @@ const InitialQuotationDetailManager = () => {
           </button>
         )}
 
-        {!showChat && (
+        {/* {!showChat && (
           <button
             onClick={toggleChat}
             className="bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 transition-colors duration-200"
           >
             <FaCommentDots className="text-2xl" />
           </button>
-        )}
+        )} */}
       </div>
 
       <div>

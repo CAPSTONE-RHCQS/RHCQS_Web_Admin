@@ -114,6 +114,7 @@ const Settings: React.FC = () => {
 
       setProfile(updatedProfile);
 
+      window.location.reload();
       toast.success('Cập nhật thông tin thành công');
     } catch (error: any) {
       toast.error(

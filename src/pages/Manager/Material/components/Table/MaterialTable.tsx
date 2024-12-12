@@ -95,7 +95,6 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           name: inputNameValue,
           code: inputCodeValue,
         });
-        console.log(response, inputNameValue, inputCodeValue);
         setAlertMessage('Sửa vật tưthành công');
         setAlertType('success');
         refreshData();
