@@ -4,6 +4,7 @@ import {
   getContractDesignById,
   paymentContractDesign,
   approveContractBill,
+  paymentContractConstruction,
 } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -85,8 +86,10 @@ const ContractDetailManager = () => {
         }
 
         const paymentId = appendix.PaymentId;
-
-        await paymentContractDesign(paymentId, selectedFiles[index]);
+        if (contractDetail.Type === 'Design')
+          await paymentContractDesign(paymentId, selectedFiles[index]);
+        else if (contractDetail.Type === 'Construction')
+          await paymentContractConstruction(paymentId, selectedFiles[index]);
 
         toast.success('Tải lên thành công!');
         fetchContractDetail();
