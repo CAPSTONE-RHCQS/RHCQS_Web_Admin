@@ -120,8 +120,8 @@ export const paymentContractAppendix = async (
     const formData = new FormData();
     formData.append('files', file, file.name);
 
-    const response = await requestWebRHCQS.post(
-      `/appendix/confirm/bill?paymentId=${paymentId}`,
+    const response = await requestWebRHCQS.put(
+      `/contract/appendix/confirm/bill?paymentId=${paymentId}`,
       formData,
       {
         headers: {
@@ -164,7 +164,7 @@ export const paymentContractConstruction = async (
 
 export const approveContractBill = async (paymentId: string, type: string) => {
   try {
-    const response = await requestWebRHCQS.post(
+    const response = await requestWebRHCQS.put(
       `/contract/approve/bill?paymentId=${paymentId}&type=${type}`,
       {
         headers: {
