@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import {
   UserIcon,
@@ -39,8 +39,22 @@ const AccountList: React.FC = () => {
     key: SortKey;
     direction: 'ascending' | 'descending';
   } | null>(null);
-  const { totalPages, totalAccounts, isLoading, accounts, setAccounts } =
-    useFetchAccounts(currentPage, refreshKey, selectedRole);
+  const { 
+    totalPages, 
+    totalAccounts, 
+    isLoading, 
+    accounts, 
+    setAccounts 
+  } = useFetchAccounts(
+    currentPage, 
+    refreshKey, 
+    selectedRole, 
+    searchTerm
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
@@ -151,7 +165,7 @@ const AccountList: React.FC = () => {
               Nhân viên thiết kế
             </option>
             <option value="9959ce96-de26-40a7-b8a7-28a704062e89">
-              Nhân viên bán hàng
+              Nhân viên báo giá
             </option>
             <option value="789dd57d-0f75-40d1-8366-ef6ab582efc8">
               Khách hàng

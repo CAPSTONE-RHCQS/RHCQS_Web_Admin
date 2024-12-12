@@ -246,3 +246,26 @@ export const changePassword = async (
     throw error;
   }
 };
+
+export const searchAccounts = async (
+  searchKey: string, 
+  page: number = 1, 
+  size: number = 5
+) => {
+  try {
+    const response = await requestWebRHCQS.get(`/account/key`, {
+      params: { 
+        searchKey, 
+        page, 
+        size 
+      },
+      headers: {
+        accept: '*/*',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error searching accounts:', error);
+    throw error;
+  }
+};
