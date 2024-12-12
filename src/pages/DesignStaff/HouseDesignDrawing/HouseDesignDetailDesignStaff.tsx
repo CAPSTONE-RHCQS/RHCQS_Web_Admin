@@ -35,6 +35,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   );
   const [currentStatus, setCurrentStatus] = useState<string>('');
   const [fileName, setFileName] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const navigate = useNavigate();
 
   const fetchDesignDetail = useCallback(async () => {
@@ -103,7 +104,9 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
   };
 
   const handleSubmitDesign = async () => {
-    if (!designDetail || !fileUrl) return;
+    if (!designDetail || !fileUrl || submitting) return;
+
+    setSubmitting(true);
 
     const currentVersionIndex = designDetail.Versions.findIndex(
       (version) => version.Id === selectedVersionId,
@@ -139,6 +142,8 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
       const errorMessage =
         error.response?.data?.Error || 'Error submitting design';
       toast.error(errorMessage);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -365,7 +370,7 @@ const HouseDesignDetailDesignStaff: React.FC = () => {
             </div>
             <button
               onClick={handleSubmitDesign}
-              disabled={!fileUrl}
+              disabled={!fileUrl || submitting}
               className="mt-4 px-6 py-3 bg-blue-600 text-white rounded-lg disabled:opacity-50"
             >
               Nộp bản vẽ
