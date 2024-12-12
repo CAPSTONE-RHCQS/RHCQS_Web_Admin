@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FaBoxOpen } from 'react-icons/fa';
+import { FaBoxOpen, FaSync } from 'react-icons/fa';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import ProjectTableManager from './components/Table/ProjectTableManager';
 import { getProjectsByMultiFilter } from '../../../api/Project/ProjectApi';
 import { useNavigate } from 'react-router-dom';
 import { ClipLoader } from 'react-spinners';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 
 type Project = {
   id: string;
@@ -88,7 +89,9 @@ const ProjectListManager = () => {
       setTotalPages(data.TotalPages);
     } catch (err: any) {
       setProjects([]);
-      setError(err.response?.data?.Error || 'Có lỗi xảy ra khi lấy dữ liệu dự án');
+      setError(
+        err.response?.data?.Error || 'Có lỗi xảy ra khi lấy dữ liệu dự án',
+      );
     } finally {
       setLoading(false);
     }
@@ -99,9 +102,10 @@ const ProjectListManager = () => {
   }, [currentPage, filters]);
 
   const handleSort = (key: SortKey) => {
-    const direction = sortConfig?.key === key && sortConfig.direction === 'ascending'
-      ? 'descending'
-      : 'ascending';
+    const direction =
+      sortConfig?.key === key && sortConfig.direction === 'ascending'
+        ? 'descending'
+        : 'ascending';
     setSortConfig({ key, direction });
     setProjects((prevProjects) =>
       [...prevProjects].sort((a, b) => {
@@ -122,10 +126,16 @@ const ProjectListManager = () => {
     }
   };
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFilterChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value } = e.target;
     setFilters((prevFilters) => ({ ...prevFilters, [name]: value }));
     setCurrentPage(1);
+  };
+
+  const handleRefreshProjects = () => {
+    fetchProjects();
   };
 
   return (
@@ -136,30 +146,46 @@ const ProjectListManager = () => {
         <div className="mb-5 flex flex-wrap items-end gap-4">
           {['startTime', 'phone', 'code'].map((field) => (
             <div key={field} className="flex flex-col">
-              <label className="mb-1 text-sm font-medium">{field === 'startTime' ? 'Từ ngày' : field === 'phone' ? 'Số điện thoại' : 'Mã dự án'}</label>
+              <label className="mb-1 text-sm font-medium">
+                {field === 'startTime'
+                  ? 'Từ ngày'
+                  : field === 'phone'
+                  ? 'Số điện thoại'
+                  : 'Mã dự án'}
+              </label>
               <input
                 type={field === 'startTime' ? 'date' : 'text'}
                 name={field}
                 value={filters[field as keyof typeof filters]}
                 onChange={handleFilterChange}
                 className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
-                placeholder={field === 'startTime' ? 'Chọn ngày' : `Nhập ${field === 'phone' ? 'số điện thoại' : 'mã dự án'}`}
+                placeholder={
+                  field === 'startTime'
+                    ? 'Chọn ngày'
+                    : `Nhập ${field === 'phone' ? 'số điện thoại' : 'mã dự án'}`
+                }
               />
             </div>
           ))}
           {['type', 'status'].map((field) => (
             <div key={field} className="flex flex-col">
-              <label className="mb-1 text-sm font-medium">{field === 'type' ? 'Dịch vụ' : 'Trạng thái'}</label>
+              <label className="mb-1 text-sm font-medium">
+                {field === 'type' ? 'Dịch vụ' : 'Trạng thái'}
+              </label>
               <select
                 name={field}
                 value={filters[field as keyof typeof filters]}
                 onChange={handleFilterChange}
                 className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
               >
-                <option value="">{field === 'type' ? 'Tất cả' : 'Tất cả'}</option>
+                <option value="">
+                  {field === 'type' ? 'Tất cả' : 'Tất cả'}
+                </option>
                 {field === 'type' ? (
                   Object.entries(typeOptions).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
                   ))
                 ) : (
                   <>
@@ -174,6 +200,12 @@ const ProjectListManager = () => {
               </select>
             </div>
           ))}
+          <div className="flex items-end">
+            <ArrowPathIcon
+              onClick={handleRefreshProjects}
+              className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
+            />
+          </div>
         </div>
 
         <div className="max-w-full overflow-x-auto">
