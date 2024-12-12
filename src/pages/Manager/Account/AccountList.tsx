@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 import {
   UserIcon,
@@ -6,10 +6,12 @@ import {
   PencilIcon,
   ShoppingCartIcon,
   ArrowPathIcon,
+  PlusIcon,
 } from '@heroicons/react/24/solid';
 import useFetchAccounts from '../../../hooks/useFetchAccounts';
 import { Account } from '../../../types/Account';
 import AccountTable from './components/Table/AccountTable';
+import CreateStaffAccountModal from './components/Modal/CreateStaffAccountModal';
 
 type SortKey = string;
 
@@ -28,6 +30,7 @@ const roleIconMapping: { [key: string]: JSX.Element } = {
 };
 
 const AccountList: React.FC = () => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [refreshKey, setRefreshKey] = useState(0);
   const [selectedRole, setSelectedRole] = useState<string>('');
@@ -36,8 +39,22 @@ const AccountList: React.FC = () => {
     key: SortKey;
     direction: 'ascending' | 'descending';
   } | null>(null);
-  const { totalPages, totalAccounts, isLoading, accounts, setAccounts } =
-    useFetchAccounts(currentPage, refreshKey, selectedRole);
+  const { 
+    totalPages, 
+    totalAccounts, 
+    isLoading, 
+    accounts, 
+    setAccounts 
+  } = useFetchAccounts(
+    currentPage, 
+    refreshKey, 
+    selectedRole, 
+    searchTerm
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
 
   const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
@@ -91,6 +108,19 @@ const AccountList: React.FC = () => {
     setRefreshKey((prevKey) => prevKey + 1);
   };
 
+  const handleOpenCreateModal = () => {
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCloseCreateModal = () => {
+    setIsCreateModalOpen(false);
+  };
+
+  const handleAccountCreated = () => {
+    setRefreshKey((prev) => prev + 1);
+    handleCloseCreateModal();
+  };
+
   const columns = [
     { key: 'avatar', label: 'Avatar' },
     { key: 'accountName', label: 'Tên Nhân Viên' },
@@ -135,12 +165,19 @@ const AccountList: React.FC = () => {
               Nhân viên thiết kế
             </option>
             <option value="9959ce96-de26-40a7-b8a7-28a704062e89">
-              Nhân viên bán hàng
+              Nhân viên báo giá
             </option>
             <option value="789dd57d-0f75-40d1-8366-ef6ab582efc8">
               Khách hàng
             </option>
           </select>
+          <button
+            onClick={handleOpenCreateModal}
+            className="flex items-center justify-center h-11 w-full md:w-40 bg-primary text-white rounded-lg hover:bg-opacity-90 transition ml-auto"
+          >
+            <PlusIcon className="w-5 h-5 mr-2" />
+            Tạo Tài Khoản
+          </button>
         </div>
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
@@ -186,6 +223,13 @@ const AccountList: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <CreateStaffAccountModal
+          onClose={handleCloseCreateModal}
+          onAccountCreated={handleAccountCreated}
+        />
+      )}
     </>
   );
 };

@@ -4,12 +4,8 @@ import {
   FaUser,
   FaMapMarkerAlt,
   FaRulerCombined,
-  FaHistory,
   FaBan,
   FaHome,
-  FaBuilding,
-  FaDraftingCompass,
-  FaSync,
   FaMailBulk,
   FaPhone,
 } from 'react-icons/fa';
@@ -43,6 +39,7 @@ import { createHouseDesign } from '../../../api/HouseDesignDrawing/HouseDesignDr
 import AssignModal from './components/Modals/AssignModal';
 import EmployeeList from './components/Employee/EmployeeList';
 import ArrowIcon from '../../../SVG/ArrowIcon';
+import { HomeModernIcon } from '@heroicons/react/24/solid';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -361,6 +358,11 @@ const ProjectDetailManager = () => {
         </div>
         <div className="flex flex-wrap">
           <div className="w-full md:w-1/2">
+            <div className="mb-2 text-lg flex items-center">
+              <HomeModernIcon className="mr-2 text-secondary h-5 w-5" />
+              <span className="font-semibold">Tên dự án:</span>
+              <span className="text-gray-700 ml-2">{projectDetail.Name}</span>
+            </div>
             <div className="mb-2 text-lg flex items-center">
               <FaHome className="mr-2 text-secondary" />
               <span className="font-semibold">Phân loại dự án:</span>

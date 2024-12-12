@@ -3,6 +3,7 @@ import {
   getAccounts,
   getAccountsByRoleId,
   getTotalAccounts,
+  searchAccounts
 } from '../api/Account/AccountApi';
 import { Account } from '../types/Account';
 
@@ -17,6 +18,7 @@ const useFetchAccounts = (
   currentPage: number,
   refreshKey: number,
   selectedRole: string,
+  searchTerm: string = ''
 ) => {
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [totalPages, setTotalPages] = useState(1);
@@ -28,10 +30,12 @@ const useFetchAccounts = (
       setIsLoading(true);
       try {
         let data;
-        if (selectedRole === '') {
-          data = await getAccounts(currentPage, 10);
+        if (searchTerm) {
+          data = await searchAccounts(searchTerm, currentPage, 5);
+        } else if (selectedRole === '') {
+          data = await getAccounts(currentPage, 5);
         } else {
-          data = await getAccountsByRoleId(selectedRole, currentPage, 10);
+          data = await getAccountsByRoleId(selectedRole, currentPage, 5);
         }
         const formattedData = data.Items.map((item: any) => ({
           id: item.Id,
@@ -57,6 +61,7 @@ const useFetchAccounts = (
         }));
         setAccounts(formattedData);
         setTotalPages(data.TotalPages);
+        setTotalAccounts(data.TotalItems || data.TotalCount);
       } catch (error) {
         console.error('Failed to fetch accounts:', error);
       } finally {
@@ -64,18 +69,8 @@ const useFetchAccounts = (
       }
     };
 
-    const fetchTotalAccounts = async () => {
-      try {
-        const total = await getTotalAccounts();
-        setTotalAccounts(total);
-      } catch (error) {
-        console.error('Failed to fetch total accounts:', error);
-      }
-    };
-
     fetchAccounts();
-    fetchTotalAccounts();
-  }, [currentPage, refreshKey, selectedRole]);
+  }, [currentPage, refreshKey, selectedRole, searchTerm]);
 
   return { totalPages, totalAccounts, isLoading, accounts, setAccounts };
 };

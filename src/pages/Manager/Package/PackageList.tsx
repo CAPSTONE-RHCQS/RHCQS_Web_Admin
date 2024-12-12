@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { fetchPackages } from '../../../api/Package/PackageApi';
 import { Package } from '../../../types/PackagesTypes';
-import { FaHammer, FaPaintBrush, FaCheckCircle } from 'react-icons/fa';
+import { FaHammer, FaPaintBrush, FaCheckCircle, FaPlus } from 'react-icons/fa';
 import ClipLoader from 'react-spinners/ClipLoader';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,14 +9,18 @@ const PackageList: React.FC = () => {
   const [packages, setPackages] = useState<Package[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const navigate = useNavigate();
 
   useEffect(() => {
     const loadPackages = async () => {
       try {
-        const response = await fetchPackages();
+        setLoading(true);
+        const response = await fetchPackages(currentPage, 8);
         if (Array.isArray(response.data.Items)) {
           setPackages(response.data.Items);
+          setTotalPages(response.data.TotalPages);
         } else {
           console.error('API response is not an array:', response.data.Items);
         }
@@ -29,7 +33,7 @@ const PackageList: React.FC = () => {
     };
 
     loadPackages();
-  }, []);
+  }, [currentPage]);
 
   const getPackageTypeName = (packageType: string | undefined): string => {
     if (!packageType) return 'Không xác định';
@@ -57,13 +61,23 @@ const PackageList: React.FC = () => {
 
   const getStatusIcon = (status: string | undefined) => {
     if (status && status.toUpperCase() === 'ACTIVE') {
-      return <div className="absolute top-0 right-0 m-2 text-green-500"><FaCheckCircle /></div>;
+      return (
+        <div className="absolute top-0 right-0 m-2 text-green-500">
+          <FaCheckCircle />
+        </div>
+      );
     }
     return null;
   };
 
   const handleViewDetails = (id: string) => {
     navigate(`/package-detail-manager/${id}`);
+  };
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage > 0 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
   };
 
   if (loading) {
@@ -80,7 +94,15 @@ const PackageList: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Danh sách gói xây dựng</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Danh sách gói xây dựng</h1>
+        <button
+          onClick={() => navigate('/create-package-manager')}
+          className="flex items-center bg-secondaryGreenButton text-white px-4 py-2 rounded hover:bg-primaryDarkGreen transition"
+        >
+          <FaPlus className="mr-2" /> Tạo Gói Mới
+        </button>
+      </div>
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {packages.map((pkg) => (
           <li
@@ -107,6 +129,26 @@ const PackageList: React.FC = () => {
           </li>
         ))}
       </ul>
+
+      <div className="flex justify-between mt-6">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 disabled:opacity-50"
+        >
+          Trang trước
+        </button>
+        <span>
+          Trang {currentPage} / {totalPages}
+        </span>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-gray-300 text-black rounded-lg hover:bg-gray-400 disabled:opacity-50"
+        >
+          Trang sau
+        </button>
+      </div>
     </div>
   );
 };
