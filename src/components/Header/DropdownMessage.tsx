@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { getChats } from '../../api/Chat/Chat';
 import UserTwo from '../../images/fee.jpg';
@@ -12,6 +12,8 @@ const DropdownMessage = () => {
   const [notifying, setNotifying] = useState(true);
   const [chats, setChats] = useState<ChatData[]>([]);
   const [user, setUser] = useState<any>(null);
+  
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -55,8 +57,27 @@ const DropdownMessage = () => {
     }
   }, [isDropdownOpen]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current && 
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isDropdownOpen, setIsDropdownOpen]);
+
   return (
-    <div className="relative">
+    <div className="relative" ref={dropdownRef}>
       <li className="relative">
         <Link
           onClick={() => {
