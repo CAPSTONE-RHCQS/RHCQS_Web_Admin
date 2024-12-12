@@ -21,7 +21,7 @@ export interface PackageTypeSearchResponse {
 
 export const fetchPackages = async (
   page: number = 1,
-  size: number = 10,
+  size: number = 8,
 ): Promise<AxiosResponse<PackageResponse>> => {
   try {
     const response = await requestWebRHCQS.get<PackageResponse>('/package', {
@@ -65,20 +65,14 @@ export const putPackage = async (
   packageData: PackagePutRequest,
 ): Promise<AxiosResponse<void>> => {
   try {
-    console.log('putPackage', packageId, packageData);
     const response = await requestWebRHCQS.put<void>(`/package`, packageData, {
       params: { packageid: packageId },
       headers: { 'Content-Type': 'application/json' },
     });
     return response;
   } catch (error) {
-    if (error instanceof AxiosError) {
-      throw new Error(
-        (error.response && error.response.data) || 'Có lỗi xảy ra',
-      );
-    } else {
-      throw new Error('Có lỗi xảy ra');
-    }
+    console.error('Error creating package:', error);
+    throw error;
   }
 };
 
@@ -120,3 +114,20 @@ export async function getPackageByName(
     throw new Error('Failed to fetch package by name');
   }
 }
+
+export const createPackage = async (
+  packageData: PackagePutRequest,
+): Promise<any> => {
+  try {
+    const response = await requestWebRHCQS.post('/package', packageData, {
+      headers: {
+        'Content-Type': 'application/json',
+        accept: '*/*',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating package:', error);
+    throw error;
+  }
+};

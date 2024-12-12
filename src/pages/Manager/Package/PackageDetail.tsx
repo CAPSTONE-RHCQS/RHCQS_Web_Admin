@@ -100,8 +100,13 @@ const PackageDetail: React.FC = () => {
       setEditMode(false);
       setPackageDetail((prev) => (prev ? { ...prev, ...editData } : null));
       toast.success('Cập nhật gói thành công!');
-    } catch (error) {
-      toast.error('Cập nhật gói thất bại!');
+    } catch (error: any) {
+      if (error.response && error.response.data) {
+        const apiError = error.response.data;
+        toast.error(apiError.Error || 'Cập nhật gói thất bại!');
+      } else {
+        toast.error('Cập nhật gói thất bại!');
+      }
       console.error('Error updating package:', error);
     }
   };

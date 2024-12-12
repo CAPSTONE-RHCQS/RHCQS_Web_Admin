@@ -22,3 +22,13 @@ export interface PackagePutRequest {
   packageMaterials: PackageMaterial[];
   packageHouses: PackageHouse[];
 }
+
+export interface PackagePostRequest {
+  packageType: string;
+  packageName: string;
+  unit: string;
+  price: number;
+  status: string;
+  packageLabors: { laborId: string }[];
+  packageMaterials: { materialId: string }[];
+}

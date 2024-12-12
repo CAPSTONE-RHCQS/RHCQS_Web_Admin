@@ -46,6 +46,7 @@ import PackageDetail from './pages/Manager/Package/PackageDetail.tsx';
 import ConstructionWorkList from './pages/Manager/ConstructionWork/ConstructionWorkList.tsx';
 import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailSalesStaff.tsx';
 import { ChatProvider } from './context/ChatContext';
+import CreatePackage from './pages/Manager/Package/CreatePackage.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -123,6 +124,15 @@ function App() {
                   <PrivateRoute allowedRoles={['Manager']}>
                     <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
                     <PackageDetail />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/create-package-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Package Detail | RHCQS - Residential Housing Construction Quotation System" />
+                    <CreatePackage />
                   </PrivateRoute>
                 }
               />
