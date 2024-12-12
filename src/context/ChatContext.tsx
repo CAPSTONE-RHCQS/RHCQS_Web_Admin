@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import ChatBox from '../components/ChatBox';
+import ChatBox from '../components/Chat/ChatBox';
 
 interface ChatContextType {
   showChatBox: boolean;
@@ -8,6 +8,9 @@ interface ChatContextType {
   userRole: string | null;
   openChat: (chatId: string, name: string, role: string) => void;
   closeChat: () => void;
+  toggleDropdown: () => void;
+  isDropdownOpen: boolean;
+  setIsDropdownOpen: (value: boolean) => void;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -19,6 +22,7 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
   const [accountName, setAccountName] = useState<string | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const openChat = (chatId: string, name: string, role: string) => {
     if (role === '9959ce96-de26-40a7-b8a7-28a704062e89') {
@@ -36,6 +40,10 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
     setAccountName(null);
   };
 
+  const toggleDropdown = () => {
+    setIsDropdownOpen(prev => !prev);
+  };
+
   return (
     <ChatContext.Provider
       value={{
@@ -45,6 +53,9 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({
         userRole,
         openChat,
         closeChat,
+        toggleDropdown,
+        isDropdownOpen,
+        setIsDropdownOpen,
       }}
     >
       {children}

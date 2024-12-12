@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
   FaHome,
   FaMapMarkerAlt,
   FaRulerCombined,
-  FaHistory,
-  FaEdit,
   FaFileContract,
   FaBuilding,
   FaUser,
   FaPhone,
   FaMailBulk,
+  FaCommentDots,
 } from 'react-icons/fa';
 import { FiMoreVertical } from 'react-icons/fi';
 import ContactCard from '../../../components/ContactCard';
-import Avatar from '../../../images/user/user-01.png';
 import House from '../../../images/house/phan-loai-cac-nha-dan-dung-2.png';
 import Process from '../../../images/process.jpg';
 import Fee from '../../../images/fee.jpg';
@@ -39,6 +37,9 @@ import InitialInfoTable from './components/Table/InitialInfoTable';
 import HouseDesignDrawingInfoTable from './components/Table/HouseDesignDrawingInfoTable';
 import FinalInfoTable from './components/Table/FinalInfoTable';
 import ContractTable from './components/Table/ContractTable';
+import { getProfile } from '../../../api/Account/AccountApi';
+import CreateChatRoom from '../../../components/Chat/CreateRoom';
+import { useChat } from '../../../context/ChatContext';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -62,18 +63,30 @@ const ProjectDetailSalesStaff = () => {
   const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
     null,
   );
+  const [user, setUser] = useState<any>(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [open, setOpen] = useState(0);
   const navigate = useNavigate();
-
+  const [showChatBox, setShowChatBox] = useState(false);
+  const { setIsDropdownOpen } = useChat();
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await getProfile();
+      setUser(profile);
+      console.log(profile);
+    };
+    fetchProfile();
+  }, []);
 
   const fetchProjectDetail = async () => {
     if (id) {
       try {
         const data = await getProjectDetail(id);
         setProjectDetail(data);
+        console.log(data);
       } catch (error) {
         console.error('Error fetching project detail:', error);
       }
@@ -107,6 +120,11 @@ const ProjectDetailSalesStaff = () => {
 
   const handleCloseHistory = () => {
     setShowHistory(false);
+  };
+
+  const handleOpenChat = async () => {
+    setShowChatBox(true);
+    setIsDropdownOpen(true);
   };
 
   const statusMap: { [key: string]: string } = {
@@ -294,6 +312,16 @@ const ProjectDetailSalesStaff = () => {
               <FaMailBulk className="mr-2 text-secondary" />
               <span className="font-semibold">Địa chỉ email:</span>
               <span className="text-gray-700 ml-2">{projectDetail.Mail}</span>
+            </div>
+            <div className="mb-2 text-lg flex items-center">
+              <FaCommentDots className="mr-2 text-primaryGreenButton" />
+              <button
+                onClick={handleOpenChat}
+                className="font-semibold text-primaryGreenButton"
+              >
+                
+                Liên hệ với khách hàng
+              </button>
             </div>
           </div>
         </div>
@@ -484,6 +512,15 @@ const ProjectDetailSalesStaff = () => {
           {/* <!-- Hợp đồng --> */}
         </div>
       </div>
+
+      {showChatBox && (
+        <CreateChatRoom
+          saleName={user?.Username}
+          salesId={user.Id}
+          cusId={projectDetail?.CustomerId}
+          onClose={() => setShowChatBox(false)}
+        />
+      )}
     </>
   );
 };

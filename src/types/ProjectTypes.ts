@@ -34,6 +34,7 @@ export interface ContractInfo {
 
 export interface ProjectDetail {
   Id: string;
+  CustomerId: string;
   Name: string;
   Phone: string;
   Avatar: string;

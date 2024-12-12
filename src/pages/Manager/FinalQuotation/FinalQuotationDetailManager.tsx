@@ -30,7 +30,6 @@ import UtilityInfoTable from './components/Table/UtilityInfoTable';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import ChatBox from '../../../components/ChatBox';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
 import { getStatusLabelFinalQuoteDetail } from '../../../utils/utils';
@@ -242,14 +241,6 @@ const FinalQuotationDetailManager = () => {
           </button>
         )}
       </div>
-
-      {showChat && quotationDetail && (
-        <ChatBox
-          onClose={toggleChat}
-          accountName={quotationDetail.AccountName}
-          note={quotationDetail.Note}
-        />
-      )}
 
       <FinalQuotationStatus
         currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}

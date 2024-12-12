@@ -35,7 +35,6 @@ import {
 import 'react-toastify/dist/ReactToastify.css';
 import ButtonGroup from './components/Button/ButtonGroup';
 import { handleSeva } from './components/handlers';
-import ChatBox from '../../../components/ChatBox';
 import { toast } from 'react-toastify';
 import PromotionTable from './components/Table/PromotionTable';
 import ContractValueSummary from './components/Table/ContractValueSummary';
@@ -426,14 +425,6 @@ const FinalQuotationDetailStaff = () => {
           </button>
         )}
       </div>
-
-      {showChat && quotationDetail && (
-        <ChatBox
-          onClose={toggleChat}
-          accountName={quotationDetail.AccountName}
-          note={quotationDetail.Note}
-        />
-      )}
       <FinalQuotationStatus
         currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
       />

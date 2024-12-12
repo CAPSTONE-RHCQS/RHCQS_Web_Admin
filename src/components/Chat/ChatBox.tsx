@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import Avatar from '../images/user/user-01.png';
+import Avatar from '../../images/user/user-01.png';
 import { Rnd } from 'react-rnd';
 import {
   HubConnectionBuilder,
   LogLevel,
   HubConnection,
 } from '@microsoft/signalr';
-import { getChatsByRoomId } from '../api/Chat/Chat';
+import { getChatsByRoomId } from '../../api/Chat/Chat';
+import { toast } from 'react-hot-toast';
 
 interface ChatBoxProps {
   isOpen: boolean;
   selectedChat: string;
+  saleName?: string;
+  salesId?: string;
+  cusId?: string;
   onClose: () => void;
   accountName: string;
   note: string | null;
@@ -20,6 +24,9 @@ interface ChatBoxProps {
 const ChatBox: React.FC<ChatBoxProps> = ({
   isOpen,
   selectedChat,
+  saleName,
+  salesId,
+  cusId,
   onClose,
   accountName,
 }) => {
@@ -31,10 +38,12 @@ const ChatBox: React.FC<ChatBoxProps> = ({
   const defaultWidth = 320;
   const defaultHeight = 400;
 
-  const [messages, setMessages] = useState<{ user: string; message: string }[]>([]);
+  const [messages, setMessages] = useState<{ user: string; message: string }[]>(
+    [],
+  );
   const [message, setMessage] = useState<string>('');
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const roomId = selectedChat;
+  const [roomId, setRoomId] = useState<string>(selectedChat);
 
   const [user, setUser] = useState<{
     name: string;
@@ -53,12 +62,16 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       try {
         const chatDetailResponse = await getChatsByRoomId(roomId);
         console.log('chatDetail', JSON.stringify(chatDetailResponse, null, 2));
-        const formattedMessages = chatDetailResponse.MessageRooms.map((msg: any) => ({
-          user: msg.UserName,
-          message: msg.MessageContext,
-          sendAt: new Date(msg.SendAt),
-        }));
-        formattedMessages.sort((a, b) => a.sendAt.getTime() - b.sendAt.getTime());
+        const formattedMessages = chatDetailResponse.MessageRooms.map(
+          (msg: any) => ({
+            user: msg.UserName,
+            message: msg.MessageContext,
+            sendAt: new Date(msg.SendAt),
+          }),
+        );
+        formattedMessages.sort(
+          (a, b) => a.sendAt.getTime() - b.sendAt.getTime(),
+        );
         setMessages(formattedMessages);
       } catch (error) {
         console.error('Error fetching chat details:', error);
@@ -70,7 +83,9 @@ const ChatBox: React.FC<ChatBoxProps> = ({
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
-      .withUrl('https://rhcqs-b4brchgaeqb9abd5.southeastasia-01.azurewebsites.net/chatHub')
+      .withUrl(
+        'https://rhcqs-b4brchgaeqb9abd5.southeastasia-01.azurewebsites.net/chatHub',
+      )
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build();
@@ -101,15 +116,84 @@ const ChatBox: React.FC<ChatBoxProps> = ({
     };
   }, [customerInfo.name]);
 
+  useEffect(() => {
+    console.log("Updated roomId:", roomId);
+  }, [roomId]);
+
+  useEffect(() => {
+    if (roomId === '') {
+      initiateChatWithStaff();
+    }
+  }, [roomId]);
+
+  const initiateChatWithStaff = async () => {
+    const username = saleName;
+    const accountId = salesId;
+    const saleId = cusId;
+    const initialMessage = 'Chúng tôi sẽ sớm liên hệ với bạn!';
+
+    if (connection && username && accountId) {
+      console.log(
+        'Customer initiating chat with staff',
+        accountId,
+        saleId,
+        initialMessage,
+      );
+
+      try {
+        await connection.invoke(
+          'StartChatWithStaff',
+          accountId,
+          saleId,
+          initialMessage,
+        );
+        connection.on('ReceiveRoomNotification', (newRoomId) => {
+          console.log(`Customer received new roomId: ${newRoomId}`);
+          setRoomId(newRoomId);
+        });
+
+        console.log(
+          'Customer initiating chat with staff',
+          accountId,
+          saleId,
+          initialMessage,
+        );
+        console.log('Chat with staff initiated successfully');
+      } catch (error) {
+        console.error('Error starting chat with staff:', error);
+        toast.error(
+          'Không thể bắt đầu cuộc trò chuyện với nhân viên. Vui lòng thử lại.',
+        );
+      }
+    } else {
+      console.log('Missing username or accountId for initiating chat');
+      toast.error('Thiếu thông tin cần thiết để bắt đầu cuộc trò chuyện.');
+    }
+  };
+
+
   const sendMessage = async () => {
     if (message.trim() && connection) {
       try {
-        await connection.invoke('SendMessageToRoom', roomId, user?.name || '', message);
+        console.log('Sending message:', { roomId, user: user?.name, message });
+        await connection.invoke(
+          'SendMessageToRoom',
+          roomId,
+          user?.name || '',
+          message,
+        );
         console.log('Message sent:', message);
         setMessage('');
       } catch (err) {
         console.error('Error sending message:', err);
+        if (err instanceof Error) {
+          toast.error(`Không thể gửi tin nhắn: ${err.message}`);
+        } else {
+          toast.error('Không thể gửi tin nhắn. Vui lòng thử lại.');
+        }
       }
+    } else {
+      console.log('Message is empty or connection is not established');
     }
   };
 
@@ -132,7 +216,11 @@ const ChatBox: React.FC<ChatBoxProps> = ({
       <div className="flex flex-col h-full">
         <div className="flex items-center justify-between p-2 bg-primaryDarkGreen rounded-t-lg cursor-move">
           <div className="flex items-center">
-            <img src={customerInfo.avatar} alt="Avatar" className="w-10 h-10 rounded-full" />
+            <img
+              src={customerInfo.avatar}
+              alt="Avatar"
+              className="w-10 h-10 rounded-full"
+            />
             <div className="ml-2">
               <div className="text-sm font-semibold">{accountName}</div>
             </div>
@@ -143,8 +231,19 @@ const ChatBox: React.FC<ChatBoxProps> = ({
         </div>
         <div className="flex-1 p-2 overflow-y-auto">
           {messages.map((msg, index) => (
-            <div key={index} className={`flex ${msg.user === customerInfo.name ? 'justify-start' : 'justify-end'} mb-2`}>
-              <div className={`p-2 rounded ${msg.user === customerInfo.name ? 'bg-teal-700 text-white' : 'bg-gray-300 text-black'}`}>
+            <div
+              key={index}
+              className={`flex ${
+                msg.user === customerInfo.name ? 'justify-start' : 'justify-end'
+              } mb-2`}
+            >
+              <div
+                className={`p-2 rounded ${
+                  msg.user === customerInfo.name
+                    ? 'bg-teal-700 text-white'
+                    : 'bg-gray-300 text-black'
+                }`}
+              >
                 <strong>{msg.user}:</strong> {msg.message}
               </div>
             </div>
@@ -158,8 +257,17 @@ const ChatBox: React.FC<ChatBoxProps> = ({
             placeholder="Aa"
             className="w-full p-2 rounded bg-teal-500 text-white outline-none"
           />
-          <button className="ml-2 p-2 bg-teal-700 text-white rounded" onClick={sendMessage}>
+          <button
+            className="ml-2 p-2 bg-teal-700 text-white rounded"
+            onClick={sendMessage}
+          >
             Gửi
+          </button>
+          <button
+            className="ml-2 p-2 bg-teal-700 text-white rounded"
+            onClick={initiateChatWithStaff}
+          >
+            tạo
           </button>
         </div>
       </div>

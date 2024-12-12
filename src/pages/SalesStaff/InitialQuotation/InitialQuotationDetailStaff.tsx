@@ -16,7 +16,6 @@ import {
   InitialQuotationResponse,
   UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
-import ChatBox from '../../../components/ChatBox';
 import { getInitialQuotationStatus } from '../../../api/InitialQuotation/InitialQuotationApi';
 import EditRequestDialog from '../../../components/EditRequestDialog';
 import RejectDialog from '../../../components/RejectDialog';
@@ -230,16 +229,6 @@ const InitialQuotationDetailStaff = () => {
             </button>
           )}
         </div>
-
-        {showChat && quotationData && (
-          <ChatBox
-            isOpen={showChat}
-            selectedChat={quotationData.Id}
-            onClose={toggleChat}
-            accountName={quotationData.AccountName}
-            note={quotationData.Note}
-          />
-        )}
 
         <InitialQuotationStatusTracker
           currentStatus={getStatusLabelInitalQuoteDetail(quotationData.Status)}

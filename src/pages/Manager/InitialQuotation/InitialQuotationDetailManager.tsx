@@ -30,7 +30,6 @@ import {
   UtilityInfo,
 } from '../../../types/InitialQuotationTypes';
 import ApprovalDialog from '../../../components/Modals/ApprovalDialog';
-import ChatBox from '../../../components/ChatBox';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
@@ -293,14 +292,6 @@ const InitialQuotationDetailManager = () => {
           </button>
         )}
       </div>
-
-      {showChat && quotationData && (
-        <ChatBox
-          onClose={toggleChat}
-          accountName={quotationData.AccountName || ''}
-          note={quotationData.Note || ''}
-        />
-      )}
 
       <div>
         <InitialQuotationStatusTracker
