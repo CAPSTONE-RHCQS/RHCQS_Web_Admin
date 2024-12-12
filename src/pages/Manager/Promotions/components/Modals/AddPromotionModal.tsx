@@ -67,7 +67,7 @@ const AddPromotionModal: React.FC<AddPromotionModalProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-semibold mb-6 text-center">
-          Thêm mới Promotion
+          Thêm mới khuyến mãi
         </h2>
         <div className="grid grid-cols-1 gap-4 mb-6">
           <input
