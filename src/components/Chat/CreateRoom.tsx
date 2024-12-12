@@ -21,11 +21,14 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
   onClose,
 }) => {
   const { setIsDropdownOpen } = useChat();
+  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [roomId, setRoomId] = useState<string>('');
+  console.log(roomId,'t',saleName, salesId, cusId);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()
       .withUrl(
-        'https://rhcqs-b4brchgaeqb9abd5.southeastasia-01.azurewebsites.net/chatHub'
+        'https://rhcqs-b4brchgaeqb9abd5.southeastasia-01.azurewebsites.net/chatHub',
       )
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
@@ -35,7 +38,8 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
       try {
         await connection.start();
         console.log('SignalR connected');
-        initiateChatWithStaff(connection);
+        setConnection(connection);
+        initiateChatWithStaff();
       } catch (error) {
         console.error('Error:', error);
       }
@@ -50,31 +54,50 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
     };
   }, []);
 
-  const initiateChatWithStaff = async (conn: HubConnection) => {
-    const initialMessage = "Xin chào, tôi cần hỗ trợ!";
-    
-    if (conn && saleName && salesId) {
+  const initiateChatWithStaff = async () => {
+    const username = saleName;
+    const accountId = salesId;
+    const saleId = cusId;
+    const initialMessage = 'Chúng tôi sẽ sớm liên hệ với bạn!';
+
+    if (connection && username && accountId) {
+      console.log(
+        'Customer initiating chat with staff',
+        accountId,
+        saleId,
+        initialMessage,
+      );
+
       try {
-        await conn.invoke(
+        await connection.invoke(
           'StartChatWithStaff',
-          salesId,
-          cusId,
-          initialMessage
+          accountId,
+          saleId,
+          initialMessage,
         );
-        
-        conn.on('ReceiveRoomNotification', (newRoomId) => {
-          console.log(`Đã tạo phòng chat mới với ID: ${newRoomId}`);
+        connection.on('ReceiveRoomNotification', (newRoomId) => {
+          console.log(`Customer received new roomId: ${newRoomId}`);
+          setRoomId(newRoomId);
           setIsDropdownOpen(true);
-          toast.success('Tạo phòng chat thành công!');
           onClose();
         });
 
+        console.log(
+          'Customer initiating chat with staff',
+          accountId,
+          saleId,
+          initialMessage,
+        );
+        console.log('Chat with staff initiated successfully');
       } catch (error) {
-        console.error('Lỗi khi tạo phòng chat:', error);
-        toast.error('Không thể tạo phòng chat với nhân viên. Vui lòng thử lại.');
+        console.error('Error starting chat with staff:', error);
+        toast.error(
+          'Không thể bắt đầu cuộc trò chuyện với nhân viên. Vui lòng thử lại.',
+        );
       }
     } else {
-      toast.error('Thiếu thông tin cần thiết để tạo phòng chat.');
+      console.log('Missing username or accountId for initiating chat');
+      toast.error('Thiếu thông tin cần thiết để bắt đầu cuộc trò chuyện.');
     }
   };
 
