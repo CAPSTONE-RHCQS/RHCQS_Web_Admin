@@ -23,7 +23,7 @@ const CreateChatRoom: React.FC<CreateChatRoomProps> = ({
   const { setIsDropdownOpen } = useChat();
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [roomId, setRoomId] = useState<string>('');
-  console.log(roomId,'t',saleName, salesId, cusId);
+  console.log(salesId, cusId);
 
   useEffect(() => {
     const connection = new HubConnectionBuilder()

@@ -117,7 +117,7 @@ const UtilityTable: React.FC<UtilityTableProps> = ({
                   </td>
                   <td className="py-5 px-4 dark:border-strokedark">
                     <span className="font-bold text-black dark:text-white">
-                      {item.Type}
+                      {item.Type === 'ROUGH' ? 'Thô' : item.Type === 'FINISHED' ? 'Hoàn thiện' : item.Type === 'TEMPLATE' ? 'Mẫu nhà' : ''}
                     </span>
                   </td>
                   <td className="py-5 px-4 dark:border-strokedark">
