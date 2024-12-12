@@ -29,9 +29,9 @@ const useFetchAccounts = (
       try {
         let data;
         if (selectedRole === '') {
-          data = await getAccounts(currentPage, 10);
+          data = await getAccounts(currentPage, 5);
         } else {
-          data = await getAccountsByRoleId(selectedRole, currentPage, 10);
+          data = await getAccountsByRoleId(selectedRole, currentPage, 5);
         }
         const formattedData = data.Items.map((item: any) => ({
           id: item.Id,

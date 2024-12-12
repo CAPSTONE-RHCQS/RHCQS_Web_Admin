@@ -1,3 +1,4 @@
+import { Profile } from '../../types/Account';
 import requestWebRHCQS from '../../utils/axios';
 
 interface AccountUpdateRequest {
@@ -14,6 +15,19 @@ interface AccountUpdateRequest {
   Deflag: boolean;
 }
 
+export interface ProfileUpdateRequest {
+  Id?: string;
+  Username?: string;
+  PhoneNumber?: string;
+  DateOfBirth: string;
+  Deflag?: boolean;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const getAccounts = async (page: number, size: number) => {
   try {
     const response = await requestWebRHCQS.get(`/account`, {
@@ -26,12 +40,16 @@ export const getAccounts = async (page: number, size: number) => {
   }
 };
 
-export const getProfile = async () => {
+export const getProfile = async (): Promise<Profile> => {
   try {
-    const response = await requestWebRHCQS.get(`/account/profile`);
+    const response = await requestWebRHCQS.get(`/account/profile`, {
+      headers: {
+        accept: '*/*',
+      },
+    });
     return response.data;
   } catch (error) {
-    console.error('Error fetching accounts:', error);
+    console.error('Error fetching profile:', error);
     throw error;
   }
 };
@@ -125,6 +143,106 @@ export const getAvailableSalesStaff = async (page: number, size: number) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching accounts by role id:', error);
+    throw error;
+  }
+};
+
+export const createStaff = async (
+  email: string,
+  phoneNumber: string,
+  password: string,
+  confirmPassword: string,
+  role: string = 'DesignStaff',
+) => {
+  try {
+    const response = await requestWebRHCQS.post(
+      `/account/create-staff`,
+      {
+        email,
+        phoneNumber,
+        password,
+        confirmPassword,
+      },
+      {
+        params: { role },
+        headers: {
+          'Content-Type': 'application/json',
+          accept: '*/*',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error creating staff:', error);
+    throw error;
+  }
+};
+
+export const updateAccountProfile = async (
+  id: string,
+  updateData: ProfileUpdateRequest,
+): Promise<Profile> => {
+  try {
+    const response = await requestWebRHCQS.put(`/account/id`, updateData, {
+      params: { id },
+      headers: {
+        accept: 'text/plain',
+        'Content-Type': 'application/json',
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error updating account profile:', error);
+    throw error;
+  }
+};
+
+export const uploadProfileImage = async (
+  file: File,
+  accountId?: string,
+): Promise<string> => {
+  try {
+    const formData = new FormData();
+    formData.append('AccountImage', file);
+
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        accept: 'text/plain',
+      },
+      params: accountId ? { accountId } : {},
+    };
+
+    const response = await requestWebRHCQS.post(
+      '/upload-profile-images',
+      formData,
+      config,
+    );
+
+    return response.data;
+  } catch (error) {
+    console.error('Error uploading profile image:', error);
+    throw error;
+  }
+};
+
+export const changePassword = async (
+  passwordData: ChangePasswordRequest,
+): Promise<any> => {
+  try {
+    const response = await requestWebRHCQS.put(
+      '/account/password',
+      passwordData,
+      {
+        headers: {
+          accept: '*/*',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error changing password:', error);
     throw error;
   }
 };
