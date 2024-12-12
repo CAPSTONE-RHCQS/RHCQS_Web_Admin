@@ -57,8 +57,6 @@ const ProjectListSalesStaff = () => {
     [],
   );
 
-  
-
   const handlePageChange = useCallback(
     (newPage: number) => {
       if (newPage > 0 && newPage <= totalPages) {
@@ -72,7 +70,7 @@ const ProjectListSalesStaff = () => {
     <>
       <Breadcrumb pageName="Danh sách dự án" />
       <div className="rounded-lg border border-stroke bg-white px-6 pt-6 pb-3 shadow-lg dark:border-strokedark dark:bg-boxdark sm:px-8 xl:pb-2">
-        <div className="flex flex-col md:flex-row md:items-center mb-5">
+        {/* <div className="flex flex-col md:flex-row md:items-center mb-5">
           <input
             type="text"
             className="h-14 w-full md:w-96 pr-8 pl-5 rounded-lg z-0 shadow focus:outline-none mb-4 md:mb-0 md:mr-4"
@@ -80,7 +78,7 @@ const ProjectListSalesStaff = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
-        </div>
+        </div> */}
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
             <span className="text-lg text-black dark:text-white">
