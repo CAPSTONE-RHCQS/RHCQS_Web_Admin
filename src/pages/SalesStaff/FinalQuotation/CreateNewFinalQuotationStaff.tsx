@@ -281,7 +281,7 @@ const CreateNewFinalQuotationStaff = () => {
       );
 
       if (emptyDateIndex !== -1) {
-        toast.error('Tất cả các trường ngày phải đưc điền.');
+        toast.error('Tất cả các trường ngày phải được điền.');
         dateRefs.current[emptyDateIndex]?.focus();
         return;
       }
@@ -296,6 +296,7 @@ const CreateNewFinalQuotationStaff = () => {
 
       const success = await hanldCreateNew(
         updatedQuotationDetail,
+        totalContractValue,
         setIsSaving,
         navigate,
       );

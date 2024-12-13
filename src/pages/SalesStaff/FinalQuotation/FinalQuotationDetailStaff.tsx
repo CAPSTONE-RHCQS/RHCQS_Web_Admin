@@ -287,8 +287,11 @@ const FinalQuotationDetailStaff = () => {
         })),
       };
 
+      const totalContractValue = calculateTotalPrice();
+
       const success = await handleSeva(
         updatedQuotationDetail,
+        totalContractValue,
         setIsEditing,
         setIsSaving,
       );

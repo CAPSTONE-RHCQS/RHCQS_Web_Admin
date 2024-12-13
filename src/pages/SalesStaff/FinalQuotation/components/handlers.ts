@@ -6,6 +6,7 @@ import axios from 'axios';
 
 export const handleSeva = async (
   quotationDetail: FinalQuotationDetailType | null,
+  totalContractValue: number,
   setIsEditing: (value: boolean) => void,
   setIsSaving: (value: boolean) => void,
 ): Promise<boolean> => {
@@ -35,7 +36,7 @@ export const handleSeva = async (
       note: quotationDetail.Note || '',
       versionPresent: quotationDetail.Version || 1,
       batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-        price: payment.Price,
+        price: totalContractValue * (payment.Percents / 100),
         numberOfBatch: payment.NumberOfBatch,
         paymentDate: payment.PaymentDate,
         paymentPhase: payment.PaymentPhase,
@@ -104,6 +105,7 @@ export const handleSeva = async (
 
 export const hanldCreateNew = async (
   quotationDetail: FinalQuotationDetailType | null,
+  totalContractValue: number,
   setIsSaving: (value: boolean) => void,
   navigate: (path: string) => void,
 ) => {
@@ -137,7 +139,7 @@ export const hanldCreateNew = async (
     note: quotationDetail.Note || '',
     versionPresent: 0,
     batchPaymentInfos: quotationDetail.BatchPaymentInfos.map((payment) => ({
-      price: payment.Price,
+      price: totalContractValue * (payment.Percents / 100),
       numberOfBatch: payment.NumberOfBatch,
       paymentDate: payment.PaymentDate,
       paymentPhase: payment.PaymentPhase,

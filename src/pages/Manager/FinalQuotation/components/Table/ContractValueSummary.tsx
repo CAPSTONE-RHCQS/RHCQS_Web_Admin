@@ -29,7 +29,7 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
           {totalConstructionValue !== 0 && (
             <tr>
               <td className="px-4 py-2 border text-left">
-                Giá trị báo giá sơ bộ xây dựng
+                Giá trị báo giá chi tiết xây dựng
               </td>
               <td className="px-4 py-2 border text-center">
                 {totalConstructionValue.toLocaleString()}

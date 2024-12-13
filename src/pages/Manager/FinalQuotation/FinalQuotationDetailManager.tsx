@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ClipLoader from 'react-spinners/ClipLoader';
 import {
   approveFinalQuotation,
@@ -37,6 +37,8 @@ import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -62,6 +64,7 @@ const FinalQuotationDetailManager = () => {
   const [totalDiscount, setTotalDiscount] = useState(0);
   const [currentStatus, setCurrentStatus] = useState<string | null>(null);
   const [isEditRequestDialogOpen, setIsEditRequestDialogOpen] = useState(true);
+  const navigate = useNavigate();
 
   const fetchQuotationDetail = async () => {
     if (id) {
@@ -203,6 +206,11 @@ const FinalQuotationDetailManager = () => {
 
   const handleShare = () => {};
 
+  const handleNavigation = () => {
+    const id = quotationDetail.InitailQuotationId;
+    navigate(`/initial-quotation-detail-staff/${id}`);
+  };
+
   const projectTypeMap: { [key: string]: string } = {
     TEMPLATE: 'Mẫu nhà',
     FINISHED: 'Phần Hoàn thiện',
@@ -247,7 +255,7 @@ const FinalQuotationDetailManager = () => {
         currentStatus={getStatusLabelFinalQuoteDetail(quotationDetail.Status)}
       />
 
-      <div className="flex justify-end space-x-2 mb-4">
+      <div className="flex justify-end space-x-2">
         {quotationDetail.Status === 'Reviewing' && (
           <button
             onClick={() => setIsModalOpen(true)}
@@ -284,9 +292,21 @@ const FinalQuotationDetailManager = () => {
 
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between mb-4">
-          <h2 className="text-2xl font-bold text-primary">
-            Thông tin báo giá chi tiết
-          </h2>
+          <div>
+            <h2 className="text-2xl font-bold text-primary">
+              Thông tin báo giá chi tiết
+            </h2>
+            <div
+              className="text-gray-500 text-sm mt-2 cursor-pointer hover:text-blue-500 flex items-center"
+              onClick={handleNavigation}
+            >
+              <FontAwesomeIcon icon={faInfoCircle} className="mr-2" />
+              <span className="font-semibold">Thông tin báo giá sơ bộ</span>
+              <span className="text-gray-700 ml-2">
+                (Phiên bản {quotationDetail.InitailQuotationVersion})
+              </span>
+            </div>
+          </div>
           <div className="text-right">
             <span className="font-semibold">Phiên bản:</span>
             <span className="text-gray-700 ml-2">
@@ -370,7 +390,7 @@ const FinalQuotationDetailManager = () => {
               <FaMoneyBillWave className="mr-2 text-secondary" />
               <span className="font-semibold">Tổng giá trị hợp đồng:</span>
               <span className="text-gray-700 ml-2">
-                {quotationDetail.TotalPrice.toLocaleString()} VNĐ VNĐ
+                {quotationDetail.TotalPrice.toLocaleString()} VNĐ
               </span>
             </div>
           </div>
