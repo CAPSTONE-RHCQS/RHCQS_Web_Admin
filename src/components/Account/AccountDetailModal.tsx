@@ -50,11 +50,11 @@ const AccountDetailModal: React.FC<AccountDetailModalProps> = ({
   };
 
   const handleSave = async () => {
-    if (!editedAccount.PasswordHash) {
-      setError('Mật khẩu không được để trống.');
-      toast.error('Vui lòng điền mật khẩu.');
-      return;
-    }
+    // if (!editedAccount.PasswordHash) {
+    //   setError('Mật khẩu không được để trống.');
+    //   toast.error('Vui lòng điền mật khẩu.');
+    //   return;
+    // }
 
     setIsSaving(true);
     try {

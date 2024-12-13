@@ -117,7 +117,7 @@ const AccountList: React.FC = () => {
 
   const columns = [
     { key: 'avatar', label: 'Avatar' },
-    { key: 'accountName', label: 'Tên Nhân Viên' },
+    { key: 'accountName', label: 'Tên Tài Khoản' },
     { key: 'role', label: 'Vai Trò' },
     { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'email', label: 'Email' },
