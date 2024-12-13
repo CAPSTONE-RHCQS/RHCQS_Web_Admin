@@ -223,7 +223,7 @@ const UtilityInfoTable: React.FC<UtilityInfoTableProps> = ({
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">
-              {calculateTotalPrice().toLocaleString()} VNĐ
+              {calculateTotalPrice().toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
             {isEditing && <td className="px-4 py-2 border text-center"></td>}

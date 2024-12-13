@@ -93,7 +93,8 @@ const FinalQuotationDetailManager = () => {
             (subAcc, qItem) =>
               subAcc +
               (qItem.TotalPriceLabor || 0) +
-              (qItem.TotalPriceRough || 0),
+              (qItem.TotalPriceRough || 0) +
+              (qItem.TotalPriceFinished || 0),
             0,
           ),
         0,

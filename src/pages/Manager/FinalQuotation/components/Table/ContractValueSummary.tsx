@@ -68,10 +68,10 @@ const ContractValueSummary: React.FC<ContractValueSummaryProps> = ({
           )}
           <tr className="bg-gray-200">
             <td className="px-4 py-2 border text-center font-bold">
-              GIÁ TRỊ HỢP ĐỒNG
+             TỔNG GIÁ TRỊ HỢP ĐỒNG
             </td>
             <td className="px-4 py-2 border text-center font-bold">
-              {totalContractValue.toLocaleString()} VNĐ
+              {totalContractValue.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
           </tr>
