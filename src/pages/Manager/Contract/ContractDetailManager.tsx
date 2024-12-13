@@ -5,6 +5,7 @@ import {
   paymentContractDesign,
   approveContractBill,
   paymentContractConstruction,
+  paymentContractAppendix,
 } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -27,6 +28,7 @@ import {
 } from 'react-icons/fa';
 import ContractStatusTracker from '../../../components/StatusTracker/ContractStatusTracker';
 import { ContractDesignResponse } from '../../../types/ContractResponseTypes';
+import { isAxiosError } from 'axios';
 
 const ContractDetailManager = () => {
   const { contractId } = useParams<{ contractId: string }>();
@@ -93,9 +95,18 @@ const ContractDetailManager = () => {
 
         toast.success('Tải lên thành công!');
         fetchContractDetail();
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error uploading signed contract:', error);
-        if (error instanceof Error) {
+        if (isAxiosError(error)) {
+          console.error('Response data:', error.response?.data);
+          if (error.response) {
+            if (error.response.status === 404 && error.response.data) {
+              toast.error(error.response.data.Error || 'Tải lên thất bại!');
+            } else {
+              toast.error('Tải lên thất bại!');
+            }
+          }
+        } else if (error instanceof Error) {
           toast.error(error.message);
         } else {
           toast.error('Tải lên thất bại!');
@@ -119,13 +130,22 @@ const ContractDetailManager = () => {
 
         const paymentId = appendix.PaymentId;
 
-        await paymentContractDesign(paymentId, selectedFiles[index]);
+        await paymentContractAppendix(paymentId, selectedFiles[index]);
 
         toast.success('Tải lên thành công!');
         fetchContractDetail();
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Error uploading signed contract:', error);
-        if (error instanceof Error) {
+        if (isAxiosError(error)) {
+          console.error('Response data:', error.response?.data);
+          if (error.response) {
+            if (error.response.status === 404 && error.response.data) {
+              toast.error(error.response.data.Error || 'Tải lên thất bại!');
+            } else {
+              toast.error('Tải lên thất bại!');
+            }
+          }
+        } else if (error instanceof Error) {
           toast.error(error.message);
         } else {
           toast.error('Tải lên thất bại!');
