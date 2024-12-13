@@ -41,6 +41,7 @@ import { getProfile } from '../../../api/Account/AccountApi';
 import CreateChatRoom from '../../../components/Chat/CreateRoom';
 import { useChat } from '../../../context/ChatContext';
 import { HomeModernIcon } from '@heroicons/react/24/solid';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -310,7 +311,7 @@ const ProjectDetailSalesStaff = () => {
             <div className="mb-2 text-lg flex items-center">
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
-              <span className="text-gray-700 ml-2">{projectDetail.Phone}</span>
+              <span className="text-gray-700 ml-2">{formatVietnamesePhoneNumber(projectDetail.Phone)}</span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMailBulk className="mr-2 text-secondary" />

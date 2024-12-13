@@ -39,6 +39,7 @@ import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 const FinalQuotationDetailManager = () => {
   const { id } = useParams<{ id: string }>();
@@ -374,7 +375,7 @@ const FinalQuotationDetailManager = () => {
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
               <span className="text-gray-700 ml-2">
-                {quotationDetail.PhoneNumber}
+                {formatVietnamesePhoneNumber(quotationDetail.PhoneNumber)}
               </span>
             </div>
 

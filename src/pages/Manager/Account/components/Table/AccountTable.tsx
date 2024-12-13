@@ -6,6 +6,7 @@ import AccountDetailModal from '../../../../../components/Account/AccountDetailM
 import { ClipLoader } from 'react-spinners';
 import { Account } from '../../../../../types/Account';
 import UserOne from '../../../../../images/user/user-01.png';
+import { formatVietnamesePhoneNumber } from '../../../../../utils/phoneUtils';
 
 type SortKey = string;
 
@@ -100,6 +101,10 @@ const TableRow: React.FC<{
             </span>
             <span className="text-white text-sm">{item.role}</span>
           </div>
+        ) : column.key === 'phoneNumber' ? (
+          <p className="text-black dark:text-white">
+            {formatVietnamesePhoneNumber(item.phoneNumber)}
+          </p>
         ) : (
           <p className="text-black dark:text-white">{item[column.key]}</p>
         )}
