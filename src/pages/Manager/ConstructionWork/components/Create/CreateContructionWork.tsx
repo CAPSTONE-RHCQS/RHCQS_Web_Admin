@@ -84,18 +84,13 @@ const CreateConstructionWork: React.FC<CreateConstructionWorkProps> = ({
       newErrors.construction = 'Tên hạng mục không được để trống.';
     if (!inputCodeValue)
       newErrors.inputCodeValue = 'Mã công tác không được để trống.';
-    if (materialResources.some((resource) => !resource.materialName)) {
-      newErrors.materialResources = 'Tên vật tư không được để trống.';
+    
+    const hasMaterial = materialResources.some(resource => resource.materialName);
+    const hasLabor = laborResources.some(resource => resource.laborName);
+    if (!hasMaterial && !hasLabor) {
+      newErrors.resources = 'Phải có ít nhất một nhân công hoặc một vật tư được thêm.';
     }
-    if (materialResources.some((resource) => !resource.materialSectionNorm)) {
-      newErrors.materialResources = 'Định mức vật tư không được để trống.';
-    }
-    if (laborResources.some((resource) => !resource.laborName)) {
-      newErrors.laborResources = 'Tên nhân công không được để trống.';
-    }
-    if (laborResources.some((resource) => !resource.laborNorm)) {
-      newErrors.laborResources = 'Định mức nhân công không được để trống.';
-    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
