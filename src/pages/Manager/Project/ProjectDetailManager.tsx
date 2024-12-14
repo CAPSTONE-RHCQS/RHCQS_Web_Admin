@@ -343,7 +343,7 @@ const ProjectDetailManager = () => {
               { key: 'staffPhone', label: 'Phone' },
             ]}
             onClick={() =>
-              projectDetail.StaffName === null && handleMenuItemClick('assign')
+              projectDetail.StaffName === '' && handleMenuItemClick('assign')
             }
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
