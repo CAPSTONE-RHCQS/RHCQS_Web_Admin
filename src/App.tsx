@@ -47,6 +47,7 @@ import ConstructionWorkList from './pages/Manager/ConstructionWork/ConstructionW
 import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/HouseDesignDetailSalesStaff.tsx';
 import { ChatProvider } from './context/ChatContext';
 import CreatePackage from './pages/Manager/Package/CreatePackage.tsx';
+import DesignPriceList from './pages/Manager/DesignPrice/DesignPriceList.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -286,6 +287,15 @@ function App() {
                   <PrivateRoute allowedRoles={['Manager']}>
                     <PageTitle title="House Design Detail | RHCQS - Residential Housing Construction Quotation System" />
                     <HouseDesignDetailManager />
+                  </PrivateRoute>
+                }
+              />
+              <Route
+                path="/design-price-list-manager"
+                element={
+                  <PrivateRoute allowedRoles={['Manager']}>
+                    <PageTitle title="Design Price List | RHCQS - Residential Housing Construction Quotation System" />
+                    <DesignPriceList />
                   </PrivateRoute>
                 }
               />

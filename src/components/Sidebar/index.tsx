@@ -381,6 +381,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </span>
                     </NavLink>
                   </li>
+                  {/* <!-- Menu Item DesignPriceManager --> */}
+                  <li>
+                    <NavLink
+                      to="/design-price-list-manager"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname.includes('/design-price-list-manager') &&
+                        'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <PromotionManagerIcon />
+                      <span
+                        className={`${
+                          !isHovered && !sidebarOpen ? 'hidden' : ''
+                        }`}
+                      >
+                        Quản lý giá thiết kế
+                      </span>
+                    </NavLink>
+                  </li>
                 </>
               )}
 
