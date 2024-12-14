@@ -7,6 +7,7 @@ import {
   getMaterialSectionList,
   createMaterialSection,
   importExcelMaterial,
+  searchMaterialSectionAllName,
 } from '../../../api/Material/Material';
 import { MaterialItem, MaterialSectionItem } from '../../../types/Material';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
@@ -24,7 +25,7 @@ const MaterialSectionList: React.FC = () => {
   const [dataMaterial, setDataMaterial] = useState<MaterialItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalMaterialSection, setTotalMaterialSection] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -34,23 +35,38 @@ const MaterialSectionList: React.FC = () => {
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
   const [file, setFile] = useState<File | null>(null);
+  const [searchName, setSearchName] = useState<string>('');
 
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getMaterialList(1, 1000).then((dataMaterial) => {
-      setDataMaterial(dataMaterial.Items);
-    });
-    getMaterialSectionList(page, 10).then((data) => {
-      setDataMaterialSection(data.Items);
-      setTotalPages(data.TotalPages);
-      setTotalMaterialSection(data.Total);
-      setIsLoading(false);
-    });
-  }, [page, refreshKey]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (isSearching) {
+          const data = await searchMaterialSectionAllName(searchName, page, 10);
+
+          setDataMaterialSection(data.Items);
+          setTotalPages(data.TotalPages);
+        } else {
+          const data = await getMaterialSectionList(page, 10);
+          const dataMaterial = await getMaterialList(1, 1000);
+          console.log(dataMaterial);
+          setDataMaterial(dataMaterial.Items);
+          setDataMaterialSection(data.Items);
+          setTotalPages(data.TotalPages);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, refreshKey, searchName]);
 
   const toggleOpenItem = (index: number) => {
     setOpenItems((prev) => {
@@ -153,15 +169,30 @@ const MaterialSectionList: React.FC = () => {
     setAlertType('success');
   };
 
+  const handleSearchChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+      setEditModalOpen(false);
+      setIsSearching(true);
+      setPage(1);
+    };
   return (
     <>
       <div>
         <Breadcrumb pageName="Quản lý vật tư" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <span className="text-lg text-black dark:text-white">
-              Tổng số vật tư: {totalMaterialSection}
-            </span>
+            <div className="flex flex-col space-y-2 w-1/2">
+              <label className="text-sm font-bold text-black">Tên vật tư</label>
+              <input
+                type="text"
+                placeholder="Nhập tên vật tư"
+                value={searchName}
+                onChange={handleSearchChange(setSearchName)}
+                className="border rounded px-2 py-1"
+              />
+            </div>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}

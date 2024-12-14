@@ -175,6 +175,23 @@ export async function searchMaterialSection(name: string) {
   }
 }
 
+export async function searchMaterialSectionAllName(
+  name: string,
+  page: number,
+  size: number,
+) {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/materialsection/all-name?name=${name}&page=${page}&size=${size}`,
+    );
+    console.log(response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error searching material section:', error);
+    throw new Error('Failed to search material section');
+  }
+}
+
 export async function createMaterial(data: any) {
   try {
     const response = await requestWebRHCQS.post('/material', data, {
