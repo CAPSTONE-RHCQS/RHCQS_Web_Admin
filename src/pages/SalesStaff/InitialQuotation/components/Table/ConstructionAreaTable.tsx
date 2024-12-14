@@ -5,8 +5,9 @@ import {
 } from '../../../../../types/SearchContainNameTypes';
 import { getConstructionByName } from '../../../../../api/Construction/ConstructionApi';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { TableRow } from '../types';
+import ConstructionIcon from '../../../../../SVG/ConstructionIcon';
 
 interface ConstructionAreaTableProps {
   tableData: TableRow[];
@@ -36,6 +37,11 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
   const [selectedRowIndex, setSelectedRowIndex] = useState<number | null>(null);
 
   const handleSearch = async (name: string, index: number) => {
+    if (name.trim() === '') {
+      setSearchResults([]);
+      setSelectedRowIndex(null);
+      return;
+    }
     try {
       const results = await getConstructionByName(name);
       setSearchResults(results);
@@ -141,13 +147,14 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                   {isEditing &&
                     selectedRowIndex === index &&
                     searchResults.length > 0 && (
-                      <ul className="bg-white border border-gray-300 mt-1">
+                      <ul className="bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto">
                         {searchResults.map((result, index) => (
                           <li
                             key={`${result.Id}-${index}`}
                             onClick={() => handleSelectConstruction(result)}
-                            className="cursor-pointer hover:bg-gray-200 p-2"
+                            className="cursor-pointer hover:bg-gray-200 p-2 transition duration-200 ease-in-out flex items-center"
                           >
+                            <FontAwesomeIcon icon={faCheck} className="mr-2" />
                             {result.Name}
                           </li>
                         ))}
@@ -248,13 +255,14 @@ const ConstructionAreaTable: React.FC<ConstructionAreaTableProps> = ({
                     {isEditing &&
                       selectedRowIndex === index &&
                       searchResults.length > 0 && (
-                        <ul className="bg-white border border-gray-300 mt-1">
+                        <ul className="bg-white border border-gray-300 mt-1 rounded-md shadow-lg max-h-60 overflow-y-auto">
                           {searchResults.map((result, index) => (
                             <li
                               key={`${result.Id}-${index}`}
                               onClick={() => handleSelectConstruction(result)}
-                              className="cursor-pointer hover:bg-gray-200 p-2"
+                              className="cursor-pointer hover:bg-gray-200 p-2 transition duration-200 ease-in-out flex items-center"
                             >
+                              <ConstructionIcon />
                               {result.Name}
                             </li>
                           ))}

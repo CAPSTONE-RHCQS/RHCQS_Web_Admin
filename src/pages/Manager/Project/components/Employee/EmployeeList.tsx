@@ -118,7 +118,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
   };
 
   return (
-    <div className="p-4 bg-white rounded-lg shadow-lg max-w-4xl mx-auto">
+    <div className="p-4 bg-white rounded-lg shadow-lg max-w-4zxl mx-auto">
       <h2 className="text-2xl font-bold mb-4 text-center text-primary">
         Chọn Nhân Viên
       </h2>
@@ -130,7 +130,7 @@ const EmployeeList: React.FC<EmployeeListProps> = ({
             <EmployeeCard
               key={employee.id}
               avatar={employee.avatar}
-              name={truncateName(employee.name, 10)}
+              name={truncateName(employee.name, 15)}
               roles={employee.roles}
               phone={employee.phone}
               onSelect={() => handleSelect(employee.id)}
