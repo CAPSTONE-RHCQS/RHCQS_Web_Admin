@@ -16,7 +16,7 @@ const CreateStaffAccountModal: React.FC<CreateStaffAccountModalProps> = ({
   const [phoneNumber, setPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [role, setRole] = useState('DesignStaff');
+  const [role, setRole] = useState('SalesStaff');
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,7 +36,7 @@ const CreateStaffAccountModal: React.FC<CreateStaffAccountModalProps> = ({
       setIsLoading(true);
       await createStaff(email, phoneNumber, password, confirmPassword, role);
 
-      toast.success('Tạo tài khoản nhân viên thành công');
+      toast.success('Tạo tài khoản hệ thống thành công');
       onAccountCreated();
     } catch (error: any) {
       toast.error(
@@ -58,7 +58,7 @@ const CreateStaffAccountModal: React.FC<CreateStaffAccountModalProps> = ({
         <div className="relative flex flex-col w-full bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none dark:bg-boxdark">
           <div className="flex items-start justify-between p-5 border-b border-solid rounded-t border-blueGray-200">
             <h3 className="text-xl font-semibold text-black dark:text-white">
-              Tạo Tài Khoản Nhân Viên
+              Tạo Tài Khoản Hệ Thống
             </h3>
             <button
               className="float-right p-1 ml-auto bg-transparent border-0 text-black opacity-5 text-3xl leading-none font-semibold outline-none focus:outline-none"
@@ -135,7 +135,8 @@ const CreateStaffAccountModal: React.FC<CreateStaffAccountModalProps> = ({
                 className="w-full px-3 py-2 text-sm leading-tight text-black dark:text-white border rounded shadow focus:outline-none focus:shadow-outline"
               >
                 <option value="DesignStaff">Nhân Viên Thiết Kế</option>
-                <option value="SalesStaff">Nhân Viên Bán Hàng</option>
+                <option value="SalesStaff">Nhân Viên Báo Giá</option>
+                <option value="Manager">Quản Lý Hệ Thống</option>
               </select>
             </div>
 
