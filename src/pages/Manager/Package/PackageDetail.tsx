@@ -8,17 +8,26 @@ import LaborTable from './components/Table/LaborTable';
 import MaterialTable from './components/Table/MaterialTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTimes, faSave } from '@fortawesome/free-solid-svg-icons';
-import { FaCheckCircle } from 'react-icons/fa';
+import { FaBed, FaBuilding, FaCheckCircle } from 'react-icons/fa';
 import { PackageLabor } from '../../../types/PackagesTypes';
 import { toast } from 'react-toastify';
+import { defaultImageHouseTemplateUrl } from '../../../utils/constants';
+import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-
+import {
+  Card,
+  CardFooter,
+  CardBody,
+  IconButton,
+  Typography,
+} from '@material-tailwind/react';
 const PackageDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [packageDetail, setPackageDetail] = useState<Package | null>(null);
   const [editMode, setEditMode] = useState<boolean>(false);
   const [editData, setEditData] = useState<PackagePutRequest | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) {
@@ -191,6 +200,10 @@ const PackageDetail: React.FC = () => {
     );
   }
 
+  const handleHouseClick = (id: string) => {
+    navigate(`/house-template/${id}`);
+  };
+
   return (
     <div className="bg-gray-50 min-h-screen">
       <div className="max-w-6xl mx-auto p-6 bg-white shadow-lg rounded-lg relative">
@@ -304,27 +317,52 @@ const PackageDetail: React.FC = () => {
         {packageDetail.PackageHouses.length > 0 && (
           <>
             <h2 className="text-2xl font-semibold mt-6 mb-4 text-teal-500">
-              Chi tiết nhà
+              Chi tiết mẫu nhà
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {packageDetail.PackageHouses.map((house) => (
-                <div
+                <Card
                   key={house.Id}
-                  className="border p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300"
+                  className="shadow-lg rounded-lg overflow-hidden transition-transform transform hover:scale-105"
                 >
-                  {house.ImgUrl ? (
+                  <div
+                    onClick={() => handleHouseClick(house.DesignTemplateId)}
+                    className="cursor-pointer"
+                  >
                     <img
-                      src={house.ImgUrl}
-                      alt="House Design"
-                      className="w-full h-32 object-cover rounded-md"
+                      src={house.ImgUrl || defaultImageHouseTemplateUrl}
+                      alt={house.DesignName}
+                      className="w-full h-48 object-cover"
                     />
-                  ) : (
-                    <p className="text-gray-500">Không có hình ảnh</p>
-                  )}
-                  <p className="text-gray-500 mt-2">
-                    Mẫu thiết kế: {house.DesignTemplateId}
-                  </p>
-                </div>
+                  </div>
+                  <CardBody>
+                    <h1 className="font-semibold text-primary text-lg">
+                      {house.DesignName}
+                    </h1>
+                    <p className="text-gray-600 mt-2">{house.Description}</p>
+                  </CardBody>
+                  <CardFooter
+                    divider
+                    className="flex items-center justify-between py-2"
+                  >
+                    <div className="flex items-center">
+                      <IconButton variant="text" size="sm">
+                        <FaBuilding style={{ color: '#008080' }} />
+                      </IconButton>
+                      <Typography className="ml-2">
+                        {house.NumberOfFloor}
+                      </Typography>
+                    </div>
+                    <div className="flex items-center">
+                      <IconButton variant="text" size="sm">
+                        <FaBed style={{ color: '#008080' }} />
+                      </IconButton>
+                      <Typography className="ml-2">
+                        {house.NumberOfBed}
+                      </Typography>
+                    </div>
+                  </CardFooter>
+                </Card>
               ))}
             </div>
           </>

@@ -40,6 +40,10 @@ export interface PackageMaterial {
 export interface PackageHouse {
   Id: string;
   DesignTemplateId: string;
+  DesignName: string;
   ImgUrl: string | null;
+  Description: string;
+  NumberOfBed: number;
+  NumberOfFloor: number;
   InsDate: string;
 }
