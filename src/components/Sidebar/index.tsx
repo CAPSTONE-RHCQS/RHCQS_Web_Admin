@@ -21,6 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack, faTimes } from '@fortawesome/free-solid-svg-icons';
 import LaborManagerIcon from '../../SVG/SidebarIcon/ManagerIcon/LaborManagerIcon';
 import ContructionWorkIcon from '../../SVG/SidebarIcon/ManagerIcon/ContructionWorkIcon';
+import DesignPriceManagerIcon from '../../SVG/SidebarIcon/ManagerIcon/DesignPriceManagerIcon';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -390,7 +391,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                         'bg-teal-300 dark:bg-meta-4'
                       }`}
                     >
-                      <PromotionManagerIcon />
+                      <DesignPriceManagerIcon />
                       <span
                         className={`${
                           !isHovered && !sidebarOpen ? 'hidden' : ''
