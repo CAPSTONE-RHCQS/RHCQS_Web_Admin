@@ -127,13 +127,13 @@ const SupplierList: React.FC = () => {
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <div className="flex space-x-2 w-2/3">
-              <div className="mb-4 w-full">
-                <div className="font-regular text-black dark:text-white mb-2">
+              <div className="flex flex-col space-y-2 w-2/3">
+                <label className="text-sm font-bold text-black">
                   Tìm kiếm nhà cung cấp
-                </div>
+                </label>
                 <input
                   type="text"
-                  placeholder="Tìm kiếm nhà cung cấp..."
+                  placeholder="Nhập tên nhà cung cấp..."
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);

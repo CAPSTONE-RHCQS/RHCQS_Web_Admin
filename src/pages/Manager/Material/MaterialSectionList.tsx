@@ -183,14 +183,16 @@ const MaterialSectionList: React.FC = () => {
         <Breadcrumb pageName="Quản lý vật tư" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <div className="flex flex-col space-y-2 w-1/2">
-              <label className="text-sm font-bold text-black">Tên vật tư</label>
+            <div className="flex flex-col space-y-2 w-2/3">
+              <label className="text-sm font-bold text-black">
+                Tìm kiếm vật tư
+              </label>
               <input
                 type="text"
-                placeholder="Nhập tên vật tư"
+                placeholder="Nhập tên vật tư..."
                 value={searchName}
                 onChange={handleSearchChange(setSearchName)}
-                className="border rounded px-2 py-1"
+                className="border p-2 w-full rounded-md focus:outline-none"
               />
             </div>
             <div className="flex space-x-2">
