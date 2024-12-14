@@ -28,6 +28,8 @@ const LaborTable: React.FC<LaborTableProps> = ({
     Price: 0,
     Deflag: true,
     Type: '',
+    InsDate: '',
+    UpsDate: '',
   });
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -86,18 +88,6 @@ const LaborTable: React.FC<LaborTableProps> = ({
 
   return (
     <>
-      <div className="mb-4">
-        <div className="font-regular text-black dark:text-white mb-2">
-          Tìm kiếm nhân công
-        </div>
-        <input
-          type="text"
-          placeholder="Tìm kiếm nhân công..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="border p-2 w-1/3 rounded-md focus:outline-none"
-        />
-      </div>
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">

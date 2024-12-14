@@ -4,7 +4,11 @@ import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import Breadcrumb from '../../../components/Breadcrumbs/Breadcrumb';
 // import LaborTable from './component/Table/LaborTable';
 import Alert from '../../../components/Alert';
-import { createLabor, getLabor, importExcelLabor } from '../../../api/Labor/Labor';
+import {
+  createLabor,
+  getLabor,
+  importExcelLabor,
+} from '../../../api/Labor/Labor';
 import { LaborItem } from '../../../types/Labor';
 import LaborTable from './component/Table/LaborTable';
 import CreateLabor from './component/Create/CreateLabor';
@@ -14,7 +18,6 @@ const LaborList: React.FC = () => {
   const [dataLabor, setDataLabor] = useState<LaborItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalLabor, setTotalLabor] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -24,6 +27,7 @@ const LaborList: React.FC = () => {
   const [currentEditId, setCurrentEditId] = useState<string | null>(null);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     setPageInput(page.toString());
@@ -34,7 +38,6 @@ const LaborList: React.FC = () => {
     getLabor(page, 10).then((data: any) => {
       setDataLabor(data.Items);
       setTotalPages(data.TotalPages);
-      setTotalLabor(data.Total);
       setIsLoading(false);
     });
   }, [page, refreshKey]);
@@ -118,12 +121,23 @@ const LaborList: React.FC = () => {
   return (
     <>
       <div>
-        <Breadcrumb pageName="Quản lý lao động" />
+        <Breadcrumb pageName="Quản lý nhân công" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 mt-4">
-            <span className="text-lg font-medium text-black dark:text-white">
-              Tổng số lao động: {totalLabor}
-            </span>
+            <div className="flex space-x-2 w-2/3">
+              <div className="mb-4 w-full">
+                <div className="font-regular text-black dark:text-white mb-2">
+                  Tìm kiếm nhân công
+                </div>
+                <input
+                  type="text"
+                  placeholder="Tên nhân công..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="border p-2 w-full rounded-md focus:outline-none"
+                />
+              </div>
+            </div>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
@@ -137,17 +151,17 @@ const LaborList: React.FC = () => {
               >
                 <FaDownload className="text-lg" />
               </button>
-              <input
-                type="file"
-                id="fileInput"
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-              />
               <ArrowPathIcon
                 onClick={handleRefresh}
                 className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition mt-2"
               />
             </div>
+            <input
+              type="file"
+              id="fileInput"
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
           </div>
           {isLoading ? (
             <div className="flex justify-center items-center h-64">

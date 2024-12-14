@@ -18,7 +18,6 @@ const SupplierList: React.FC = () => {
   const [dataSupplier, setDataSupplier] = useState<SupplierItem[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalSupplier, setTotalSupplier] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -36,6 +35,7 @@ const SupplierList: React.FC = () => {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
     setPageInput(page.toString());
@@ -46,7 +46,6 @@ const SupplierList: React.FC = () => {
     getSupplierList(page, 10).then((data: any) => {
       setDataSupplier(data.Items);
       setTotalPages(data.TotalPages);
-      setTotalSupplier(data.Total);
       setIsLoading(false);
     });
   }, [page, refreshKey]);
@@ -107,9 +106,20 @@ const SupplierList: React.FC = () => {
         <Breadcrumb pageName="Quản lý nhà cung cấp" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
-            <span className="text-lg text-black dark:text-white">
-              Tổng số nhà cung cấp: {totalSupplier}
-            </span>
+            <div className="flex space-x-2 w-2/3">
+              <div className="mb-4 w-full">
+                <div className="font-regular text-black dark:text-white mb-2">
+                  Tìm kiếm nhà cung cấp
+                </div>
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm nhà cung cấp..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="border p-2 w-full rounded-md focus:outline-none"
+                />
+              </div>
+            </div>
             <div className="flex space-x-2">
               <button
                 onClick={() => setIsCreateModalOpen(true)}
