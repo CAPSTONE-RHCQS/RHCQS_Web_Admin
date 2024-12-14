@@ -41,6 +41,7 @@ import { getProfile } from '../../../api/Account/AccountApi';
 import CreateChatRoom from '../../../components/Chat/CreateRoom';
 import { useChat } from '../../../context/ChatContext';
 import { HomeModernIcon } from '@heroicons/react/24/solid';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -162,6 +163,15 @@ const ProjectDetailSalesStaff = () => {
   const isContractDesignEnabled =
     projectDetail.Type === 'TEMPLATE' || projectDetail.Type === 'HAVE_DRAWING';
 
+  const isContractHidden =
+    projectDetail.ContractInfo.some(
+      (contract) =>
+        contract.Name === 'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
+    ) &&
+    projectDetail.ContractInfo.some(
+      (contract) => contract.Name === 'Hợp đồng thi công nhà ở dân dụng',
+    );
+
   return (
     <>
       <div className="mb-6 flex flex-col gap-3">
@@ -174,28 +184,42 @@ const ProjectDetailSalesStaff = () => {
             onMouseLeave={hideMenu}
             className="relative"
           >
-            <FiMoreVertical className="text-2xl text-primary dark:text-white cursor-pointer" />
-            {menuVisible && (
-              <div className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out">
-                <div className="py-2">
-                  {!isContractDesignEnabled && (
-                    <div
-                      onClick={handleCreateContractDesign}
-                      className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                    >
-                      <FaFileContract className="mr-2" />
-                      Tạo hợp đồng thiết kế
+            {!isContractHidden && (
+              <>
+                <FiMoreVertical className="text-2xl text-primary dark:text-white cursor-pointer" />
+                {menuVisible && (
+                  <div className="absolute right-4 top-1 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50 transition-opacity duration-300 ease-in-out">
+                    <div className="py-2">
+                      {!isContractDesignEnabled &&
+                        !projectDetail.ContractInfo.some(
+                          (contract) =>
+                            contract.Name ===
+                            'Hợp đồng tư vấn và thiết kế bản vẽ nhà ở dân dụng',
+                        ) && (
+                          <div
+                            onClick={handleCreateContractDesign}
+                            className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                          >
+                            <FaFileContract className="mr-2" />
+                            Tạo hợp đồng thiết kế
+                          </div>
+                        )}
+                      {!projectDetail.ContractInfo.some(
+                        (contract) =>
+                          contract.Name === 'Hợp đồng thi công nhà ở dân dụng',
+                      ) && (
+                        <div
+                          onClick={handleCreateConstructionContract}
+                          className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
+                        >
+                          <FaBuilding className="mr-2" />
+                          Tạo hợp đồng thi công
+                        </div>
+                      )}
                     </div>
-                  )}
-                  <div
-                    onClick={handleCreateConstructionContract}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200 cursor-pointer"
-                  >
-                    <FaBuilding className="mr-2" />
-                    Tạo hợp đồng thi công
                   </div>
-                </div>
-              </div>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -310,7 +334,9 @@ const ProjectDetailSalesStaff = () => {
             <div className="mb-2 text-lg flex items-center">
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
-              <span className="text-gray-700 ml-2">{projectDetail.Phone}</span>
+              <span className="text-gray-700 ml-2">
+                {formatVietnamesePhoneNumber(projectDetail.Phone)}
+              </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMailBulk className="mr-2 text-secondary" />

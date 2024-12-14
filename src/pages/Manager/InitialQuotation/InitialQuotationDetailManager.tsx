@@ -34,6 +34,7 @@ import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
 import RejectDialog from '../../../components/RejectDialog';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 interface TableRow {
   stt: number;
@@ -404,7 +405,7 @@ const InitialQuotationDetailManager = () => {
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
               <span className="text-gray-700 ml-2">
-                {quotationData.PhoneNumber}
+                {formatVietnamesePhoneNumber(quotationData.PhoneNumber)}
               </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
@@ -688,24 +689,28 @@ const InitialQuotationDetailManager = () => {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-4 py-2 border text-left">
-                    Giá trị báo giá sơ bộ xây dựng
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {thanhTien.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border text-center">VNĐ</td>
-                </tr>
-                <tr>
-                  <td className="px-4 py-2 border text-left">
-                    Tùy chọn & Tiện ích
-                  </td>
-                  <td className="px-4 py-2 border text-center">
-                    {totalUtilityCost.toLocaleString()}
-                  </td>
-                  <td className="px-4 py-2 border text-center">VNĐ</td>
-                </tr>
+                {thanhTien !== 0 && (
+                  <tr>
+                    <td className="px-4 py-2 border text-left">
+                      Giá trị báo giá sơ bộ xây dựng
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {thanhTien.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+                )}
+                {totalUtilityCost !== 0 && (
+                  <tr>
+                    <td className="px-4 py-2 border text-left">
+                      Tùy chọn & Tiện ích
+                    </td>
+                    <td className="px-4 py-2 border text-center">
+                      {totalUtilityCost.toLocaleString()}
+                    </td>
+                    <td className="px-4 py-2 border text-center">VNĐ</td>
+                  </tr>
+                )}
                 {promotionInfo && (
                   <tr>
                     <td className="px-4 py-2 border text-left">

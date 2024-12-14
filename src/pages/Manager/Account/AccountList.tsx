@@ -39,17 +39,11 @@ const AccountList: React.FC = () => {
     key: SortKey;
     direction: 'ascending' | 'descending';
   } | null>(null);
-  const { 
-    totalPages, 
-    totalAccounts, 
-    isLoading, 
-    accounts, 
-    setAccounts 
-  } = useFetchAccounts(
-    currentPage, 
-    refreshKey, 
-    selectedRole, 
-    searchTerm
+  const { totalPages, isLoading, accounts, setAccounts } = useFetchAccounts(
+    currentPage,
+    refreshKey,
+    selectedRole,
+    searchTerm,
   );
 
   useEffect(() => {
@@ -123,7 +117,7 @@ const AccountList: React.FC = () => {
 
   const columns = [
     { key: 'avatar', label: 'Avatar' },
-    { key: 'accountName', label: 'Tên Nhân Viên' },
+    { key: 'accountName', label: 'Tên Tài Khoản' },
     { key: 'role', label: 'Vai Trò' },
     { key: 'phoneNumber', label: 'Số Điện Thoại' },
     { key: 'email', label: 'Email' },
@@ -181,9 +175,7 @@ const AccountList: React.FC = () => {
         </div>
         <div className="flex justify-between items-center mb-5">
           <div className="flex items-center">
-            <span className="text-lg text-black dark:text-white">
-              Tổng số Tài khoản: {totalAccounts}
-            </span>
+            <span className="text-lg text-black dark:text-white"></span>
           </div>
           <ArrowPathIcon
             onClick={handleRefresh}

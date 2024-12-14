@@ -28,6 +28,7 @@ import CreateNewActionButtons from './components/CreateNewActionButtons';
 import { HiHomeModern } from 'react-icons/hi2';
 import { TbHomePlus } from 'react-icons/tb';
 import { toast } from 'react-toastify';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 interface QuotationSummaryProps {
   quotationData: InitialQuotationResponse;
@@ -338,7 +339,7 @@ const QuotationSummary: React.FC<QuotationSummaryProps> = ({
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
               <span className="text-gray-700 ml-2">
-                {quotationData.PhoneNumber}
+                {formatVietnamesePhoneNumber(quotationData.PhoneNumber)}
               </span>
             </div>
             <div className="mb-2 text-lg flex items-center">

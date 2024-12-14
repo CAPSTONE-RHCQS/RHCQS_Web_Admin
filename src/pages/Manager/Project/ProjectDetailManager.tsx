@@ -40,6 +40,7 @@ import AssignModal from './components/Modals/AssignModal';
 import EmployeeList from './components/Employee/EmployeeList';
 import ArrowIcon from '../../../SVG/ArrowIcon';
 import { HomeModernIcon } from '@heroicons/react/24/solid';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 const getTypeInVietnamese = (type: string) => {
   switch (type) {
@@ -57,7 +58,6 @@ const getTypeInVietnamese = (type: string) => {
       return 'Khác';
   }
 };
-
 const ProjectDetailManager = () => {
   const { id: projectId } = useParams<{ id: string }>();
   const [projectDetail, setProjectDetail] = useState<ProjectDetailType | null>(
@@ -309,7 +309,8 @@ const ProjectDetailManager = () => {
           <ContactCard
             data={{
               fullName: projectDetail.AccountName || '',
-              phoneNumber: projectDetail.Phone || '',
+              phoneNumber:
+                formatVietnamesePhoneNumber(projectDetail.Phone) || '',
               mail: projectDetail.Mail || '',
             }}
             fields={[
@@ -334,13 +335,16 @@ const ProjectDetailManager = () => {
           <ContactCard
             data={{
               staffName: projectDetail.StaffName || 'Phân công nhân viên',
-              staffPhone: projectDetail.StaffPhone || '',
+              staffPhone:
+                formatVietnamesePhoneNumber(projectDetail.StaffPhone) || '',
             }}
             fields={[
               { key: 'staffName', label: 'Name' },
               { key: 'staffPhone', label: 'Phone' },
             ]}
-            onClick={() => handleMenuItemClick('assign')}
+            onClick={() =>
+              projectDetail.StaffName === null && handleMenuItemClick('assign')
+            }
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
@@ -394,7 +398,9 @@ const ProjectDetailManager = () => {
             <div className="mb-2 text-lg flex items-center">
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
-              <span className="text-gray-700 ml-2">{projectDetail.Phone}</span>
+              <span className="text-gray-700 ml-2">
+                {formatVietnamesePhoneNumber(projectDetail.Phone)}
+              </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
               <FaMailBulk className="mr-2 text-secondary" />

@@ -36,6 +36,7 @@ import ContractValueSummary from './components/Table/ContractValueSummary';
 import ConstructionAreaTable from './components/Table/ConstructionAreaTable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
 
 const CreateNewFinalQuotationStaff = () => {
   const { id } = useParams<{ id: string }>();
@@ -281,7 +282,7 @@ const CreateNewFinalQuotationStaff = () => {
       );
 
       if (emptyDateIndex !== -1) {
-        toast.error('Tất cả các trường ngày phải đưc điền.');
+        toast.error('Tất cả các trường ngày phải được điền.');
         dateRefs.current[emptyDateIndex]?.focus();
         return;
       }
@@ -296,6 +297,7 @@ const CreateNewFinalQuotationStaff = () => {
 
       const success = await hanldCreateNew(
         updatedQuotationDetail,
+        totalContractValue,
         setIsSaving,
         navigate,
       );
@@ -451,7 +453,7 @@ const CreateNewFinalQuotationStaff = () => {
               <FaPhone className="mr-2 text-secondary" />
               <span className="font-semibold">Số điện thoại:</span>
               <span className="text-gray-700 ml-2">
-                {quotationDetail.PhoneNumber}
+                {formatVietnamesePhoneNumber(quotationDetail.PhoneNumber)}
               </span>
             </div>
 

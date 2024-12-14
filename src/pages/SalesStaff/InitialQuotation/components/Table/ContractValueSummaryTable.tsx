@@ -36,22 +36,28 @@ const ContractValueSummaryTable: React.FC<ContractValueSummaryTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td className="px-4 py-2 border text-left">
-              Giá trị báo giá sơ bộ xây dựng
-            </td>
-            <td className="px-4 py-2 border text-center">
-              {(totalRough + totalFinished).toLocaleString()}
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
-          <tr>
-            <td className="px-4 py-2 border text-left">Tùy chọn & Tiện ích</td>
-            <td className="px-4 py-2 border text-center">
-              {totalUtilities.toLocaleString()}
-            </td>
-            <td className="px-4 py-2 border text-center">VNĐ</td>
-          </tr>
+          {totalRough + totalFinished !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">
+                Giá trị báo giá sơ bộ xây dựng
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {(totalRough + totalFinished).toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
+          {totalUtilities !== 0 && (
+            <tr>
+              <td className="px-4 py-2 border text-left">
+                Tùy chọn & Tiện ích
+              </td>
+              <td className="px-4 py-2 border text-center">
+                {totalUtilities.toLocaleString()}
+              </td>
+              <td className="px-4 py-2 border text-center">VNĐ</td>
+            </tr>
+          )}
           {promotionInfo && promotionInfo.Value > 0 && (
             <tr>
               <td className="px-4 py-2 border text-left">
