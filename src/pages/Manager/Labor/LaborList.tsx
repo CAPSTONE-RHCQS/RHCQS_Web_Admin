@@ -8,6 +8,7 @@ import {
   createLabor,
   getLabor,
   importExcelLabor,
+  searchLaborPage,
 } from '../../../api/Labor/Labor';
 import { LaborItem } from '../../../types/Labor';
 import LaborTable from './component/Table/LaborTable';
@@ -28,19 +29,35 @@ const LaborList: React.FC = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchResults, setSearchResults] = useState<LaborItem[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getLabor(page, 10).then((data: any) => {
-      setDataLabor(data.Items);
-      setTotalPages(data.TotalPages);
-      setIsLoading(false);
-    });
-  }, [page, refreshKey]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (isSearching) {
+          const results = await searchLaborPage(searchTerm, 1, 10);
+          setDataLabor(results.Items);
+          setTotalPages(results.TotalPages);
+        } else {
+          const data = await getLabor(page, 10);
+          setDataLabor(data.Items);
+          setTotalPages(data.TotalPages);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, refreshKey, searchTerm, isSearching]);
 
   const openEditModal = (id: string) => {
     setCurrentEditId(id);
@@ -118,6 +135,13 @@ const LaborList: React.FC = () => {
     }
   };
 
+  const handleSearch = async () => {
+    setIsSearching(!!searchTerm);
+    if (!searchTerm) {
+      setDataLabor([]);
+    }
+  };
+
   return (
     <>
       <div>
@@ -133,7 +157,10 @@ const LaborList: React.FC = () => {
                   type="text"
                   placeholder="Tên nhân công..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    handleSearch();
+                  }}
                   className="border p-2 w-full rounded-md focus:outline-none"
                 />
               </div>
@@ -169,7 +196,7 @@ const LaborList: React.FC = () => {
             </div>
           ) : (
             <LaborTable
-              dataLabor={dataLabor}
+              dataLabor={searchResults.length > 0 ? searchResults : dataLabor}
               refreshData={handleRefresh}
               openEditModal={openEditModal}
               currentEditId={currentEditId}

@@ -7,6 +7,7 @@ import Alert from '../../../components/Alert';
 import {
   getSupplierList,
   createSupplier,
+  searchSupplierPage,
 } from '../../../api/Supplier/Supplier';
 import { SupplierItem, UpdateSupplierRequest } from '../../../types/Supplier';
 import CreateSupplier from './component/Create/CreateSupplier';
@@ -36,19 +37,34 @@ const SupplierList: React.FC = () => {
   const [alertType, setAlertType] = useState<'success' | 'error'>('success');
   const [pageInput, setPageInput] = useState<string>(page.toString());
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [isSearching, setIsSearching] = useState(false);
 
   useEffect(() => {
     setPageInput(page.toString());
   }, [page]);
 
   useEffect(() => {
-    setIsLoading(true);
-    getSupplierList(page, 10).then((data: any) => {
-      setDataSupplier(data.Items);
-      setTotalPages(data.TotalPages);
-      setIsLoading(false);
-    });
-  }, [page, refreshKey]);
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        if (isSearching) {
+          const results = await searchSupplierPage(searchTerm, page, 10);
+          setDataSupplier(results.Items);
+          setTotalPages(results.TotalPages);
+        } else {
+          const data = await getSupplierList(page, 10);
+          setDataSupplier(data.Items);
+          setTotalPages(data.TotalPages);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [page, refreshKey, searchTerm, isSearching]);
 
   const openEditModal = (id: string) => {
     setCurrentEditId(id);
@@ -100,6 +116,10 @@ const SupplierList: React.FC = () => {
     }
   };
 
+  const handleSearch = () => {
+    setIsSearching(!!searchTerm);
+  };
+
   return (
     <>
       <div>
@@ -115,7 +135,10 @@ const SupplierList: React.FC = () => {
                   type="text"
                   placeholder="Tìm kiếm nhà cung cấp..."
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    handleSearch();
+                  }}
                   className="border p-2 w-full rounded-md focus:outline-none"
                 />
               </div>
