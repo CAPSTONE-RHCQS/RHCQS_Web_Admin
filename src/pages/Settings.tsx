@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import { ClipLoader } from 'react-spinners';
 import { Profile } from '../types/Account';
 import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/solid';
+import UserTwo from '../images/fee.jpg';
 
 const Settings: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -251,7 +252,7 @@ const Settings: React.FC = () => {
                         src={
                           selectedFile
                             ? URL.createObjectURL(selectedFile)
-                            : profile?.ImageUrl || '/default-avatar.png'
+                            : profile?.ImageUrl || UserTwo
                         }
                         alt="User Avatar"
                         className="h-full w-full object-cover rounded-full"

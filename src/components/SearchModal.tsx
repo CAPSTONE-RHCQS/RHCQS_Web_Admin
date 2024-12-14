@@ -92,7 +92,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
             <div className="flex items-center mb-6">
               <h2 className="text-xl font-bold text-left text-white bg-[#007acc] px-4 py-2 rounded flex items-center">
                 <img
-                  src="https://cuckinhtexd.gov.vn/UploadedFiles/Hinh-Anh/250px-Emblem_of_Vietnam-svg.png"
+                  src="https://res.cloudinary.com/de7pulfdj/image/upload/v1734172696/profile/250px-Emblem_of_Vietnam-svg.png"
                   alt="Logo"
                   className="mr-2"
                   style={{ width: '20px', height: 'auto' }}
@@ -142,15 +142,20 @@ const SearchModal: React.FC<SearchModalProps> = ({
             <div className="flex flex-col">
               <label className="text-gray-700 mb-2">
                 <span className="relative group">
-                  <FaInfoCircle className="cursor-pointer" onMouseEnter={() => setShowInfo(true)} onMouseLeave={() => setShowInfo(false)} />
+                  <FaInfoCircle
+                    className="cursor-pointer"
+                    onMouseEnter={() => setShowInfo(true)}
+                    onMouseLeave={() => setShowInfo(false)}
+                  />
                   {showInfo && (
                     <div className="absolute left-1/2 transform -translate-x-1/2 mt-5 ml-50 w-150 bg-white text-black text-sm rounded shadow-lg p-2 transition-opacity duration-200">
                       <strong>
                         Định mức dự toán xây dựng công trình số 10/2019/TT-BXD
                       </strong>
                       <br />
-                      <strong>HƯỚNG DẪN:</strong> Hãy nhập từ khóa vào ô “Mã hiệu”
-                      hoặc “Tên công việc” liên quan tới công việc muốn tra cứu.
+                      <strong>HƯỚNG DẪN:</strong> Hãy nhập từ khóa vào ô “Mã
+                      hiệu” hoặc “Tên công việc” liên quan tới công việc muốn
+                      tra cứu.
                       <br />
                       Ví dụ: - "AC.21": Tất cả các công việc có mã hiệu là AC.21
                       trong mã hiệu.

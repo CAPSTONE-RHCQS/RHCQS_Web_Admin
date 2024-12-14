@@ -535,7 +535,7 @@ const ContractDetailStaff = () => {
           <thead>
             <tr>
               <th className="px-4 py-2 border text-center">Đợt</th>
-              <th className="px-4 py-2 border text-center">Mô tả</th>
+              <th className="px-4 py-2 border text-center">Nội dung</th>
               <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
               <th className="px-4 py-2 border text-center">
                 Giá trị thanh toán (VNĐ)
@@ -550,7 +550,9 @@ const ContractDetailStaff = () => {
             {contractDetail.BatchPayment?.map((batch) => (
               <tr key={batch.NumberOfBatch} className="text-center">
                 <td className="px-4 py-2 border">{batch.NumberOfBatch}</td>
-                <td className="px-4 py-2 border">{batch.Description}</td>
+                <td className="px-4 py-2 border text-left">
+                  {batch.Description}
+                </td>
                 <td className="px-4 py-2 border">{batch.Percents} %</td>
                 <td className="px-4 py-2 border">
                   {batch.Price.toLocaleString()} {contractDetail.UnitPrice}
@@ -600,7 +602,7 @@ const ContractDetailStaff = () => {
             <thead>
               <tr>
                 <th className="px-4 py-2 border text-center">Đợt</th>
-                <th className="px-4 py-2 border text-center">Mô tả</th>
+                <th className="px-4 py-2 border text-center">Nội dung</th>
                 <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
                 <th className="px-4 py-2 border text-center">
                   Giá trị thanh toán (VNĐ)
@@ -617,7 +619,9 @@ const ContractDetailStaff = () => {
               {contractDetail.BatchPaymentAppendices?.map((appendix) => (
                 <tr key={appendix.NumberOfBatch} className="text-center">
                   <td className="px-4 py-2 border">{appendix.NumberOfBatch}</td>
-                  <td className="px-4 py-2 border">{appendix.Description}</td>
+                  <td className="px-4 py-2 border text-left">
+                    {appendix.Description}
+                  </td>
                   <td className="px-4 py-2 border">{appendix.Percents} %</td>
                   <td className="px-4 py-2 border">
                     {appendix.Price.toLocaleString()} {contractDetail.UnitPrice}
@@ -770,7 +774,7 @@ const ContractDetailStaff = () => {
                         Đợt
                       </th>
                       <th className="py-2 border-b border-gray-300 border-r">
-                        Mô tả
+                        Nội dung
                       </th>
                       <th className="py-2 border-b border-gray-300 border-r w-40 text-center">
                         Phần trăm (%)
@@ -803,6 +807,7 @@ const ContractDetailStaff = () => {
                             }
                             style={{
                               border: '1px solid #ccc',
+                              width: '50px',
                             }}
                             className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
                             required
@@ -821,8 +826,9 @@ const ContractDetailStaff = () => {
                             }
                             style={{
                               border: '1px solid #ccc',
+                              width: '300px',
                             }}
-                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            className="w-full text-left rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
                             required
                           />
                         </td>
