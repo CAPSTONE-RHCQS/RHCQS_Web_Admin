@@ -62,7 +62,7 @@ const AssignModal: React.FC<AssignModalProps> = ({
                 {!isDuplicate && (
                   <EmployeeCard
                     avatar={employee?.avatar || ''}
-                    name={truncateName(employee?.name || 'Phân công', 15)}
+                    name={truncateName(employee?.name || 'Phân công', 12)}
                     roles={employee?.roles || []}
                     phone={employee?.phone || 'Số điện thoại'}
                     onSelect={() => handleCategorySelect(category)}

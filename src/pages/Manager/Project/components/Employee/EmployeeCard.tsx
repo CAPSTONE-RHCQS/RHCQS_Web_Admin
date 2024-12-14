@@ -58,7 +58,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         <img
           src={avatar || Fee}
           alt={name}
-          className="w-full h-full rounded-full border-2 border-customerCard500"
+          className="w-full h-full object-cover rounded-full border-2 border-customerCard500"
         />
         <div className="absolute bottom-0 right-0 flex items-center justify-center bg-customerCard500 rounded-full p-1 border border-white">
           {roleArray.map((roleName) => {
@@ -75,7 +75,7 @@ const EmployeeCard: React.FC<EmployeeCardProps> = ({
         </div>
       </div>
       <h4 className="text-base font-semibold text-gray-800 mb-2">
-        {truncateName(name, 11)}
+        {truncateName(name, 15)}
       </h4>
       <div className="text-left w-full">
         {phone && (

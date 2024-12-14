@@ -83,7 +83,7 @@ const TableRow: React.FC<{
             <img
               src={item.avatar || UserOne}
               alt="Avatar"
-              className="w-full h-full rounded-full border-2 border-gray-300 shadow-lg"
+              className="w-full h-full object-cover rounded-full border-2 border-gray-300 shadow-lg"
             />
             <span
               className={`absolute bottom-0 right-0 w-4 h-4 rounded-full border-2 border-white`}
