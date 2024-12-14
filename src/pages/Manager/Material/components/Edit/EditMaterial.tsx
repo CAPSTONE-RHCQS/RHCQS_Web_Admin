@@ -60,6 +60,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
       IsAvailable: materialDetail.IsAvailable,
       UnitPrice: materialDetail.UnitPrice,
       Code: materialDetail.Code,
+      Type: materialDetail.Type,
       Image: newImageFile || materialDetail.Image,
     };
 
@@ -244,6 +245,19 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
             className="border p-2 w-full rounded font-regular"
             readOnly
           />
+        </div>
+        <div className="mb-4">
+          <strong className="font-bold">Loại:</strong>
+          <select
+            value={materialDetail.Type}
+            onChange={(e) =>
+              setMaterialDetail({ ...materialDetail, Type: e.target.value })
+            }
+            className="border p-2 w-full rounded font-regular"
+          >
+            <option value="ROUGH">Thô</option>
+            <option value="FINISHED">Hoàn thiện</option>
+          </select>
         </div>
         <div className="mb-4">
           <strong className="font-bold">Mã code:</strong>

@@ -18,7 +18,7 @@ const CreateUtility: React.FC<CreateUtilityProps> = ({
 }) => {
   const [sectionDetail, setSectionDetail] = useState<any>({
     Name: '',
-    Type: '',
+    Type: 'ROUGH',
     Sections: [
       {
         id: null,

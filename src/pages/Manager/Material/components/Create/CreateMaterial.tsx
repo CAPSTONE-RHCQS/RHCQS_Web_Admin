@@ -29,6 +29,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
     MaterialSectionType: string;
     SupplierName: string;
     Code: string;
+    Type: string;
   }>({
     Name: '',
     Price: 0,
@@ -41,6 +42,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
     MaterialSectionType: '',
     SupplierName: '',
     Code: '',
+    Type: 'ROUGH',
   });
 
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -116,6 +118,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       IsAvailable: true,
       UnitPrice: materialDetail.UnitPrice,
       Code: materialDetail.Code,
+      Type: materialDetail.Type,
       Image: materialDetail.Image,
     };
 
@@ -317,6 +320,18 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
               ))}
             </ul>
           )}
+        </div>
+        <div className="mb-4">
+          <strong className="font-bold">Loại:</strong>
+          <select
+            name="Type"
+            value={materialDetail.Type}
+            onChange={handleChange}
+            className="border p-2 w-full rounded font-regular"
+          >
+            <option value="ROUGH">Thô</option>
+            <option value="FINISHED">Hoàn thiện</option>
+          </select>
         </div>
         <div className="flex justify-end space-x-2">
           <button
