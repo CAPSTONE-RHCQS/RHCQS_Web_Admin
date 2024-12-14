@@ -152,7 +152,7 @@ export const createStaff = async (
   phoneNumber: string,
   password: string,
   confirmPassword: string,
-  role: string = 'DesignStaff',
+  role: string,
 ) => {
   try {
     const response = await requestWebRHCQS.post(
@@ -248,16 +248,16 @@ export const changePassword = async (
 };
 
 export const searchAccounts = async (
-  searchKey: string, 
-  page: number = 1, 
-  size: number = 5
+  searchKey: string,
+  page: number = 1,
+  size: number = 5,
 ) => {
   try {
     const response = await requestWebRHCQS.get(`/account/key`, {
-      params: { 
-        searchKey, 
-        page, 
-        size 
+      params: {
+        searchKey,
+        page,
+        size,
       },
       headers: {
         accept: '*/*',
