@@ -106,6 +106,27 @@ export async function searchLabor(
   }
 }
 
+export async function searchLaborPage(
+  name: string,
+  page: number,
+  size: number,
+): Promise<LaborResponse> {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/labor/all-name?name=${name}&page=${page}&size=${size}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching construction by name ${name}:`, error);
+    throw new Error('Failed to fetch construction by name');
+  }
+}
+
 export async function searchLaborByPackageId(
   name: string,
   packageId: string,
