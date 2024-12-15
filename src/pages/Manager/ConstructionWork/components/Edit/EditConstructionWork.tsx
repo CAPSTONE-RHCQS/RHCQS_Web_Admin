@@ -3,9 +3,7 @@ import { searchMaterialSection } from '../../../../../api/Material/Material';
 import { searchLabor } from '../../../../../api/Labor/Labor';
 import { MaterialItem } from '../../../../../types/Material';
 import { LaborItem } from '../../../../../types/Labor';
-import {
-  type UpdateConstructionWork,
-} from '../../../../../types/ContructionWork';
+import { type UpdateConstructionWork } from '../../../../../types/ContructionWork';
 import {
   updateConstructionWork,
   getConstructionWorkById,
@@ -55,7 +53,8 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
           setInitialWorkName(data.WorkName);
 
           const materials = data.Resources.filter(
-            (resource: any) => resource.LaborName === null && resource.LaborNorm === null
+            (resource: any) =>
+              resource.LaborName === null && resource.LaborNorm === null,
           ).map((resource: any) => ({
             materialSectionId: resource.MaterialSectionId,
             materialSectionNorm: resource.MaterialSectionNorm,
@@ -67,7 +66,9 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
           }));
 
           const labors = data.Resources.filter(
-            (resource: any) => resource.MaterialSectionName === null && resource.MaterialSectionNorm === null
+            (resource: any) =>
+              resource.MaterialSectionName === null &&
+              resource.MaterialSectionNorm === null,
           ).map((resource: any) => ({
             materialSectionId: null,
             materialSectionNorm: null,
@@ -92,19 +93,25 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
 
   const validateFields = () => {
     const newErrors: { [key: string]: string } = {};
-    if (!workName) newErrors.workName = 'Tên công tác không được để trống.';
-    if (materialResources.some((resource) => !resource.materialName)) {
-      newErrors.materialResources = 'Tên vật tư không được để trống.';
+
+    if (!workName) {
+      newErrors.workName = 'Tên công tác không được để trống.';
     }
-    if (materialResources.some((resource) => !resource.materialSectionNorm)) {
-      newErrors.materialResources = 'Định mức vật tư không được để trống.';
-    }
-    if (laborResources.some((resource) => !resource.laborName)) {
-      newErrors.laborResources = 'Tên nhân công không được để trống.';
-    }
-    if (laborResources.some((resource) => !resource.laborNorm)) {
-      newErrors.laborResources = 'Định mức nhân công không được để trống.';
-    }
+
+    materialResources.forEach((resource, index) => {
+      if (resource.materialName && !resource.materialSectionNorm) {
+        newErrors.materialResources =
+          'Định mức vật tư không được để trống khi đã chọn vật tư.';
+      }
+    });
+
+    laborResources.forEach((resource, index) => {
+      if (resource.laborName && !resource.laborNorm) {
+        newErrors.laborResources =
+          'Định mức nhân công không được để trống khi đã chọn nhân công.';
+      }
+    });
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -114,15 +121,19 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
 
     setIsLoading(true);
 
-    const newMaterialResources = materialResources.filter(resource => resource.isNew);
-    const newLaborResources = laborResources.filter(resource => resource.isNew);
+    const newMaterialResources = materialResources.filter(
+      (resource) => resource.isNew,
+    );
+    const newLaborResources = laborResources.filter(
+      (resource) => resource.isNew,
+    );
 
     const constructionData: UpdateConstructionWork = {
       nameConstructionWork: workName !== initialWorkName ? workName : undefined,
       resources: [...newMaterialResources, ...newLaborResources],
     };
 
-    try {   
+    try {
       const response = await updateConstructionWork(
         currentEditId as string,
         constructionData,
