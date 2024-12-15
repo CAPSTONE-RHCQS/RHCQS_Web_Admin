@@ -819,9 +819,10 @@ const InitialQuotationDetailManager = () => {
               7. CÁC THỎA THUẬN KHÁC:
             </strong>
           </div>
-          <p className="text-gray-700 whitespace-pre-line">
-            {quotationData.OthersAgreement || ''}
-          </p>
+          <div
+            className="text-gray-700"
+            dangerouslySetInnerHTML={{ __html: quotationData.OthersAgreement || '' }}
+          />
         </div>
 
         <div className="mt-4 w-1/3">
