@@ -212,6 +212,8 @@ const InitialQuotationDetailManager = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setType('Approved');
+    setReason('');
   };
 
   const handleSubmit = async () => {
@@ -821,7 +823,9 @@ const InitialQuotationDetailManager = () => {
           </div>
           <div
             className="text-gray-700"
-            dangerouslySetInnerHTML={{ __html: quotationData.OthersAgreement || '' }}
+            dangerouslySetInnerHTML={{
+              __html: quotationData.OthersAgreement || '',
+            }}
           />
         </div>
 

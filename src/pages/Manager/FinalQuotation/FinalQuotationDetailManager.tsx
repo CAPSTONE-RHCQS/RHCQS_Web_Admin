@@ -129,10 +129,21 @@ const FinalQuotationDetailManager = () => {
     totalEquipmentCost -
     totalDiscount;
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setApprovalType('Approved');
+    setReason('');
+  };
+
   const handleApprove = async () => {
     if (!id) {
       console.error('Quotation ID is undefined');
       toast.error('Quotation ID is undefined');
+      return;
+    }
+
+    if (!reason.trim()) {
+      toast.error('Vui lòng nhập lý do từ chối.');
       return;
     }
 
@@ -148,7 +159,7 @@ const FinalQuotationDetailManager = () => {
         toast.success('Từ chối báo giá thành công');
       }
 
-      setIsModalOpen(false);
+      handleCloseModal();
       fetchQuotationDetail();
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.Error) {
@@ -283,7 +294,7 @@ const FinalQuotationDetailManager = () => {
 
       <ApprovalDialog
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         approvalType={approvalType}
         setApprovalType={setApprovalType}
         reason={reason}

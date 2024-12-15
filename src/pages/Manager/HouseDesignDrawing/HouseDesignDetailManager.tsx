@@ -77,8 +77,19 @@ const HouseDesignDetailManager: React.FC = () => {
     }
   }, [currentStatus, designDetail]);
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setApprovalType('Approved');
+    setReason('');
+  };
+
   const handleApproveDesign = async () => {
     if (!selectedVersionId) return;
+
+    if (!reason.trim()) {
+      toast.error('Vui lòng nhập lý do từ chối.');
+      return;
+    }
 
     try {
       await approveDesign(selectedVersionId, {
@@ -94,7 +105,7 @@ const HouseDesignDetailManager: React.FC = () => {
         toast.success('Xét duyệt thành công');
       }
 
-      setIsModalOpen(false);
+      handleCloseModal();
       fetchDesignDetail();
     } catch (error) {
       console.error('Error approving design:', error);
@@ -293,7 +304,7 @@ const HouseDesignDetailManager: React.FC = () => {
 
       <ApprovalDialog
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         approvalType={approvalType}
         setApprovalType={setApprovalType}
         reason={reason}
