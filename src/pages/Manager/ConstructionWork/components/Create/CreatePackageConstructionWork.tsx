@@ -100,13 +100,16 @@ const CreatePackageConstructionWork: React.FC<
   );
   const [workName, setWorkName] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
+  const [constructionWorkData, setConstructionWorkData] = useState<any>(null);
 
   useEffect(() => {
     const fetchWorkName = async () => {
       if (constructionData) {
         try {
           const data = await getConstructionWorkById(constructionData);
+          console.log(data);
           setWorkName(data.WorkName);
+          setConstructionWorkData(data);
         } catch (error) {
           console.error('Error fetching construction work:', error);
         }
@@ -143,6 +146,7 @@ const CreatePackageConstructionWork: React.FC<
         name,
         packages[packageIndex].packageId,
       );
+      console.log(results);
       const newPackages = [...packages];
       const resources =
         type === 'ROUGH'
@@ -173,6 +177,7 @@ const CreatePackageConstructionWork: React.FC<
         name,
         packages[packageIndex].packageId,
       );
+      console.log(results);
       const newPackages = [...packages];
       const selectedLabors = new Set(
         newPackages[packageIndex].laborResources.map((res) => res.laborName),
@@ -219,8 +224,21 @@ const CreatePackageConstructionWork: React.FC<
         ? newPackages[packageIndex].roughMaterialResources
         : newPackages[packageIndex].finishedMaterialResources;
 
+    let finalPrice = material.Price || 0;
+    if (constructionWorkData && constructionWorkData.Resources) {
+      console.log(constructionWorkData && constructionWorkData.Resources)
+      const matchingResource = constructionWorkData.Resources.find(
+        (resource: any) =>
+          resource.MaterialSectionId === material.MaterialSectionId,
+      );
+      if (matchingResource) {
+        finalPrice =
+          (material.Price || 0) * matchingResource.MaterialSectionNorm;
+      }
+    }
+
     resources[resourceIndex].materialName = material.Name;
-    resources[resourceIndex].price = material.Price || 0;
+    resources[resourceIndex].price = finalPrice;
     resources[resourceIndex].materialSearchResults = [];
     setPackages(newPackages);
   };
@@ -231,10 +249,21 @@ const CreatePackageConstructionWork: React.FC<
     resourceIndex: number,
   ) => {
     const newPackages = [...packages];
+
+    let finalPrice = labor.Price;
+    if (constructionWorkData && constructionWorkData.Resources) {
+      const matchingResource = constructionWorkData.Resources.find(
+        (resource: any) => resource.LaborId === labor.Id,
+      );
+      if (matchingResource) {
+        finalPrice = labor.Price * matchingResource.LaborNorm;
+      }
+    }
+
     newPackages[packageIndex].laborResources[resourceIndex].laborName =
       labor.Name;
     newPackages[packageIndex].laborResources[resourceIndex].laborPrice =
-      labor.Price;
+      finalPrice;
     newPackages[packageIndex].laborResources[resourceIndex].laborSearchResults =
       [];
     setPackages(newPackages);
