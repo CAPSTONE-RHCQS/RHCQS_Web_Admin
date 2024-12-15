@@ -124,9 +124,26 @@ const CreatePackageConstructionWork: React.FC<
   const handleSearchPackage = async (name: string, packageIndex: number) => {
     try {
       const response = await searchPackagesByName(name);
-      const filteredResults = response.data.filter(
-        (pkg) => !selectedPackageIds.has(pkg.PackageId),
+      
+      // Lọc ra các gói đã được chọn trong selectedPackageIds
+      let filteredResults = response.data.filter(
+        (pkg) => !selectedPackageIds.has(pkg.PackageId)
       );
+
+      // Nếu có WorkTemplates, lọc thêm các gói đã có trong WorkTemplates
+      if (constructionWorkData && constructionWorkData.WorkTemplates) {
+        const existingPackageIds = new Set(
+          constructionWorkData.WorkTemplates.map(
+            (template: any) => template.PackageId
+          )
+        );
+        
+        // Loại bỏ các gói đã có trong WorkTemplates
+        filteredResults = filteredResults.filter(
+          (pkg) => !existingPackageIds.has(pkg.PackageId)
+        );
+      }
+
       const newSearchResults = [...searchResults];
       newSearchResults[packageIndex] = filteredResults;
       setSearchResults(newSearchResults);
