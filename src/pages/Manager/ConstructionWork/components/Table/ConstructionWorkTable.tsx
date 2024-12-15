@@ -193,7 +193,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                             Giá vật tư hoàn thiện
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
-                            Gia nhân công
+                            Giá nhân công
                           </th>
                           <th className="py-2 px-4 text-left w-1/8 text-center border border-gray-300">
                             Tổng tiền
