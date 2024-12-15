@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createContractDesign } from '../../../api/Contract/ContractApi';
+import {
+  createContractDesign,
+  getContractPrice,
+} from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
@@ -38,6 +41,24 @@ const CreateContractDesign = () => {
   ]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchContractPrice = async () => {
+      if (projectId) {
+        try {
+          const price = await getContractPrice(projectId);
+          setContractDetails((prevDetails) => ({
+            ...prevDetails,
+            contractValue: price,
+          }));
+        } catch (error) {
+          toast.error('Có lỗi xảy ra khi lấy giá trị hợp đồng.');
+        }
+      }
+    };
+
+    fetchContractPrice();
+  }, [projectId]);
 
   const handleChangeContractDetails = (
     field: keyof CreateContractDesignRequest,
@@ -90,7 +111,7 @@ const CreateContractDesign = () => {
 
       if (field === 'paymentDate') {
         payment.paymentDate = value as string;
-        payment.paymentPhase = ''; 
+        payment.paymentPhase = '';
 
         for (let i = index + 1; i < newBatchPayments.length; i++) {
           newBatchPayments[i].paymentDate = '';
@@ -203,18 +224,9 @@ const CreateContractDesign = () => {
               <label className="block text-lg font-medium mb-2">
                 Giá trị hợp đồng (VNĐ):
               </label>
-              <input
-                type="number"
-                value={contractDetails.contractValue}
-                onChange={(e) =>
-                  handleChangeContractDetails(
-                    'contractValue',
-                    parseFloat(e.target.value),
-                  )
-                }
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
+              <p className="text-lg text-gray-800">
+                {contractDetails.contractValue.toLocaleString('vi-VN')} VNĐ
+              </p>
             </div>
           </div>
           <div>
@@ -277,9 +289,11 @@ const CreateContractDesign = () => {
           <thead>
             <tr>
               <th className="py-2 border-b border-gray-300 border-r">Đợt</th>
-              <th className="py-2 border-b border-gray-300 border-r">Mô tả</th>
+              <th className="py-2 border-b border-gray-300 border-r">
+                Nội dung
+              </th>
               <th className="py-2 border-b border-gray-300 border-r w-27 text-center">
-                Phần trăm
+                Phần trăm (%)
               </th>
               <th className="py-2 border-b border-gray-300 border-r w-60">
                 Giá trị thanh toán (VNĐ)
@@ -315,33 +329,33 @@ const CreateContractDesign = () => {
                       resize: 'vertical',
                       border: '1px solid #ccc',
                     }}
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                    className="w-full text-left border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                     required
                   />
                 </td>
-                <td className="px-4 py-2 border text-center align-middle">
-                  <input
-                    type="text"
-                    value={payment.percents}
-                    onChange={(e) =>
-                      handleBatchPaymentChange(
-                        index,
-                        'percents',
-                        e.target.value,
-                      )
-                    }
-                    style={{
-                      overflow: 'hidden',
-                      minHeight: '60px',
-                      resize: 'vertical',
-                      border: '1px solid #ccc',
-                    }}
-                    className="w-full text-center border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                    required
-                  />
+                <td className="px-4 py-2 border text-center">
+                  <div className="flex items-center justify-center">
+                    <input
+                      type="text"
+                      value={payment.percents}
+                      onChange={(e) =>
+                        handleBatchPaymentChange(
+                          index,
+                          'percents',
+                          e.target.value,
+                        )
+                      }
+                      style={{
+                        border: '1px solid #ccc',
+                      }}
+                      className="w-12 bg-transparent text-right border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                    <span className="ml-0.5">%</span>
+                  </div>
                 </td>
                 <td className="py-2 text-center border-r border-gray-300">
-                  {payment.price.toLocaleString('vi-VN')}
+                  {payment.price.toLocaleString('vi-VN')} VNĐ
                 </td>
                 <td className="py-2 border-r border-gray-300">
                   <input
@@ -370,9 +384,15 @@ const CreateContractDesign = () => {
                     max={endDate}
                     onChange={(e) => {
                       if (e.target.value !== payment.paymentDate) {
-                        handleBatchPaymentChange(index, 'paymentPhase', e.target.value);
+                        handleBatchPaymentChange(
+                          index,
+                          'paymentPhase',
+                          e.target.value,
+                        );
                       } else {
-                        toast.error('Ngày đáo hạn không được trùng với ngày thanh toán');
+                        toast.error(
+                          'Ngày đáo hạn không được trùng với ngày thanh toán',
+                        );
                       }
                     }}
                     className="w-full rounded-lg bg-transparent py-1 px-2 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
