@@ -104,49 +104,6 @@ const CreateConstructionContract = () => {
           <div>
             <div className="mb-4">
               <label className="block text-lg font-medium mb-2">
-                Ngày bắt đầu:
-              </label>
-              <input
-                type="date"
-                value={contractDetails.startDate}
-                onChange={(e) =>
-                  handleChangeContractDetails('startDate', e.target.value)
-                }
-                min={today}
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                Ngày kết thúc:
-              </label>
-              <input
-                type="date"
-                value={contractDetails.endDate}
-                onChange={(e) =>
-                  handleChangeContractDetails('endDate', e.target.value)
-                }
-                min={contractDetails.startDate || today}
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
-                Thời hạn hiệu lực (Ngày):
-              </label>
-              <input
-                type="text"
-                value={calculateValidityPeriod().toString()}
-                readOnly
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-              />
-            </div>
-          </div>
-          <div>
-            <div className="mb-4">
-              <label className="block text-lg font-medium mb-2">
                 Mã số thuế:
               </label>
               <input
@@ -163,15 +120,47 @@ const CreateConstructionContract = () => {
               <label className="block text-lg font-medium mb-2">
                 Giá trị hợp đồng (VNĐ):
               </label>
-              <input
-                type="text"
-                value={parseFloat(
-                  contractDetails.contractValue,
-                ).toLocaleString()}
-                readOnly
-                className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
-              />
+              <p className="text-lg text-gray-800">
+                {contractDetails.contractValue.toLocaleString()} VNĐ
+              </p>
             </div>
+          </div>
+          <div>
+            <div className="mb-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-lg font-medium mb-2">
+                  Ngày bắt đầu:
+                </label>
+                <input
+                  type="date"
+                  value={contractDetails.startDate}
+                  onChange={(e) =>
+                    handleChangeContractDetails('startDate', e.target.value)
+                  }
+                  min={today}
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-lg font-medium mb-2">
+                  Ngày kết thúc:
+                </label>
+                <input
+                  type="date"
+                  value={contractDetails.endDate}
+                  onChange={(e) =>
+                    handleChangeContractDetails('endDate', e.target.value)
+                  }
+                  min={contractDetails.startDate || today}
+                  className="w-full rounded-lg border-[1.5px] border-primary bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:bg-form-input dark:text-white"
+                  required
+                />
+              </div>
+            </div>
+            <span className="block text-lg font-medium mb-2">
+              Thời hạn hiệu lực: {calculateValidityPeriod().toString()} ngày
+            </span>
           </div>
         </div>
 
@@ -188,6 +177,8 @@ const CreateConstructionContract = () => {
         </div>
       </form>
 
+      <hr className="my-4 border-gray-300" />
+
       <h3 className="text-xl font-bold mt-8 mb-4">
         Các đợt thanh toán Hợp đồng thi công
       </h3>
@@ -197,7 +188,9 @@ const CreateConstructionContract = () => {
             <th className="px-4 py-2 border text-center">Đợt</th>
             <th className="px-4 py-2 border text-center">Nội dung</th>
             <th className="px-4 py-2 border text-center">Phần trăm (%) </th>
-            <th className="px-4 py-2 border text-center">Giá trị thanh toán (VNĐ)</th>
+            <th className="px-4 py-2 border text-center">
+              Giá trị thanh toán (VNĐ)
+            </th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
             <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
           </tr>

@@ -28,7 +28,7 @@ const OthersAgreementEditor: React.FC<OthersAgreementEditorProps> = ({
           dangerouslySetInnerHTML={{ __html: othersAgreement }}
         />
       )}
-    </>
+    </> 
   );
 };
 

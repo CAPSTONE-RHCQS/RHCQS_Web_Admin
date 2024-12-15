@@ -832,20 +832,26 @@ const ContractDetailStaff = () => {
                             required
                           />
                         </td>
-                        <td className="px-4 py-2 border text-center align-middle">
-                          <input
-                            type="number"
-                            value={request.Percents}
-                            onChange={(e) =>
-                              handleInputChange(
-                                index,
-                                'Percents',
-                                parseFloat(e.target.value),
-                              )
-                            }
-                            className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
-                            required
-                          />
+                        <td className="px-4 py-2 border text-center">
+                          <div className="flex items-center justify-center">
+                            <input
+                              type="number"
+                              value={request.Percents}
+                              onChange={(e) =>
+                                handleInputChange(
+                                  index,
+                                  'Percents',
+                                  parseFloat(e.target.value),
+                                )
+                              }
+                              className="w-12 bg-transparent text-right border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              style={{
+                                border: '1px solid #ccc',
+                              }}
+                              required
+                            />
+                            <span className="ml-0.5">%</span>
+                          </div>
                         </td>
                         <td className="px-4 py-2 border text-center align-middle">
                           {request.Price.toLocaleString('vi-VN')}
