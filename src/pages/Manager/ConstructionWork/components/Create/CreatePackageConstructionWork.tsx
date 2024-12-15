@@ -107,7 +107,6 @@ const CreatePackageConstructionWork: React.FC<
       if (constructionData) {
         try {
           const data = await getConstructionWorkById(constructionData);
-          console.log(data);
           setWorkName(data.WorkName);
           setConstructionWorkData(data);
         } catch (error) {
@@ -124,23 +123,20 @@ const CreatePackageConstructionWork: React.FC<
   const handleSearchPackage = async (name: string, packageIndex: number) => {
     try {
       const response = await searchPackagesByName(name);
-      
-      // Lọc ra các gói đã được chọn trong selectedPackageIds
+
       let filteredResults = response.data.filter(
-        (pkg) => !selectedPackageIds.has(pkg.PackageId)
+        (pkg) => !selectedPackageIds.has(pkg.PackageId),
       );
 
-      // Nếu có WorkTemplates, lọc thêm các gói đã có trong WorkTemplates
       if (constructionWorkData && constructionWorkData.WorkTemplates) {
         const existingPackageIds = new Set(
           constructionWorkData.WorkTemplates.map(
-            (template: any) => template.PackageId
-          )
+            (template: any) => template.PackageId,
+          ),
         );
-        
-        // Loại bỏ các gói đã có trong WorkTemplates
+
         filteredResults = filteredResults.filter(
-          (pkg) => !existingPackageIds.has(pkg.PackageId)
+          (pkg) => !existingPackageIds.has(pkg.PackageId),
         );
       }
 
@@ -163,7 +159,6 @@ const CreatePackageConstructionWork: React.FC<
         name,
         packages[packageIndex].packageId,
       );
-      console.log(results);
       const newPackages = [...packages];
       const resources =
         type === 'ROUGH'
@@ -194,7 +189,6 @@ const CreatePackageConstructionWork: React.FC<
         name,
         packages[packageIndex].packageId,
       );
-      console.log(results);
       const newPackages = [...packages];
       const selectedLabors = new Set(
         newPackages[packageIndex].laborResources.map((res) => res.laborName),
@@ -243,7 +237,6 @@ const CreatePackageConstructionWork: React.FC<
 
     let finalPrice = material.Price || 0;
     if (constructionWorkData && constructionWorkData.Resources) {
-      console.log(constructionWorkData && constructionWorkData.Resources)
       const matchingResource = constructionWorkData.Resources.find(
         (resource: any) =>
           resource.MaterialSectionId === material.MaterialSectionId,
