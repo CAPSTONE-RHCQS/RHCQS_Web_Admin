@@ -61,6 +61,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
     refreshData();
     setAlertMessage('Cập nhật thành công!');
     setAlertType('success');
+    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
@@ -356,8 +357,9 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
           isOpen={!!constructionResponse}
           onSave={() => {
             setAlertMessage('Công tác hạng mục tạo thành công!');
-
             setAlertType('success');
+            setConstructionResponse(null);
+            refreshData();
           }}
           onCancel={() => setConstructionResponse(null)}
           constructionData={constructionResponse}
