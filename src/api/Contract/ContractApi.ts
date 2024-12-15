@@ -209,3 +209,20 @@ export const createContractAppendix = async (data: {
     throw error;
   }
 };
+
+export const getContractPrice = async (projectId: string): Promise<number> => {
+  try {
+    const response = await requestWebRHCQS.get(
+      `/contract/design/price?projectId=${projectId}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching contract price:', error);
+    throw error;
+  }
+};

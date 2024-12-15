@@ -195,9 +195,9 @@ const CreateConstructionContract = () => {
         <thead>
           <tr>
             <th className="px-4 py-2 border text-center">Đợt</th>
-            <th className="px-4 py-2 border text-center">Mô tả</th>
-            <th className="px-4 py-2 border text-center">Phần trăm</th>
-            <th className="px-4 py-2 border text-center">Giá</th>
+            <th className="px-4 py-2 border text-center">Nội dung</th>
+            <th className="px-4 py-2 border text-center">Phần trăm (%) </th>
+            <th className="px-4 py-2 border text-center">Giá trị thanh toán (VNĐ)</th>
             <th className="px-4 py-2 border text-center">Ngày thanh toán</th>
             <th className="px-4 py-2 border text-center">Ngày đáo hạn</th>
           </tr>
