@@ -52,6 +52,7 @@ export interface ProjectDetail {
   StaffPhone: string;
   StaffAvatar: string;
   IsDrawing: boolean;
+  ReasonCanceled: string | null;
   InitialInfo: InitialInfo[];
   HouseDesignDrawingInfo: HouseDesignDrawingInfo[];
   FinalInfo: FinalInfo[];
