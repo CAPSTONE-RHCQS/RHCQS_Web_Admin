@@ -277,7 +277,7 @@ const FinalQuotationDetailManager = () => {
             <span className="ml-2">Phê duyệt</span>
           </button>
         )}
-        <button
+        {/* <button
           onClick={handleDownload}
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
@@ -289,7 +289,7 @@ const FinalQuotationDetailManager = () => {
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
           <FaShareAlt className="text-lg" />
-        </button>
+        </button> */}
       </div>
 
       <ApprovalDialog

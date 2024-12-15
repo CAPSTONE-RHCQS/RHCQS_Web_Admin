@@ -310,7 +310,7 @@ const InitialQuotationDetailManager = () => {
           </button>
         )}
 
-        <>
+        {/* <>
           <button
             onClick={handleDownload}
             className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
@@ -323,7 +323,7 @@ const InitialQuotationDetailManager = () => {
           >
             <FaShareAlt className="text-lg" />
           </button>
-        </>
+        </> */}
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
