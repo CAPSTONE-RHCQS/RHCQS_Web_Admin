@@ -56,6 +56,7 @@ export interface MaterialRequest {
     Description: string
     IsAvailable: boolean
     UnitPrice: string
+    Type: string
     Image: string
 }
 

@@ -14,8 +14,8 @@ import {
 import DeleteButton from '../../../../../components/Buttonicons/DeleteButton';
 import { ConstructionWorkItem } from '../../../../../api/GOVapi';
 import SearchModal from '../../../../../components/SearchModal';
-import { SiMaterialdesign, SiMaterialdesignicons } from 'react-icons/si';
-import { FaUserAstronaut, FaCheck, FaCodeBranch } from 'react-icons/fa';
+import { SiMaterialdesignicons } from 'react-icons/si';
+import { FaUserAstronaut} from 'react-icons/fa';
 import ConstructionIcon from '../../../../../SVG/ConstructionIcon';
 
 export interface CreateConstructionWorkProps {

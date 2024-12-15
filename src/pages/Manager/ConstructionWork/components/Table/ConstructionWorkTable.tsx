@@ -4,10 +4,17 @@ import {
   Resource,
   WorkTemplate,
 } from '../../../../../types/ContructionWork';
-import { PencilIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import {
+  PencilIcon,
+  ChevronDownIcon,
+  EyeIcon,
+  PlusIcon,
+} from '@heroicons/react/24/solid';
 import Alert from '../../../../../components/Alert';
 import { getConstructionWorkById } from '../../../../../api/Construction/ContructionWork';
 import EditConstructionWork from '../Edit/EditConstructionWork';
+import CreatePackageConstructionWork from '../Create/CreatePackageConstructionWork';
+import { FaPlus } from 'react-icons/fa';
 
 interface ConstructionWorkTableProps {
   dataConstructionWork: ConstructionWorkItem[];
@@ -31,6 +38,9 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [resources, setResources] = useState<Resource[]>([]);
   const [workTemplates, setWorkTemplates] = useState<WorkTemplate[]>([]);
+  const [constructionResponse, setConstructionResponse] = useState<
+    string | null
+  >(null);
 
   const handleRowClick = async (id: string) => {
     try {
@@ -76,21 +86,30 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
     openEditModal(id);
   };
 
+  const handleCreatePackage = (id: string) => {
+    setConstructionResponse(id);
+  };
+
   return (
     <>
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            {['Tên công tác', 'Mã công tác', 'Đơn vị', 'Ngày tạo', ''].map(
-              (header) => (
-                <th
-                  key={header}
-                  className="py-4 px-4 font-bold text-black dark:text-white"
-                >
-                  {header}
-                </th>
-              ),
-            )}
+            {[
+              'Tên công tác',
+              'Mã công tác',
+              'Đơn vị',
+              'Ngày tạo',
+              'Xem',
+              'Tạo gói',
+            ].map((header) => (
+              <th
+                key={header}
+                className="py-4 px-4 font-bold text-black dark:text-white"
+              >
+                {header}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -100,6 +119,7 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                 <td
                   className="border-b border-[#eee] py-5 px-4 dark:border-strokedark uppercase"
                   onClick={() => handleRowClick(item.Id)}
+                  style={{ maxWidth: '750px', whiteSpace: 'normal' }}
                 >
                   <div className="flex items-center">
                     <span className="font-bold text-red-500 dark:text-white">
@@ -130,9 +150,20 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
                     <button
                       className="cursor-pointer"
                       onClick={(event) => handleEditClick(event, item.Id)}
-                      title="Chỉnh sửa"
+                      title="Xem"
                     >
-                      <PencilIcon className="w-4 h-4 text-primaryGreenButton" />
+                      <EyeIcon className="w-4 h-4 text-primaryGreenButton" />
+                    </button>
+                  </div>
+                </td>
+                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                  <div className="flex justify-center relative" ref={editRef}>
+                    <button
+                      className="cursor-pointer"
+                      onClick={() => handleCreatePackage(item.Id)}
+                      title="Tạo gói"
+                    >
+                      <FaPlus className="w-4 h-4 text-primaryGreenButton" />
                     </button>
                   </div>
                 </td>
@@ -317,6 +348,20 @@ const ConstructionWorkTable: React.FC<ConstructionWorkTableProps> = ({
           onCancel={handleCancel}
           onError={handleError}
           currentEditId={currentEditId}
+        />
+      )}
+
+      {constructionResponse && (
+        <CreatePackageConstructionWork
+          isOpen={!!constructionResponse}
+          onSave={() => {
+            setAlertMessage('Công tác hạng mục tạo thành công!');
+
+            setAlertType('success');
+          }}
+          onCancel={() => setConstructionResponse(null)}
+          constructionData={constructionResponse}
+          onError={handleError}
         />
       )}
 
