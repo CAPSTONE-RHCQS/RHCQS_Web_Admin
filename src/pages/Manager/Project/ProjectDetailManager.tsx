@@ -78,6 +78,7 @@ const ProjectDetailManager = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
   );
+  const [cancelReason, setCancelReason] = useState('');
 
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
@@ -107,8 +108,13 @@ const ProjectDetailManager = () => {
       return;
     }
 
+    if (!cancelReason.trim()) {
+      toast.error('Vui lòng nhập lý do chấm dứt dự án.');
+      return;
+    }
+
     try {
-      await cancelProject(projectId);
+      await cancelProject(projectId, cancelReason);
       toast.success('Dự án đã được chấm dứt thành công!');
       fetchProjectDetail();
     } catch (error) {
@@ -355,7 +361,7 @@ const ProjectDetailManager = () => {
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
-            Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
+            Từ lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="flex flex-wrap">
@@ -596,7 +602,14 @@ const ProjectDetailManager = () => {
           message="Bạn có muốn chấm dứt dự án này không?"
           onConfirm={handleCancelProject}
           onCancel={() => setIsModalOpen(false)}
-        />
+        >
+          <textarea
+            placeholder="Lý do chấm dứt dự án"
+            value={cancelReason}
+            onChange={(e) => setCancelReason(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded mt-2 h-24"
+          />
+        </Modal>
       )}
       {showEmployeeListModal && projectId && (
         <Dialog
