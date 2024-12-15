@@ -439,6 +439,20 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     }
   };
 
+  const handleAddConstructionWork = () => {
+    const newConstructionWork: FinalQuotationItem = {
+      Id: '',
+      ConstructionId: '',
+      SubConstructionId: null,
+      ContructionName: 'New Construction Work',
+      Area: null,
+      Type: 'WORK_NEW',
+      InsDate: new Date().toISOString(),
+      QuotationItems: [],
+    };
+    onItemsChange([...items, newConstructionWork]);
+  };
+
   return (
     <div>
       {isEditing && (

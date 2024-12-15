@@ -326,7 +326,7 @@ const ProjectDetailSalesStaff = () => {
           <div className="w-full md:w-1/2">
             <div className="mb-2 text-lg flex items-center">
               <FaUser className="mr-2 text-secondary" />
-              <span className="font-semibold">Tên khách hàng:</span>
+              <span className="font-semibold">Chủ đầu tư:</span>
               <span className="text-gray-700 ml-2">
                 {projectDetail.AccountName}
               </span>
