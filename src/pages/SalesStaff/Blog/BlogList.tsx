@@ -4,10 +4,11 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
-} from '../api/Blog/BlogApi';
-import { BlogItem } from '../types/BlogTypes';
+} from '../../../api/Blog/BlogApi';
+import { BlogItem } from '../../../types/BlogTypes';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 import ClipLoader from 'react-spinners/ClipLoader';
+import ReactQuill from 'react-quill';
 
 const BlogList: React.FC = () => {
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
@@ -22,8 +23,11 @@ const BlogList: React.FC = () => {
     context: '',
     imgUrl: '',
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
   const [blogToDelete, setBlogToDelete] = useState<BlogItem | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState<boolean>(false);
+  const [blogDetail, setBlogDetail] = useState<BlogItem | null>(null);
 
   useEffect(() => {
     fetchBlogs();
@@ -41,8 +45,12 @@ const BlogList: React.FC = () => {
   };
 
   const handleCreateBlog = async () => {
+    if (!imageFile) {
+      setError('Please select an image file');
+      return;
+    }
     try {
-      await createBlog(newBlog);
+      await createBlog(newBlog, imageFile);
       closeModal();
       fetchBlogs();
     } catch (error) {
@@ -52,15 +60,15 @@ const BlogList: React.FC = () => {
   };
 
   const handleUpdateBlog = async () => {
-    if (!currentBlog) return;
+    if (!currentBlog || !imageFile) return;
     try {
       await updateBlog({
         id: currentBlog.Id,
-        heading: newBlog.heading,
-        subHeading: newBlog.subHeading,
-        context: newBlog.context,
-        imgUrl: newBlog.imgUrl,
-      });
+        heading: newBlog.heading || '',
+        subHeading: newBlog.subHeading || '',
+        context: newBlog.context || '',
+        imgUrl: newBlog.imgUrl || '',
+      }, imageFile);
       closeModal();
       fetchBlogs();
     } catch (error) {
@@ -84,10 +92,10 @@ const BlogList: React.FC = () => {
   const handleEditClick = (blog: BlogItem) => {
     setCurrentBlog(blog);
     setNewBlog({
-      heading: blog.Heading,
-      subHeading: blog.SubHeading,
-      context: blog.Context,
-      imgUrl: blog.ImgUrl,
+      heading: blog.Heading || '',
+      subHeading: blog.SubHeading || '',
+      context: blog.Context || '',
+      imgUrl: blog.ImgUrl || '',
     });
     setIsEditing(true);
     setShowModal(true);
@@ -98,16 +106,27 @@ const BlogList: React.FC = () => {
     setShowDeleteModal(true);
   };
 
+  const handleDetailClick = (blog: BlogItem) => {
+    setBlogDetail(blog);
+    setShowDetailModal(true);
+  };
+
   const closeModal = () => {
     setShowModal(false);
     setCurrentBlog(null);
     setIsEditing(false);
     setNewBlog({ heading: '', subHeading: '', context: '', imgUrl: '' });
+    setImageFile(null);
   };
 
   const closeDeleteModal = () => {
     setShowDeleteModal(false);
     setBlogToDelete(null);
+  };
+
+  const closeDetailModal = () => {
+    setShowDetailModal(false);
+    setBlogDetail(null);
   };
 
   if (loading) {
@@ -143,20 +162,27 @@ const BlogList: React.FC = () => {
             className="relative bg-white shadow-lg rounded-lg overflow-hidden"
           >
             <img
-              src={blog.ImgUrl}
-              alt={blog.Heading}
+              src={blog.ImgUrl || ''}
+              alt={blog.Heading || 'Blog Image'}
               className="w-full h-56 object-cover"
             />
             <div className="p-5">
-              <h2 className="text-xl font-semibold mb-2">{blog.Heading}</h2>
-              <p className="text-gray-600 mb-4">{blog.SubHeading}</p>
-              <p className="text-gray-800 mb-4">
-                {blog.Context.substring(0, 100)}...
-              </p>
+              <h2 className="text-xl font-semibold mb-2">{blog.Heading || 'No Title'}</h2>
+              <p className="text-gray-600 mb-4">{blog.SubHeading || 'No Subheading'}</p>
+              <div
+                className="text-gray-800 mb-4"
+                dangerouslySetInnerHTML={{ __html: (blog.Context || '').substring(0, 100) + '...' }}
+              />
               <div className="flex justify-between items-center text-sm text-gray-500">
                 <span>By {blog.AccountName}</span>
                 <span>{new Date(blog.InsDate).toLocaleDateString()}</span>
               </div>
+              <button
+                className="mt-2 text-blue-500 hover:underline"
+                onClick={() => handleDetailClick(blog)}
+              >
+                Xem chi tiết
+              </button>
             </div>
             <div className="absolute top-2 right-2 flex space-x-2">
               <button
@@ -176,13 +202,49 @@ const BlogList: React.FC = () => {
         ))}
       </div>
 
+      {showDetailModal && blogDetail && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeDetailModal}
+        >
+          <div
+            className="relative bg-white p-10 rounded-lg shadow-lg w-full max-w-2xl transform transition-all duration-300 scale-95 overflow-y-auto max-h-screen mt-20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl font-bold focus:outline-none"
+              onClick={closeDetailModal}
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-center">
+              {blogDetail.Heading || 'No Title'}
+            </h2>
+            <p className="text-gray-600 mb-4">{blogDetail.SubHeading || 'No Subheading'}</p>
+            <div
+              className="text-gray-800 mb-4"
+              dangerouslySetInnerHTML={{ __html: blogDetail.Context || '' }}
+            />
+            <img
+              src={blogDetail.ImgUrl || ''}
+              alt={blogDetail.Heading || 'Blog Image'}
+              className="w-full h-56 object-cover mb-4"
+            />
+            <div className="flex justify-between items-center text-sm text-gray-500">
+              <span>By {blogDetail.AccountName}</span>
+              <span>{new Date(blogDetail.InsDate).toLocaleDateString()}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showModal && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={closeModal}
         >
           <div
-            className="relative bg-white p-8 rounded-lg shadow-lg w-full max-w-lg transform transition-all duration-300 scale-95"
+            className="relative bg-white p-10 rounded-lg shadow-lg w-full max-w-2xl transform transition-all duration-300 scale-95 overflow-y-auto max-h-screen mt-20"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -212,21 +274,22 @@ const BlogList: React.FC = () => {
               }
               className="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <textarea
-              placeholder="Nội dung"
+            <ReactQuill
               value={newBlog.context}
-              onChange={(e) =>
-                setNewBlog({ ...newBlog, context: e.target.value })
+              onChange={(value: string) =>
+                setNewBlog({ ...newBlog, context: value })
               }
-              className="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full mb-3"
+              placeholder="Nội dung"
+              style={{ maxHeight: '300px', overflow: 'auto' }}
             />
             <input
-              type="text"
-              placeholder="URL Hình ảnh"
-              value={newBlog.imgUrl}
-              onChange={(e) =>
-                setNewBlog({ ...newBlog, imgUrl: e.target.value })
-              }
+              type="file"
+              onChange={(e) => {
+                if (e.target.files) {
+                  setImageFile(e.target.files[0]);
+                }
+              }}
               className="w-full mb-3 p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <div className="flex justify-end space-x-3">

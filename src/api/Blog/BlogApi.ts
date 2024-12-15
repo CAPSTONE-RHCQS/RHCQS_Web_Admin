@@ -36,12 +36,19 @@ export const getBlogs = async (
 
 export const createBlog = async (
   blogData: CreateBlogRequest,
+  imageFile: File,
 ): Promise<void> => {
   try {
-    const response = await requestWebRHCQS.post('/blogs', blogData, {
+    const formData = new FormData();
+    formData.append('Heading', blogData.heading);
+    formData.append('SubHeading', blogData.subHeading);
+    formData.append('Context', blogData.context);
+    formData.append('imageFile', imageFile);
+
+    const response = await requestWebRHCQS.post('/blogs', formData, {
       headers: {
         accept: 'text/plain',
-        'Content-Type': 'application/json',
+        'Content-Type': 'multipart/form-data',
       },
     });
   } catch (error) {
@@ -52,15 +59,23 @@ export const createBlog = async (
 
 export const updateBlog = async (
   blogData: UpdateBlogRequest,
+  imageFile: File,
 ): Promise<void> => {
   try {
+    const formData = new FormData();
+    formData.append('Heading', blogData.heading);
+    formData.append('SubHeading', blogData.subHeading);
+    formData.append('Context', blogData.context);
+    formData.append('imageFile', imageFile);
+    formData.append('blogId', blogData.id);
+
     const response = await requestWebRHCQS.put(
-      `/blogs?blogId=${blogData.id}`,
-      blogData,
+      '/blogs',
+      formData,
       {
         headers: {
           accept: 'text/plain',
-          'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
         },
       },
     );

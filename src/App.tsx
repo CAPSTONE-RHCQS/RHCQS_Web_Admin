@@ -17,7 +17,7 @@ import PrivateRoute from './components/PrivateRoute';
 import ConstructionList from './pages/Manager/Construction/ConstructionList.tsx';
 import ProjectListSalesStaff from './pages/SalesStaff/Project/ProjectListSalesStaff.tsx';
 import ProjectDetailSalesStaff from './pages/SalesStaff/Project/ProjectDetailSalesStaff.tsx';
-import BlogList from './components/BlogList.tsx';
+import BlogList from './pages/SalesStaff/Blog/BlogList.tsx';
 import CreateConstructionContract from './pages/SalesStaff/Contract/CreateConstructionContract.tsx';
 import InitialQuotationDetailStaff from './pages/SalesStaff/InitialQuotation/InitialQuotationDetailStaff.tsx';
 import PackageList from './pages/Manager/Package/PackageList.tsx';
