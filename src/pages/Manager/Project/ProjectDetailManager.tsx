@@ -328,11 +328,11 @@ const ProjectDetailManager = () => {
           />
           <ContactCard
             data={{
-              nameHouse: 'Nhà ở dân dụng',
+              // nameHouse: 'Nhà ở dân dụng',
               address: projectDetail.Address || '',
             }}
             fields={[
-              { key: 'nameHouse', label: 'Name' },
+              // { key: 'nameHouse', label: 'Name' },
               { key: 'address', label: 'Address' },
             ]}
             avatarUrl={House}
