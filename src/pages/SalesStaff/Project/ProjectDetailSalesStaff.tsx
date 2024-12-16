@@ -302,13 +302,6 @@ const ProjectDetailSalesStaff = () => {
               </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
-              <FaHome className="mr-2 text-secondary" />
-              <span className="font-semibold">Tên dự án:</span>
-              <span className="text-gray-700 ml-2">
-                {getTypeInVietnamese(projectDetail.Type)}
-              </span>
-            </div>
-            <div className="mb-2 text-lg flex items-center">
               <FaMapMarkerAlt className="mr-2 text-secondary" />
               <span className="font-semibold">Địa chỉ thi công:</span>
               <span className="text-gray-700 ml-2">
