@@ -245,19 +245,19 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
-                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white">
+                              <td className="border-b border-[#eee] py-2 px-2 font-bold text-black dark:text-white" style={{ width: '300px' }}>
                                 {material.Name}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
                                 {formatPrice(material.Price ?? 0)}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white text-center">
                                 {material.Code}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center">
                                 {material.Unit}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center uppercase">
+                              <td className="border-b border-[#eee] py-2 px-4 font-medium text-black dark:text-white text-sm text-center uppercase">
                                 {material.SupplierName}
                               </td>
                               <td className="border-b border-[#eee] py-5 px-20 dark:border-strokedark">
