@@ -120,19 +120,6 @@ const DesignPriceList: React.FC = () => {
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <div className="flex space-x-2 w-2/3">
               <div className="flex flex-col space-y-2 w-2/3">
-                <label className="text-sm font-bold text-black">
-                  Tìm kiếm giá thiết kế
-                </label>
-                <input
-                  type="text"
-                  placeholder="Nhập tên giá thiết kế..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    handleSearch();
-                  }}
-                  className="border p-2 w-full rounded-md focus:outline-none"
-                />
                 <h2 className="text-lg font-bold text-red-600 mb-4">
                   Giá này chỉ áp dụng với{' '}
                   <span className="font-extrabold">NHÀ PHỐ</span>
