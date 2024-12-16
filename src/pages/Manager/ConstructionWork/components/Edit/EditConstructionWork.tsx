@@ -153,6 +153,7 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
   const handleCancel = () => {
     onCancel();
   };
+  
   const handleSearchMaterial = async (name: string, index: number) => {
     try {
       const resultsMaterial = await searchMaterialSection(name);
