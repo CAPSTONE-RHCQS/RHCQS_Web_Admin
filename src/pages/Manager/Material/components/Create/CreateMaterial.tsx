@@ -122,6 +122,8 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       Image: materialDetail.Image,
     };
 
+    console.log(materialData);
+
     try {
       await createMaterial(materialData);
       onSuccess('Tạo vật liệu thành công');
