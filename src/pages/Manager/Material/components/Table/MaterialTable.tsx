@@ -95,13 +95,14 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           name: inputNameValue,
           code: inputCodeValue,
         });
-        setAlertMessage('Sửa vật tưthành công');
+        setAlertMessage('Sửa vật tư thành công');
         setAlertType('success');
         refreshData();
       }
     } catch (error) {
-      setAlertMessage('Sửa vật tưthất bại');
+      setAlertMessage('Sửa vật tư thất bại');
       setAlertType('error');
+      console.error('Error updating material section:', error);
     } finally {
       setTimeout(() => {
         setIsModalOpen(false);
@@ -117,6 +118,11 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     setAlertMessage(message);
     setAlertType('success');
     refreshData();
+  };
+
+  const handleCreateError = (message: string) => {
+    setAlertMessage(message);
+    setAlertType('error');
   };
 
   const formatDate = (dateString: string) => {
@@ -300,6 +306,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           id={currentSectionId ?? ''}
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={handleCreateSuccess}
+          onError={handleCreateError}
         />
       )}
 

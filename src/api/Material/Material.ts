@@ -201,9 +201,9 @@ export async function createMaterial(data: any) {
       },
     });
     return response.data;
-  } catch (error) {
-    console.error('Error creating material:', error);
-    throw new Error('Failed to create material');
+  } catch (error: any) {
+    console.error('Error creating material:', error.response.data.Error);
+    throw new Error(error.response.data.Error);
   }
 }
 

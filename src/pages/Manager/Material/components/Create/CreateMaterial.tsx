@@ -9,12 +9,14 @@ interface CreateMaterialProps {
   id: string;
   onClose: () => void;
   onSuccess: (message: string) => void;
+  onError: (message: string) => void;
 }
 
 const CreateMaterial: React.FC<CreateMaterialProps> = ({
   id,
   onClose,
   onSuccess,
+  onError,
 }) => {
   const [materialSectionDetail, setMaterialSectionDetail] = useState<any>(null);
   const [materialDetail, setMaterialDetail] = useState<{
@@ -122,13 +124,12 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       Image: materialDetail.Image,
     };
 
-    console.log(materialData);
-
     try {
       await createMaterial(materialData);
       onSuccess('Tạo vật liệu thành công');
       onClose();
-    } catch (error) {
+    } catch (error: any) {
+      onError(error.message);
       console.error('Failed to create material:', error);
     } finally {
       setIsLoading(false);
