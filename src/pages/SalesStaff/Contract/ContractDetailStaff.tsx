@@ -502,20 +502,28 @@ const ContractDetailStaff = () => {
             )}
             {contractDetail.UrlFile === null && (
               <div className="mb-4 text-lg flex items-center">
-                <FaUpload className="mr-2" />
-                <span className="font-semibold">Tải lên Hợp đồng đã ký:</span>
-                <input
-                  type="file"
-                  onChange={handleFileChange}
-                  className="ml-2"
-                />
-                <button
-                  onClick={handleUpload}
-                  className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
-                  disabled={isUploading}
-                >
-                  {isUploading ? 'Đang tải lên...' : 'Tải lên'}
-                </button>
+                <div className="flex flex-col items-start">
+                  <span className="font-semibold mb-2">
+                    Tải lên Hợp đồng đã ký:
+                  </span>
+                  <div className="flex items-center">
+                    <input
+                      type="file"
+                      onChange={handleFileChange}
+                      className="border border-gray-300 rounded-md p-2"
+                    />
+                    {selectedFile && (
+                      <button
+                        onClick={handleUpload}
+                        className="ml-2 flex items-center bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark transition duration-300"
+                        disabled={isUploading}
+                      >
+                        <FaUpload className="mr-2" />
+                        {isUploading ? 'Đang tải lên...' : 'Tải lên'}
+                      </button>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
             <div className="mb-4 col-span-full text-lg flex items-center">
@@ -603,7 +611,9 @@ const ContractDetailStaff = () => {
               <tr>
                 <th className="px-4 py-2 border text-center">Đợt</th>
                 <th className="px-4 py-2 border text-center">Nội dung</th>
-                <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
+                <th className="px-4 py-2 border text-center">
+                  Phần trăm (%)
+                </th>
                 <th className="px-4 py-2 border text-center">
                   Giá trị thanh toán (VNĐ)
                 </th>
