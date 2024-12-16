@@ -245,7 +245,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
-                              <td className="border-b border-[#eee] py-2 px-2 font-bold text-black dark:text-white" style={{ width: '300px' }}>
+                              <td className="border-b border-[#eee] py-2 px-2 font-bold text-black dark:text-white text-center" style={{ width: '300px' }}>
                                 {material.Name}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
