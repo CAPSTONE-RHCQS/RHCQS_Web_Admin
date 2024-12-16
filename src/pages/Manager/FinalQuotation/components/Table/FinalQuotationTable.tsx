@@ -67,6 +67,9 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <th className="px-4 py-2 border text-center" colSpan={3}>
               Thành tiền
             </th>
+            <th className="px-4 py-2 border text-center" rowSpan={2}>
+              Ghi chú
+            </th>
           </tr>
 
           <tr>
@@ -113,7 +116,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
             <React.Fragment key={item.Id}>
               <tr>
                 <td
-                  colSpan={10}
+                  colSpan={11}
                   className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
                   {item.ContructionName}
@@ -160,12 +163,15 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
                       ? `${quotationItem.TotalPriceFinished.toLocaleString()} `
                       : ''}
                   </td>
+                  <td className="px-4 py-2 border text-center">
+                    {quotationItem.Note || ''}
+                  </td>
                 </tr>
               ))}
             </React.Fragment>
           ))}
           <tr className="bg-gray-200">
-            <td colSpan={6} className="px-4 py-2 border text-center font-bold">
+            <td colSpan={7} className="px-4 py-2 border text-center font-bold">
               Tổng cộng
             </td>
             <td className="px-4 py-2 border text-center font-bold">
