@@ -152,7 +152,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                     </ul>
                   )}
               </td>
-              {material.Type === 'Finished' ? (
+              {material.Type === 'FINISHED' ? (
                 <td className="py-3 px-4">Hoàn thiện</td>
               ) : (
                 <td className="py-3 px-4">Thô</td>

@@ -212,10 +212,18 @@ const InitialQuotationDetailManager = () => {
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setType('Approved');
+    setReason('');
   };
 
   const handleSubmit = async () => {
     if (!id) return;
+
+    if (!reason.trim() && type === 'Rejected') {
+      toast.error('Vui lòng nhập lý do từ chối.');
+      return;
+    }
+
     try {
       await approveInitialQuotation(id, { type, reason });
       if (type === 'Approved') {
@@ -308,7 +316,7 @@ const InitialQuotationDetailManager = () => {
           </button>
         )}
 
-        <>
+        {/* <>
           <button
             onClick={handleDownload}
             className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
@@ -321,7 +329,7 @@ const InitialQuotationDetailManager = () => {
           >
             <FaShareAlt className="text-lg" />
           </button>
-        </>
+        </> */}
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
@@ -821,7 +829,9 @@ const InitialQuotationDetailManager = () => {
           </div>
           <div
             className="text-gray-700"
-            dangerouslySetInnerHTML={{ __html: quotationData.OthersAgreement || '' }}
+            dangerouslySetInnerHTML={{
+              __html: quotationData.OthersAgreement || '',
+            }}
           />
         </div>
 

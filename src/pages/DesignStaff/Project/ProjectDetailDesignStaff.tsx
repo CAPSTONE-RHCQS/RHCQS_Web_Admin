@@ -133,11 +133,11 @@ const ProjectDetailDesignStaff = () => {
           />
           <ContactCard
             data={{
-              nameHouse: 'Nhà ở dân dụng',
+              // nameHouse: 'Nhà ở dân dụng',
               address: projectDetail.Address || '',
             }}
             fields={[
-              { key: 'nameHouse', label: 'Name' },
+              // { key: 'nameHouse', label: 'Name' },
               { key: 'address', label: 'Address' },
             ]}
             avatarUrl={House}
@@ -184,7 +184,7 @@ const ProjectDetailDesignStaff = () => {
         </div>
         <div className="mb-2 text-lg flex items-center">
           <FaUser className="mr-2 text-secondary" />
-          <span className="font-semibold">Tên khách hàng:</span>
+          <span className="font-semibold">Chủ đầu tư:</span>
           <span className="text-gray-700 ml-2">
             {projectDetail.AccountName}
           </span>

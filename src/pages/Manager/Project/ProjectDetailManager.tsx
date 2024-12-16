@@ -78,6 +78,7 @@ const ProjectDetailManager = () => {
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(
     null,
   );
+  const [cancelReason, setCancelReason] = useState('');
 
   const handleOpen = (value: number) => setOpen(open === value ? 0 : value);
 
@@ -107,8 +108,13 @@ const ProjectDetailManager = () => {
       return;
     }
 
+    if (!cancelReason.trim()) {
+      toast.error('Vui lòng nhập lý do chấm dứt dự án.');
+      return;
+    }
+
     try {
-      await cancelProject(projectId);
+      await cancelProject(projectId, cancelReason);
       toast.success('Dự án đã được chấm dứt thành công!');
       fetchProjectDetail();
     } catch (error) {
@@ -322,11 +328,11 @@ const ProjectDetailManager = () => {
           />
           <ContactCard
             data={{
-              nameHouse: 'Nhà ở dân dụng',
+              // nameHouse: 'Nhà ở dân dụng',
               address: projectDetail.Address || '',
             }}
             fields={[
-              { key: 'nameHouse', label: 'Name' },
+              // { key: 'nameHouse', label: 'Name' },
               { key: 'address', label: 'Address' },
             ]}
             avatarUrl={House}
@@ -343,19 +349,25 @@ const ProjectDetailManager = () => {
               { key: 'staffPhone', label: 'Phone' },
             ]}
             onClick={() =>
-              projectDetail.StaffName === "" && handleMenuItemClick('assign')
+              projectDetail.StaffName === '' && handleMenuItemClick('assign')
             }
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
 
         <StatusTracker currentStatus={mappedStatus} />
+        {projectDetail.Status === 'Ended' && projectDetail.ReasonCanceled && (
+          <div className="p-4 bg-red-100 text-red-800 rounded">
+            <strong>Dự án đã chấm dứt vì: </strong>
+            {projectDetail.ReasonCanceled}
+          </div>
+        )}
       </div>
       <div className="p-6 bg-white rounded-lg shadow-md">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-2xl font-bold text-primary">Thông tin dự án</h2>
           <span className="text-gray-500 text-sm">
-            Tạo lúc {new Date(projectDetail.InsDate).toLocaleString()}
+            Từ lúc {new Date(projectDetail.InsDate).toLocaleString()}
           </span>
         </div>
         <div className="flex flex-wrap">
@@ -390,7 +402,7 @@ const ProjectDetailManager = () => {
           <div className="w-full md:w-1/2">
             <div className="mb-2 text-lg flex items-center">
               <FaUser className="mr-2 text-secondary" />
-              <span className="font-semibold">Tên khách hàng:</span>
+              <span className="font-semibold">Chủ đầu tư:</span>
               <span className="text-gray-700 ml-2">
                 {projectDetail.AccountName}
               </span>
@@ -596,7 +608,14 @@ const ProjectDetailManager = () => {
           message="Bạn có muốn chấm dứt dự án này không?"
           onConfirm={handleCancelProject}
           onCancel={() => setIsModalOpen(false)}
-        />
+        >
+          <textarea
+            placeholder="Lý do chấm dứt dự án"
+            value={cancelReason}
+            onChange={(e) => setCancelReason(e.target.value)}
+            className="w-full p-3 border border-gray-300 rounded mt-2 h-24"
+          />
+        </Modal>
       )}
       {showEmployeeListModal && projectId && (
         <Dialog

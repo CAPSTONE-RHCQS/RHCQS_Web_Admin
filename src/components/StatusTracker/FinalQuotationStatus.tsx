@@ -75,7 +75,7 @@ const FinalQuotationStatus: React.FC<FinalQuotationStatusProps> = ({
     (status) => status.label === currentStatus,
   );
   return (
-    <div className="py-3 flex items-center justify-center w-full">
+    <div className="py-3 mb-2 flex items-center justify-center w-full">
       <div className="w-full max-w-6xl flex items-center justify-between px-1">
         {statuses.map((status, index) => (
           <React.Fragment key={index}>

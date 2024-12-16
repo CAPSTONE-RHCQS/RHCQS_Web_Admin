@@ -31,7 +31,7 @@ export interface QuotationItem {
   WorkTemplateId: string | null;
   WorkName: string;
   Unit: string;
-  Weight: number;
+  Weight: number | null;
   UnitPriceLabor: number | null;
   UnitPriceRough: number | null;
   UnitPriceFinished: number | null;

@@ -53,6 +53,13 @@ const statuses = [
     textColor: 'text-blue-500',
   },
   {
+    key: 'Rejected',
+    label: 'Từ chối bản vẽ',
+    icon: <FaTimes />,
+    backgroundColor: 'bg-red-500',
+    textColor: 'text-red-500',
+  },
+  {
     key: 'Accepted',
     label: 'Chấp nhận bản vẽ',
     icon: <FaCheck />,

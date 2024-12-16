@@ -49,7 +49,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           </button>
         </>
       )}
-      <button
+      {/* <button
         onClick={handleDownload}
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
       >
@@ -60,7 +60,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
         className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center"
       >
         <FaShareAlt className="text-lg" />
-      </button>
+      </button> */}
     </div>
   );
 };

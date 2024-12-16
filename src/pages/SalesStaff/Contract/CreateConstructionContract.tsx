@@ -14,7 +14,7 @@ const CreateConstructionContract = () => {
     startDate: '',
     endDate: '',
     taxCode: '',
-    contractValue: '',
+    contractValue: 0,
     urlFile: null,
     note: '',
   });
@@ -30,7 +30,7 @@ const CreateConstructionContract = () => {
           setBatchPayments(data.BatchPaymentRequests);
           setContractDetails((prevDetails) => ({
             ...prevDetails,
-            contractValue: data.ContractValue.toString(),
+            contractValue: data.ContractValue,
           }));
         } catch (error) {
           console.error('Error fetching batch payments:', error);
@@ -75,7 +75,7 @@ const CreateConstructionContract = () => {
       endDate: contractDetails.endDate,
       validityPeriod: calculateValidityPeriod(),
       taxCode: contractDetails.taxCode,
-      contractValue: parseFloat(contractDetails.contractValue),
+      contractValue: contractDetails.contractValue,
       urlFile: contractDetails.urlFile,
       note: contractDetails.note,
     };
@@ -121,7 +121,7 @@ const CreateConstructionContract = () => {
                 Giá trị hợp đồng (VNĐ):
               </label>
               <p className="text-lg text-gray-800">
-                {contractDetails.contractValue.toLocaleString()} VNĐ
+                {contractDetails.contractValue.toLocaleString('vi-VN')} VNĐ
               </p>
             </div>
           </div>

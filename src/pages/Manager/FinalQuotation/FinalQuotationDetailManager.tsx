@@ -129,10 +129,21 @@ const FinalQuotationDetailManager = () => {
     totalEquipmentCost -
     totalDiscount;
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setApprovalType('Approved');
+    setReason('');
+  };
+
   const handleApprove = async () => {
     if (!id) {
       console.error('Quotation ID is undefined');
       toast.error('Quotation ID is undefined');
+      return;
+    }
+
+    if (!reason.trim() && approvalType === 'Rejected') {
+      toast.error('Vui lòng nhập lý do từ chối.');
       return;
     }
 
@@ -148,7 +159,7 @@ const FinalQuotationDetailManager = () => {
         toast.success('Từ chối báo giá thành công');
       }
 
-      setIsModalOpen(false);
+      handleCloseModal();
       fetchQuotationDetail();
     } catch (error: any) {
       if (error.response && error.response.data && error.response.data.Error) {
@@ -209,7 +220,7 @@ const FinalQuotationDetailManager = () => {
 
   const handleNavigation = () => {
     const id = quotationDetail.InitailQuotationId;
-    navigate(`/initial-quotation-detail-staff/${id}`);
+    navigate(`/initial-quotation-detail-manager/${id}`);
   };
 
   const projectTypeMap: { [key: string]: string } = {
@@ -266,7 +277,7 @@ const FinalQuotationDetailManager = () => {
             <span className="ml-2">Phê duyệt</span>
           </button>
         )}
-        <button
+        {/* <button
           onClick={handleDownload}
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
@@ -278,12 +289,12 @@ const FinalQuotationDetailManager = () => {
           className="border-primary hover:bg-opacity-90 px-4 py-2 rounded font-medium text-primary flex items-center transition-colors duration-200"
         >
           <FaShareAlt className="text-lg" />
-        </button>
+        </button> */}
       </div>
 
       <ApprovalDialog
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         approvalType={approvalType}
         setApprovalType={setApprovalType}
         reason={reason}

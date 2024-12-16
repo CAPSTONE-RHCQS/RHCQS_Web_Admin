@@ -255,11 +255,11 @@ const ProjectDetailSalesStaff = () => {
           />
           <ContactCard
             data={{
-              nameHouse: 'Nhà ở dân dụng',
+              // nameHouse: 'Nhà ở dân dụng',
               address: projectDetail.Address || '',
             }}
             fields={[
-              { key: 'nameHouse', label: 'Name' },
+              // { key: 'nameHouse', label: 'Name' },
               { key: 'address', label: 'Address' },
             ]}
             avatarUrl={House}
@@ -302,13 +302,6 @@ const ProjectDetailSalesStaff = () => {
               </span>
             </div>
             <div className="mb-2 text-lg flex items-center">
-              <FaHome className="mr-2 text-secondary" />
-              <span className="font-semibold">Tên dự án:</span>
-              <span className="text-gray-700 ml-2">
-                {getTypeInVietnamese(projectDetail.Type)}
-              </span>
-            </div>
-            <div className="mb-2 text-lg flex items-center">
               <FaMapMarkerAlt className="mr-2 text-secondary" />
               <span className="font-semibold">Địa chỉ thi công:</span>
               <span className="text-gray-700 ml-2">
@@ -326,7 +319,7 @@ const ProjectDetailSalesStaff = () => {
           <div className="w-full md:w-1/2">
             <div className="mb-2 text-lg flex items-center">
               <FaUser className="mr-2 text-secondary" />
-              <span className="font-semibold">Tên khách hàng:</span>
+              <span className="font-semibold">Chủ đầu tư:</span>
               <span className="text-gray-700 ml-2">
                 {projectDetail.AccountName}
               </span>
