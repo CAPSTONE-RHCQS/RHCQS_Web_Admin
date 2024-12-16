@@ -351,17 +351,22 @@ const FinalQuotationDetailManager = () => {
                 <FaFileInvoiceDollar className="mr-2 text-secondary" />
                 <span className="font-semibold mr-2">Đơn giá thi công:</span>
               </div>
-              <span className="text-gray-700">
-                {quotationDetail.PackageQuotationList.PackageRough || 'N/A'} -{' '}
-                {quotationDetail.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
-                đồng/m²
-              </span>
-              <span className="text-gray-700">
-                {quotationDetail.PackageQuotationList.PackageFinished || 'N/A'}{' '}
-                -{' '}
-                {quotationDetail.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
-                đồng/m²
-              </span>
+              {quotationDetail.ProjectType !== 'FINISHED' && (
+                <span className="text-gray-700">
+                  {quotationDetail.PackageQuotationList.PackageRough || 'N/A'} -{' '}
+                  {quotationDetail.PackageQuotationList.UnitPackageRough.toLocaleString()}{' '}
+                  đồng/m²
+                </span>
+              )}
+              {quotationDetail.ProjectType !== 'ROUGH' && (
+                <span className="text-gray-700">
+                  {quotationDetail.PackageQuotationList.PackageFinished ||
+                    'N/A'}{' '}
+                  -{' '}
+                  {quotationDetail.PackageQuotationList.UnitPackageFinished.toLocaleString()}{' '}
+                  đồng/m²
+                </span>
+              )}
             </div>
           </div>
 
