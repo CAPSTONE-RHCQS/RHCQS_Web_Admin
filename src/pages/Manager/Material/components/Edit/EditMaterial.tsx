@@ -6,12 +6,14 @@ interface EditMaterialProps {
   id: string;
   onSuccess: (id: string, materialDetail: MaterialRequest) => void;
   onClose: () => void;
+  refreshData: () => void;
 }
 
 const EditMaterial: React.FC<EditMaterialProps> = ({
   id,
   onClose,
   onSuccess,
+  refreshData,
 }) => {
   const [materialDetail, setMaterialDetail] = useState<any>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
@@ -66,6 +68,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
 
     try {
       await onSuccess(id, updatedMaterialDetail);
+      refreshData();
     } catch (error) {
       console.error('Failed to save material:', error);
     } finally {

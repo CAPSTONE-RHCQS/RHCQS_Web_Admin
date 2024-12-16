@@ -223,6 +223,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           {[
                             'Tên vật liệu',
                             'Giá',
+                            'Mã vật liệu',
                             'Đơn vị',
                             'Nhà cung cấp',
                             '',
@@ -249,6 +250,9 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
                                 {formatPrice(material.Price ?? 0)}
+                              </td>
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
+                                {material.Code}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center">
                                 {material.Unit}
@@ -323,6 +327,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           id={selectedMaterialId}
           onClose={() => setSelectedMaterialId(null)}
           onSuccess={handleEditSuccess}
+          refreshData={refreshData}
         />
       )}
     </>
