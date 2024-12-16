@@ -8,11 +8,13 @@ import Alert from '../../../components/Alert';
 import {
   getDesignPrice,
   createDesignPrice,
-} from '../../../api/DesignPrice/DesignPrice'; // Thay đổi API
-import { DesignPriceItem, DesignPriceRequest } from '../../../types/DesignPrice'; // Thay đổi kiểu dữ liệu
-// import CreateDesignPrice from './component/Create/CreateDesignPrice';
-import DesignPriceTable from './component/Table/DesignPriceTable';
+} from '../../../api/DesignPrice/DesignPrice';
+import {
+  DesignPriceItem,
+  DesignPriceRequest,
+} from '../../../types/DesignPrice';
 import CreateDesignPrice from './component/Create/CreateDessignPrice';
+import DesignPriceTable from './component/Table/DesignPriceTable';
 
 const DesignPriceList: React.FC = () => {
   const [openItems, setOpenItems] = useState<Set<number>>(new Set());
@@ -113,24 +115,15 @@ const DesignPriceList: React.FC = () => {
   return (
     <>
       <div>
-        <Breadcrumb pageName="Quản lý giá thiết kế" /> {/* Thay đổi tên trang */}
+        <Breadcrumb pageName="Quản lý giá thiết kế" />
         <div className="bg-white p-4 rounded shadow ">
           <div className="flex items-center justify-between mb-8 ml-4 mt-4">
             <div className="flex space-x-2 w-2/3">
               <div className="flex flex-col space-y-2 w-2/3">
-                <label className="text-sm font-bold text-black">
-                  Tìm kiếm giá thiết kế {/* Thay đổi nhãn */}
-                </label>
-                <input
-                  type="text"
-                  placeholder="Nhập tên giá thiết kế..."
-                  value={searchTerm}
-                  onChange={(e) => {
-                    setSearchTerm(e.target.value);
-                    handleSearch();
-                  }}
-                  className="border p-2 w-full rounded-md focus:outline-none"
-                />
+                <h2 className="text-lg font-bold text-red-600 mb-4">
+                  Giá này chỉ áp dụng với{' '}
+                  <span className="font-extrabold">NHÀ PHỐ</span>
+                </h2>
               </div>
             </div>
             <div className="flex space-x-2">
@@ -138,7 +131,7 @@ const DesignPriceList: React.FC = () => {
                 onClick={() => setIsCreateModalOpen(true)}
                 className="px-4 py-2 text-primary font-bold"
               >
-                + Thêm giá thiết kế {/* Thay đổi nút */}
+                + Thêm giá thiết kế
               </button>
               <ArrowPathIcon
                 onClick={handleRefresh}
@@ -152,7 +145,7 @@ const DesignPriceList: React.FC = () => {
             </div>
           ) : (
             <DesignPriceTable
-              dataDesignPrice={dataDesignPrice} 
+              dataDesignPrice={dataDesignPrice}
               openItems={openItems}
               editModalOpen={editModalOpen}
               openEditModal={openEditModal}

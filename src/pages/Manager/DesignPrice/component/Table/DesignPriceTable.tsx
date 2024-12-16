@@ -93,7 +93,7 @@ const DesignPriceTable: React.FC<DesignPriceTableProps> = ({
       <table className="w-full table-auto">
         <thead>
           <tr className="bg-gray-2 text-left dark:bg-meta-4">
-            {['Kiểu', 'Diện tích ( m2)', 'Giá/m2', 'Ngày cập nhật', ''].map(
+            {['Diện tích ( m2)', 'Giá/m2', 'Ngày cập nhật', ''].map(
               (header) => (
                 <th
                   key={header}
@@ -109,9 +109,6 @@ const DesignPriceTable: React.FC<DesignPriceTableProps> = ({
           {dataDesignPrice.map((item, index) => (
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-bold text-red-500 dark:text-white uppercase">
-                  Nhà phố
-                </td>
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-semibold dark:text-primaryGreenButton">
                   {item.AreaFrom} - {item.AreaTo}
                 </td>
