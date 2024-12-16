@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { getHouseDesignById, getHouseDesignDrawingStatus } from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
+import { useNavigate, useParams } from 'react-router-dom';
+import {
+  getHouseDesignById,
+  getHouseDesignDrawingStatus,
+} from '../../../api/HouseDesignDrawing/HouseDesignDrawingApi';
 import { approveDesign } from '../../../api/HouseDesignDrawing/HouseDesignVersionApi';
 import { ClipLoader } from 'react-spinners';
 import { toast } from 'react-toastify';
@@ -11,6 +14,7 @@ import {
   FiLayers,
   FiCalendar,
   FiPhoneCall,
+  FiInfo,
 } from 'react-icons/fi';
 import { FaCheck } from 'react-icons/fa';
 import WorkDetailStatusTracker from '../../../components/StatusTracker/WorkDetailStatusTracker';
@@ -29,6 +33,7 @@ const HouseDesignDetailManager: React.FC = () => {
     null,
   );
   const [currentStatus, setCurrentStatus] = useState<string>('');
+  const navigate = useNavigate();
 
   const fetchDesignDetail = async () => {
     if (!id) {
@@ -86,7 +91,7 @@ const HouseDesignDetailManager: React.FC = () => {
   const handleApproveDesign = async () => {
     if (!selectedVersionId) return;
 
-    if (!reason.trim()) {
+    if (!reason.trim() && approvalType === 'Rejected') {
       toast.error('Vui lòng nhập lý do từ chối.');
       return;
     }
@@ -109,6 +114,14 @@ const HouseDesignDetailManager: React.FC = () => {
       fetchDesignDetail();
     } catch (error) {
       console.error('Error approving design:', error);
+    }
+  };
+
+  const handleViewInitialQuotation = () => {
+    if (designDetail?.InitialQuotationId) {
+      navigate(
+        `/initial-quotation-detail-manager/${designDetail.InitialQuotationId}`,
+      );
     }
   };
 
@@ -175,6 +188,13 @@ const HouseDesignDetailManager: React.FC = () => {
                 <FiCalendar className="mr-2" />
                 <strong className="mr-2">Ngày tạo:</strong>
                 {new Date(designDetail.InsDate).toLocaleDateString()}
+              </p>
+              <p
+                className="flex items-center cursor-pointer hover:text-blue-600"
+                onClick={handleViewInitialQuotation}
+              >
+                <FiInfo className="mr-2" />
+                <strong className="mr-2">Xem báo giá sơ bộ</strong>
               </p>
             </div>
           </div>
@@ -252,52 +272,52 @@ const HouseDesignDetailManager: React.FC = () => {
               </tbody>
             </table>
 
-            <h3 className="text-xl font-bold mt-6">Phụ thuộc vào phiên bản</h3>
-            <table className="w-full table-auto mt-4">
-              <thead>
-                <tr className="bg-gray-2 text-left dark:bg-meta-4">
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Tên phiên bản
-                  </th>
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Phiên bản
-                  </th>
-                  <th className="py-4 px-4 font-medium text-black dark:text-white">
-                    Tệp
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {designDetail.DependOnVersion && designDetail.DependOnVersion.length > 0 ? (
-                  designDetail.DependOnVersion.map((depend) => (
-                    <tr key={depend.HouseDesginVersionId}>
-                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        {depend.HouseDesignVersionName}
-                      </td>
-                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        {depend.HouseDesignVersion}
-                      </td>
-                      <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                        <a
-                          href={depend.FileDesignVersion}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="hover:underline"
-                        >
-                          <FiFileText className="inline-block" />
-                        </a>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark" colSpan={3}>
-                      <span className="text-red-600">Không có phiên bản phụ thuộc</span>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+            {designDetail.DependOnVersion &&
+              designDetail.DependOnVersion?.length > 0 && (
+                <>
+                  <h3 className="text-xl font-bold mt-6">
+                    Phụ thuộc vào phiên bản
+                  </h3>
+                  <table className="w-full table-auto mt-4">
+                    <thead>
+                      <tr className="bg-gray-2 text-left dark:bg-meta-4">
+                        <th className="py-4 px-4 font-medium text-black dark:text-white">
+                          Tên phiên bản
+                        </th>
+                        <th className="py-4 px-4 font-medium text-black dark:text-white">
+                          Phiên bản
+                        </th>
+                        <th className="py-4 px-4 font-medium text-black dark:text-white">
+                          Tệp
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {designDetail.DependOnVersion &&
+                        designDetail.DependOnVersion.map((depend) => (
+                          <tr key={depend.HouseDesginVersionId}>
+                            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                              {depend.HouseDesignVersionName}
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                              {depend.HouseDesignVersion}
+                            </td>
+                            <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                              <a
+                                href={depend.FileDesignVersion}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:underline"
+                              >
+                                <FiFileText className="inline-block" />
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
           </div>
         </div>
       </div>
