@@ -29,6 +29,7 @@ import 'react-toastify/dist/ReactToastify.css';
 interface FinalQuotationTableProps {
   items: FinalQuotationItem[];
   quotationPackage: PackageQuotationList;
+  projectType: string;
   onItemsChange: (updatedItems: FinalQuotationItem[]) => void;
   isEditing: boolean;
 }
@@ -36,6 +37,7 @@ interface FinalQuotationTableProps {
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   items,
   quotationPackage,
+  projectType,
   onItemsChange,
   isEditing,
 }) => {
@@ -350,13 +352,24 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     (construction) => construction.Type === 'WORK_FINISHED',
   );
 
-  const filterAvailableConstructions = (options: ConstructionTypeResponse[], items: FinalQuotationItem[]) => {
-    const existingConstructionIds = items.map(item => item.ConstructionId);
-    return options.filter(option => !existingConstructionIds.includes(option.Id));
+  const filterAvailableConstructions = (
+    options: ConstructionTypeResponse[],
+    items: FinalQuotationItem[],
+  ) => {
+    const existingConstructionIds = items.map((item) => item.ConstructionId);
+    return options.filter(
+      (option) => !existingConstructionIds.includes(option.Id),
+    );
   };
 
-  const availableRoughConstructions = filterAvailableConstructions(roughConstructionOptions, items);
-  const availableFinishedConstructions = filterAvailableConstructions(finishedConstructionOptions, items);
+  const availableRoughConstructions = filterAvailableConstructions(
+    roughConstructionOptions,
+    items,
+  );
+  const availableFinishedConstructions = filterAvailableConstructions(
+    finishedConstructionOptions,
+    items,
+  );
 
   const toggleVisibility = (index: number) => {
     setVisibleItems((prev) => {
@@ -465,65 +478,75 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     <div>
       {isEditing && (
         <div className="flex flex-col md:flex-row items-center mb-4 space-y-2 md:space-y-0 md:space-x-4">
-          <div className="flex items-center space-x-2">
-            <select
-              value={selectedRoughConstruction || ''}
-              onChange={(e) => setSelectedRoughConstruction(e.target.value)}
-              className="border p-2"
-            >
-              <option value="" disabled>
-                Chọn công trình Thô
-              </option>
-              {availableRoughConstructions.map((construction) => (
-                <option key={construction.Id} value={construction.Id}>
-                  {construction.Name}
-                </option>
-              ))}
-            </select>
-            <button
-              className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
-              onClick={handleCreateRoughConstruction}
-              disabled={!selectedRoughConstruction}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Tạo công trình Thô
-            </button>
-          </div>
-          <button
-            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
-            onClick={handleRoughUploadClick}
-          >
-            <FontAwesomeIcon icon={faUpload} />
-          </button>
+          {projectType !== 'FINISHED' && (
+            <>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={selectedRoughConstruction || ''}
+                  onChange={(e) => setSelectedRoughConstruction(e.target.value)}
+                  className="border p-2"
+                >
+                  <option value="" disabled>
+                    Chọn công trình Thô
+                  </option>
+                  {availableRoughConstructions.map((construction) => (
+                    <option key={construction.Id} value={construction.Id}>
+                      {construction.Name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+                  onClick={handleCreateRoughConstruction}
+                  disabled={!selectedRoughConstruction}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Tạo công trình Thô
+                </button>
+              </div>
+              <button
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+                onClick={handleRoughUploadClick}
+              >
+                <FontAwesomeIcon icon={faUpload} />
+              </button>
+            </>
+          )}
 
-          <div className="flex items-center space-x-2">
-            <select
-              value={selectedFinishedConstruction || ''}
-              onChange={(e) => setSelectedFinishedConstruction(e.target.value)}
-              className="border p-2"
-            >
-              <option value="" disabled>
-                Chọn công trình Hoàn thiện
-              </option>
-              {availableFinishedConstructions.map((construction) => (
-                <option key={construction.Id} value={construction.Id}>
-                  {construction.Name}
-                </option>
-              ))}
-            </select>
-            <button
-              className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
-              onClick={handleCreateFinishedConstruction}
-              disabled={!selectedFinishedConstruction}
-            >
-              <FontAwesomeIcon icon={faPlus} /> Tạo công trình Hoàn thiện
-            </button>
-          </div>
-          <button
-            className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
-            onClick={handleFinishedUploadClick}
-          >
-            <FontAwesomeIcon icon={faUpload} />
-          </button>
+          {projectType !== 'ROUGH' && (
+            <>
+              <div className="flex items-center space-x-2">
+                <select
+                  value={selectedFinishedConstruction || ''}
+                  onChange={(e) =>
+                    setSelectedFinishedConstruction(e.target.value)
+                  }
+                  className="border p-2"
+                >
+                  <option value="" disabled>
+                    Chọn công trình Hoàn thiện
+                  </option>
+                  {availableFinishedConstructions.map((construction) => (
+                    <option key={construction.Id} value={construction.Id}>
+                      {construction.Name}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+                  onClick={handleCreateFinishedConstruction}
+                  disabled={!selectedFinishedConstruction}
+                >
+                  <FontAwesomeIcon icon={faPlus} /> Tạo công trình Hoàn thiện
+                </button>
+              </div>
+              <button
+                className="bg-primaryGreenButton hover:bg-secondaryGreenButton text-white px-4 py-2 rounded"
+                onClick={handleFinishedUploadClick}
+              >
+                <FontAwesomeIcon icon={faUpload} />
+              </button>
+            </>
+          )}
         </div>
       )}
 

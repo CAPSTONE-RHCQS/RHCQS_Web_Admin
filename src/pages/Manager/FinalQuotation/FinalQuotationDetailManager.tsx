@@ -142,7 +142,7 @@ const FinalQuotationDetailManager = () => {
       return;
     }
 
-    if (!reason.trim()) {
+    if (!reason.trim() && approvalType === 'Rejected') {
       toast.error('Vui lòng nhập lý do từ chối.');
       return;
     }
@@ -220,7 +220,7 @@ const FinalQuotationDetailManager = () => {
 
   const handleNavigation = () => {
     const id = quotationDetail.InitailQuotationId;
-    navigate(`/initial-quotation-detail-staff/${id}`);
+    navigate(`/initial-quotation-detail-manager/${id}`);
   };
 
   const projectTypeMap: { [key: string]: string } = {

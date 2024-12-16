@@ -218,6 +218,12 @@ const InitialQuotationDetailManager = () => {
 
   const handleSubmit = async () => {
     if (!id) return;
+
+    if (!reason.trim() && type === 'Rejected') {
+      toast.error('Vui lòng nhập lý do từ chối.');
+      return;
+    }
+
     try {
       await approveInitialQuotation(id, { type, reason });
       if (type === 'Approved') {
