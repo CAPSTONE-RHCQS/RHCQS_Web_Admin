@@ -65,6 +65,8 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   const [uploadedData, setUploadedData] =
     useState<ConstructionWorkResponse | null>(null);
 
+  const [showNotes, setShowNotes] = useState<boolean[]>(items.map(() => false));
+
   useEffect(() => {
     items.forEach((item, itemIndex) => {
       item.QuotationItems.forEach((_, qItemIndex) => {
@@ -115,7 +117,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       WorkTemplateId: null,
       WorkName: '',
       Unit: '',
-      Weight: 0,
+      Weight: null,
       UnitPriceLabor: 0,
       UnitPriceRough: 0,
       UnitPriceFinished: 0,
@@ -155,7 +157,15 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
           constructionItemId,
           newValue,
         );
-        setSearchResults(results);
+
+        const filteredResults = results.filter(
+          (result) =>
+            !updatedItems[constructionIndex].QuotationItems.some(
+              (qItem) => qItem.WorkTemplateId === result.WorkTemplateId,
+            ),
+        );
+
+        setSearchResults(filteredResults);
       } else {
         console.warn(
           'Package ID is not available for the construction type:',
@@ -180,30 +190,26 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     qItem.UnitPriceLabor = selectedWork.LaborCost;
     qItem.UnitPriceRough = selectedWork.MaterialRoughCost;
     qItem.UnitPriceFinished = selectedWork.MaterialFinishedCost;
-    qItem.Weight = qItem.Weight || 0;
-    qItem.TotalPriceLabor = (qItem.UnitPriceLabor ?? 0) * qItem.Weight;
-    qItem.TotalPriceRough = (qItem.UnitPriceRough ?? 0) * qItem.Weight;
-    qItem.TotalPriceFinished = (qItem.UnitPriceFinished ?? 0) * qItem.Weight;
+    qItem.Weight = qItem.Weight ?? null;
+    qItem.TotalPriceLabor = (qItem.UnitPriceLabor ?? 0) * (qItem.Weight ?? 0);
+    qItem.TotalPriceRough = (qItem.UnitPriceRough ?? 0) * (qItem.Weight ?? 0);
+    qItem.TotalPriceFinished =
+      (qItem.UnitPriceFinished ?? 0) * (qItem.Weight ?? 0);
     setSearchResults([]);
     onItemsChange(updatedItems);
-
-    const weightInput = weightInputRefs.current[qItemIndex];
-    if (weightInput) {
-      weightInput.focus();
-    }
   };
 
   const handleWeightChange = (
     constructionIndex: number,
     qItemIndex: number,
-    newValue: number,
+    newValue: number | null,
   ) => {
     const updatedItems = [...items];
     const qItem = updatedItems[constructionIndex].QuotationItems[qItemIndex];
     qItem.Weight = newValue;
-    qItem.TotalPriceLabor = (qItem.UnitPriceLabor ?? 0) * newValue;
-    qItem.TotalPriceRough = (qItem.UnitPriceRough ?? 0) * newValue;
-    qItem.TotalPriceFinished = (qItem.UnitPriceFinished ?? 0) * newValue;
+    qItem.TotalPriceLabor = (qItem.UnitPriceLabor ?? 0) * (newValue ?? 0);
+    qItem.TotalPriceRough = (qItem.UnitPriceRough ?? 0) * (newValue ?? 0);
+    qItem.TotalPriceFinished = (qItem.UnitPriceFinished ?? 0) * (newValue ?? 0);
     onItemsChange(updatedItems);
   };
 
@@ -230,7 +236,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             WorkTemplateId: work.WorkTemplateId,
             WorkName: work.ConstructionWorkName,
             Unit: work.Unit,
-            Weight: 0,
+            Weight: null,
             UnitPriceLabor: work.LaborCost,
             UnitPriceRough: work.MaterialRoughCost,
             UnitPriceFinished: work.MaterialFinishedCost,
@@ -279,7 +285,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             WorkTemplateId: work.WorkTemplateId,
             WorkName: work.ConstructionWorkName,
             Unit: work.Unit,
-            Weight: 0,
+            Weight: null,
             UnitPriceLabor: work.LaborCost,
             UnitPriceRough: work.MaterialRoughCost,
             UnitPriceFinished: work.MaterialFinishedCost,
@@ -343,6 +349,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
   const finishedConstructionOptions = constructionOptions.filter(
     (construction) => construction.Type === 'WORK_FINISHED',
   );
+
+  const filterAvailableConstructions = (options: ConstructionTypeResponse[], items: FinalQuotationItem[]) => {
+    const existingConstructionIds = items.map(item => item.ConstructionId);
+    return options.filter(option => !existingConstructionIds.includes(option.Id));
+  };
+
+  const availableRoughConstructions = filterAvailableConstructions(roughConstructionOptions, items);
+  const availableFinishedConstructions = filterAvailableConstructions(finishedConstructionOptions, items);
 
   const toggleVisibility = (index: number) => {
     setVisibleItems((prev) => {
@@ -439,18 +453,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
     }
   };
 
-  const handleAddConstructionWork = () => {
-    const newConstructionWork: FinalQuotationItem = {
-      Id: '',
-      ConstructionId: '',
-      SubConstructionId: null,
-      ContructionName: 'New Construction Work',
-      Area: null,
-      Type: 'WORK_NEW',
-      InsDate: new Date().toISOString(),
-      QuotationItems: [],
-    };
-    onItemsChange([...items, newConstructionWork]);
+  const toggleNoteVisibility = (index: number) => {
+    setShowNotes((prev) => {
+      const newVisibility = [...prev];
+      newVisibility[index] = !newVisibility[index];
+      return newVisibility;
+    });
   };
 
   return (
@@ -466,7 +474,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               <option value="" disabled>
                 Chọn công trình Thô
               </option>
-              {roughConstructionOptions.map((construction) => (
+              {availableRoughConstructions.map((construction) => (
                 <option key={construction.Id} value={construction.Id}>
                   {construction.Name}
                 </option>
@@ -496,7 +504,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               <option value="" disabled>
                 Chọn công trình Hoàn thiện
               </option>
-              {finishedConstructionOptions.map((construction) => (
+              {availableFinishedConstructions.map((construction) => (
                 <option key={construction.Id} value={construction.Id}>
                   {construction.Name}
                 </option>
@@ -812,7 +820,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             </th>
             <th
               className="px-4 py-2 border text-center"
-              style={{ maxWidth: '75px' }}
+              style={{ maxWidth: '150px' }}
               rowSpan={2}
             >
               Khối lượng
@@ -823,6 +831,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             <th className="px-4 py-2 border text-center" colSpan={3}>
               Thành tiền
             </th>
+            {!isEditing && (
+              <th className="px-4 py-2 border text-center" rowSpan={2}>
+                Ghi chú
+              </th>
+            )}
             {isEditing && (
               <th className="px-4 py-2 border text-center" rowSpan={2}></th>
             )}
@@ -830,19 +843,19 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
           <tr>
             <th
               className="px-4 py-2 border text-center"
-              style={{ maxWidth: '150px' }}
+              style={{ maxWidth: '100px' }}
             >
               Nhân công
             </th>
             <th
               className="px-4 py-2 border text-center"
-              style={{ maxWidth: '150px' }}
+              style={{ maxWidth: '100px' }}
             >
               Vật tư thô
             </th>
             <th
               className="px-4 py-2 border text-center"
-              style={{ maxWidth: '150px' }}
+              style={{ maxWidth: '100px' }}
             >
               Vật tư H.T
             </th>
@@ -874,7 +887,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                 className="cursor-pointer"
               >
                 <td
-                  colSpan={isEditing ? 10 : 9}
+                  colSpan={10}
                   className="px-4 py-2 border text-left font-bold relative bg-gray-200"
                 >
                   <div className="flex items-center">
@@ -916,7 +929,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                             rows={2}
                             style={{
                               resize: 'none',
-                              overflow: 'hidden',
+                              overflow: 'auto',
                               minHeight: '100px',
                               maxHeight: '400px',
                               width: '100%',
@@ -938,6 +951,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                         ) : (
                           <span className="font-bold">{qItem.WorkName}</span>
                         )}
+
                         {isEditing &&
                           selectedItem?.constructionIndex === itemIndex &&
                           selectedItem?.qItemIndex === qItemIndex &&
@@ -969,6 +983,39 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                               ))}
                             </ul>
                           )}
+                        {isEditing && (
+                          <button
+                            className="text-blue-500 hover:text-blue-700 mt-2"
+                            onClick={() => toggleNoteVisibility(qItemIndex)}
+                          >
+                            {showNotes[qItemIndex]
+                              ? 'Ẩn ghi chú'
+                              : 'Thêm ghi chú'}
+                          </button>
+                        )}
+                        {isEditing && showNotes[qItemIndex] && (
+                          <textarea
+                            value={qItem.Note || ''}
+                            className="w-full mt-2 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
+                            placeholder="Nhập ghi chú"
+                            rows={2}
+                            style={{
+                              resize: 'none',
+                              overflow: 'hidden',
+                              minHeight: '50px',
+                              maxHeight: '200px',
+                              width: '100%',
+                              border: '1px solid #ccc',
+                            }}
+                            onChange={(e) => {
+                              const updatedItems = [...items];
+                              updatedItems[itemIndex].QuotationItems[
+                                qItemIndex
+                              ].Note = e.target.value;
+                              onItemsChange(updatedItems);
+                            }}
+                          />
+                        )}
                       </td>
                       <td className="px-4 py-2 border text-center">
                         {qItem.Unit}
@@ -982,11 +1029,14 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                               (weightInputRefs.current[qItemIndex] = el)
                             }
                             value={
-                              qItem.Weight !== undefined ? qItem.Weight : ''
+                              qItem.Weight !== null &&
+                              qItem.Weight !== undefined
+                                ? qItem.Weight
+                                : ''
                             }
                             className="w-full text-center rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"
                             style={{
-                              maxWidth: '70px',
+                              maxWidth: '150px',
                               overflow: 'hidden',
                               minHeight: '30px',
                               resize: 'vertical',
@@ -995,7 +1045,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                             onChange={(e) => {
                               const value = e.target.value;
                               if (value === '') {
-                                handleWeightChange(itemIndex, qItemIndex, 0);
+                                handleWeightChange(itemIndex, qItemIndex, null);
                               } else {
                                 const newValue = parseFloat(value);
                                 if (!isNaN(newValue) && newValue >= 0) {
@@ -1005,7 +1055,10 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                                     newValue,
                                   );
                                 } else {
-                                  e.target.value = qItem.Weight.toString();
+                                  e.target.value =
+                                    qItem.Weight !== null
+                                      ? qItem.Weight.toString()
+                                      : '';
                                 }
                               }
                             }}
@@ -1053,6 +1106,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
                           ? qItem.TotalPriceFinished.toLocaleString('vi-VN')
                           : ''}
                       </td>
+                      {!isEditing && (
+                        <td className="px-4 py-2 border text-center">
+                          {qItem.Note || ''}
+                        </td>
+                      )}
                       {isEditing && (
                         <td className="px-4 py-2 border text-center">
                           <button
