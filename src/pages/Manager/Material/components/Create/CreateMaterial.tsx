@@ -73,10 +73,18 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
-    setMaterialDetail((prevDetail) => ({
-      ...prevDetail,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
+    
+    if (name === 'Shape') {
+      setMaterialDetail((prevDetail: any) => ({
+        ...prevDetail,
+        [name]: value === 'Không có' ? null : value,
+      }));
+    } else {
+      setMaterialDetail(prevDetail => ({
+        ...prevDetail,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
 
     if (name === 'SupplierName') {
       handleSupplierSearch(value);
@@ -115,7 +123,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       Price: materialDetail.Price,
       Unit: materialDetail.Unit,
       Size: materialDetail.Size,
-      Shape: materialDetail.Shape,
+      Shape: materialDetail.Shape === 'Không có' ? null : materialDetail.Shape,
       Description: materialDetail.Description,
       IsAvailable: true,
       UnitPrice: materialDetail.UnitPrice,
@@ -231,7 +239,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
             onChange={handleChange}
             className="border p-2 w-full rounded font-regular"
           >
-            {['Hình vuông', 'Hình chữ nhật', 'Hình sóng'].map((shape) => (
+            {['Không có', 'Hình vuông', 'Hình chữ nhật', 'Hình sóng'].map((shape) => (
               <option key={shape} value={shape}>
                 {shape}
               </option>

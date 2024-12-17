@@ -157,12 +157,14 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
         <div className="mb-4">
           <strong className="font-bold">Hình dạng:</strong>
           <select
-            value={materialDetail.Shape}
-            onChange={(e) =>
-              setMaterialDetail({ ...materialDetail, Shape: e.target.value })
-            }
+            value={materialDetail.Shape || 'Không có'}
+            onChange={(e) => {
+              const shapeValue = e.target.value === 'Không có' ? '' : e.target.value;
+              setMaterialDetail({ ...materialDetail, Shape: shapeValue });
+            }}
             className="border p-2 w-full rounded font-regular"
           >
+            <option value="Không có">Không có</option>
             {['Hình vuông', 'Hình chữ nhật', 'Hình sóng'].map((shape) => (
               <option key={shape} value={shape}>
                 {shape}
