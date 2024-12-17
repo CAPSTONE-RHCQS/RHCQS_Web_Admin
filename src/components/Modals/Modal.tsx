@@ -31,9 +31,9 @@ const Modal: React.FC<ModalProps> = ({
           </button>
           <button
             onClick={onConfirm}
-            className="bg-primary hover:bg-opacity-90 text-white px-4 py-2 rounded"
+            className="bg-red-600 hover:bg-opacity-90 text-white px-4 py-2 rounded"
           >
-            Có
+            Chấm dứt
           </button>
         </div>
       </div>

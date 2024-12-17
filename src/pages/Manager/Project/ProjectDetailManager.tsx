@@ -123,6 +123,11 @@ const ProjectDetailManager = () => {
     setIsModalOpen(false);
   };
 
+  const handleCancelModal = () => {
+    setIsModalOpen(false);
+    setCancelReason('');
+  };
+
   if (!projectDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -292,7 +297,7 @@ const ProjectDetailManager = () => {
                         setIsModalOpen(true);
                       }
                     }}
-                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-blue-600 transition-colors duration-200"
+                    className="flex items-center px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-600 transition-colors duration-200"
                   >
                     <FaBan className="mr-2" />
                     Chấm dứt dự án
@@ -614,7 +619,7 @@ const ProjectDetailManager = () => {
           title="Xác nhận"
           message="Bạn có muốn chấm dứt dự án này không?"
           onConfirm={handleCancelProject}
-          onCancel={() => setIsModalOpen(false)}
+          onCancel={handleCancelModal}
         >
           <textarea
             placeholder="Lý do chấm dứt dự án"
