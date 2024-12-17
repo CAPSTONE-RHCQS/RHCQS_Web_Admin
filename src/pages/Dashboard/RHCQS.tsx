@@ -2,24 +2,50 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import CardDataStats from '../../components/CardDataStats';
 import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
+// import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
 import {
   getTotalDesignerStaffAccount,
   getTotalCustomerAccount,
   getTotalSaleStaffAccount,
 } from '../../api/Dashboard/TotalAccount';
-import { getTotalProject } from '../../api/Dashboard/TotalProject';
+import {
+  getTotalProject,
+  getTotalProjectBySaleStaff,
+} from '../../api/Dashboard/TotalProject';
+import { getProfile } from '../../api/Account/AccountApi';
+import { Profile } from '../../types/Account';
+
 const RHCQS: React.FC = () => {
   const [totalDesignerStaffAccount, setTotalDesignerStaffAccount] = useState(0);
   const [totalCustomerAccount, setTotalCustomerAccount] = useState(0);
   const [totalSaleStaffAccount, setTotalSaleStaffAccount] = useState(0);
   const [totalProject, setTotalProject] = useState(0);
+  const [totalProjectByStaff, setTotalProjectByStaff] = useState(0);
+  const [user, setUser] = useState<Profile | undefined>(undefined);
+
+  const ADMIN_ROLE_ID = 'a3bb42ca-de7c-4c9f-8f58-d8175f96688c';
+  const SALE_STAFF_ROLE_ID = '7af0d75e-1157-48b4-899d-3196deed5fad';
+  const DESIGN_STAFF_ROLE_ID = '7af0d75e-1157-48b4-899d-3196deed5fad';
+
   useEffect(() => {
     getTotalDesignerStaffAccount().then(setTotalDesignerStaffAccount);
     getTotalCustomerAccount().then(setTotalCustomerAccount);
     getTotalSaleStaffAccount().then(setTotalSaleStaffAccount);
     getTotalProject().then(setTotalProject);
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const profile = await getProfile();
+      setUser(profile);
+
+      if (profile && profile.Id) {
+        const totalProjects = await getTotalProjectBySaleStaff(profile.Id);
+        setTotalProjectByStaff(totalProjects);
+      }
+    };
+    fetchProfile();
   }, []);
 
   useEffect(() => {
@@ -42,7 +68,16 @@ const RHCQS: React.FC = () => {
   return (
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Tổng số dự án" total={totalProject}>
+        <CardDataStats
+          title="Tổng số dự án"
+          total={
+            user?.RoleId === ADMIN_ROLE_ID
+              ? totalProject
+              : user?.RoleId === SALE_STAFF_ROLE_ID
+              ? totalProjectByStaff
+              : 0
+          }
+        >
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -138,7 +173,7 @@ const RHCQS: React.FC = () => {
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
         <ChartOne />
         <ChartTwo />
-        <ChartThree />
+        {/* <ChartThree /> */}
         <div className="col-span-12 xl:col-span-8"></div>
       </div>
     </>
