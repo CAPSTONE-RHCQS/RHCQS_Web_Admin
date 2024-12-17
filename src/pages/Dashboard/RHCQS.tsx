@@ -39,9 +39,11 @@ const RHCQS: React.FC = () => {
     const fetchProfile = async () => {
       const profile = await getProfile();
       setUser(profile);
+      console.log(profile);
 
       if (profile && profile.Id) {
         const totalProjects = await getTotalProjectBySaleStaff(profile.Id);
+        console.log(totalProjects);
         setTotalProjectByStaff(totalProjects);
       }
     };
@@ -69,13 +71,19 @@ const RHCQS: React.FC = () => {
     <>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
         <CardDataStats
-          title="Tổng số dự án"
+          title={
+            user?.RoleId === ADMIN_ROLE_ID
+              ? 'Tổng số dự án'
+              : user?.RoleId === SALE_STAFF_ROLE_ID
+              ? 'Dự án đang đảm nhận'
+              : 'Dự án đang đảm nhận'
+          }
           total={
             user?.RoleId === ADMIN_ROLE_ID
               ? totalProject
               : user?.RoleId === SALE_STAFF_ROLE_ID
-              ? totalProjectByStaff
-              : 0
+              ? 0
+              : totalProjectByStaff
           }
         >
           <svg

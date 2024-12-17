@@ -116,6 +116,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
           <strong className="font-bold">Đơn vị:</strong>
           <select
             value={materialDetail.Unit}
+            onChange={(e) => setMaterialDetail({ ...materialDetail, Unit: e.target.value })}
             className="border p-2 w-full rounded font-regular"
           >
             {[
