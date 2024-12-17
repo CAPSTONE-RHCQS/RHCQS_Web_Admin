@@ -158,7 +158,7 @@ const ProjectListManager = () => {
                 name={field}
                 value={filters[field as keyof typeof filters]}
                 onChange={handleFilterChange}
-                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out hover:border-primary"
                 placeholder={
                   field === 'startTime'
                     ? 'Chọn ngày'
@@ -176,11 +176,16 @@ const ProjectListManager = () => {
                 name={field}
                 value={filters[field as keyof typeof filters]}
                 onChange={handleFilterChange}
-                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out"
+                className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary transition duration-200 ease-in-out appearance-none bg-white text-gray-700 hover:bg-gray-100"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='currentColor'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E")`,
+                  backgroundPosition: 'right 0.5rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1.5em 1.5em',
+                  paddingRight: '2.5rem',
+                }}
               >
-                <option value="">
-                  {field === 'type' ? 'Tất cả' : 'Tất cả'}
-                </option>
+                <option value="">{field === 'type' ? 'Tất cả' : 'Tất cả'}</option>
                 {field === 'type' ? (
                   Object.entries(typeOptions).map(([value, label]) => (
                     <option key={value} value={value}>
@@ -204,6 +209,7 @@ const ProjectListManager = () => {
             <ArrowPathIcon
               onClick={handleRefreshProjects}
               className="h-6 w-6 text-gray-500 cursor-pointer hover:text-gray-700 transition"
+              title="Làm mới danh sách dự án"
             />
           </div>
         </div>
