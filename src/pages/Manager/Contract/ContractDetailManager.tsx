@@ -39,6 +39,8 @@ const ContractDetailManager = () => {
   }>({});
   const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchContractDetail = async () => {
     if (contractId) {
@@ -183,6 +185,16 @@ const ContractDetailManager = () => {
     return fileName.slice(0, maxLength - extension.length) + '...' + extension;
   };
 
+  const openModal = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+    setIsModalOpen(false);
+  };
+
   if (!contractDetail) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -282,26 +294,30 @@ const ContractDetailManager = () => {
               </span>
             </div>
 
-            <div className="mb-4 text-lg flex items-center">
-              <FaBoxOpen className="mr-2" />
-              <span className="font-semibold">Thi công Phần thô:</span>
-              <span className="text-gray-700 ml-2">
-                {contractDetail.RoughPackagePrice !== null
-                  ? contractDetail.RoughPackagePrice.toLocaleString()
-                  : ''}{' '}
-                {contractDetail.UnitPrice}
-              </span>
-            </div>
-            <div className="mb-4 text-lg flex items-center">
-              <FaBox className="mr-2" />
-              <span className="font-semibold">Thi công Phần hoàn thiện:</span>
-              <span className="text-gray-700 ml-2">
-                {contractDetail.FinishedPackagePrice !== null
-                  ? contractDetail.FinishedPackagePrice.toLocaleString()
-                  : ''}{' '}
-                {contractDetail.UnitPrice}
-              </span>
-            </div>
+            {contractDetail.RoughPackagePrice !== null && (
+              <div className="mb-4 text-lg flex items-center">
+                <FaBoxOpen className="mr-2" />
+                <span className="font-semibold">Gói thi công Thô:</span>
+                <span className="text-gray-700 ml-2">
+                  {contractDetail.RoughPackagePrice !== null
+                    ? contractDetail.RoughPackagePrice.toLocaleString()
+                    : ''}{' '}
+                  {contractDetail.UnitPrice}/m²
+                </span>
+              </div>
+            )}
+            {contractDetail.FinishedPackagePrice !== null && (
+              <div className="mb-4 text-lg flex items-center">
+                <FaBox className="mr-2" />
+                <span className="font-semibold">Gói thi công Hoàn thiện:</span>
+                <span className="text-gray-700 ml-2">
+                  {contractDetail.FinishedPackagePrice !== null
+                    ? contractDetail.FinishedPackagePrice.toLocaleString()
+                    : ''}{' '}
+                  {contractDetail.UnitPrice}/m²
+                </span>
+              </div>
+            )}
             <div className="mb-4 text-lg flex items-center">
               <FaMoneyBillWave className="mr-2" />
               <span className="font-semibold">Giá trị hợp đồng:</span>
@@ -409,7 +425,8 @@ const ContractDetailManager = () => {
                     <img
                       src={batch.InvoiceImage}
                       alt={`Invoice for ${batch.Description}`}
-                      className="w-16 h-16 object-cover mx-auto"
+                      className="w-16 h-16 object-cover mx-auto cursor-pointer"
+                      onClick={() => openModal(batch.InvoiceImage)}
                     />
                   ) : batch.InvoiceImage === 'Chưa có hóa đơn' &&
                     batch.Status === 'Progress' ? (
@@ -452,7 +469,8 @@ const ContractDetailManager = () => {
                       <img
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
-                        className="w-16 h-16 object-cover mx-auto"
+                        className="w-16 h-16 object-cover mx-auto cursor-pointer"
+                        onClick={() => openModal(batch.InvoiceImage)}
                       />
                       <button
                         onClick={() =>
@@ -610,6 +628,31 @@ const ContractDetailManager = () => {
         </div>
       ) : (
         <></>
+      )}
+
+      {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 mt-20 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-4 rounded shadow-lg max-w-3xl overflow-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Full size"
+              className="max-w-full max-h-[80vh] mt-8"
+            />
+          </div>
+        </div>
       )}
     </>
   );
