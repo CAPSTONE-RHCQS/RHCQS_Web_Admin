@@ -120,6 +120,8 @@ const MaterialSectionList: React.FC = () => {
       });
       setAlertMessage('Tạo hạng mục vật tư thành công');
       setAlertType('success');
+      setInputNameValue('');
+      setInputCodeValue('');
       handleRefresh();
       setIsCreateModalOpen(false);
     } catch (error) {
