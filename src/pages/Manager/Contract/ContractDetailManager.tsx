@@ -39,6 +39,8 @@ const ContractDetailManager = () => {
   }>({});
   const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const fetchContractDetail = async () => {
     if (contractId) {
@@ -181,6 +183,16 @@ const ContractDetailManager = () => {
     if (fileName.length <= maxLength) return fileName;
     const extension = fileName.slice(fileName.lastIndexOf('.'));
     return fileName.slice(0, maxLength - extension.length) + '...' + extension;
+  };
+
+  const openModal = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setSelectedImage(null);
+    setIsModalOpen(false);
   };
 
   if (!contractDetail) {
@@ -413,7 +425,8 @@ const ContractDetailManager = () => {
                     <img
                       src={batch.InvoiceImage}
                       alt={`Invoice for ${batch.Description}`}
-                      className="w-16 h-16 object-cover mx-auto"
+                      className="w-16 h-16 object-cover mx-auto cursor-pointer"
+                      onClick={() => openModal(batch.InvoiceImage)}
                     />
                   ) : batch.InvoiceImage === 'Chưa có hóa đơn' &&
                     batch.Status === 'Progress' ? (
@@ -456,7 +469,8 @@ const ContractDetailManager = () => {
                       <img
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
-                        className="w-16 h-16 object-cover mx-auto"
+                        className="w-16 h-16 object-cover mx-auto cursor-pointer"
+                        onClick={() => openModal(batch.InvoiceImage)}
                       />
                       <button
                         onClick={() =>
@@ -614,6 +628,31 @@ const ContractDetailManager = () => {
         </div>
       ) : (
         <></>
+      )}
+
+      {isModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 mt-20 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeModal}
+        >
+          <div
+            className="bg-white p-4 rounded shadow-lg max-w-3xl overflow-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeModal}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Full size"
+              className="max-w-full max-h-[80vh] mt-8"
+            />
+          </div>
+        </div>
       )}
     </>
   );

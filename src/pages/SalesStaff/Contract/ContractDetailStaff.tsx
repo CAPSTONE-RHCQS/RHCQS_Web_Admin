@@ -49,6 +49,8 @@ const ContractDetailStaff = () => {
   const [isCreatingAppendix, setIsCreatingAppendix] = useState(false);
   const [appendixStartDate, setAppendixStartDate] = useState('');
   const [appendixEndDate, setAppendixEndDate] = useState('');
+  const [isImageModalOpen, setIsImageModalOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchContractDetail = async () => {
@@ -109,6 +111,16 @@ const ContractDetailStaff = () => {
     setAppendixStartDate('');
     setAppendixEndDate('');
     setAppendixNote('');
+  };
+
+  const openImageModal = (imageSrc: string) => {
+    setSelectedImage(imageSrc);
+    setIsImageModalOpen(true);
+  };
+
+  const closeImageModal = () => {
+    setSelectedImage(null);
+    setIsImageModalOpen(false);
   };
 
   const handleBatchSelection = (batch: BatchPayment) => {
@@ -580,7 +592,8 @@ const ContractDetailStaff = () => {
                     <img
                       src={batch.InvoiceImage}
                       alt={`Invoice for ${batch.Description}`}
-                      className="w-16 h-16 object-cover mx-auto"
+                      className="w-16 h-16 object-cover mx-auto cursor-pointer"
+                      onClick={() => openImageModal(batch.InvoiceImage)}
                     />
                   ) : (
                     ''
@@ -947,6 +960,31 @@ const ContractDetailStaff = () => {
             >
               {isCreatingAppendix ? 'Đang tạo...' : 'Tạo Phụ Lục'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {isImageModalOpen && selectedImage && (
+        <div
+          className="fixed inset-0 mt-20 bg-black bg-opacity-50 flex justify-center items-center z-50"
+          onClick={closeImageModal}
+        >
+          <div
+            className="bg-white p-4 rounded shadow-lg max-w-3xl overflow-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={closeImageModal}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 bg-white rounded-full p-1"
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <img
+              src={selectedImage}
+              alt="Full size"
+              className="max-w-full max-h-[80vh] mt-8"
+            />
           </div>
         </div>
       )}
