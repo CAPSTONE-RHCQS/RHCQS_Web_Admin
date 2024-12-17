@@ -161,6 +161,11 @@ const ProjectDetailManager = () => {
         )
       ) {
         toast.error('Chưa hoàn thành 4 bản vẽ từ khách hàng.');
+      } else if (
+        projectDetail.Type === 'HAVE_DRAWING' &&
+        projectDetail.HouseDesignDrawingInfo.length === 0
+      ) {
+        toast.error('Khách hàng chưa cung cấp bản vẽ.');
       } else {
         setShowEmployeeListModal(true);
       }
