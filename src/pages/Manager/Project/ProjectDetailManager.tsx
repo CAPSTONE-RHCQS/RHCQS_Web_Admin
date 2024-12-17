@@ -149,8 +149,15 @@ const ProjectDetailManager = () => {
       }
       if (projectDetail.StaffName) {
         toast.error('Dự án đã có nhân viên đảm nhận.');
-      } else {
+      } else if (
+        projectDetail.Type === 'HAVE_DRAWING' &&
+        projectDetail.HouseDesignDrawingInfo.every(
+          (info) => info.Status === 'Finalized'
+        )
+      ) {
         setShowEmployeeListModal(true);
+      } else {
+        toast.error('Chưa hoàn thành 4 bản vẽ từ khách hàng.');
       }
     }
   };
