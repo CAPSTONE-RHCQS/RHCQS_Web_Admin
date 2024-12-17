@@ -422,26 +422,30 @@ const ContractDetailStaff = () => {
               </span>
             </div>
 
-            <div className="mb-4 text-lg flex items-center">
-              <FaBoxOpen className="mr-2" />
-              <span className="font-semibold">Thi công Phần thô:</span>
-              <span className="text-gray-700 ml-2">
-                {contractDetail.RoughPackagePrice !== null
-                  ? contractDetail.RoughPackagePrice.toLocaleString()
-                  : ''}{' '}
-                {contractDetail.UnitPrice}
-              </span>
-            </div>
-            <div className="mb-4 text-lg flex items-center">
-              <FaBox className="mr-2" />
-              <span className="font-semibold">Thi công Phần hoàn thiện:</span>
-              <span className="text-gray-700 ml-2">
-                {contractDetail.FinishedPackagePrice !== null
-                  ? contractDetail.FinishedPackagePrice.toLocaleString()
-                  : ''}{' '}
-                {contractDetail.UnitPrice}
-              </span>
-            </div>
+            {contractDetail.RoughPackagePrice !== null && (
+              <div className="mb-4 text-lg flex items-center">
+                <FaBoxOpen className="mr-2" />
+                <span className="font-semibold">Gói thi công Thô:</span>
+                <span className="text-gray-700 ml-2">
+                  {contractDetail.RoughPackagePrice !== null
+                    ? contractDetail.RoughPackagePrice.toLocaleString()
+                    : ''}{' '}
+                  {contractDetail.UnitPrice}/m²
+                </span>
+              </div>
+            )}
+            {contractDetail.FinishedPackagePrice !== null && (
+              <div className="mb-4 text-lg flex items-center">
+                <FaBox className="mr-2" />
+                <span className="font-semibold">Gói thi công Hoàn thiện:</span>
+                <span className="text-gray-700 ml-2">
+                  {contractDetail.FinishedPackagePrice !== null
+                    ? contractDetail.FinishedPackagePrice.toLocaleString()
+                    : ''}{' '}
+                  {contractDetail.UnitPrice}/m²
+                </span>
+              </div>
+            )}
             <div className="mb-4 text-lg flex items-center">
               <FaMoneyBillWave className="mr-2" />
               <span className="font-semibold">Giá trị hợp đồng:</span>
@@ -611,9 +615,7 @@ const ContractDetailStaff = () => {
               <tr>
                 <th className="px-4 py-2 border text-center">Đợt</th>
                 <th className="px-4 py-2 border text-center">Nội dung</th>
-                <th className="px-4 py-2 border text-center">
-                  Phần trăm (%)
-                </th>
+                <th className="px-4 py-2 border text-center">Phần trăm (%)</th>
                 <th className="px-4 py-2 border text-center">
                   Giá trị thanh toán (VNĐ)
                 </th>
