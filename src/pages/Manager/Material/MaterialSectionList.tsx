@@ -41,30 +41,30 @@ const MaterialSectionList: React.FC = () => {
     setPageInput(page.toString());
   }, [page]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        if (isSearching) {
-          const data = await searchMaterialSectionAllName(searchName, page, 10);
-
-          setDataMaterialSection(data.Items);
-          setTotalPages(data.TotalPages);
-        } else {
-          const data = await getMaterialSectionList(page, 10);
-          const dataMaterial = await getMaterialList(1, 1000);
-          console.log(dataMaterial);
-          setDataMaterial(dataMaterial.Items);
-          setDataMaterialSection(data.Items);
-          setTotalPages(data.TotalPages);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setIsLoading(false);
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      if (isSearching) {
+        const data = await searchMaterialSectionAllName(searchName, page, 10);
+        setDataMaterialSection(data.Items);
+        setTotalPages(data.TotalPages);
+      } 
+      const dataMaterial = await getMaterialList(1, 1000);
+      setDataMaterial(dataMaterial.Items);
+      
+      if (!isSearching) {
+        const data = await getMaterialSectionList(page, 10);
+        setDataMaterialSection(data.Items);
+        setTotalPages(data.TotalPages);
       }
-    };
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
   }, [page, refreshKey, searchName]);
 
@@ -88,6 +88,7 @@ const MaterialSectionList: React.FC = () => {
   const handleRefresh = () => {
     setRefreshKey((prevKey) => prevKey + 1);
     setEditModalOpen(false);
+    fetchData();
   };
 
   const handlePageChange = (newPage: number) => {

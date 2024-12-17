@@ -122,7 +122,7 @@ const DesignPriceList: React.FC = () => {
               <div className="flex flex-col space-y-2 w-2/3">
                 <h2 className="text-lg font-bold text-red-600 mb-4">
                   Giá này chỉ áp dụng với{' '}
-                  <span className="font-extrabold">NHÀ PHỐ</span>
+                  <span className="font-extrabold">NHÀ Ở DÂN DỤNG</span>
                 </h2>
               </div>
             </div>

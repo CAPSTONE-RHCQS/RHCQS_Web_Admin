@@ -6,12 +6,14 @@ interface EditMaterialProps {
   id: string;
   onSuccess: (id: string, materialDetail: MaterialRequest) => void;
   onClose: () => void;
+  refreshData: () => void;
 }
 
 const EditMaterial: React.FC<EditMaterialProps> = ({
   id,
   onClose,
   onSuccess,
+  refreshData,
 }) => {
   const [materialDetail, setMaterialDetail] = useState<any>(null);
   const [newImage, setNewImage] = useState<string | null>(null);
@@ -66,6 +68,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
 
     try {
       await onSuccess(id, updatedMaterialDetail);
+      refreshData();
     } catch (error) {
       console.error('Failed to save material:', error);
     } finally {
@@ -76,7 +79,7 @@ const EditMaterial: React.FC<EditMaterialProps> = ({
   if (!materialDetail) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded shadow-lg w-1/2 max-h-[80vh] overflow-y-auto no-scrollbar">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-lg font-bold">Chi tiết vật liệu</h1>

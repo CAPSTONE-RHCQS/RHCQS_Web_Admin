@@ -9,12 +9,14 @@ interface CreateMaterialProps {
   id: string;
   onClose: () => void;
   onSuccess: (message: string) => void;
+  onError: (message: string) => void;
 }
 
 const CreateMaterial: React.FC<CreateMaterialProps> = ({
   id,
   onClose,
   onSuccess,
+  onError,
 }) => {
   const [materialSectionDetail, setMaterialSectionDetail] = useState<any>(null);
   const [materialDetail, setMaterialDetail] = useState<{
@@ -126,7 +128,8 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
       await createMaterial(materialData);
       onSuccess('Tạo vật liệu thành công');
       onClose();
-    } catch (error) {
+    } catch (error: any) {
+      onError(error.message);
       console.error('Failed to create material:', error);
     } finally {
       setIsLoading(false);
@@ -149,7 +152,7 @@ const CreateMaterial: React.FC<CreateMaterialProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       <div className="bg-white p-6 rounded shadow-lg w-1/2 max-h-[80vh] overflow-y-auto no-scrollbar">
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-lg font-bold">Tạo mới vật liệu</h1>

@@ -95,13 +95,14 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           name: inputNameValue,
           code: inputCodeValue,
         });
-        setAlertMessage('Sửa vật tưthành công');
+        setAlertMessage('Sửa vật tư thành công');
         setAlertType('success');
         refreshData();
       }
     } catch (error) {
-      setAlertMessage('Sửa vật tưthất bại');
+      setAlertMessage('Sửa vật tư thất bại');
       setAlertType('error');
+      console.error('Error updating material section:', error);
     } finally {
       setTimeout(() => {
         setIsModalOpen(false);
@@ -117,6 +118,11 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
     setAlertMessage(message);
     setAlertType('success');
     refreshData();
+  };
+
+  const handleCreateError = (message: string) => {
+    setAlertMessage(message);
+    setAlertType('error');
   };
 
   const formatDate = (dateString: string) => {
@@ -217,6 +223,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           {[
                             'Tên vật liệu',
                             'Giá',
+                            'Mã vật liệu',
                             'Đơn vị',
                             'Nhà cung cấp',
                             '',
@@ -238,16 +245,19 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
                           )
                           .map((material, materialIndex) => (
                             <tr key={materialIndex}>
-                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white">
+                              <td className="border-b border-[#eee] py-2 px-2 font-bold text-black dark:text-white text-center" style={{ width: '300px' }}>
                                 {material.Name}
                               </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-bold text-primaryGreenButton dark:text-white text-center">
                                 {formatPrice(material.Price ?? 0)}
                               </td>
+                              <td className="border-b border-[#eee] py-2 px-20 font-bold text-black dark:text-white text-center">
+                                {material.Code}
+                              </td>
                               <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center">
                                 {material.Unit}
                               </td>
-                              <td className="border-b border-[#eee] py-2 px-20 font-medium text-black dark:text-white text-center uppercase">
+                              <td className="border-b border-[#eee] py-2 px-4 font-medium text-black dark:text-white text-sm text-center uppercase">
                                 {material.SupplierName}
                               </td>
                               <td className="border-b border-[#eee] py-5 px-20 dark:border-strokedark">
@@ -300,6 +310,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           id={currentSectionId ?? ''}
           onClose={() => setIsCreateModalOpen(false)}
           onSuccess={handleCreateSuccess}
+          onError={handleCreateError}
         />
       )}
 
@@ -316,6 +327,7 @@ const MaterialTable: React.FC<MaterialTableProps> = ({
           id={selectedMaterialId}
           onClose={() => setSelectedMaterialId(null)}
           onSuccess={handleEditSuccess}
+          refreshData={refreshData}
         />
       )}
     </>
