@@ -6,6 +6,27 @@ interface FinalQuotationTableProps {
 }
 
 const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
+  const calculateTotalsByType = () => {
+    let totalLaborRough = 0;
+    let totalRough = 0;
+    let totalLaborFinished = 0;
+    let totalFinished = 0;
+
+    items.forEach((item) => {
+      item.QuotationItems.forEach((qItem) => {
+        if (item.Type === 'WORK_ROUGH') {
+          totalLaborRough += qItem.TotalPriceLabor || 0;
+          totalRough += qItem.TotalPriceRough || 0;
+        } else if (item.Type === 'WORK_FINISHED') {
+          totalLaborFinished += qItem.TotalPriceLabor || 0;
+          totalFinished += qItem.TotalPriceFinished || 0;
+        }
+      });
+    });
+
+    return { totalLaborRough, totalRough, totalLaborFinished, totalFinished };
+  };
+
   const totalLaborCost = items.reduce((total, item) => {
     return (
       total +
@@ -36,8 +57,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
     );
   }, 0);
 
-  const totalConstructionValue =
-    totalLaborCost + totalRoughCost + totalFinishedCost;
+  const totalsByType = calculateTotalsByType();
 
   return (
     <div className="overflow-x-auto">
@@ -187,45 +207,73 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({ items }) => {
         </tbody>
       </table>
 
-      <h3 className="text-lg font-bold mt-4">
+      <h3 className="text-lg font-bold mt-4 text-primary">
         GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG:
       </h3>
       <table className="min-w-full bg-white border border-gray-200 mt-2">
         <thead className="bg-gray-100">
           <tr>
+            <th className="px-4 py-2 border text-center"></th>
             <th className="px-4 py-2 border text-center">Tổng giá nhân công</th>
             <th className="px-4 py-2 border text-center">+</th>
-
-            <th className="px-4 py-2 border text-center">
-              Tổng giá vật tư thô
-            </th>
-            <th className="px-4 py-2 border text-center">+</th>
-            <th className="px-4 py-2 border text-center">
-              Tổng giá vật tư hoàn thiện
-            </th>
+            <th className="px-4 py-2 border text-center">Tổng giá vật tư</th>
             <th className="px-4 py-2 border text-center">=</th>
-            <th className="px-4 py-2 border text-center">
-              Tổng giá trị xây dựng
-            </th>
+            <th className="px-4 py-2 border text-center">Tổng giá trị</th>
+            <th className="px-4 py-2 border text-center">Đơn vị</th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <td className="px-4 py-2 border text-left font-bold text-primary">
+              Phần Thô
+            </td>
             <td className="px-4 py-2 border text-center">
-              {totalLaborCost.toLocaleString()}
+              {totalsByType.totalLaborRough.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">+</td>
             <td className="px-4 py-2 border text-center">
-              {totalRoughCost.toLocaleString()}
-            </td>
-            <td className="px-4 py-2 border text-center">+</td>
-            <td className="px-4 py-2 border text-center">
-              {totalFinishedCost.toLocaleString()}
+              {totalsByType.totalRough.toLocaleString()}
             </td>
             <td className="px-4 py-2 border text-center">=</td>
             <td className="px-4 py-2 border text-center font-bold">
-              {totalConstructionValue.toLocaleString()} VNĐ
+              {(
+                totalsByType.totalLaborRough + totalsByType.totalRough
+              ).toLocaleString()}
             </td>
+            <td className="px-4 py-2 border text-center">VNĐ</td>
+          </tr>
+          <tr>
+            <td className="px-4 py-2 border text-left font-bold text-primary">
+              Phần Hoàn thiện
+            </td>
+            <td className="px-4 py-2 border text-center">
+              {totalsByType.totalLaborFinished.toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center">+</td>
+            <td className="px-4 py-2 border text-center">
+              {totalsByType.totalFinished.toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center">=</td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {(
+                totalsByType.totalLaborFinished + totalsByType.totalFinished
+              ).toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center">VNĐ</td>
+          </tr>
+          <tr className="bg-gray-200">
+            <td className="px-4 py-2 border text-center font-bold" colSpan={5}>
+              Tổng giá trị xây dựng
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">
+              {(
+                totalsByType.totalLaborRough +
+                totalsByType.totalRough +
+                totalsByType.totalLaborFinished +
+                totalsByType.totalFinished
+              ).toLocaleString()}
+            </td>
+            <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
           </tr>
         </tbody>
       </table>
