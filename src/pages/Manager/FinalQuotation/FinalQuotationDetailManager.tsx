@@ -447,7 +447,10 @@ const FinalQuotationDetailManager = () => {
           )}
         </h3>
         {showDetailedItems && (
-          <FinalQuotationTable items={quotationDetail.FinalQuotationItems} />
+          <FinalQuotationTable
+            items={quotationDetail.FinalQuotationItems}
+            projectType={quotationDetail.ProjectType}
+          />
         )}
 
         <hr className="my-4 border-gray-300" />
