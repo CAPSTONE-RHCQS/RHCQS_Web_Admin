@@ -482,13 +482,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     items.forEach((item) => {
       item.QuotationItems.forEach((qItem) => {
-        if (item.Type === 'WORK_ROUGH') {
-          totalLaborRough += qItem.TotalPriceLabor || 0;
-          totalRough += qItem.TotalPriceRough || 0;
-        } else if (item.Type === 'WORK_FINISHED') {
-          totalLaborFinished += qItem.TotalPriceLabor || 0;
-          totalFinished += qItem.TotalPriceFinished || 0;
-        }
+        totalLaborRough += item.Type === 'WORK_ROUGH' ? qItem.TotalPriceLabor || 0 : 0;
+        totalLaborFinished += item.Type === 'WORK_FINISHED' ? qItem.TotalPriceLabor || 0 : 0;
+        
+        totalRough += qItem.TotalPriceRough || 0;
+        totalFinished += qItem.TotalPriceFinished || 0;
       });
     });
 

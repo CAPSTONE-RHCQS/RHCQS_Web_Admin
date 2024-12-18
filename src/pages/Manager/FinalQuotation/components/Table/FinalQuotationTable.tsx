@@ -20,11 +20,12 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
       item.QuotationItems.forEach((qItem) => {
         if (item.Type === 'WORK_ROUGH') {
           totalLaborRough += qItem.TotalPriceLabor || 0;
-          totalRough += qItem.TotalPriceRough || 0;
         } else if (item.Type === 'WORK_FINISHED') {
           totalLaborFinished += qItem.TotalPriceLabor || 0;
-          totalFinished += qItem.TotalPriceFinished || 0;
         }
+
+        totalRough += qItem.TotalPriceRough || 0;
+        totalFinished += qItem.TotalPriceFinished || 0;
       });
     });
 
@@ -125,7 +126,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
               className="px-2 py-2 border text-center"
               style={{ maxWidth: '150px' }}
             >
-              Vật tư
+              Vật tư Thô
             </th>
             <th
               className="px-2 py-2 border text-center"
