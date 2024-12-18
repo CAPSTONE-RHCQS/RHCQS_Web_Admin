@@ -64,6 +64,12 @@ const statuses = [
     bgColor: '#EF5350',
     labelColor: '#EF5350',
   },
+  {
+    label: 'Đã chấm dứt',
+    icon: <FaBan />,
+    bgColor: '#EF5350',
+    labelColor: '#EF5350',
+  },
 ];
 
 const InitialQuotationStatusTracker: React.FC<

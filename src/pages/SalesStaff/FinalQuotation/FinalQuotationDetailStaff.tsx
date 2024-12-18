@@ -29,7 +29,6 @@ import {
   FaMailBulk,
   FaFileInvoiceDollar,
   FaStickyNote,
-  FaCommentDots,
   FaTimes,
 } from 'react-icons/fa';
 import 'react-toastify/dist/ReactToastify.css';

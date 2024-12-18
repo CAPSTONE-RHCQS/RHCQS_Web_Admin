@@ -66,6 +66,12 @@ const statuses = [
     color: '#EF5350',
     labelColor: '#EF5350',
   },
+  {
+    label: 'Đã chấm dứt',
+    icon: <FaBan />,
+    color: '#EF5350',
+    labelColor: '#EF5350',
+  },
 ];
 
 const FinalQuotationStatus: React.FC<FinalQuotationStatusProps> = ({

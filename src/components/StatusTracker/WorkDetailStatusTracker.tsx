@@ -53,13 +53,6 @@ const statuses = [
     textColor: 'text-blue-500',
   },
   {
-    key: 'Rejected',
-    label: 'Từ chối bản vẽ',
-    icon: <FaTimes />,
-    backgroundColor: 'bg-red-500',
-    textColor: 'text-red-500',
-  },
-  {
     key: 'Accepted',
     label: 'Chấp nhận bản vẽ',
     icon: <FaCheck />,
@@ -76,6 +69,13 @@ const statuses = [
   {
     key: 'Ended',
     label: 'Bị đóng',
+    icon: <FaBan />,
+    backgroundColor: 'bg-red-400',
+    textColor: 'text-red-400',
+  },
+  {
+    key: 'Canceled',
+    label: 'Đã chấm dứt',
     icon: <FaBan />,
     backgroundColor: 'bg-red-400',
     textColor: 'text-red-400',

@@ -39,6 +39,7 @@ export const getStatusLabelInitalQuoteDetail = (status: string) => {
     Rejected: 'Từ chối báo giá',
     Updating: 'Đang chỉnh sửa',
     Finalized: 'Hoàn thành',
+    Canceled: 'Đã chấm dứt',
     Ended: 'Đã đóng',
   };
   return statusLabelMap[status] || 'Không xác định';
@@ -53,6 +54,7 @@ export const getStatusLabelFinalQuoteDetail = (status: string) => {
     Rejected: 'Từ chối báo giá',
     Updating: 'Đang chỉnh sửa',
     Finalized: 'Hoàn thành',
+    Canceled: 'Đã chấm dứt',
     Ended: 'Đã đóng',
   };
   return statusLabelMap[status] || 'Không xác định';
