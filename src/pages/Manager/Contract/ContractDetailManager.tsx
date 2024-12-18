@@ -214,9 +214,9 @@ const ContractDetailManager = () => {
 
   const contractTemplateUrl =
     contractDetail.Type === 'Design'
-      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1732348518/Contract/Hop_dong_thiet_ke_a30cfe5d-d683-482b-8172-9eb2292dc75e.pdf'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1733059186/Contract/Hop_dong_thiet_ke_8dad7199-a6cb-40c2-b1a2-010a51abb1a4.pdf'
       : contractDetail.Type === 'Construction'
-      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1731897883/Contract/Hop_dong_thi_cong_17e47746-0598-4caa-801e-261e01da1f9e.pdf'
+      ? 'https://res.cloudinary.com/de7pulfdj/image/upload/v1733077159/Contract/Hop_dong_thiet_ke_2af2f9b2-23f6-4577-aa87-8721b7014565.pdf'
       : null;
 
   return (
