@@ -9,6 +9,7 @@ import { BlogItem } from '../../../types/BlogTypes';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/solid';
 import ClipLoader from 'react-spinners/ClipLoader';
 import ReactQuill from 'react-quill';
+import { addClassesToHtml } from '../../../utils/htmlUtils';
 
 const BlogList: React.FC = () => {
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
@@ -171,7 +172,7 @@ const BlogList: React.FC = () => {
               <p className="text-gray-600 mb-4">{blog.SubHeading || 'No Subheading'}</p>
               <div
                 className="text-gray-800 mb-4"
-                dangerouslySetInnerHTML={{ __html: (blog.Context || '').substring(0, 100) + '...' }}
+                dangerouslySetInnerHTML={{ __html: addClassesToHtml((blog.Context || '').substring(0, 100) + '...') }}
               />
               <div className="flex justify-between items-center text-sm text-gray-500">
                 <span>By {blog.AccountName}</span>
@@ -223,7 +224,7 @@ const BlogList: React.FC = () => {
             <p className="text-gray-600 mb-4">{blogDetail.SubHeading || 'No Subheading'}</p>
             <div
               className="text-gray-800 mb-4"
-              dangerouslySetInnerHTML={{ __html: blogDetail.Context || '' }}
+              dangerouslySetInnerHTML={{ __html: addClassesToHtml(blogDetail.Context || '') }}
             />
             <img
               src={blogDetail.ImgUrl || ''}
