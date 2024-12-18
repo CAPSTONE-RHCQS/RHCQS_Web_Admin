@@ -49,7 +49,7 @@ const PackageDetail: React.FC = () => {
             laborId: labor.LaborId,
           })),
           packageMaterials: response.data.PackageMaterials.map((material) => ({
-            materialId: material.Id,
+            materialId: material.MaterialId,
           })),
           packageHouses: response.data.PackageHouses.map((house) => ({
             designTemplateId: house.DesignTemplateId,
