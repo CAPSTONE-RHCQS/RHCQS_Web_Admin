@@ -1,9 +1,14 @@
 import { ApexOptions } from 'apexcharts';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import {
+  getTotalPriceByMonth,
+  getTotalPaidPriceByMonth,
+  getTotalProgressPriceByMonth,
+} from '../../api/Dashboard/TotalProject';
 
 const options: ApexOptions = {
-  colors: ['#5BABAC', '#80CAEE'],
+  colors: ['#5BABAC', '#80CAEE', '#FF5733'],
   chart: {
     fontFamily: 'Montserrat, sans-serif',
     type: 'bar',
@@ -44,7 +49,17 @@ const options: ApexOptions = {
   },
 
   xaxis: {
-    categories: ['M', 'T', 'W', 'T', 'F', 'S', 'S'],
+    categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+  },
+  yaxis: {
+    labels: {
+      formatter: function (value) {
+        return new Intl.NumberFormat('vi-VN', {
+          style: 'currency',
+          currency: 'VND',
+        }).format(value);
+      },
+    },
   },
   legend: {
     position: 'top',
@@ -73,15 +88,65 @@ const ChartTwo: React.FC = () => {
   const [state, setState] = useState<ChartTwoState>({
     series: [
       {
-        name: 'Sales',
-        data: [44, 55, 41, 67, 22, 43, 65],
+        name: 'Tổng Tiền Tạm Tính',
+        data: [],
       },
       {
-        name: 'Revenue',
-        data: [13, 23, 20, 8, 13, 27, 15],
+        name: 'Tổng Thực nhận',
+        data: [],
+      },
+      {
+        name: 'Đang chờ xử lý',
+        data: [],
       },
     ],
   });
+
+  const [selectedYear, setSelectedYear] = useState<number>(2025);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const salesData: number[] = [];
+        const revenueData: number[] = [];
+        const progressData: number[] = [];
+
+        for (let month = 1; month <= 12; month++) {
+          const sales = await getTotalPriceByMonth(month, selectedYear);
+          const revenue = await getTotalPaidPriceByMonth(month, selectedYear);
+          const progress = await getTotalProgressPriceByMonth(
+            month,
+            selectedYear,
+          );
+
+          salesData.push(sales);
+          revenueData.push(revenue);
+          progressData.push(progress);
+        }
+
+        setState({
+          series: [
+            {
+              name: 'Tổng Tiền Tạm Tính',
+              data: salesData,
+            },
+            {
+              name: 'Tổng Thực nhận',
+              data: revenueData,
+            },
+            {
+              name: 'Đang chờ xử lý',
+              data: progressData,
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [selectedYear]);
 
   const handleReset = () => {
     setState((prevState) => ({
@@ -94,22 +159,20 @@ const ChartTwo: React.FC = () => {
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
       <div className="mb-4 justify-between gap-4 sm:flex">
         <div>
-          <h4 className="text-xl font-semibold text-black dark:text-white">
-            Profit this week
-          </h4>
+          <h4 className="text-xl font-semibold text-black dark:text-white"></h4>
         </div>
-        <div>
+        <div className="inline-flex items-center rounded-md bg-whiter p-1.5 dark:bg-meta-4">
           <div className="relative z-20 inline-block">
             <select
-              name="#"
-              id="#"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
               className="relative z-20 inline-flex appearance-none bg-transparent py-1 pl-3 pr-8 text-sm font-medium outline-none"
             >
-              <option value="" className="dark:bg-boxdark">
-                This Week
+              <option value={2024} className="dark:bg-boxdark">
+                2024
               </option>
-              <option value="" className="dark:bg-boxdark">
-                Last Week
+              <option value={2025} className="dark:bg-boxdark">
+                2025
               </option>
             </select>
             <span className="absolute top-1/2 right-3 z-10 -translate-y-1/2">
