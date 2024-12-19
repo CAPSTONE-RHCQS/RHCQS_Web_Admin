@@ -98,9 +98,9 @@ const PackageList: React.FC = () => {
         <h1 className="text-2xl font-bold">Danh sách gói xây dựng</h1>
         <button
           onClick={() => navigate('/create-package-manager')}
-          className="flex items-center bg-secondaryGreenButton text-white px-4 py-2 rounded hover:bg-primaryDarkGreen transition"
+          className="flex items-center text-primaryGreenButton font-bold px-4 py-2 rounded transition"
         >
-          <FaPlus className="mr-2" /> Tạo Gói Mới
+          + Tạo Gói Mới
         </button>
       </div>
       <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">

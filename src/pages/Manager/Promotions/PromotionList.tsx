@@ -40,9 +40,9 @@ const PromotionList: React.FC = () => {
           <div className="flex items-center">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="mr-4 p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              className="mr-4 p-2 text-primaryGreenButton font-bold rounded-lg hover:bg-blue-600 transition"
             >
-              Thêm mới
+              + Thêm mới
             </button>
             <ArrowPathIcon
               onClick={handleRefresh}
