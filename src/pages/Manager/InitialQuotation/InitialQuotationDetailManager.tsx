@@ -35,6 +35,7 @@ import { TbHomePlus } from 'react-icons/tb';
 import EditRequestDialog from '../../../components/EditRequestDialog';
 import RejectDialog from '../../../components/RejectDialog';
 import { formatVietnamesePhoneNumber } from '../../../utils/phoneUtils';
+import { addClassesToHtml } from '../../../utils/htmlUtils';
 
 interface TableRow {
   stt: number;
@@ -830,7 +831,7 @@ const InitialQuotationDetailManager = () => {
           <div
             className="text-gray-700"
             dangerouslySetInnerHTML={{
-              __html: quotationData.OthersAgreement || '',
+              __html: addClassesToHtml(quotationData.OthersAgreement || ''),
             }}
           />
         </div>

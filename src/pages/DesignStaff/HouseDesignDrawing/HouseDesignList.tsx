@@ -35,11 +35,11 @@ const statusMap: { [key: string]: string } = {
   Processing: 'Đang thiết kế',
   Reviewing: 'Chờ xác nhận quản lý',
   Approved: 'Quản lý đã xác nhận',
-  Rejected: 'Bị từ chối',
   Updating: 'Đang chỉnh sửa',
   Accepted: 'Chấp nhận bản vẽ',
   Finalized: 'Hoàn thành',
   Ended: 'Đã đóng',
+  Canceled: 'Đã chấm dứt',
 };
 
 export const statusStyles: {
@@ -64,10 +64,6 @@ export const statusStyles: {
     backgroundColor: '#5BABAC',
     icon: <FaCheckCircle className="text-white" />,
   },
-  Rejected: {
-    backgroundColor: '#FF6347',
-    icon: <FaTimesCircle className="text-white" />,
-  },
   Updating: {
     backgroundColor: '#1E90FF',
     icon: <FaEdit className="text-white" />,
@@ -81,6 +77,10 @@ export const statusStyles: {
     icon: <FaCheckCircle className="text-white" />,
   },
   Ended: {
+    backgroundColor: '#EF5350',
+    icon: <FaBan className="text-white" />,
+  },
+  Canceled: {
     backgroundColor: '#EF5350',
     icon: <FaBan className="text-white" />,
   },

@@ -54,6 +54,7 @@ const statusMap: {
     icon: <FaCheckCircle />,
   },
   Ended: { color: '#EF5350', label: 'Đã đóng', icon: <FaBan /> },
+  Canceled: { color: '#EF5350', label: 'Đã chấm dứt', icon: <FaBan /> },
 };
 
 const getStatusInfo = (status: string | null) => {

@@ -276,8 +276,13 @@ const ProjectDetailSalesStaff = () => {
             avatarUrl={projectDetail.StaffAvatar || Fee}
           />
         </div>
-
         <StatusTracker currentStatus={mappedStatus} />
+        {projectDetail.Status === 'Ended' && projectDetail.ReasonCanceled && (
+          <div className="p-4 bg-red-100 text-red-800 rounded">
+            <strong>Dự án đã chấm dứt vì: </strong>
+            {projectDetail.ReasonCanceled}
+          </div>
+        )}
       </div>
 
       <div className="p-6 bg-white rounded-lg shadow-md">
