@@ -84,19 +84,14 @@ const CreateNewFinalQuotationStaff = () => {
   useEffect(() => {
     if (quotationDetail) {
       setPromotionInfo(quotationDetail.PromotionInfo || null);
-      const total = quotationDetail.FinalQuotationItems.reduce(
-        (acc, item) =>
-          acc +
-          item.QuotationItems.reduce(
-            (subAcc, qItem) =>
-              subAcc +
-              (qItem.TotalPriceLabor || 0) +
-              (qItem.TotalPriceRough || 0) +
-              (qItem.TotalPriceFinished || 0),
-            0,
-          ),
-        0,
-      );
+      const total = quotationDetail.FinalQuotationItems.reduce((acc, item) => {
+        if (item.Type === 'WORK_ROUGH') {
+          return acc + item.QuotationItems.reduce((subAcc, qItem) => {
+            return subAcc + (qItem.TotalPriceLabor || 0) + (qItem.TotalPriceRough || 0);
+          }, 0);
+        }
+        return acc;
+      }, 0);
       setTotalRough(total);
     }
   }, [quotationDetail]);
