@@ -125,7 +125,7 @@ const ContractDetailManager = () => {
     if (contractId && selectedFiles[index] && contractDetail) {
       setIsUploading(true);
       try {
-        const appendix = contractDetail.BatchPaymentAppendices?.[index];
+        const appendix = contractDetail.BatchPayment?.[index];
         if (!appendix) {
           throw new Error('Không tìm thấy phụ lục tương ứng.');
         }
@@ -453,13 +453,26 @@ const ContractDetailManager = () => {
                           {truncateFileName(selectedFiles[index]?.name, 20)}
                         </span>
                       )}
-                      <button
-                        onClick={() => handleUpload(index)}
-                        className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
-                        disabled={!selectedFiles[index] || isUploading}
-                      >
-                        {isUploading ? 'Đang tải lên...' : <FaUpload />}
-                      </button>
+                      {contractDetail.Type !== 'Appendix_Construction' &&
+                      contractDetail.Type !== 'Appendix_Design' ? (
+                        <>
+                          <button
+                            onClick={() => handleUpload(index)}
+                            className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
+                            disabled={!selectedFiles[index] || isUploading}
+                          >
+                            {isUploading ? 'Đang tải lên...' : <FaUpload />}
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => handleUploadAppendices(index)}
+                          className="ml-2 bg-primary text-white px-4 py-2 rounded shadow-md hover:bg-primary-dark"
+                          disabled={!selectedFiles[index] || isUploading}
+                        >
+                          {isUploading ? 'Đang tải lên...' : <FaUpload />}
+                        </button>
+                      )}
                       <p className="text-gray-500 text-sm mt-1">
                         Chỉ chấp nhận file hình ảnh <br />
                         (JPG, PNG, GIF).
