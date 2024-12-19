@@ -88,6 +88,13 @@ const DesignPriceTable: React.FC<DesignPriceTableProps> = ({
     });
   };
 
+  const sortedDataDesignPrice = [...dataDesignPrice].sort((a, b) => {
+    if (a.AreaFrom === b.AreaFrom) {
+      return a.Price - b.Price;
+    }
+    return a.AreaFrom - b.AreaFrom;
+  });
+
   return (
     <>
       <table className="w-full table-auto">
@@ -106,7 +113,7 @@ const DesignPriceTable: React.FC<DesignPriceTableProps> = ({
           </tr>
         </thead>
         <tbody>
-          {dataDesignPrice.map((item, index) => (
+          {sortedDataDesignPrice.map((item, index) => (
             <React.Fragment key={index}>
               <tr className="cursor-pointer">
                 <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark font-semibold dark:text-primaryGreenButton">

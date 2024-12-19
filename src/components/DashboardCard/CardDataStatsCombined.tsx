@@ -15,7 +15,7 @@ const CardDataStatsCombined: React.FC<CardDataStatsCombinedProps> = ({
   customer,
 }) => {
   return (
-    <div className="rounded-sm border border-stroke bg-white py-3 px-7 shadow-default dark:border-strokedark dark:bg-boxdark">
+    <div className="rounded-sm border border-stroke bg-white py-3 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
       <div className="mt-4">
         <h4 className="text-title-md font-bold text-black dark:text-white"></h4>
         <div className="mt-2 flex items-center">

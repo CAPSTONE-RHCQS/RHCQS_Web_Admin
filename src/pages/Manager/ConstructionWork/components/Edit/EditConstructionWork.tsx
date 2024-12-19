@@ -361,9 +361,11 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
                 className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                 placeholder="Nhập định mức vật tư"
               />
-              <div className="right-0">
-                <DeleteButton onClick={() => removeMaterialResource(index)} />
-              </div>
+              {resource.isNew && (
+                <div className="right-0">
+                  <DeleteButton onClick={() => removeMaterialResource(index)} />
+                </div>
+              )}
             </div>
           ))}
           {errors.materialResources && (
@@ -429,9 +431,11 @@ const UpdateConstructionWork: React.FC<UpdateConstructionWorkProps> = ({
                 className="border p-2 mb-2 w-1/3 rounded font-regular mr-2"
                 placeholder="Nhập định mức nhân công"
               />
-              <div className="right-0">
-                <DeleteButton onClick={() => removeLaborResource(index)} />
-              </div>
+              {resource.isNew && (
+                <div className="right-0">
+                  <DeleteButton onClick={() => removeLaborResource(index)} />
+                </div>
+              )}
             </div>
           ))}
           {errors.laborResources && (

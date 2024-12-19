@@ -39,6 +39,7 @@ export interface AreaData {
     Unit: string;
     Price: number;
   }[];
+  totalArea?: number;
 }
 
 const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
@@ -145,10 +146,11 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     const areaValue = parseFloat(value) || 0;
     
     const item = newAreas[areaIndex].selectedItems[itemIndex];
-    item.area = areaValue;
+    item.area = parseFloat(areaValue.toFixed(5));
     item.Price = calculateItemTotal(areaValue, selectedPackagePrice || 0, item.Coefficient);
 
     newAreas[areaIndex].totalRough = calculateTotalCostForArea(areaIndex);
+    newAreas[areaIndex].buildingArea = calculateTotalAreaForItems(areaIndex).toString();
 
     onAreaDataChange(newAreas);
   };
@@ -165,6 +167,13 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
     const areaData = areas[index];
     return areaData.selectedItems.reduce((total, item) => {
       return total + item.area * (selectedPackagePrice || 0) * item.Coefficient;
+    }, 0);
+  };
+
+  const calculateTotalAreaForItems = (index: number) => {
+    const areaData = areas[index];
+    return areaData.selectedItems.reduce((total, item) => {
+      return total + item.area * item.Coefficient;
     }, 0);
   };
 
@@ -347,6 +356,7 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                       </th>
                       <th className="border border-primary py-2">ĐVT</th>
                       <th className="border border-primary py-2">Diện tích</th>
+                      <th className="border border-primary py-2">Diện tích hạng mục</th>
                       <th className="border border-primary py-2">Tổng tiền</th>
                       <th className="border border-primary py-2">Hành động</th>
                     </tr>
@@ -384,6 +394,9 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                           />
                         </td>
                         <td className="border border-primary py-2 text-center">
+                          {(item.area * item.Coefficient).toFixed(5)} m²
+                        </td>
+                        <td className="border border-primary py-2 text-center">
                           {formatCurrency(item.Price)}
                         </td>
                         <td className="border border-primary py-2 text-center">
@@ -394,6 +407,10 @@ const CreateAreaHouse: React.FC<HouseAreaComponentProps> = ({
                               newAreas[index].selectedItems = newAreas[
                                 index
                               ].selectedItems.filter((_, i) => i !== itemIndex);
+                              
+                              newAreas[index].totalRough = calculateTotalCostForArea(index);
+                              newAreas[index].buildingArea = calculateTotalAreaForItems(index).toString();
+                              
                               onAreaDataChange(newAreas);
                             }}
                           >
