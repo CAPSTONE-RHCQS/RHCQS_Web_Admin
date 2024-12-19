@@ -90,7 +90,7 @@ const DesignPriceTable: React.FC<DesignPriceTableProps> = ({
 
   const sortedDataDesignPrice = [...dataDesignPrice].sort((a, b) => {
     if (a.AreaFrom === b.AreaFrom) {
-      return a.Price - b.Price;
+      return a.Price - b.Price; 
     }
     return a.AreaFrom - b.AreaFrom;
   });
