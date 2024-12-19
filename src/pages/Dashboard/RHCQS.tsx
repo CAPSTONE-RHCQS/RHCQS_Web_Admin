@@ -122,7 +122,7 @@ const RHCQS: React.FC = () => {
           />
         </CardDataStats>
         <CardTotalPrice
-          title="Tổng Doanh Thu"
+          title="Tổng Tiền Tạm Tính"
           totalRevenue={formatCurrency(totalRevenue)}
           totalProgress={formatCurrency(totalProgress)}
         >
@@ -132,7 +132,7 @@ const RHCQS: React.FC = () => {
             height="30"
           />
         </CardTotalPrice>
-        <CardDataStats title="Tổng chi" total={formatCurrency(totalCost)}>
+        <CardDataStats title="Tổng Thực nhận" total={formatCurrency(totalCost)}>
           <CostIcon
             className="mr-2 fill-primary dark:fill-white"
             width="30"
