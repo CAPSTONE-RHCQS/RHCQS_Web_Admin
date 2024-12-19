@@ -122,24 +122,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           {/* <!-- Menu Group --> */}
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
-              <li>
-                <NavLink
-                  to="/"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white transition-colors duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
-                    pathname === '/' && 'bg-teal-300 dark:bg-meta-4'
-                  }`}
-                >
-                  <DashboardIcon />
-                  <span
-                    className={`${!isHovered && !sidebarOpen ? 'hidden' : ''}`}
-                  >
-                    Bảng điều khiển
-                  </span>
-                </NavLink>
-              </li>
-
               {userRole === 'Manager' && (
                 <>
+                  <li>
+                    <NavLink
+                      to="/"
+                      className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white transition-colors duration-300 ease-in-out hover:bg-teal-300 dark:hover:bg-meta-4 ${
+                        pathname === '/' && 'bg-teal-300 dark:bg-meta-4'
+                      }`}
+                    >
+                      <DashboardIcon />
+                      <span
+                        className={`${
+                          !isHovered && !sidebarOpen ? 'hidden' : ''
+                        }`}
+                      >
+                        Bảng điều khiển
+                      </span>
+                    </NavLink>
+                  </li>
                   <h3
                     className={`mt-4 ml-4 text-sm font-semibold text-bodydark2 ${
                       !isHovered && !sidebarOpen ? 'hidden' : ''

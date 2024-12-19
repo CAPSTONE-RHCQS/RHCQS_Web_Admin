@@ -92,9 +92,7 @@ function App() {
               <Route
                 index
                 element={
-                  <PrivateRoute
-                    allowedRoles={['Manager', 'SalesStaff', 'DesignStaff']}
-                  >
+                  <PrivateRoute allowedRoles={['Manager']}>
                     <PageTitle title="RHCQS Dashboard | RHCQS - Residential Housing Construction Quotation System" />
                     <RHCQS />
                   </PrivateRoute>
