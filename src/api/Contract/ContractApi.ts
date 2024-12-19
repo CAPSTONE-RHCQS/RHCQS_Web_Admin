@@ -177,6 +177,23 @@ export const approveContractBill = async (paymentId: string, type: string) => {
   }
 };
 
+export const cancelContractBill = async (paymentId: string) => {
+  try {
+    const response = await requestWebRHCQS.delete(
+      `/contract/bill/delete?paymentId=${paymentId}`,
+      {
+        headers: {
+          accept: 'text/plain',
+        },
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error approving contract bill:', error);
+    throw error;
+  }
+};
+
 export const createContractAppendix = async (data: {
   contractId: string;
   startDate: string;
@@ -218,7 +235,7 @@ export const getContractPrice = async (projectId: string): Promise<number> => {
         headers: {
           accept: 'text/plain',
         },
-      }
+      },
     );
     return response.data;
   } catch (error) {

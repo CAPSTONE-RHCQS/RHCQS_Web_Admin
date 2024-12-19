@@ -6,6 +6,7 @@ import {
   approveContractBill,
   paymentContractConstruction,
   paymentContractAppendix,
+  cancelContractBill,
 } from '../../../api/Contract/ContractApi';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -169,6 +170,18 @@ const ContractDetailManager = () => {
     } catch (error) {
       console.error('Error approving contract bill:', error);
       toast.error('Xác nhận hóa đơn thất bại!');
+    }
+  };
+
+  const handleCancelBill = async (paymentId: string) => {
+    try {
+      await cancelContractBill(paymentId);
+      toast.success('Hóa đơn đã được hủy!');
+      fetchContractDetail();
+      closeModal();
+    } catch (error) {
+      console.error('Error approving contract bill:', error);
+      toast.error('Hủy hóa đơn thất bại!');
     }
   };
 
@@ -698,8 +711,7 @@ const ContractDetailManager = () => {
             />
 
             {selectedBatch.Status === 'Progress' && (
-              <div className="flex justify-end mt-3">
-                {' '}
+              <div className="flex justify-end mt-3 gap-4">
                 <button
                   onClick={() =>
                     handleApproveBill(selectedBatch.PaymentId, 'Approved')
@@ -707,6 +719,12 @@ const ContractDetailManager = () => {
                   className="bg-secondaryGreenButton text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
                 >
                   Xác nhận
+                </button>
+                <button
+                  onClick={() => handleCancelBill(selectedBatch.PaymentId)}
+                  className="bg-red-400 text-white px-4 py-2 rounded shadow-md hover:bg-red-600"
+                >
+                  Hủy
                 </button>
               </div>
             )}
