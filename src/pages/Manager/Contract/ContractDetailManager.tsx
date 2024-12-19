@@ -37,7 +37,7 @@ const ContractDetailManager = () => {
   const [selectedFiles, setSelectedFiles] = useState<{
     [key: number]: File | null;
   }>({});
-  const [selectedBatch, setSelectedBatch] = useState<number | null>(null);
+  const [selectedBatch, setSelectedBatch] = useState<any | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -165,6 +165,7 @@ const ContractDetailManager = () => {
       await approveContractBill(paymentId, type);
       toast.success('Hóa đơn đã được xác nhận!');
       fetchContractDetail();
+      closeModal();
     } catch (error) {
       console.error('Error approving contract bill:', error);
       toast.error('Xác nhận hóa đơn thất bại!');
@@ -185,8 +186,9 @@ const ContractDetailManager = () => {
     return fileName.slice(0, maxLength - extension.length) + '...' + extension;
   };
 
-  const openModal = (imageSrc: string) => {
+  const openModal = (imageSrc: string, batch: any) => {
     setSelectedImage(imageSrc);
+    setSelectedBatch(batch);
     setIsModalOpen(true);
   };
 
@@ -426,7 +428,7 @@ const ContractDetailManager = () => {
                       src={batch.InvoiceImage}
                       alt={`Invoice for ${batch.Description}`}
                       className="w-16 h-16 object-cover mx-auto cursor-pointer"
-                      onClick={() => openModal(batch.InvoiceImage)}
+                      onClick={() => openModal(batch.InvoiceImage, batch)}
                     />
                   ) : batch.InvoiceImage === 'Chưa có hóa đơn' &&
                     batch.Status === 'Progress' ? (
@@ -470,35 +472,37 @@ const ContractDetailManager = () => {
                         src={batch.InvoiceImage}
                         alt={`Invoice for ${batch.Description}`}
                         className="w-16 h-16 object-cover mx-auto cursor-pointer"
-                        onClick={() => openModal(batch.InvoiceImage)}
+                        onClick={() => openModal(batch.InvoiceImage, batch)}
                       />
-                      <button
+                      {/* <button
                         onClick={() =>
                           handleApproveBill(batch.PaymentId, 'Approved')
                         }
                         className="bg-green-500 text-white px-4 py-2 mt-3 rounded shadow-md hover:bg-green-600"
                       >
                         Xác nhận
-                      </button>
+                      </button> */}
                     </>
                   ) : (
                     <></>
                   )}
                 </td>
                 <td className="px-4 py-2 border">
-                  {batch.Status === 'Paid' ? (
-                    <span className="text-green-500 flex items-center">
-                      <FaCheckCircle className="mr-1" /> Đã thanh toán
-                    </span>
-                  ) : batch.Status === 'Cancel' ? (
-                    <span className="text-red-500 flex items-center">
-                      <FaBan className="mr-1" /> Đã chấm dứt
-                    </span>
-                  ) : (
-                    <span className="text-blue-500 flex items-center">
-                      <FaClock className="mr-1" /> Chờ thanh toán
-                    </span>
-                  )}
+                  <div className="mt-4 text-right">
+                    {batch.Status === 'Paid' ? (
+                      <span className="text-green-500 flex items-center justify-end">
+                        <FaCheckCircle className="mr-1" /> Đã thanh toán
+                      </span>
+                    ) : batch.Status === 'Cancel' ? (
+                      <span className="text-red-500 flex items-center justify-end">
+                        <FaBan className="mr-1" /> Đã chấm dứt
+                      </span>
+                    ) : (
+                      <span className="text-blue-500 flex items-center justify-end">
+                        <FaClock className="mr-1" /> Chờ thanh toán
+                      </span>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -593,33 +597,35 @@ const ContractDetailManager = () => {
                           alt={`Invoice for ${appendix.Description}`}
                           className="w-16 h-16 object-cover mx-auto"
                         />
-                        <button
+                        {/* <button
                           onClick={() =>
                             handleApproveBill(appendix.PaymentId, 'Approved')
                           }
                           className="bg-green-500 text-white px-4 py-2 rounded shadow-md hover:bg-green-600"
                         >
                           Xác nhận
-                        </button>
+                        </button> */}
                       </>
                     ) : (
                       <></>
                     )}
                   </td>
                   <td className="px-4 py-2 border">
-                    {appendix.Status === 'Paid' ? (
-                      <span className="text-green-500 flex items-center">
-                        <FaCheckCircle className="mr-1" /> Đã thanh toán
-                      </span>
-                    ) : appendix.Status === 'Cancel' ? (
-                      <span className="text-red-500 flex items-center">
-                        <FaBan className="mr-1" /> Đã chấm dứt
-                      </span>
-                    ) : (
-                      <span className="text-blue-500 flex items-center">
-                        <FaClock className="mr-1" /> Chờ thanh toán
-                      </span>
-                    )}
+                    <div className="mt-4 text-right">
+                      {appendix.Status === 'Paid' ? (
+                        <span className="text-green-500 flex items-center justify-end">
+                          <FaCheckCircle className="mr-1" /> Đã thanh toán
+                        </span>
+                      ) : appendix.Status === 'Cancel' ? (
+                        <span className="text-red-500 flex items-center justify-end">
+                          <FaBan className="mr-1" /> Đã chấm dứt
+                        </span>
+                      ) : (
+                        <span className="text-blue-500 flex items-center justify-end">
+                          <FaClock className="mr-1" /> Chờ thanh toán
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}{' '}
@@ -630,13 +636,13 @@ const ContractDetailManager = () => {
         <></>
       )}
 
-      {isModalOpen && selectedImage && (
+      {isModalOpen && selectedImage && selectedBatch && (
         <div
           className="fixed inset-0 mt-20 bg-black bg-opacity-50 flex justify-center items-center z-50"
           onClick={closeModal}
         >
           <div
-            className="bg-white p-4 rounded shadow-lg max-w-3xl overflow-auto relative"
+            className="bg-white p-4 rounded shadow-lg max-w-3xl max-h-[80vh] overflow-y-auto relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -646,11 +652,51 @@ const ContractDetailManager = () => {
             >
               &times;
             </button>
+            <div className="mt-4 flex justify-between items-center">
+              <div className="text-left">
+                <span className="font-semibold">
+                  Đợt {selectedBatch.NumberOfBatch}. {selectedBatch.Description}
+                </span>
+              </div>
+              <div className="text-right">
+                {selectedBatch.Status === 'Paid' ? (
+                  <span className="text-green-500 flex items-center">
+                    <FaCheckCircle className="mr-1" /> Đã thanh toán
+                  </span>
+                ) : selectedBatch.Status === 'Cancel' ? (
+                  <span className="text-red-500 flex items-center">
+                    <FaBan className="mr-1" /> Đã chấm dứt
+                  </span>
+                ) : (
+                  <span className="text-blue-500 flex items-center">
+                    <FaClock className="mr-1" /> Chờ thanh toán
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="mt-4 text-left">
+              <span className="font-semibold">Giá trị thanh toán </span>
+              <span>{selectedBatch.Price.toLocaleString()} VNĐ</span>
+            </div>
             <img
               src={selectedImage}
               alt="Full size"
-              className="max-w-full max-h-[80vh] mt-8"
+              className="max-w-full max-h-[85vh] mt-8"
             />
+
+            {selectedBatch.Status === 'Progress' && (
+              <div className="flex justify-end mt-3">
+                {' '}
+                <button
+                  onClick={() =>
+                    handleApproveBill(selectedBatch.PaymentId, 'Approved')
+                  }
+                  className="bg-secondaryGreenButton text-white px-4 py-2 rounded shadow-md hover:bg-primaryDarkGreen"
+                >
+                  Xác nhận
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
