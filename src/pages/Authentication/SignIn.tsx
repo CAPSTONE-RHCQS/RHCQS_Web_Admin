@@ -50,7 +50,20 @@ const SignIn: React.FC = () => {
       localStorage.setItem('token', data.Token);
       localStorage.setItem('alertMessage', 'Đăng nhập thành công!');
       localStorage.setItem('alertType', 'success');
-      navigate('/');
+
+      switch (userData.role) {
+        case 'Manager':
+          navigate('/');
+          break;
+        case 'SalesStaff':
+          navigate('/project-list-staff');
+          break;
+        case 'DesignStaff':
+          navigate('/house-design-list');
+          break;
+        default:
+          console.error('Vai trò không hợp lệ');
+      }
     } catch (error: any) {
       console.error('Login failed:', error);
       const errorMessage =

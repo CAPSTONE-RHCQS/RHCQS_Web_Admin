@@ -89,6 +89,7 @@ function App() {
         ) : (
           <DefaultLayout>
             <Routes>
+              {/* Manager Routes */}
               <Route
                 index
                 element={
@@ -98,7 +99,6 @@ function App() {
                   </PrivateRoute>
                 }
               />
-              {/* Manager Routes */}
               <Route
                 path="/project-list-manager"
                 element={
