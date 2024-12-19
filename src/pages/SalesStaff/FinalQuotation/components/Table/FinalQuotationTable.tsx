@@ -482,9 +482,11 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
 
     items.forEach((item) => {
       item.QuotationItems.forEach((qItem) => {
-        totalLaborRough += item.Type === 'WORK_ROUGH' ? qItem.TotalPriceLabor || 0 : 0;
-        totalLaborFinished += item.Type === 'WORK_FINISHED' ? qItem.TotalPriceLabor || 0 : 0;
-        
+        totalLaborRough +=
+          item.Type === 'WORK_ROUGH' ? qItem.TotalPriceLabor || 0 : 0;
+        totalLaborFinished +=
+          item.Type === 'WORK_FINISHED' ? qItem.TotalPriceLabor || 0 : 0;
+
         totalRough += qItem.TotalPriceRough || 0;
         totalFinished += qItem.TotalPriceFinished || 0;
       });
@@ -1202,7 +1204,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         </tbody>
       </table>
 
-      <h3 className="text-lg font-bold mt-4 text-primary">
+      {/* <h3 className="text-lg font-bold mt-4 text-primary">
         GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG:
       </h3>
       <table className="min-w-full bg-white border border-gray-200 mt-4">
@@ -1281,7 +1283,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
           </tr>
         </tbody>
-      </table>
+      </table> */}
     </div>
   );
 };

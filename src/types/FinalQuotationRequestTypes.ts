@@ -44,7 +44,7 @@ export interface FinalQuotationRequest {
   customerName: string;
   address: string;
   projectId: string;
-  promotionId: string;
+  promotionId: string | null;
   note: string;
   versionPresent: number;
   batchPaymentInfos: BatchPaymentInfoRequest[];

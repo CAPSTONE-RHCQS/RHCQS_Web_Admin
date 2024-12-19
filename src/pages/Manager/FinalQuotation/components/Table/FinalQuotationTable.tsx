@@ -212,7 +212,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
         </tbody>
       </table>
 
-      <h3 className="text-lg font-bold mt-4 text-primary">
+      {/* <h3 className="text-lg font-bold mt-4 text-primary">
         GIÁ TRỊ BÁO GIÁ CHI TIẾT XÂY DỰNG:
       </h3>
       <table className="min-w-full bg-white border border-gray-200 mt-2">
@@ -285,7 +285,7 @@ const FinalQuotationTable: React.FC<FinalQuotationTableProps> = ({
             <td className="px-4 py-2 border text-center font-bold">VNĐ</td>
           </tr>
         </tbody>
-      </table>
+      </table> */}
     </div>
   );
 };
