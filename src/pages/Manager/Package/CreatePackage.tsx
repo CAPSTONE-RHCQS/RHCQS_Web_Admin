@@ -30,18 +30,23 @@ const CreatePackage: React.FC = () => {
   };
 
   const handleSave = async () => {
-    if (!packageData.packageName.trim()) {
+    const packageDataToSend = {
+      ...packageData,
+      status: 'ACTIVE',
+    };
+
+    if (!packageDataToSend.packageName.trim()) {
       toast.error('Vui lòng nhập tên gói');
       return;
     }
 
-    if (packageData.price <= 0) {
+    if (packageDataToSend.price <= 0) {
       toast.error('Giá phải lớn hơn 0');
       return;
     }
 
     try {
-      const response = await createPackage(packageData);
+      const response = await createPackage(packageDataToSend);
       toast.success('Tạo gói thành công!');
       navigate(`/package-list-manager`);
     } catch (error: any) {
@@ -119,21 +124,6 @@ const CreatePackage: React.FC = () => {
             >
               <option value="ROUGH">Gói Thô</option>
               <option value="FINISHED">Gói Hoàn Thiện</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-bold mb-2">
-              Trạng Thái
-            </label>
-            <select
-              name="status"
-              value={packageData.status}
-              onChange={handleInputChange}
-              className="w-full p-2 border rounded"
-            >
-              <option value="ACTIVE">Hoạt Động</option>
-              <option value="INACTIVE">Không Hoạt Động</option>
             </select>
           </div>
         </div>
