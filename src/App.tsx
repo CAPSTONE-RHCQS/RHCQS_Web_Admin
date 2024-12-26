@@ -58,7 +58,7 @@ function App() {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  const isAuthPage = pathname === '/auth/signin';
+  const isAuthPage = pathname === '/tracking';
 
   return loading ? (
     <Loader />
