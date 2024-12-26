@@ -87,7 +87,7 @@ function App() {
               }
             />
             <Route
-              path="/settings"
+              path="/trackings"
               element={
                 <>
                   <PageTitle title="Settings | RHCQS - Residential Housing Construction Quotation System" />
