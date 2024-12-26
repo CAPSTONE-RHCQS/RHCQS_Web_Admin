@@ -48,6 +48,7 @@ import HouseDesignDetailSalesStaff from './pages/SalesStaff/HouseDesignDrawing/H
 import { ChatProvider } from './context/ChatContext';
 import CreatePackage from './pages/Manager/Package/CreatePackage.tsx';
 import DesignPriceList from './pages/Manager/DesignPrice/DesignPriceList.tsx';
+import TrackingLog from './pages/TrackingLog.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -82,6 +83,15 @@ function App() {
                 <>
                   <PageTitle title="Signup | RHCQS - Residential Housing Construction Quotation System" />
                   <SignUp />
+                </>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <>
+                  <PageTitle title="Settings | RHCQS - Residential Housing Construction Quotation System" />
+                  <TrackingLog />
                 </>
               }
             />
